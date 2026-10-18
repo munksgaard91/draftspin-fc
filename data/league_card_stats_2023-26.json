@@ -1,0 +1,90 @@
+{
+ "E0": {
+  "liga": "Premier League",
+  "kampe": 1140,
+  "gule_pr_kamp": 3.99,
+  "gule_pr_hold_pr_kamp": 2.0,
+  "roede_pr_kamp": 0.13,
+  "roede_pr_hold_pr_kamp": 0.065
+ },
+ "SP1": {
+  "liga": "La Liga",
+  "kampe": 1140,
+  "gule_pr_kamp": 4.55,
+  "gule_pr_hold_pr_kamp": 2.28,
+  "roede_pr_kamp": 0.235,
+  "roede_pr_hold_pr_kamp": 0.118
+ },
+ "I1": {
+  "liga": "Serie A",
+  "kampe": 1140,
+  "gule_pr_kamp": 3.95,
+  "gule_pr_hold_pr_kamp": 1.97,
+  "roede_pr_kamp": 0.184,
+  "roede_pr_hold_pr_kamp": 0.092
+ },
+ "D1": {
+  "liga": "Bundesliga",
+  "kampe": 917,
+  "gule_pr_kamp": 3.93,
+  "gule_pr_hold_pr_kamp": 1.97,
+  "roede_pr_kamp": 0.177,
+  "roede_pr_hold_pr_kamp": 0.088
+ },
+ "F1": {
+  "liga": "Ligue 1",
+  "kampe": 918,
+  "gule_pr_kamp": 3.79,
+  "gule_pr_hold_pr_kamp": 1.9,
+  "roede_pr_kamp": 0.231,
+  "roede_pr_hold_pr_kamp": 0.115
+ },
+ "N1": {
+  "liga": "Eredivisie",
+  "kampe": 918,
+  "gule_pr_kamp": 3.04,
+  "gule_pr_hold_pr_kamp": 1.52,
+  "roede_pr_kamp": 0.169,
+  "roede_pr_hold_pr_kamp": 0.084
+ },
+ "P1": {
+  "liga": "Primeira Liga",
+  "kampe": 918,
+  "gule_pr_kamp": 4.97,
+  "gule_pr_hold_pr_kamp": 2.48,
+  "roede_pr_kamp": 0.261,
+  "roede_pr_hold_pr_kamp": 0.131
+ },
+ "B1": {
+  "liga": "Pro League",
+  "kampe": 934,
+  "gule_pr_kamp": 3.82,
+  "gule_pr_hold_pr_kamp": 1.91,
+  "roede_pr_kamp": 0.197,
+  "roede_pr_hold_pr_kamp": 0.099
+ },
+ "SC0": {
+  "liga": "Scottish Premiership",
+  "kampe": 684,
+  "gule_pr_kamp": 3.71,
+  "gule_pr_hold_pr_kamp": 1.85,
+  "roede_pr_kamp": 0.161,
+  "roede_pr_hold_pr_kamp": 0.08
+ },
+ "T1": {
+  "liga": "Süper Lig",
+  "kampe": 1026,
+  "gule_pr_kamp": 4.57,
+  "gule_pr_hold_pr_kamp": 2.29,
+  "roede_pr_kamp": 0.21,
+  "roede_pr_hold_pr_kamp": 0.105
+ },
+ "G1": {
+  "liga": "Super League (Grækenland)",
+  "kampe": 708,
+  "gule_pr_kamp": 5.34,
+  "gule_pr_hold_pr_kamp": 2.67,
+  "roede_pr_kamp": 0.277,
+  "roede_pr_hold_pr_kamp": 0.138
+ }
+}

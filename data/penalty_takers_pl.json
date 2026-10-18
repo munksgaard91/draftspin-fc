@@ -1,0 +1,376 @@
+{
+ "model": {
+  "penalties_per_match": 0.29,
+  "base_conversion": 0.8,
+  "formula": "p = clamp(0.80 + 0.012*(pen_taking-12), 0.60, 0.92)",
+  "note": "0,29 straffe pr. kamp (Opta, Premier League 2023/24, 106 straffe i 370 kampe). Antal og scoringsrate er et estimat fra ét sæsonudtræk."
+ },
+ "teams": {
+  "ARS": [
+   {
+    "name": "Bukayo Saka",
+    "number": 7,
+    "weight": 0.7,
+    "pen_taking": 15
+   },
+   {
+    "name": "Viktor Gyökeres",
+    "number": 14,
+    "weight": 0.2,
+    "pen_taking": 15
+   },
+   {
+    "name": "Martin Ødegaard",
+    "number": 8,
+    "weight": 0.1,
+    "pen_taking": 14
+   }
+  ],
+  "ARS_source": "fpl",
+  "AVL": [
+   {
+    "name": "Emiliano Buendia",
+    "number": 10,
+    "weight": 0.78,
+    "pen_taking": 12
+   },
+   {
+    "name": "Nicolas Jackson",
+    "number": 11,
+    "weight": 0.22,
+    "pen_taking": 13
+   }
+  ],
+  "AVL_source": "fpl",
+  "BHA": [
+   {
+    "name": "Promise David",
+    "number": 12,
+    "weight": 0.78,
+    "pen_taking": 13
+   },
+   {
+    "name": "Matt O'Riley",
+    "number": 33,
+    "weight": 0.22,
+    "pen_taking": 8
+   }
+  ],
+  "BHA_source": "fpl",
+  "BOU": [
+   {
+    "name": "Junior Kroupi",
+    "number": 22,
+    "weight": 0.7,
+    "pen_taking": 16
+   },
+   {
+    "name": "Justin Kluivert",
+    "number": 19,
+    "weight": 0.2,
+    "pen_taking": 13
+   },
+   {
+    "name": "Marcus Tavernier",
+    "number": 16,
+    "weight": 0.1,
+    "pen_taking": 10
+   }
+  ],
+  "BOU_source": "fpl",
+  "BRE": [
+   {
+    "name": "Igor Thiago",
+    "number": 9,
+    "weight": 0.7,
+    "pen_taking": 16
+   },
+   {
+    "name": "Kevin Schade",
+    "number": 7,
+    "weight": 0.2,
+    "pen_taking": 11
+   },
+   {
+    "name": "Mathias Jensen",
+    "number": 8,
+    "weight": 0.1,
+    "pen_taking": 11
+   }
+  ],
+  "BRE_source": "fpl",
+  "CHE": [
+   {
+    "name": "Cole Palmer",
+    "number": 10,
+    "weight": 0.78,
+    "pen_taking": 20
+   },
+   {
+    "name": "Estêvão",
+    "number": 41,
+    "weight": 0.22,
+    "pen_taking": 11
+   }
+  ],
+  "CHE_source": "fpl",
+  "COV": [
+   {
+    "name": "Jack Rudoni",
+    "number": 5,
+    "weight": 0.7,
+    "pen_taking": 10
+   },
+   {
+    "name": "Haji Wright",
+    "number": 11,
+    "weight": 0.2,
+    "pen_taking": 16
+   },
+   {
+    "name": "Victor Torp",
+    "number": 29,
+    "weight": 0.1,
+    "pen_taking": 15
+   }
+  ],
+  "COV_source": "fpl",
+  "CRY": [
+   {
+    "name": "Jean-Philippe Mateta",
+    "number": 14,
+    "weight": 0.78,
+    "pen_taking": 16
+   },
+   {
+    "name": "Ismaila Sarr",
+    "number": 7,
+    "weight": 0.22,
+    "pen_taking": 13
+   }
+  ],
+  "CRY_source": "fpl",
+  "EVE": [
+   {
+    "name": "Thierno Barry",
+    "number": 11,
+    "weight": 0.78,
+    "pen_taking": 13
+   },
+   {
+    "name": "James Garner",
+    "number": 37,
+    "weight": 0.22,
+    "pen_taking": 12
+   }
+  ],
+  "EVE_source": "fpl",
+  "FUL": [
+   {
+    "name": "Gonzalo Garcia",
+    "number": 7,
+    "weight": 0.7,
+    "pen_taking": 13
+   },
+   {
+    "name": "Antonee Robinson",
+    "number": 33,
+    "weight": 0.2,
+    "pen_taking": 8
+   },
+   {
+    "name": "Alex Iwobi",
+    "number": 17,
+    "weight": 0.1,
+    "pen_taking": 11
+   }
+  ],
+  "FUL_source": "fpl",
+  "HUL": [
+   {
+    "name": "Oliver McBurnie",
+    "number": 9,
+    "weight": 0.7,
+    "pen_taking": 13
+   },
+   {
+    "name": "Joe Gelhardt",
+    "number": 11,
+    "weight": 0.2,
+    "pen_taking": 15
+   },
+   {
+    "name": "Ilyas Ansah",
+    "number": 28,
+    "weight": 0.1,
+    "pen_taking": 13
+   }
+  ],
+  "HUL_source": "fpl+fm",
+  "IPS": [
+   {
+    "name": "Jack Clarke",
+    "number": 47,
+    "weight": 0.7,
+    "pen_taking": 15
+   },
+   {
+    "name": "Emersonn",
+    "number": 19,
+    "weight": 0.2,
+    "pen_taking": 11
+   },
+   {
+    "name": "Jaden Philogene",
+    "number": 11,
+    "weight": 0.1,
+    "pen_taking": 8
+   }
+  ],
+  "IPS_source": "fpl",
+  "LEE": [
+   {
+    "name": "Dominic Calvert-Lewin",
+    "number": 9,
+    "weight": 0.78,
+    "pen_taking": 13
+   },
+   {
+    "name": "Lukas Nmecha",
+    "number": 14,
+    "weight": 0.22,
+    "pen_taking": 17
+   }
+  ],
+  "LEE_source": "fpl",
+  "LIV": [
+   {
+    "name": "Dominik Szoboszlai",
+    "number": 8,
+    "weight": 0.7,
+    "pen_taking": 14
+   },
+   {
+    "name": "Alexander Isak",
+    "number": 9,
+    "weight": 0.2,
+    "pen_taking": 16
+   },
+   {
+    "name": "Cody Gakpo",
+    "number": 18,
+    "weight": 0.1,
+    "pen_taking": 12
+   }
+  ],
+  "LIV_source": "fpl",
+  "MCI": [
+   {
+    "name": "Erling Haaland",
+    "number": 9,
+    "weight": 0.7,
+    "pen_taking": 17
+   },
+   {
+    "name": "Antoine Semenyo",
+    "number": 42,
+    "weight": 0.2,
+    "pen_taking": 10
+   },
+   {
+    "name": "Jérémy Doku",
+    "number": 11,
+    "weight": 0.1,
+    "pen_taking": 14
+   }
+  ],
+  "MCI_source": "fpl",
+  "MUN": [
+   {
+    "name": "Bryan Mbeumo",
+    "number": 19,
+    "weight": 0.78,
+    "pen_taking": 17
+   },
+   {
+    "name": "Youri Tielemans",
+    "number": 18,
+    "weight": 0.22,
+    "pen_taking": 14
+   }
+  ],
+  "MUN_source": "fpl",
+  "NEW": [
+   {
+    "name": "William Osula",
+    "number": 10,
+    "weight": 0.78,
+    "pen_taking": 7
+   },
+   {
+    "name": "Yoane Wissa",
+    "number": 9,
+    "weight": 0.22,
+    "pen_taking": 13
+   }
+  ],
+  "NEW_source": "fpl",
+  "NFO": [
+   {
+    "name": "Morgan Gibbs-White",
+    "number": 10,
+    "weight": 0.7,
+    "pen_taking": 13
+   },
+   {
+    "name": "Chris Wood",
+    "number": 9,
+    "weight": 0.2,
+    "pen_taking": 15
+   },
+   {
+    "name": "Liam Delap",
+    "number": 19,
+    "weight": 0.1,
+    "pen_taking": 15
+   }
+  ],
+  "NFO_source": "fpl",
+  "SUN": [
+   {
+    "name": "Habib Diarra",
+    "number": 19,
+    "weight": 0.78,
+    "pen_taking": 13
+   },
+   {
+    "name": "Enzo Le Fee",
+    "number": 28,
+    "weight": 0.22,
+    "pen_taking": 12
+   }
+  ],
+  "SUN_source": "fpl",
+  "TOT": [
+   {
+    "name": "Dominic Solanke",
+    "number": 19,
+    "weight": 0.7,
+    "pen_taking": 14
+   },
+   {
+    "name": "Omar Marmoush",
+    "number": 22,
+    "weight": 0.2,
+    "pen_taking": 16
+   },
+   {
+    "name": "Mohammed Kudus",
+    "number": 20,
+    "weight": 0.1,
+    "pen_taking": 13
+   }
+  ],
+  "TOT_source": "fpl"
+ }
+}
