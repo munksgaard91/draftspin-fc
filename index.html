@@ -799,7 +799,7 @@ $("flow").addEventListener("click",function(e){
   else if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderTop();renderFlow()}
   else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Hop ind i mit DraftSpin-spil med koden "+F.code;try{if(navigator.share)navigator.share({title:"DraftSpin FC",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation kopieret")},function(){})}catch(x){}}
   else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
-  else if(a==="back"){if(st==="spil"&&(F.sub||0)>0){F.sub--;renderFlow();return}if(F.step>0)F.step--;else{role=null;F.liga="";F.joinInput="";F.joinErr=false}renderFlow()}
+  else if(a==="back"){if(st==="spil"&&(F.sub||0)>0){F.sub--;renderFlow();return}if(F.step>0)F.step--;else{if(LIVE&&NET.gid&&role==="admin"){liveLeave();return}role=null;F.liga="";F.joinInput="";F.joinErr=false}renderFlow()}
   else if(a==="next"){
     if(st==="spil"){F.code="BRY4K2";startSim();renderTop()}
     if(st==="join"){

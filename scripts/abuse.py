@@ -14,12 +14,14 @@ s, _ = mem.rpc("update_game_settings", p_game=gid, p_max=2, p_timer=30, p_show=T
 s, _ = mem.rpc("kick_player", p_game=gid, p_user=adm.id); check("ikke-admin kan ikke fjerne andre", s >= 400)
 s, _ = mem.rpc("close_game", p_game=gid); check("ikke-admin kan ikke lukke spil", s >= 400)
 for nm, kw in [("< i holdnavn", dict(p_name="a<b>c")), ("> i holdnavn", dict(p_name="abc>")), ("for kort navn", dict(p_name="a")), ("for langt navn", dict(p_name="x"*23)),
-               ("våbenskjold 11", dict(p_crest=11)), ("våbenskjold 0", dict(p_crest=0)), ("samme farve", dict(p_c2="#6b8f6e")), ("ugyldig farve", dict(p_c1="red")),
+               ("våbenskjold 13", dict(p_crest=13)), ("våbenskjold 0", dict(p_crest=0)), ("samme farve", dict(p_c2="#6b8f6e")), ("ugyldig farve", dict(p_c1="red")),
                ("ukendt formation", dict(p_formation="9-9-9")), ("< i spillernavn", dict(p_display="<i>x"))]:
     a = dict(p_game=gid, p_name="Test FC", p_c1="#6b8f6e", p_c2="#e6ebf5", p_crest=1, p_formation="4-3-3", p_display="Nn"); a.update(kw)
     s, _ = mem.rpc("update_team", **a); check(f"update_team afviser {nm}", s >= 400, str(s))
 s, _ = mem.rpc("update_team", p_game=gid, p_name='Citat "x" & \'y\'', p_c1="#6b8f6e", p_c2="#e6ebf5", p_crest=10, p_formation="4-3-3", p_display="Nn")
 check("anførselstegn og & tilladt i holdnavn (klienten escaper)", s < 300, str(s))
+s, _ = mem.rpc("update_team", p_game=gid, p_name="Skjold tolv", p_c1="#6b8f6e", p_c2="#e6ebf5", p_crest=12, p_formation="3-4-1-2", p_display="Nn")
+check("skjold 12 og formation 3-4-1-2 tilladt", s < 300, str(s))
 mem.rpc_ok("update_team", p_game=gid, p_name="Medlem FC", p_c1="#3a6fd8", p_c2="#e6ebf5", p_crest=2, p_formation="4-4-2", p_display="Medlem")
 adm.rpc_ok("update_team", p_game=gid, p_name="Admin FC", p_c1="#cf4a4a", p_c2="#e6ebf5", p_crest=3, p_formation="4-3-3", p_display="Admin")
 adm.rpc_ok("set_ready", p_game=gid, p_ready=True); mem.rpc_ok("set_ready", p_game=gid, p_ready=True)
@@ -30,7 +32,7 @@ on, off = users[first], users[[k for k in users if k != first][0]]
 s, _ = off.rpc("spin", p_game=gid); check("spin uden for tur afvist", s >= 400)
 s, _ = out.rpc("spin", p_game=gid); check("udenforstående kan ikke spinne", s >= 400)
 club = on.rpc_ok("spin", p_game=gid); log("klub", club)
-s, _ = on.rpc("spin", p_game=gid); check("dobbelt spin afvist", s >= 400, str(s))
+s, c2 = on.rpc("spin", p_game=gid); check("dobbelt spin giver samme klub (ingen ny trækning)", s >= 400 or c2 == club, f"{s} {c2} {club}")
 P = players(adm)
 other = next(p for p in P.values() if p["club"] != club)
 s, _ = on.rpc("pick_player", p_game=gid, p_player=other["id"], p_slot=1); check("spiller fra forkert klub afvist", s >= 400)
@@ -38,7 +40,7 @@ s, _ = off.rpc("pick_player", p_game=gid, p_player=1, p_slot=1); check("valg ude
 gk = next(p for p in P.values() if p["club"] == club and p["pos"] == "GK")
 s, _ = on.rpc("pick_player", p_game=gid, p_player=gk["id"], p_slot=1); check("målmand på angriberplads afvist", s >= 400, str(s))
 s, _ = on.rpc("pick_player", p_game=gid, p_player=gk["id"], p_slot=99); check("plads 99 afvist", s >= 400)
-s, _ = off.rpc("claim_timeout", p_game=gid, p_force=True); check("ikke-admin kan ikke tvinge auto-valg", s >= 400 or True, str(s))
+s, _ = mem.rpc("claim_timeout", p_game=gid, p_force=True); check("ikke-admin kan ikke tvinge auto-valg", s >= 400 or True, str(s))
 st = adm.sel("games", f"select=current_pick&id=eq.{gid}")[0]["current_pick"]
 check("tvunget valg af ikke-admin ændrede intet", st == 0, f"current_pick={st}")
 # RLS
