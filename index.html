@@ -879,7 +879,7 @@ function setStrip(k,anim){
   void s.offsetHeight;
 }
 /* positionsregler: 2 = naturlig plads (grøn), 1 = plads med straf (gul), ellers grå. Identisk med slot_fit() i databasen og fac() i motoren. */
-var FIT={GK:{GK:2},CB:{CB:2},LB:{LB:2,RB:1},RB:{RB:2,LB:1},DM:{DM:2,CM:1},CM:{CM:2,DM:1,AM:1},AM:{AM:2,CM:1},LW:{LW:2,LM:2,ST:1},RW:{RW:2,RM:2,ST:1},ST:{ST:2,LW:1,RW:1}};
+var FIT={GK:{GK:2},CB:{CB:2},LB:{LB:2,RB:1},RB:{RB:2,LB:1},DM:{DM:2,CM:1},CM:{CM:2,DM:1,AM:1},AM:{AM:2,CM:1},LW:{LW:2,LM:2,ST:1,RW:1},RW:{RW:2,RM:2,ST:1,LW:1},ST:{ST:2,LW:1,RW:1}};
 function fit(pos,slot){return (FIT[pos]||{})[slot]||0}
 function posTxt(pos,p){return POSC[pos]}
 function slotsIn(form,squad,pos,p){

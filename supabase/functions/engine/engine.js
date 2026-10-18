@@ -49,9 +49,9 @@ export function makeRng(seedStr) {
 
 // ---------- opstilling ----------
 // Positionsregler: spillerens position -> plads. Naturlig plads = 1, plads med straf = PEN_FACTOR, ellers null (kan ikke spille der).
-// Skal være identisk med slot_fit() i databasen (migration 020).
+// Skal være identisk med slot_fit() i databasen (migration 020/021).
 export const PEN_FACTOR = 0.90;
-const PENALTY_SLOTS = { LB: ["RB"], RB: ["LB"], DM: ["CM"], CM: ["DM", "AM"], AM: ["CM"], LW: ["ST"], RW: ["ST"], ST: ["LW", "RW"] };
+const PENALTY_SLOTS = { LB: ["RB"], RB: ["LB"], DM: ["CM"], CM: ["DM", "AM"], AM: ["CM"], LW: ["ST", "RW"], RW: ["ST", "LW"], ST: ["LW", "RW"] };
 const NATURAL_EXTRA = { LW: ["LM"], RW: ["RM"] };
 export function fac(p, slotPos) {
   if (p.pos === slotPos || (NATURAL_EXTRA[p.pos] || []).includes(slotPos)) return 1;

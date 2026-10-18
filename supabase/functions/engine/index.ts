@@ -147,6 +147,8 @@ async function finalizeSeason(gameId) {
   const lu = chk(await admin.from("season_lineups").select("*").eq("game_id", gameId));
   const matches = await allRows("matches", gameId), events = await allRows("match_events", gameId);
   const nameOf = (k) => (st.find((x) => x.team_key === k) || {}).name || k;
+  // AI-hold må aldrig stå i Highscore: modstandertekster nævner kun menneskehold
+  const vs = (k, round) => { const x = st.find((y) => y.team_key === k); return (x && x.kind === "human" ? "mod " + x.name + ", " : "") + "runde " + round; };
   const t = {};
   st.forEach((x) => (t[x.team_key] = { w: 0, d: 0, l: 0, gf: 0, ga: 0 }));
   for (const m of matches) {
@@ -168,7 +170,7 @@ async function finalizeSeason(gameId) {
     let streak = 0, best = 0, bigM = 0, bigScore = null, bigText = null;
     for (const m of mine) {
       const home = m.home_key === h.team_key, gf = home ? m.home_goals : m.away_goals, ga = home ? m.away_goals : m.home_goals;
-      if (gf > ga) { streak++; best = Math.max(best, streak); if (gf - ga > bigM) { bigM = gf - ga; bigScore = gf + "–" + ga; bigText = "mod " + nameOf(home ? m.away_key : m.home_key) + ", runde " + m.round; } }
+      if (gf > ga) { streak++; best = Math.max(best, streak); if (gf - ga > bigM) { bigM = gf - ga; bigScore = gf + "–" + ga; bigText = vs(home ? m.away_key : m.home_key, m.round); } }
       else streak = 0;
     }
     const s = t[h.team_key];
@@ -191,7 +193,7 @@ async function finalizeSeason(gameId) {
   for (const k of Object.keys(pm)) {
     const [mid, pid] = k.split("|"), m = mById.get(Number(mid)), tm = own[pid];
     if (!m || !tm) continue;
-    if (!bm[pid] || pm[k] > bm[pid].n) bm[pid] = { n: pm[k], text: "mod " + nameOf(m.home_key === tm.team_key ? m.away_key : m.home_key) + ", runde " + m.round };
+    if (!bm[pid] || pm[k] > bm[pid].n) bm[pid] = { n: pm[k], text: vs(m.home_key === tm.team_key ? m.away_key : m.home_key, m.round) };
   }
   const playerRows = Object.keys(stats).map((pid) => {
     const tm = own[pid], s = stats[pid];

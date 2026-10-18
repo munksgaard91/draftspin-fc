@@ -58,7 +58,7 @@ def players(u):
             off += 1000
     return PLAYERS
 FIT = {"GK": {"GK": 2}, "CB": {"CB": 2}, "LB": {"LB": 2, "RB": 1}, "RB": {"RB": 2, "LB": 1}, "DM": {"DM": 2, "CM": 1}, "CM": {"CM": 2, "DM": 1, "AM": 1},
-       "AM": {"AM": 2, "CM": 1}, "LW": {"LW": 2, "LM": 2, "ST": 1}, "RW": {"RW": 2, "RM": 2, "ST": 1}, "ST": {"ST": 2, "LW": 1, "RW": 1}}
+       "AM": {"AM": 2, "CM": 1}, "LW": {"LW": 2, "LM": 2, "ST": 1, "RW": 1}, "RW": {"RW": 2, "RM": 2, "ST": 1, "LW": 1}, "ST": {"ST": 2, "LW": 1, "RW": 1}}
 def slot_ok(p, slot):
     return FIT.get(p["pos"], {}).get(slot, 0) > 0
 
