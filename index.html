@@ -684,9 +684,9 @@ function renderFlow(){
     var wait=ids().filter(function(k){return !P[k].ready}).map(function(k){return k==="me"?"dig":k});
     if(adm){
       h+='<button class="btn p wide go" data-act="start" style="margin-top:22px"'+(allReady()?"":" disabled")+'>Start spillet</button>';
-      h+='<p class="note">'+(allReady()?"Alle er klar.":"Venter på "+wait.join(", ")+".")+'</p>';
+      h+='<p class="note">'+(allReady()?"Alle er klar.":"Venter på "+wait.map(function(x){return esc(x)}).join(", ")+".")+'</p>';
     }else{
-      h+='<p class="note">'+(allReady()?"Alle er klar. Sara starter spillet.":"Venter på "+wait.join(", ")+".")+'</p>';
+      h+='<p class="note">'+(allReady()?"Alle er klar. Sara starter spillet.":"Venter på "+wait.map(function(x){return esc(x)}).join(", ")+".")+'</p>';
     }
     h+='<div class="nav2"><button class="btn" data-act="'+(P.me.ready?"unready":"back")+'">'+(P.me.ready?"Jeg er ikke klar endnu":"Tilbage")+'</button></div>';
   }
@@ -864,7 +864,7 @@ function renderCounts(){
   var cur=S.phase==="draft"&&S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null,h="";
   ids().forEach(function(k){
     var c=k==="me"?filled():S.counts[k];
-    h+='<span class="'+(k===cur?"now":"")+'"><i class="dotc" style="background:'+(k==="me"?"var(--me-dot)":FRIENDS[k])+'"></i>'+(k==="me"?"Dig":(LIVE?teamName(k):k))+' <span class="mono">'+c+'/11</span></span>';
+    h+='<span class="'+(k===cur?"now":"")+'"><i class="dotc" style="background:'+(k==="me"?"var(--me-dot)":FRIENDS[k])+'"></i>'+(k==="me"?"Dig":(LIVE?esc(teamName(k)):k))+' <span class="mono">'+c+'/11</span></span>';
   });
   $("counts").innerHTML=h;
 }
@@ -1006,7 +1006,7 @@ function timeUp(){
 }
 function renderSqTabs(){
   var ks=["me"].concat(ids().filter(function(k){return k!=="me"}));
-  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+'">'+(k==="me"?"Dig":(LIVE?teamName(k):k))+' '+n+'/11</button>'}).join("");
+  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+'">'+(k==="me"?"Dig":(LIVE?esc(teamName(k)):k))+' '+n+'/11</button>'}).join("");
 }
 $("sqTabs").addEventListener("click",function(e){var b=e.target.closest("[data-v]");if(b){S.view=b.dataset.v;renderDraft()}});
 
@@ -1591,9 +1591,9 @@ function lobbyLive(){
   if(adm){
     var full=n>=g.max_players;
     h+='<button class="btn p wide go" data-act="start" style="margin-top:22px"'+(allR&&full?"":" disabled")+'>Start spillet</button>';
-    h+='<p class="note">'+(!full?"Spillet starter, når alle pladser er fyldt. Mangler "+(g.max_players-n)+" "+(g.max_players-n===1?"spiller":"spillere")+".":(allR?"Alle er klar.":"Venter på "+wait.join(", ")+"."))+'</p>';
+    h+='<p class="note">'+(!full?"Spillet starter, når alle pladser er fyldt. Mangler "+(g.max_players-n)+" "+(g.max_players-n===1?"spiller":"spillere")+".":(allR?"Alle er klar.":"Venter på "+wait.map(function(x){return esc(x)}).join(", ")+"."))+'</p>';
   }else{
-    h+='<p class="note">'+(n<g.max_players?"Venter på flere spillere ("+n+" af "+g.max_players+").":(allR?"Alle er klar. Admin starter spillet.":"Venter på "+wait.join(", ")+"."))+'</p>';
+    h+='<p class="note">'+(n<g.max_players?"Venter på flere spillere ("+n+" af "+g.max_players+").":(allR?"Alle er klar. Admin starter spillet.":"Venter på "+wait.map(function(x){return esc(x)}).join(", ")+"."))+'</p>';
   }
   h+='<div class="nav2"><button class="btn" data-act="'+(me.ready?"unready":"back")+'">'+(me.ready?"Jeg er ikke klar endnu":"Tilbage")+'</button></div>';
   return h;
