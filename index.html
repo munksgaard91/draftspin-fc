@@ -1087,7 +1087,7 @@ function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
 function evRow(e){
   var cls="ev "+(e.t==="sys"?"sys":(e.t==="goal"?"goal ":"")+e.s);
   var ic=e.t==="goal"?'<i class="ic"></i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?'<i class="ic r"></i>':(e.t==="pm"?'<i class="ic x"></i>':'<i class="ic s"></i>')));
-  var head=e.t==="goal"?"Mål, "+esc(e.x)+(e.pen?' <span class="pk">Straffe</span>':''):(e.t==="y"?"Gult kort, "+esc(e.x):(e.t==="r"?"Rødt kort, "+esc(e.x):(e.t==="pm"?"Straffe misset, "+esc(e.x):esc(e.x))));
+  var head=e.t==="goal"?(e.ai?esc(e.x)+" scorer":"Mål, "+esc(e.x))+(e.pen?' <span class="pk">Straffe</span>':''):(e.t==="y"?"Gult kort, "+esc(e.x):(e.t==="r"?"Rødt kort, "+esc(e.x):(e.t==="pm"?"Straffe misset, "+esc(e.x):esc(e.x))));
   return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?"Slut":clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a?'<small>'+esc(e.a)+'</small>':'')+(e.t!=="sys"?'<small class="tg">'+(e.s==="me"?esc(S.team.trim()||"Mit hold"):esc(LIVE?NET.oppName:"Chelsea"))+'</small>':'')+'</div></div>';
 }
 function hname(n,right){
@@ -1771,14 +1771,17 @@ function lAway(p){return p.user_id!==NET.uid&&(Date.now()-Date.parse(p.last_seen
 function liveMyMatch(round){return NET.season.matches.filter(function(m){return m.round===round&&(m.home_key===NET.uid||m.away_key===NET.uid)})[0]}
 function liveScript(){
   var m=liveMyMatch(NET.round);NET.myMatch=m;if(!m)return [];
-  var side=m.home_key===NET.uid?"h":"a",out=[],oppK=side==="h"?m.away_key:m.home_key;
+  var side=m.home_key===NET.uid?"h":"a",out=[],oppK=side==="h"?m.away_key:m.home_key,aiOpp=!lhuman(oppK),oppN=lname(oppK);
   NET.season.events.filter(function(e){return e.match_id===m.id}).sort(function(a,b){return a.minute-b.minute||a.id-b.id}).forEach(function(e){
-    var sd=e.team===side?"me":"opp",x=pname(e.player_id);
-    if(e.type==="goal")out.push({m:e.minute,t:"goal",s:sd,x:x,a:e.pen?"Straffespark":(e.assist_id?"Assist: "+pname(e.assist_id):""),pen:e.pen?1:0});
-    else if(e.type==="yellow")out.push({m:e.minute,t:"y",s:sd,x:x});
-    else if(e.type==="red")out.push({m:e.minute,t:"r",s:sd,x:x});
-    else if(e.type==="second_yellow")out.push({m:e.minute,t:"r",s:sd,x:x,a:"2. gult"});
-    else if(e.type==="pen_miss")out.push({m:e.minute,t:"pm",s:sd,x:x,a:e.assist_id?"Straffen blev reddet af "+pname(e.assist_id):"Straffen gik forbi"});
+    var sd=e.team===side?"me":"opp",ai=sd==="opp"&&aiOpp,x=ai?oppN:pname(e.player_id);
+    if(e.type==="goal")out.push({m:e.minute,t:"goal",s:sd,x:x,ai:ai?1:0,a:e.pen?"Straffespark":((e.assist_id&&!ai)?"Assist: "+pname(e.assist_id):""),pen:e.pen?1:0});
+    else if(e.type==="yellow")out.push({m:e.minute,t:"y",s:sd,x:x,ai:ai?1:0});
+    else if(e.type==="red")out.push({m:e.minute,t:"r",s:sd,x:x,ai:ai?1:0});
+    else if(e.type==="second_yellow")out.push({m:e.minute,t:"r",s:sd,x:x,ai:ai?1:0,a:"2. gult"});
+    else if(e.type==="pen_miss"){
+      var gkAi=sd==="me"&&aiOpp;
+      out.push({m:e.minute,t:"pm",s:sd,x:x,ai:ai?1:0,a:e.assist_id?(gkAi?"Straffen blev reddet":"Straffen blev reddet af "+pname(e.assist_id)):"Straffen gik forbi"});
+    }
   });
   out.push({m:45,t:"sys",x:"Pause"});out.push({m:94,t:"sys",x:"Slutfløjt"});
   out.sort(function(a,b){return a.m-b.m||(a.t==="sys"?-1:1)});
@@ -1872,17 +1875,19 @@ function renderTableLive(){
   $("legend").innerHTML=lg;
 }
 function liveStatMaps(){
-  var s0=NET.season,up=NET.shownRound,owner={},mr={};
+  var s0=NET.season,up=NET.shownRound,owner={},mm={};
   Object.keys(s0.teams).forEach(function(k){if(s0.teams[k].kind==="human")(s0.lineups[k]||[]).forEach(function(pid){owner[pid]=k})});
-  s0.matches.forEach(function(m){mr[m.id]=m.round});
+  s0.matches.forEach(function(m){mm[m.id]=m});
   var g={},a={},y={},rd={},cs={};
   var inc=function(o,p){o[p]=(o[p]||0)+1};
+  // en spiller kan stå på både et menneskehold og en AI-klub: tæl kun hændelser for det hold, der ejer ham
+  var mine=function(e,pid){var m=mm[e.match_id];if(!m||!pid||!owner[pid])return false;return (e.team==="h"?m.home_key:m.away_key)===owner[pid]};
   s0.events.forEach(function(e){
-    if(mr[e.match_id]>up)return;
-    if(e.type==="goal"){if(owner[e.player_id])inc(g,e.player_id);if(e.assist_id&&owner[e.assist_id])inc(a,e.assist_id)}
-    else if(e.type==="yellow"&&owner[e.player_id])inc(y,e.player_id);
-    else if((e.type==="red"||e.type==="second_yellow")&&owner[e.player_id])inc(rd,e.player_id);
-    else if(e.type==="clean_sheet"&&owner[e.player_id])inc(cs,e.player_id);
+    var m=mm[e.match_id];if(!m||m.round>up)return;
+    if(e.type==="goal"){if(mine(e,e.player_id))inc(g,e.player_id);if(e.assist_id&&mine(e,e.assist_id))inc(a,e.assist_id)}
+    else if(e.type==="yellow"&&mine(e,e.player_id))inc(y,e.player_id);
+    else if((e.type==="red"||e.type==="second_yellow")&&mine(e,e.player_id))inc(rd,e.player_id);
+    else if(e.type==="clean_sheet"&&mine(e,e.player_id))inc(cs,e.player_id);
   });
   return {owner:owner,g:g,a:a,y:y,rd:rd,cs:cs};
 }

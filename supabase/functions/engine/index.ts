@@ -178,11 +178,14 @@ async function finalizeSeason(gameId) {
   lu.forEach((l) => { const tm = humans.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });
   const stats = {}, pm = {}, mById = new Map(matches.map((m) => [m.id, m]));
   const ens = (pid) => (stats[pid] = stats[pid] || { goals: 0, assists: 0, cs: 0, reds: 0 });
+  // en spiller kan stå på både et menneskehold og en AI-klub: tæl kun hændelser for det hold, der ejer ham
+  const evTeam = (e) => { const m = mById.get(e.match_id); return m ? (e.team === "h" ? m.home_key : m.away_key) : null; };
+  const mineEv = (e, pid) => !!pid && !!own[pid] && evTeam(e) === own[pid].team_key;
   for (const e of events) {
-    if (e.type === "goal" && own[e.player_id]) { ens(e.player_id).goals++; const k = e.match_id + "|" + e.player_id; pm[k] = (pm[k] || 0) + 1; }
-    if (e.type === "goal" && e.assist_id && own[e.assist_id]) ens(e.assist_id).assists++;
-    if (e.type === "clean_sheet" && own[e.player_id]) ens(e.player_id).cs++;
-    if ((e.type === "red" || e.type === "second_yellow") && own[e.player_id]) ens(e.player_id).reds++;
+    if (e.type === "goal" && mineEv(e, e.player_id)) { ens(e.player_id).goals++; const k = e.match_id + "|" + e.player_id; pm[k] = (pm[k] || 0) + 1; }
+    if (e.type === "goal" && e.assist_id && mineEv(e, e.assist_id)) ens(e.assist_id).assists++;
+    if (e.type === "clean_sheet" && mineEv(e, e.player_id)) ens(e.player_id).cs++;
+    if ((e.type === "red" || e.type === "second_yellow") && mineEv(e, e.player_id)) ens(e.player_id).reds++;
   }
   const bm = {};
   for (const k of Object.keys(pm)) {
