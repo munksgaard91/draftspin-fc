@@ -389,7 +389,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .err{color:#ff8f8f;font-size:14px;margin:10px 0 0}
 /* startskærm: klublogoer ruller forbi som hjul */
 .sbg{position:fixed;inset:0;z-index:-1;display:flex;justify-content:space-evenly;overflow:hidden;pointer-events:none}
-.sbgc{display:flex;flex-direction:column;opacity:.16;will-change:transform;animation:sbgUp var(--d,50s) linear infinite}
+.sbgc{display:flex;flex-direction:column;opacity:.3;will-change:transform;animation:sbgUp var(--d,50s) linear infinite}
 .sbgc.rev{animation-direction:reverse}
 .sbgc:nth-child(even){margin-top:-44px}
 .bd{display:block;flex:none;width:46px;height:46px;margin-bottom:26px;background-size:contain;background-repeat:no-repeat;background-position:center}
@@ -1550,8 +1550,8 @@ function liveInit(){
 }
 async function liveLoad(){
   if(!NET.gid)return;
-  var g=await NET.sb.from("games").select("*").eq("id",NET.gid).maybeSingle();
-  var p=await NET.sb.from("game_players").select("*").eq("game_id",NET.gid).order("joined_at");
+  var rs=await Promise.all([NET.sb.from("games").select("*").eq("id",NET.gid).maybeSingle(),NET.sb.from("game_players").select("*").eq("game_id",NET.gid).order("joined_at")]);
+  var g=rs[0],p=rs[1];
   if(g.error||p.error)throw (g.error||p.error);
   NET.game=g.data;NET.players=p.data||[];NET.picks=[];
   if(NET.game&&NET.game.status!=="lobby"){
@@ -1634,13 +1634,24 @@ async function liveJoin(){
   }catch(e){netErr(e)}
 }
 async function liveTeamDone(){
+  if(NET.teamBusy)return;NET.teamBusy=true;
+  var btn=document.querySelector('#flow [data-act="next"]');
+  if(btn){btn.disabled=true;btn.textContent=NET.gid?"Gemmer…":"Opretter spillet…"}
   try{
-    if(!NET.gid){await liveCreate(true);if(!NET.gid)return}
+    if(!NET.gid){
+      await NET.ready;
+      var rc=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:F.max,p_timer:F.timer,p_show:F.showR,p_pace:F.pace});
+      if(rc.error)throw rc.error;
+      NET.gid=rc.data.id;F.code=rc.data.code;role="admin";
+      try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
+    }
     var r0=await NET.sb.rpc("update_team",{p_game:NET.gid,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:(S.crest||0)+1,p_formation:S.form,p_display:S.pname.trim()});
     if(r0.error)throw r0.error;
     r0=await NET.sb.rpc("set_ready",{p_game:NET.gid,p_ready:true});if(r0.error)throw r0.error;
-    await liveLoad();F.step=stepsFor().indexOf("lobby");renderFlow();
-  }catch(e){netErr(e)}
+    await liveLoad();if(!NET.ch)liveSub();
+    F.step=stepsFor().indexOf("lobby");renderFlow();
+  }catch(e){netErr(e);renderFlow()}
+  finally{NET.teamBusy=false}
 }
 async function liveCall(fn,args){
   try{var r0=await NET.sb.rpc(fn,args);if(r0.error)throw r0.error;await liveLoad();liveApply()}catch(e){netErr(e)}
