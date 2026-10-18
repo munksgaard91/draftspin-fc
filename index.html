@@ -485,6 +485,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 
   <!-- HIGHSCORE -->
   <section id="s-hof" class="screen">
+    <button class="btn" id="hofBack" hidden style="margin-bottom:10px">← Tilbage</button>
     <h1>Highscore</h1>
     <p class="sub">De bedste resultater i alle spil, der nogensinde er spillet.</p>
     <div class="seg" id="hseg"></div>
@@ -757,7 +758,7 @@ $("flow").addEventListener("click",function(e){
   var f=t.closest(".fcard");if(f){S.form=f.dataset.f;S.squad=new Array(11).fill(null);renderFlow();return}
   var b=t.closest("[data-act]");if(!b)return;
   var a=b.dataset.act,st=stepsFor()[F.step];
-  if(a==="hofopen"){$("navwrap").hidden=true;go("hof");return}
+  if(a==="hofopen"){HOFBACK="start";$("navwrap").hidden=true;go("hof");return}
   if(a==="pushtoggle"){pushToggle();return}
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(LIVE&&liveAct(a,b,st))return;
@@ -806,6 +807,7 @@ $("toStart").addEventListener("click",function(){
 });
 
 /* ---------- nav ---------- */
+var HOFBACK=null;
 function go(s){
   if(s==="draft")renderSheet();else $("sheet").hidden=true;
   document.querySelectorAll(".screen").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
@@ -814,7 +816,7 @@ function go(s){
   if(s==="match"&&!S.matchSeen){S.matchSeen=true;startMatch()}
   if(s==="table")renderTable();
   if(s==="stats")renderStats();
-  if(s==="hof")renderHof();
+  if(s==="hof"){renderHof();$("hofBack").hidden=!HOFBACK}else HOFBACK=null;
   if(s==="end")renderEnd();
   if(s==="icon")renderIcon();
 }
@@ -1430,13 +1432,14 @@ function renderEnd(){
   h+='<h2>Slutstilling</h2><div class="card">'+fin.map(function(r,i){return '<div class="endrow'+(r[0]==="me"?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+extra.map(function(r){return '<div style="text-align:center;color:var(--mut);padding:2px 0">⋯</div><div class="endrow"><span class="hk">'+r[2]+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+'</div>';
   h+='<h2>Sæsonens priser</h2><div class="card">'+aw.map(function(a){return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+AWI[a[4]]+'</span><span class="en"><span>'+a[1]+'<small>'+a[0]+', '+esc(tn(a[2]))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[3]+'</span></div>'}).join("")+'</div>';
   h+='<h2>Nye rekorder</h2><div class="card"><div class="newrec"><span class="st">NY #1</span><div>Flest point i en sæson<br><span class="muted">94 point, '+esc(tn("me"))+'</span></div></div><div class="newrec"><span class="st">NY #2</span><div>Flest clean sheets i en sæson<br><span class="muted">21 af Alisson Becker</span></div></div></div>';
-  h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="hof">Se Highscore</button><button class="btn wide" data-end="copy">Kopiér resultat</button>'+(role==="player"?'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>':'<button class="btn wide" data-end="again">Ny sæson med samme gruppe</button>')+'</div>';
+  h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="hof">Se Highscore</button>'+(role==="player"?'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>':'<button class="btn wide" data-end="again">Ny sæson med samme gruppe</button>')+'</div>';
   $("endbody").innerHTML=h;
 }
+$("hofBack").addEventListener("click",function(){var w=HOFBACK;HOFBACK=null;if(w==="end")go("end");else $("toStart").click()});
 $("endbody").addEventListener("click",function(e){
   var b=e.target.closest("[data-end]");if(!b)return;var a=b.dataset.end;
-  if(a==="hof")go("hof");
-  else if(a==="newseason"){liveNewSeason(b)}
+  if(a==="hof"){HOFBACK="end";go("hof")}
+  else if(a==="newseason"){if(LIVE)liveLeave();else{if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}}
   else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(LIVE&&NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"Mit hold")+" sluttede som nr. "+(i+1)+" med "+rw[i].p+" point."})():(S.team.trim()||"Mit hold")+" blev mester med 94 point.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent="Kopiér resultat"},1500)}
   else if(a==="again"){if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}
 });
@@ -1935,7 +1938,7 @@ function renderEndLive(){
     return '<div class="endrow"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"h":"u")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
   }).join("")+'</div>';
   var adm=NET.game&&NET.game.admin_id===NET.uid;
-  h+='<div class="nav2" style="flex-direction:column">'+(adm?'<button class="btn p wide go" data-end="newseason">Ny sæson med samme gruppe</button>':'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>')+'<button class="btn wide" data-end="hof">Se Highscore</button><button class="btn wide" data-end="copy">Kopiér resultat</button></div>';
+  h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="newseason">Ny sæson</button><button class="btn wide" data-end="hof">Se Highscore</button></div>';
   $("endbody").innerHTML=h;
 }
 
