@@ -561,7 +561,7 @@ function fresh(){
      taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
      phase:"order",order:[],seq:[],pickIdx:0,matchSeen:false};
   P={me:{joined:true,ready:false},Sara:{joined:false,ready:false},Jonas:{joined:false,ready:false},Marie:{joined:false,ready:false}};
-  F={step:0,simStarted:false,liga:"pl",season:"2026/2027",showR:false,mode:"season",max:6,timer:role==="player"?60:0,auth:{email:"",sent:false,ok:false},code:"",joinInput:"",joinErr:false};
+  F={step:0,simStarted:false,liga:"pl",season:"2026/2027",showR:false,pace:"full",mode:"season",max:6,timer:role==="player"?60:0,auth:{email:"",sent:false,ok:false},code:"",joinInput:"",joinErr:false};
   var sa=loadAuth();if(sa&&sa.ok)F.auth={email:sa.email,sent:true,ok:true};
   G={started:false};
   readySt={me:false,Sara:false,Jonas:false,Marie:false};
@@ -642,6 +642,7 @@ function renderFlow(){
   }else if(st==="spil"){
     h+='<h1>Opret spil</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div>'+
       '<label class="field"><span>Antal spillere</span><div class="sws" id="maxsel">'+[1,2,3,4,5,6].map(function(n){return '<button class="btn" data-max="'+n+'" style="padding:10px 16px;'+(F.max===n?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+n+'</button>'}).join("")+'</div></label>'+
+      '<div class="field"><span>Spiltempo</span><div class="sws">'+[['full','Hele sæsonen'],['quick','Hurtigt spil']].map(function(o){return '<button class="btn'+(F.pace===o[0]?' sel':'')+'" data-pace="'+o[0]+'" style="padding:10px 16px">'+o[1]+'</button>'}).join("")+'</div></div>'+
       '<div class="field"><span>Ratings</span><div class="sws">'+[[false,'Skjulte'],[true,'Vis']].map(function(o){return '<button class="btn" data-showr="'+o[0]+'" style="padding:10px 16px;'+(F.showR===o[0]?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+o[1]+'</button>'}).join("")+'</div></div>'+
       '<div class="field"><span>Tidsgrænse pr. valg</span><div class="sws">'+[0,30,60,90].map(function(n){return '<button class="btn" data-timer="'+n+'" style="padding:10px 16px;'+(F.timer===n?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+(n?n+' s':'Fra')+'</button>'}).join("")+'</div></div>'+
       navBtns("Opret spillet");
@@ -700,6 +701,7 @@ $("flow").addEventListener("click",function(e){
   var au=t.closest("[data-auth]");if(au){if(au.dataset.auth==="open")openAuth();else{F.auth.ok=false;F.auth.sent=false;clearAuth();renderFlow()}return}
   var o=t.closest("[data-opt]");if(o){if(o.dataset.opt==="liga")F.liga=o.dataset.val;if(o.dataset.opt==="season")F.season=o.dataset.val;if(o.dataset.opt==="mode")F.mode=o.dataset.val;renderFlow();return}
   var m=t.closest("[data-max]");if(m){F.max=+m.dataset.max;renderTop();renderFlow();return}
+  var pc=t.closest("[data-pace]");if(pc){F.pace=pc.dataset.pace;renderFlow();return}
   var sr=t.closest("[data-showr]");if(sr){F.showR=sr.dataset.showr==="true";renderFlow();return}
   var tm=t.closest("[data-timer]");if(tm){F.timer=+tm.dataset.timer;renderFlow();return}
   var cb=t.closest("[data-crest]");if(cb){S.crest=+cb.dataset.crest;renderFlow();return}
@@ -1479,7 +1481,7 @@ function liveEnter(){
 async function liveCreate(){
   try{
     await NET.ready;
-    var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:F.max,p_timer:F.timer,p_show:F.showR});
+    var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:F.max,p_timer:F.timer,p_show:F.showR,p_pace:F.pace});
     if(r0.error)throw r0.error;
     NET.gid=r0.data.id;F.code=r0.data.code;role="admin";
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
@@ -1524,7 +1526,7 @@ function liveAct(a,b,st){
   }
   if(a==="lset"){
     var g2=NET.game,v=b.dataset.v;
-    liveCall("update_game_settings",{p_game:NET.gid,p_max:g2.max_players,p_timer:b.dataset.k==="timer"?+v:g2.timer_seconds,p_show:b.dataset.k==="show"?v==="true":g2.show_ratings});return true;
+    liveCall("update_game_settings",{p_game:NET.gid,p_max:g2.max_players,p_timer:b.dataset.k==="timer"?+v:g2.timer_seconds,p_show:b.dataset.k==="show"?v==="true":g2.show_ratings,p_pace:b.dataset.k==="pace"?v:g2.pace});return true;
   }
   return false;
 }
@@ -1536,9 +1538,10 @@ function lobbyLive(){
   h+='<div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div>';
   if(adm){
     h+='<div class="field"><span>Tidsgrænse pr. valg</span><div class="sws">'+[0,30,60,90].map(function(t){return '<button class="btn'+(g.timer_seconds===t?" sel":"")+'" data-act="lset" data-k="timer" data-v="'+t+'" style="padding:10px 16px">'+(t?t+" s":"Fra")+'</button>'}).join("")+'</div></div>';
+    h+='<div class="field"><span>Spiltempo</span><div class="sws">'+[["full","Hele sæsonen"],["quick","Hurtigt spil"]].map(function(o){return '<button class="btn'+(g.pace===o[0]?" sel":"")+'" data-act="lset" data-k="pace" data-v="'+o[0]+'" style="padding:10px 16px">'+o[1]+'</button>'}).join("")+'</div></div>';
     h+='<div class="field"><span>Ratings</span><div class="sws">'+[[false,"Skjulte"],[true,"Vis"]].map(function(o){return '<button class="btn'+(g.show_ratings===o[0]?" sel":"")+'" data-act="lset" data-k="show" data-v="'+o[0]+'" style="padding:10px 16px">'+o[1]+'</button>'}).join("")+'</div></div>';
   }else{
-    h+='<p class="note">Tidsgrænse pr. valg: '+(g.timer_seconds?g.timer_seconds+" s":"fra")+' · Ratings: '+(g.show_ratings?"vises":"skjulte")+'</p>';
+    h+='<p class="note">Tidsgrænse pr. valg: '+(g.timer_seconds?g.timer_seconds+" s":"fra")+' · Tempo: '+(g.pace==="quick"?"hurtigt spil":"hele sæsonen")+' · Ratings: '+(g.show_ratings?"vises":"skjulte")+'</p>';
   }
   h+='<h2 style="margin-top:22px">Deltagere</h2><div class="card"><div class="roster">';
   pl.forEach(function(p){
