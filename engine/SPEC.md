@@ -47,3 +47,5 @@ Leicester-agtige sæsoner (mesteren var plads 8 eller dårligere på papiret): 0
 
 ## Mørk hest (forslag, 2026-10-18)
 Ved hvert spil udpeger serveren hemmeligt ét AI-hold uden for top 10 (efter styrke) og giver det et ekstra sæsonheld oveni det almindelige. Spillerhold får aldrig bonussen (retfærdigt mellem vennerne). Aldrig afsløret. Resultater (`engine/reference/dark_sim.py`): bonus +10 giver 3 % titler og 26 % top 4; +12 giver 5 % og 37 %; +15 giver 9 % og 52 %.
+
+Beslutning (Rasmus, 2026-10-18): mørk hest-bonus er **+6**.
