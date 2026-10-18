@@ -17,6 +17,7 @@ export const FORMS = {
   "4-2-2-2": ["ST", "ST", "AM", "AM", "DM", "DM", "LB", "CB", "CB", "RB", "GK"],
   "3-4-2-1": ["ST", "AM", "AM", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
   "4-3-2-1": ["ST", "AM", "AM", "CM", "DM", "CM", "LB", "CB", "CB", "RB", "GK"],
+  "3-4-1-2": ["ST", "ST", "AM", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
 };
 const WOFF = { ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
 const WDEF = { GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
