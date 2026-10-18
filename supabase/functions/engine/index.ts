@@ -112,10 +112,78 @@ async function runTo(game, target) {
   // gør en evt. halvfærdig runde færdig (hvis en tidligere kørsel blev afbrudt)
   if (r >= 1) await playRound(game.id, ctx, r);
   while (r < target) {
-    if (!(await setRound(game.id, r, r + 1, r + 1 === 38))) break; // en anden har allerede flyttet runden
+    if (!(await setRound(game.id, r, r + 1, false))) break; // en anden har allerede flyttet runden
     r++;
     await playRound(game.id, ctx, r);
+    if (r === 38) { await finalizeSeason(game.id); chk(await admin.from("games").update({ status: "done" }).eq("id", game.id).select("id")); }
   }
+}
+
+
+// ---------- Highscore: gem rekorder, når sæsonen er slut ----------
+async function allRows(table, gameId) {
+  let rows = [];
+  for (let from = 0; ; from += 1000) {
+    const d = chk(await admin.from(table).select("*").eq("game_id", gameId).order("id").range(from, from + 999));
+    rows = rows.concat(d);
+    if (d.length < 1000) break;
+  }
+  return rows;
+}
+async function finalizeSeason(gameId) {
+  const game = await getGame(gameId);
+  const st = chk(await admin.from("season_teams").select("*").eq("game_id", gameId));
+  const gps = chk(await admin.from("game_players").select("user_id,display_name").eq("game_id", gameId));
+  const lu = chk(await admin.from("season_lineups").select("*").eq("game_id", gameId));
+  const matches = await allRows("matches", gameId), events = await allRows("match_events", gameId);
+  const nameOf = (k) => (st.find((x) => x.team_key === k) || {}).name || k;
+  const t = {};
+  st.forEach((x) => (t[x.team_key] = { w: 0, d: 0, l: 0, gf: 0, ga: 0 }));
+  for (const m of matches) {
+    if (!m.played) continue;
+    const h = t[m.home_key], a = t[m.away_key];
+    h.gf += m.home_goals; h.ga += m.away_goals; a.gf += m.away_goals; a.ga += m.home_goals;
+    if (m.home_goals > m.away_goals) { h.w++; a.l++; } else if (m.home_goals < m.away_goals) { a.w++; h.l++; } else { h.d++; a.d++; }
+  }
+  const order = Object.keys(t).map((k) => ({ k, p: t[k].w * 3 + t[k].d, gd: t[k].gf - t[k].ga, gf: t[k].gf })).sort((a, b) => b.p - a.p || b.gd - a.gd || b.gf - a.gf);
+  const pos = {};
+  order.forEach((x, i) => (pos[x.k] = i + 1));
+  const humans = st.filter((x) => x.kind === "human");
+  const owner = (uid) => (gps.find((g) => g.user_id === uid) || {}).display_name || null;
+  const season = String(game.season).replace(/^(\d{4})\/\d{2}(\d{2})$/, "$1/$2");
+  const teamRows = humans.map((h) => {
+    const mine = matches.filter((m) => m.played && (m.home_key === h.team_key || m.away_key === h.team_key)).sort((a, b) => a.round - b.round);
+    let streak = 0, best = 0, bigM = 0, bigScore = null, bigText = null;
+    for (const m of mine) {
+      const home = m.home_key === h.team_key, gf = home ? m.home_goals : m.away_goals, ga = home ? m.away_goals : m.home_goals;
+      if (gf > ga) { streak++; best = Math.max(best, streak); if (gf - ga > bigM) { bigM = gf - ga; bigScore = gf + "–" + ga; bigText = "mod " + nameOf(home ? m.away_key : m.home_key) + ", runde " + m.round; } }
+      else streak = 0;
+    }
+    const s = t[h.team_key];
+    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: humans.length, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1 };
+  });
+  const own = {};
+  lu.forEach((l) => { const tm = humans.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });
+  const stats = {}, pm = {}, mById = new Map(matches.map((m) => [m.id, m]));
+  const ens = (pid) => (stats[pid] = stats[pid] || { goals: 0, assists: 0, cs: 0, reds: 0 });
+  for (const e of events) {
+    if (e.type === "goal" && own[e.player_id]) { ens(e.player_id).goals++; const k = e.match_id + "|" + e.player_id; pm[k] = (pm[k] || 0) + 1; }
+    if (e.type === "goal" && e.assist_id && own[e.assist_id]) ens(e.assist_id).assists++;
+    if (e.type === "clean_sheet" && own[e.player_id]) ens(e.player_id).cs++;
+    if ((e.type === "red" || e.type === "second_yellow") && own[e.player_id]) ens(e.player_id).reds++;
+  }
+  const bm = {};
+  for (const k of Object.keys(pm)) {
+    const [mid, pid] = k.split("|"), m = mById.get(Number(mid)), tm = own[pid];
+    if (!m || !tm) continue;
+    if (!bm[pid] || pm[k] > bm[pid].n) bm[pid] = { n: pm[k], text: "mod " + nameOf(m.home_key === tm.team_key ? m.away_key : m.home_key) + ", runde " + m.round };
+  }
+  const playerRows = Object.keys(stats).map((pid) => {
+    const tm = own[pid], s = stats[pid];
+    return { game_id: gameId, player_id: Number(pid), league: "PL", season, season_no: game.season_no, user_id: tm.user_id, team_name: tm.name, owner: owner(tm.user_id), goals: s.goals, assists: s.assists, clean_sheets: s.cs, reds: s.reds, best_match_goals: bm[pid] ? bm[pid].n : 0, best_match_text: bm[pid] ? bm[pid].text : null };
+  });
+  chk(await admin.from("hof_teams").upsert(teamRows, { onConflict: "game_id,team_key" }));
+  if (playerRows.length) chk(await admin.from("hof_players").upsert(playerRows, { onConflict: "game_id,player_id" }));
 }
 
 async function getGame(id) {
