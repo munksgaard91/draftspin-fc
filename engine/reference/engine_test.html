@@ -1,0 +1,27 @@
+<!doctype html><meta charset=utf-8><body><pre id=o>kører</pre>
+<script type=module>
+import * as E from "./engine.js";
+const raw=await (await fetch("players.json")).json();
+const P=raw.map((r,i)=>({id:i+1,club:r.club,name:r.name,pos:r.position,rating:r.rating,alts:r.alts||{},consistency:r.consistency,pen_taking:r.pen_taking,yellow_w:r.yellow_w,red_w:r.red_w}));
+const clubs={};P.forEach(p=>(clubs[p.club]=clubs[p.club]||[]).push(p));
+const teams=Object.keys(clubs).sort().map(c=>{const b=E.bestClubXI(clubs[c]);return {key:c,kind:"ai",xi:b.xi,form:b.form,strength:b.strength}});
+const sched=E.schedule(20);
+const sy=teams.map(t=>t.xi.reduce((a,x)=>a+(x.p.yellow_w??0.9),0)),sr=teams.map(t=>t.xi.reduce((a,x)=>a+(x.pos==='GK'?0:(x.p.red_w??1)),0));
+window.REF={yw:sy.reduce((a,b)=>a+b)/sy.length,rw:sr.reduce((a,b)=>a+b)/sr.length};
+let matches=0,goals=0,H=0,D=0,A=0,y=0,r=0,pens=0,pg=0,cs=0,assists=0,second=0;const titles={};const t0=performance.now();
+const SEAS=150;
+for(let s=0;s<SEAS;s++){
+  const sec=E.setupSeason(teams,"seed"+s);
+  const pts={};teams.forEach(t=>pts[t.key]=0);const gd={};teams.forEach(t=>gd[t.key]=0);
+  sched.forEach((rd,ri)=>rd.forEach(([h,a],mi)=>{
+    const th=teams[h],ta=teams[a];
+    const res=E.simulateMatch({xi:th.xi,shift:sec.luck[th.key].season+sec.luck[th.key].form[ri]},{xi:ta.xi,shift:sec.luck[ta.key].season+sec.luck[ta.key].form[ri]},"seed"+s+"|"+ri+"|"+th.key);
+    matches++;goals+=res.hg+res.ag;if(res.hg>res.ag){H++;pts[th.key]+=3}else if(res.hg===res.ag){D++;pts[th.key]++;pts[ta.key]++}else{A++;pts[ta.key]+=3}
+    gd[th.key]+=res.hg-res.ag;gd[ta.key]+=res.ag-res.hg;
+    for(const e of res.events){if(e.type==="yellow")y++;if(e.type==="red")r++;if(e.type==="second_yellow"){second++;r++}if(e.type==="pen_miss")pens++;if(e.type==="goal"){if(e.pen){pens++;pg++}if(e.aid)assists++}if(e.type==="clean_sheet")cs++}
+  }));
+  const w=Object.keys(pts).sort((a,b)=>pts[b]-pts[a]||gd[b]-gd[a])[0];titles[w]=(titles[w]||0)+1;
+}
+const ms=performance.now()-t0;
+document.getElementById("o").textContent=JSON.stringify({ref:window.REF,seasons:SEAS,matches,ms_pr_kamp:(ms/matches).toFixed(3),maal_pr_kamp:(goals/matches).toFixed(2),H:(100*H/matches).toFixed(1),D:(100*D/matches).toFixed(1),U:(100*A/matches).toFixed(1),gule_pr_kamp:(y/matches).toFixed(2),roede_pr_kamp:(r/matches).toFixed(3),andet_gult_pr_kamp:(second/matches).toFixed(3),straffe_pr_kamp:(pens/matches).toFixed(3),straffemaal_pr_kamp:(pg/matches).toFixed(3),assist_andel:(assists/goals).toFixed(2),clean_sheets_pr_kamp:(cs/matches).toFixed(2),titler_pr_100:Object.fromEntries(Object.entries(titles).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k,(100*v/SEAS).toFixed(0)]))},null,1);
+</script>
