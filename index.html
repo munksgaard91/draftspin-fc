@@ -1,4 +1,5 @@
 <title>DraftSpin FC</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -179,6 +180,12 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .sb .tm{font-size:14px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
 .sb .tm span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb .sc{font:500 44px var(--mono)}
+.sc.pop{animation:gpop .8s ease-out}
+@keyframes gpop{0%{transform:scale(1)}25%{transform:scale(1.35)}100%{transform:scale(1)}}
+.sb.fl-me{animation:flme 1s ease-out}.sb.fl-opp{animation:flopp 1s ease-out}
+@keyframes flme{0%{box-shadow:0 0 0 3px var(--acc),0 0 40px var(--acc)}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes flopp{0%{box-shadow:0 0 0 3px var(--red),0 0 40px var(--red)}100%{box-shadow:0 0 0 0 transparent}}
+.ev .tg{color:var(--mut);font-size:12.5px}
 .clock{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);margin:16px 0 6px}
 .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--acc)}
@@ -195,8 +202,8 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .ic.x{border:3px dashed var(--mut)}
 .pk{display:inline-block;font:500 11px var(--mono);background:var(--surf2);border-radius:5px;padding:1px 7px;margin-left:6px;vertical-align:middle;color:var(--acc)}
 .ic.s{border:0;background:var(--line);width:6px;height:6px;margin:8px 4px}
-.ev.goal.me{box-shadow:inset 3px 0 0 var(--me);padding-left:10px;margin-left:-10px}
-.ev.goal.opp{box-shadow:inset 3px 0 0 var(--mut);padding-left:10px;margin-left:-10px}
+.ev.me{box-shadow:inset 3px 0 0 var(--me);padding-left:10px;margin-left:-10px}
+.ev.opp{box-shadow:inset 3px 0 0 var(--mut);padding-left:10px;margin-left:-10px}
 .res{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
 .res:last-child{border:0}
 .res .r{font:500 14px var(--mono);text-align:center;min-width:52px;align-self:center}
@@ -208,7 +215,9 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .ar{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent}
 .ar.up{border-bottom:6px solid #4fae6a}
 .ar.dn{border-top:6px solid var(--red)}
-.crests{display:flex;gap:10px;flex-wrap:wrap}
+#fprev{max-width:230px;margin:0 auto}
+.crests{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sw{border-color:#ffffff26}.sw.on{border-color:var(--text)}.sw:disabled{opacity:.25;cursor:not-allowed}
 .cbtn{appearance:none;background:var(--surf);border:1.5px solid transparent;border-radius:10px;padding:8px;cursor:pointer;line-height:0}
 .cbtn.on{border-color:var(--acc)}
 .cbtn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -217,7 +226,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .ready span.ok{color:var(--text)}
 
 /* tabel og stats */
-.tr{display:grid;grid-template-columns:40px 1fr 24px 24px 24px 36px 32px;gap:6px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.tr{display:grid;grid-template-columns:34px 1fr 22px 22px 22px 34px 30px;gap:4px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
 .tr.h{font-size:13px;color:var(--mut)}
 .tr .num{font-family:var(--mono);text-align:right;color:var(--mut)}
 .tr .pts{font-family:var(--mono);text-align:right;font-weight:500}
@@ -240,6 +249,9 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .lg{display:inline-grid;place-items:center;border-radius:9px;font-weight:600;flex:none;letter-spacing:.02em}
 .opt .l{display:flex;align-items:center;gap:14px}
 .slot.hl{cursor:pointer}
+.slot.hl.alt .dot{border-color:var(--yel);background:color-mix(in srgb,var(--yel) 30%,transparent);animation:none}
+.ptag{font-size:12px;color:var(--yel);border:1px solid color-mix(in srgb,var(--yel) 50%,transparent);border-radius:99px;padding:2px 8px;white-space:nowrap}
+.hint2{font-size:13px;color:var(--mut);margin:6px 0 0}
 .slot.hl .dot{border:2px solid var(--acc);background:color-mix(in srgb,var(--acc) 33%,transparent);color:#fff;animation:pl 1.3s ease-in-out infinite}
 .pitch.dim .slot:not(.hl){opacity:.3}
 .pitch.sm .slot{width:40px}
@@ -279,7 +291,8 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .hrow .hv{font:500 20px var(--mono)}
 .hrow.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
 .corner{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:12px;font-size:13.5px;min-height:28px}
-.corner button{appearance:none;background:none;border:0;color:var(--mut);font-size:13.5px;padding:6px 0;cursor:pointer}
+.corner{justify-content:center}
+.corner button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:99px;color:var(--mut);font-size:13.5px;padding:10px 16px;min-height:44px;cursor:pointer}
 .corner button b{color:var(--acc);font-weight:500}
 .corner button:hover{color:var(--text)}
 .corner button:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
@@ -395,26 +408,27 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
       <button class="btn" id="skipBtn">Spring til resultat</button>
     </div>
 
+    <h2>Næste kamp</h2>
+    <div class="card">
+      <div class="muted" id="nextOpp" style="margin-bottom:10px">Næste: runde 13 af 38 · Sara United (ude)</div>
+      <div class="ready" id="ready"></div>
+      <button class="btn p wide" id="readyBtn" style="margin-top:14px" disabled>Næste kamp</button>
+      <button class="btn wide" id="forceBtn" style="margin-top:8px" hidden>Tving næste runde (admin)</button>
+    </div>
+
     <h2>Kampen</h2>
     <div class="card"><div id="tl"></div></div>
 
     <h2>Resten af runden</h2>
     <div class="card"><div id="others"></div></div>
 
-    <h2>Næste kamp</h2>
-    <div class="card">
-      <div class="muted" id="nextOpp" style="margin-bottom:10px">Runde 2 af 38 · Næste modstander: Sara United (ude)</div>
-      <div class="ready" id="ready"></div>
-      <button class="btn p wide" id="readyBtn" style="margin-top:14px" disabled>Næste kamp</button>
-      <button class="btn wide" id="forceBtn" style="margin-top:8px" hidden>Tving næste runde (admin)</button>
-    </div>
   </section>
 
   <!-- TABEL -->
   <section id="s-table" class="screen">
     <h1>Tabel</h1>
-    <p class="sub">Efter 11 kampe.</p>
-    <div class="card" style="margin-top:22px"><div id="tbl"></div></div>
+    <p class="sub">Efter 11 af 38 runder.</p>
+    <div class="card" style="margin-top:22px;padding:12px 14px"><div id="tbl"></div></div>
     <div class="legend"><span><i class="dotc"></i>Dig</span><span><i class="dotc" style="background:var(--c-sara)"></i><i class="dotc" style="background:var(--c-jonas)"></i><i class="dotc" style="background:var(--c-marie)"></i>Venner</span><span><i class="dotc" style="background:var(--line)"></i>AI-klubber</span></div>
   </section>
 
@@ -424,17 +438,16 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
     <p class="sub">Kun spillere på jeres hold.</p>
     <div class="seg" id="seg"></div>
     <div class="card"><div id="slist"></div></div>
-    <div id="restartBox" style="margin-top:28px"></div>
   </section>
 
   <!-- HIGHSCORE -->
   <section id="s-hof" class="screen">
-    <h1>Hall of Fame</h1>
+    <h1>Highscore</h1>
     <p class="sub">De bedste resultater i alle spil, der nogensinde er spillet.</p>
     <div class="seg" id="hseg"></div>
     <div id="hbody"></div>
   </section>
-  <section id="s-end" class="screen"><div id="endbody"></div></section>
+  <section id="s-end" class="screen"><div id="endbody"></div><div id="restartBox" style="margin-top:20px"></div></section>
   <section id="s-icon" class="screen"><div id="iconbody"></div></section>
   <div class="protofoot"><span>Prototype:</span><button id="toStart">startskærm</button><button data-pv="end">sæsonslut</button><button data-pv="conn">forbindelse væk</button><button data-pv="away">admin ude</button><button data-pv="closed">lobby lukket</button><button data-pv="nopl">ingen spiller</button><button data-pv="icon">app-ikon</button></div>
 </div>
@@ -503,6 +516,7 @@ LEAGUE.forEach(function(c){
 var FRIENDS={Sara:"var(--c-sara)",Jonas:"var(--c-jonas)",Marie:"var(--c-marie)"};
 var FTEAM={Sara:"Sara United",Jonas:"Jonas Rovers",Marie:"Marie Athletic"};
 var FR_NAMES=["Sara United","Jonas Rovers","Marie Athletic"];
+var CNAME={"#6b8f6e":"Grøn","#3a6fd8":"Blå","#c29a3d":"Guld","#c4688b":"Rosa","#8c6bc4":"Lilla","#cf4a4a":"Rød","#e6ebf5":"Hvid","#1b2540":"Mørkeblå"};
 var SWATCH=["#6b8f6e","#3a6fd8","#c29a3d","#c4688b","#8c6bc4","#cf4a4a","#e6ebf5","#1b2540"];
 var DEFAULT_SQUAD=[["Alisson Becker","GK"],["Ben White","RB"],["William Saliba","CB"],["Virgil van Dijk","CB"],["Riccardo Calafiori","LB"],["Ryan Gravenberch","DM"],["Declan Rice","CM"],["Alexis Mac Allister","CM"],["Cody Gakpo","LW"],["Noni Madueke","RW"],["Alexander Isak","ST"]];
 var MAXP=6,NL=LEAGUE.length;
@@ -532,7 +546,7 @@ function fresh(){
      taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
      phase:"order",order:[],seq:[],pickIdx:0,matchSeen:false};
   P={me:{joined:true,ready:false},Sara:{joined:false,ready:false},Jonas:{joined:false,ready:false},Marie:{joined:false,ready:false}};
-  F={step:0,simStarted:false,liga:"",season:"",mode:"season",max:6,timer:role==="player"?60:0,auth:{email:"",sent:false,ok:false},code:"",joinInput:"",joinErr:false};
+  F={step:0,simStarted:false,liga:"pl",season:"2026/2027",showR:false,mode:"season",max:6,timer:role==="player"?60:0,auth:{email:"",sent:false,ok:false},code:"",joinInput:"",joinErr:false};
   var sa=loadAuth();if(sa&&sa.ok)F.auth={email:sa.email,sent:true,ok:true};
   G={started:false};
   readySt={me:false,Sara:false,Jonas:false,Marie:false};
@@ -572,12 +586,12 @@ function maybeAutoStart(){
 }
 function startGame(){
   G.started=true;simT.forEach(clearTimeout);simT=[];keepAwake();$("sbg").hidden=true;
-  $("app").classList.remove("pre");$("navwrap").hidden=false;
+  $("app").classList.remove("pre");$("navwrap").hidden=true;
   renderTop();showOrder();go("draft");
 }
 
 /* ---------- flow ---------- */
-function stepsFor(){return role==="admin"?["liga","saeson","spil","kode","hold","form","lobby"]:["join","hold","form","lobby"]}
+function stepsFor(){return role==="admin"?["spil","kode","hold","form","lobby"]:["join","hold","form","lobby"]}
 function progHtml(){
   var post=["hold","form","lobby"],i=post.indexOf(stepsFor()[F.step]);
   if(i<0||!F.code)return "";
@@ -611,16 +625,17 @@ function renderFlow(){
   }else if(st==="saeson"){
     h+='<h1>Vælg sæson</h1><div class="opts">'+opt("season","2026/2027",F.season==="2026/2027","2026/2027","Aktuelle trupper og klubber",false,lbadge(F.liga,40))+'</div>'+navBtns("Fortsæt til spiltype",!F.season);
   }else if(st==="spil"){
-    h+='<h1>Hvad skal I spille?</h1><div class="opts">'+
+    h+='<h1>Opret spil</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div><div class="opts" style="margin-top:18px">'+
       opt("mode","season",true,"Sæson","38 kampe mod hinanden og AI-klubber")+
       opt("mode","cup",false,"Sæson og cup","Kommer senere",true)+'</div>'+
       '<label class="field"><span>Antal spillere, højst</span><div class="sws" id="maxsel">'+[2,3,4,5,6].map(function(n){return '<button class="btn" data-max="'+n+'" style="padding:10px 16px;'+(F.max===n?'background:var(--acc);color:var(--acc-ink);font-weight:600':'')+'">'+n+'</button>'}).join("")+'</div></label>'+
+      '<div class="field"><span>Ratings</span><div class="sws">'+[[false,'Skjulte'],[true,'Vis']].map(function(o){return '<button class="btn" data-showr="'+o[0]+'" style="padding:10px 16px;'+(F.showR===o[0]?'background:var(--acc);color:var(--acc-ink);font-weight:600':'')+'">'+o[1]+'</button>'}).join("")+'</div><p class="note" style="margin:6px 0 0">Skjulte ratings gør draften mere spændende. Du kan ændre det, mens I er i lobbyen.</p></div>'+
       '<div class="field"><span>Tidsgrænse pr. valg</span><div class="sws">'+[0,30,60,90].map(function(n){return '<button class="btn" data-timer="'+n+'" style="padding:10px 16px;'+(F.timer===n?'background:var(--acc);color:var(--acc-ink);font-weight:600':'')+'">'+(n?n+' s':'Fra')+'</button>'}).join("")+'</div></div>'+
       navBtns("Opret spillet");
   }else if(st==="join"){
-    h='<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div></div><div class="joinbox"><label class="field" style="margin-top:0"><span>Spilkode</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="8" autocomplete="off" autocapitalize="characters" placeholder="ABC-1D" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
-      (F.joinErr?'<p class="err">Den kode findes ikke. Tjek den og prøv igen.</p>':'<p class="note">Prototype: skriv BRY-4K.</p>')+
-      navBtns("Deltag i spillet",String(F.joinInput).trim().length<4)+'</div>';
+    h='<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div></div><div class="joinbox"><label class="field" style="margin-top:0"><span>Spilkode</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
+      (F.joinErr?'<p class="err">Den kode findes ikke. Tjek den og prøv igen.</p>':'<p class="note">Prototype: skriv BRY4K2.</p>')+
+      navBtns("Deltag i spillet",String(F.joinInput).trim().length<6)+'</div>';
   }else if(st==="kode"){
     h+='<h1>Spillet er oprettet</h1>'+
       '<div class="card codecard"><div class="muted" style="font-size:14px">Spilkode</div><div class="bigcode">'+esc(F.code)+'</div><button class="btn" data-act="copycode">Kopiér kode</button></div>'+
@@ -628,8 +643,8 @@ function renderFlow(){
   }else if(st==="hold"){
     h+='<h1>Dit hold</h1>'+
       '<label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20"></label>'+
-      '<div class="field"><span>Primær farve</span><div class="sws">'+SWATCH.map(function(c){return '<button class="sw'+(c===S.color?" on":"")+'" style="background:'+c+'" data-c="'+c+'" aria-label="Primær farve"></button>'}).join("")+'</div></div>'+
-      '<div class="field"><span>Sekundær farve</span><div class="sws">'+SWATCH.map(function(c){return '<button class="sw'+(c===S.color2?" on":"")+'" style="background:'+c+'" data-c2="'+c+'" aria-label="Sekundær farve"></button>'}).join("")+'</div></div>'+
+      '<div class="field"><span>Primær farve</span><div class="sws">'+SWATCH.map(function(c){return '<button class="sw'+(c===S.color?" on":"")+'" style="background:'+c+'" data-c="'+c+'" aria-label="Primær farve: '+CNAME[c]+'" aria-pressed="'+(c===S.color)+'"'+(c===S.color2?' disabled':'')+'></button>'}).join("")+'</div></div>'+
+      '<div class="field"><span>Sekundær farve</span><div class="sws">'+SWATCH.map(function(c){return '<button class="sw'+(c===S.color2?" on":"")+'" style="background:'+c+'" data-c2="'+c+'" aria-label="Sekundær farve: '+CNAME[c]+'" aria-pressed="'+(c===S.color2)+'"'+(c===S.color?' disabled':'')+'></button>'}).join("")+'</div></div>'+
       '<div class="field"><span>Våbenskjold</span><div class="crests">'+crestBtns()+'</div></div>'+
       '<div class="kit"><span class="kitc">'+hcrest("me",40)+'</span><span class="kitname">'+esc(S.team.trim()||"Mit hold")+'</span></div>'+
       navBtns("Fortsæt til formation",!S.team.trim());
@@ -640,19 +655,19 @@ function renderFlow(){
   }else{
     var n=nJoined(),adm=role==="admin",rem=REMOVED.slice(0,Math.max(0,n));
     h+='<h1>'+(P.me.ready?"Du er klar":"Lobby")+'</h1>';
-    h+='<div class="codeline"><span class="muted">Spilkode</span><button data-act="copycode">'+esc(F.code)+'</button><span class="muted">'+nJoined()+' af '+F.max+' '+(nJoined()===1?"deltager":"deltagere")+'</span></div>';
-    h+='<div class="kit" style="margin-top:6px">'+lbadge(F.liga,34)+'<span>'+LNAME[F.liga]+' '+F.season+'</span></div><p class="note">Tidsgrænse pr. valg: '+(F.timer?F.timer+' s':'fra')+'</p>';
+    h+='<div class="codeline"><span class="muted">Spilkode</span><button data-act="copycode">'+esc(F.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Del invitation</button><span class="muted">'+nJoined()+' af '+F.max+' '+(nJoined()===1?"deltager":"deltagere")+'</span></div>';
+    h+='<div class="kit" style="margin-top:6px">'+lbadge(F.liga,34)+'<span>'+LNAME[F.liga]+' '+F.season+'</span></div><p class="note">Tidsgrænse pr. valg: '+(F.timer?F.timer+' s':'fra')+' · Ratings: '+(F.showR?'vises':'skjulte')+'</p>';
     h+='<h2 style="margin-top:28px">Deltagere</h2><div class="card"><div class="roster">';
     h+=rosterRow("me",S.team,"Dig"+(adm?", admin":""),P.me.ready,hcrest("me",30));
     Object.keys(FRIENDS).forEach(function(k){if(P[k].joined)h+=rosterRow(k,FTEAM[k],k+(role==="player"&&k==="Sara"?", admin":""),P[k].ready,hcrest(k,30),adm?'<button class="btn" data-act="kick" data-k="'+k+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Fjern</button>':"")});
     if(n<F.max)h+='<div class="wait">Venter på flere, op til '+F.max+'.</div>';
     h+='</div></div>';
     if(adm)h+='<div class="stepper"><span class="muted">Højst spillere</span><button class="btn" data-act="maxdec">−</button><b>'+F.max+'</b><button class="btn" data-act="maxinc">+</button></div>';
-    h+='<p class="removed">'+n+' spillere og '+(20-n)+' AI-klubber i ligaen.</p>';
+    h+='<p class="removed">'+n+' '+(n===1?'spiller':'spillere')+' og '+(20-n)+' AI-klubber i ligaen.'+(rem.length?' <span class="muted">Erstatter: '+rem.map(esc).join(', ')+'.</span>':'')+'</p>';
     var wait=ids().filter(function(k){return !P[k].ready}).map(function(k){return k==="me"?"dig":k});
     if(adm){
       h+='<button class="btn p wide go" data-act="start" style="margin-top:22px"'+(allReady()?"":" disabled")+'>Start spillet</button>';
-      h+='<p class="note">'+(allReady()?"Alle er klar.":(n<2?"Der skal mindst være to spillere.":"Venter på "+wait.join(", ")+"."))+'</p>';
+      h+='<p class="note">'+(allReady()?"Alle er klar.":"Venter på "+wait.join(", ")+".")+'</p>';
     }else{
       h+='<p class="note">'+(allReady()?"Alle er klar. Sara starter spillet.":"Venter på "+wait.join(", ")+".")+'</p>';
     }
@@ -670,6 +685,7 @@ $("flow").addEventListener("click",function(e){
   var au=t.closest("[data-auth]");if(au){if(au.dataset.auth==="open")openAuth();else{F.auth.ok=false;F.auth.sent=false;clearAuth();renderFlow()}return}
   var o=t.closest("[data-opt]");if(o){if(o.dataset.opt==="liga")F.liga=o.dataset.val;if(o.dataset.opt==="season")F.season=o.dataset.val;if(o.dataset.opt==="mode")F.mode=o.dataset.val;renderFlow();return}
   var m=t.closest("[data-max]");if(m){F.max=+m.dataset.max;renderTop();renderFlow();return}
+  var sr=t.closest("[data-showr]");if(sr){F.showR=sr.dataset.showr==="true";renderFlow();return}
   var tm=t.closest("[data-timer]");if(tm){F.timer=+tm.dataset.timer;renderFlow();return}
   var cb=t.closest("[data-crest]");if(cb){S.crest=+cb.dataset.crest;renderFlow();return}
   var c=t.closest(".sw");if(c){if(c.dataset.c2)S.color2=c.dataset.c2;else S.color=c.dataset.c;setMe();renderFlow();return}
@@ -678,13 +694,14 @@ $("flow").addEventListener("click",function(e){
   var a=b.dataset.act,st=stepsFor()[F.step];
   if(a==="create"){role="admin";F.timer=0;F.step=0;renderTop();renderFlow()}
   else if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderTop();renderFlow()}
+  else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Hop ind i mit DraftSpin-spil med koden "+F.code;try{if(navigator.share)navigator.share({title:"DraftSpin FC",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation kopieret")},function(){})}catch(x){}}
   else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
   else if(a==="back"){if(F.step>0)F.step--;else{role=null;F.liga="";F.joinInput="";F.joinErr=false}renderFlow()}
   else if(a==="next"){
-    if(st==="spil"){F.code="BRY-4K";startSim();renderTop()}
+    if(st==="spil"){F.code="BRY4K2";startSim();renderTop()}
     if(st==="join"){
-      if(String(F.joinInput).toUpperCase().trim()!=="BRY-4K"){F.joinErr=true;renderFlow();return}
-      F.joinErr=false;F.code="BRY-4K";F.liga="pl";F.season="2026/2027";startSim();renderTop();
+      if(String(F.joinInput).toUpperCase().trim()!=="BRY4K2"){F.joinErr=true;renderFlow();return}
+      F.joinErr=false;F.code="BRY4K2";F.liga="pl";F.season="2026/2027";startSim();renderTop();
     }
     if(st==="form"){P.me.ready=true;renderTop();F.step++;renderFlow();maybeAutoStart();return}
     F.step++;renderFlow();renderTop();
@@ -701,7 +718,7 @@ $("flow").addEventListener("click",function(e){
   else if(a==="discard"){try{localStorage.removeItem("dsfc")}catch(x){}SAVED=null;renderFlow()}
 });
 $("flow").addEventListener("input",function(e){
-  if(e.target.id==="joinCode"){e.target.value=e.target.value.toUpperCase();F.joinInput=e.target.value;F.joinErr=false;var nb=$("flow").querySelector("[data-act=next]");if(nb)nb.disabled=e.target.value.trim().length<4;var er=$("flow").querySelector(".err");if(er)er.remove()}
+  if(e.target.id==="joinCode"){e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);F.joinInput=e.target.value;F.joinErr=false;var nb=$("flow").querySelector("[data-act=next]");if(nb)nb.disabled=e.target.value.trim().length<6;var er=$("flow").querySelector(".err");if(er)er.remove()}
   if(e.target.id==="loginEmail"){F.auth.email=e.target.value.trim();var sb=$("flow").querySelector("[data-act=sendcode]");if(sb)sb.disabled=!/.+@.+\..+/.test(F.auth.email)}
   if(e.target.id==="loginCode"){var vb=$("flow").querySelector("[data-act=verify]");if(vb)vb.disabled=!/^\d{6}$/.test(e.target.value)}
   if(e.target.id==="tname"){
@@ -734,7 +751,7 @@ function go(s){
 $("nav").addEventListener("click",function(e){var b=e.target.closest("button");if(b)go(b.dataset.s)});
 
 /* ---------- pitch ---------- */
-function renderPitch(el,form,squad,mini,hl){
+function renderPitch(el,form,squad,mini,hl,alt){
   var rows=FORMS[form],n=rows.length,html=MARK,idx=0;
   el.className="pitch"+(mini?" mini":"")+(hl?" dim sm":"")+(el.dataset.wide?" wide":"");
   rows.forEach(function(r,i){
@@ -742,7 +759,7 @@ function renderPitch(el,form,squad,mini,hl){
     r.forEach(function(pos,j){
       var left=(j+1)/(r.length+1)*100,p=squad?squad[idx]:null;
       var top=base+(pos==="DM"?6:(pos==="AM"?-6:0));
-      html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl":"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":(p?p.num:POSC[pos]))+'</div>'+(p&&!mini?'<div class="nm">'+esc(lastName(p.name))+'</div>':'')+'</div>';
+      html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":(p?p.num:POSC[pos]))+'</div>'+(p&&!mini?'<div class="nm">'+esc(lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
   });
@@ -838,7 +855,7 @@ function renderClub(){
   var h='<h2>Vælg en spiller</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">Hele truppen, '+c.p.length+' spillere</span></div></div>';
   h+='<p class="miss">Mangler: <b>'+missingTxt()+'</b></p>';
   h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"Alle":t)+'</button>'}).join("")+'</div>';
-  h+='<div class="tools"><input class="inp" id="q" placeholder="Søg spiller" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">Skjul fyldte</button></div>';
+  h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Søg spiller" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">Skjul fyldte</button></div>';
   h+='<p class="note" style="margin:6px 0 0">Tryk på en spiller, og vælg derefter hans plads på banen.</p><div id="clist"></div></div>';
   el.innerHTML=h;renderList();
 }
@@ -849,7 +866,7 @@ function renderList(){
   list.forEach(function(p){
     var st=status(p);
     if(S.hideFilled&&!st.ok&&st.why==="Position fyldt")return;
-    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><span class="sn">'+p[2]+'</span><div>'+esc(p[0])+'<div class="why">'+posTxt(p[1])+'</div>'+(st.ok?'':'<div class="why">'+st.why+'</div>')+'</div><span></span></div>';
+    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><span class="sn">'+p[2]+'</span><div>'+esc(p[0])+'<div class="why">'+posTxt(p[1])+'</div>'+(st.ok?'':'<div class="why">'+st.why+'</div>')+'</div>'+(st.ok&&st.pen?'<span class="ptag">Naboplads</span>':'<span></span>')+'</div>';
   });
   $("clist").innerHTML=h||'<p class="note">Ingen spillere matcher.</p>';
 }
@@ -870,12 +887,13 @@ function renderDraft(){
   $("turnTxt").textContent=done?"Din trup er klar.":(myTurn()?(S.club?"Klubben er valgt. Vælg frit blandt spillerne.":"Din tur. Spin for at få en klub."):(cur?teamName(cur)+" er i gang.":""));
   $("doneBox").innerHTML=done?'<button class="btn p wide fade" id="toMatch" style="margin-top:16px">Til første kamp</button>':"";
   if($("toMatch"))$("toMatch").onclick=function(){go("match")};
+  if(G.started)$("navwrap").hidden=!done;
 }
 function advance(){
   renderDraft();saveGame();
   if(S.pickIdx>=S.seq.length)return;
   var who=S.seq[S.pickIdx];
-  if(who==="me"){startTurnTimer();return}
+  if(who==="me"){S.view="me";renderDraft();toast("Din tur. Spin for en klub.",2200);startTurnTimer();return}
   draftT.push(setTimeout(function(){friendPick(who);S.pickIdx++;advance()},1700));
 }
 function pickForm(){var k=Object.keys(FORMS);return k[Math.floor(Math.random()*k.length)]}
@@ -904,6 +922,7 @@ function spin(){
     S.spinning=false;S.club=code;S.filter="ALL";S.q="";S.sel=null;
     var any=CLUBS[code].p.some(function(p){return status(p).ok});
     renderDraft();
+    if(!fast){var cp=$("clubpanel");if(cp)setTimeout(function(){cp.scrollIntoView({behavior:"smooth",block:"start"})},200)}
     if(any&&S.auto){autoPick();return}
     
   },fast?50:3900));
@@ -920,8 +939,8 @@ function renderSheet(){
   if(!S.sel||!S.club){sh.hidden=true;app.classList.remove("sheeted");return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===S.sel})[0];
   sh.hidden=false;app.classList.add("sheeted");
-  sh.innerHTML='<div class="sheetin"><div class="pitch" id="spitch"></div><div class="t"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1])+', nr. '+p[2]+'</span><button class="btn" data-cancel="1" style="margin-top:10px">Vælg en anden</button></div></div>';
-  renderPitch($("spitch"),S.form,S.squad,false,eligible(p[1]));
+  sh.innerHTML='<div class="sheetin"><div class="pitch" id="spitch"></div><div class="t"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1])+', nr. '+p[2]+'</span><button class="btn" data-cancel="1" style="margin-top:10px">Vælg en anden</button>'+(slotsIn(S.form,S.squad,p[1]).alt.length?'<p class="hint2"><span style="color:var(--acc)">Grøn</span> = rigtig plads. <span style="color:var(--yel)">Gul</span> = naboplads med lille straf.</p>':'')+'</div></div>';
+  renderPitch($("spitch"),S.form,S.squad,false,eligible(p[1]),slotsIn(S.form,S.squad,p[1]).alt);
 }
 $("sheet").addEventListener("click",function(e){
   if(e.target.closest("[data-cancel]")){S.sel=null;renderList();renderSheet();return}
@@ -990,10 +1009,10 @@ function script(){
 }
 function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
 function evRow(e){
-  var cls="ev "+(e.t==="goal"?"goal "+e.s:(e.t==="sys"?"sys":""));
+  var cls="ev "+(e.t==="sys"?"sys":(e.t==="goal"?"goal ":"")+e.s);
   var ic=e.t==="goal"?'<i class="ic"></i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?'<i class="ic r"></i>':(e.t==="pm"?'<i class="ic x"></i>':'<i class="ic s"></i>')));
   var head=e.t==="goal"?"Mål, "+esc(e.x)+(e.pen?' <span class="pk">Straffe</span>':''):(e.t==="y"?"Gult kort, "+esc(e.x):(e.t==="r"?"Rødt kort, "+esc(e.x):(e.t==="pm"?"Straffe misset, "+esc(e.x):esc(e.x))));
-  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?"Slut":clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a?'<small>'+esc(e.a)+'</small>':'')+'</div></div>';
+  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?"Slut":clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a?'<small>'+esc(e.a)+'</small>':'')+(e.t!=="sys"?'<small class="tg">'+(e.s==="me"?esc(S.team.trim()||"Mit hold"):"Chelsea")+'</small>':'')+'</div></div>';
 }
 function hname(n,right){
   var k=n==="me"?"me":NAME_H[n],txt=n==="me"?(S.team.trim()||"Mit hold"):n;
@@ -1039,7 +1058,7 @@ function startMatch(){
     var el=skip?TOTAL:Date.now()-t0,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
-      if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}
+      if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop")}
       tl.unshift(evRow(e));$("tl").innerHTML=tl.join("");
     }
     $("clk").textContent=m<MIN?clockTxt(Math.max(m,1)):"Slut";
@@ -1152,7 +1171,7 @@ function hcrest(k,px){
   var h=HC[k];return ucrest(h[0],h[1],h[2],initials(FTEAM[k]),px);
 }
 function crestBtns(){
-  return [0,1,2,3,4].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Våbenskjold '+(i+1)+'">'+ucrest(i,S.color,S.color2,initials(S.team||"Mit hold"),54)+'</button>'}).join("");
+  return [0,1,2,3,4].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Våbenskjold '+(i+1)+'">'+ucrest(i,S.color,S.color2,initials(S.team||"Mit hold"),44)+'</button>'}).join("");
 }
 function nm(n){return NAMECODE[n]?crest(NAMECODE[n],16)+n:n}
 
@@ -1228,7 +1247,7 @@ function tcrest(n,px){
   if(n==="me")return hcrest("me",px);
   if(NAME_H[n])return hcrest(NAME_H[n],px);
   var h=hash(n),pal=[["#8c2f39","#f1e3c6"],["#1f5f8b","#f2f2f2"],["#2f7d4f","#f5d547"],["#5b3a8c","#eadfff"],["#c8651b","#1c1c1c"],["#1d6f6a","#f0f0f0"]];
-  var p=pal[(h>>3)%6];return ucrest(h%5,p[0],p[1],initials(n),px);
+  var p=pal[(h>>>3)%6];return ucrest(h%5,p[0],p[1],initials(n),px);
 }
 function renderHof(){
   var tabs=[["pl","Premier League",1],["cl","Champions League",1]];
@@ -1267,7 +1286,7 @@ function bgInner(){
 }
 function startHtml(){
   return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button></div></div>'+
-    (SAVED&&!G.started?'<div class="card" style="margin-top:34px"><b>Fortsæt dit spil</b><p class="note" style="margin-top:6px">Spilkode BRY-4K.<br>Dit spil er gemt, så du kan gå tilbage, hvor du slap.</p><div class="nav2"><button class="btn" data-act="discard">Slet og start forfra</button><button class="btn p go" data-act="resume">Fortsæt spillet</button></div></div>':"");
+    (SAVED&&!G.started?'<div class="card" style="margin-top:34px"><b>Fortsæt dit spil</b><p class="note" style="margin-top:6px">Spilkode BRY4K2.<br>Dit spil er gemt, så du kan gå tilbage, hvor du slap.</p><div class="nav2"><button class="btn" data-act="discard">Slet og start forfra</button><button class="btn p go" data-act="resume">Fortsæt spillet</button></div></div>':"");
 }
 
 /* valgfrit login: lille knap på forsiden */
@@ -1313,10 +1332,11 @@ function renderEnd(){
   var aw=[["Topscorer","Erling Haaland","Sara United","31 mål"],["Flest assists","Alexis Mac Allister","me","19 assists"],["Bedste målmand","Alisson Becker","me","21 clean sheets"]];
   var h='<h1>Sæsonen er slut</h1><div class="kit" style="margin-top:6px">'+lbadge(F.liga||"pl",34)+'<span>'+LNAME[F.liga||"pl"]+' '+(F.season||"2026/2027")+'</span></div>';
   h+='<div class="card champ" style="margin-top:22px">'+TROPHY+'<div class="lblm">Mester</div>'+tcrest("me",84)+'<b>'+esc(tn("me"))+'</b><p class="note" style="margin-top:6px">94 point, 29 sejre, 7 uafgjorte, 2 nederlag</p></div>';
-  h+='<h2>Slutstilling</h2><div class="card">'+fin.map(function(r,i){return '<div class="endrow'+(r[0]==="me"?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+'</div>';
+  var extra=[["Marie Athletic",58,9]];
+  h+='<h2>Slutstilling</h2><div class="card">'+fin.map(function(r,i){return '<div class="endrow'+(r[0]==="me"?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+extra.map(function(r){return '<div style="text-align:center;color:var(--mut);padding:2px 0">⋯</div><div class="endrow"><span class="hk">'+r[2]+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+'</div>';
   h+='<h2>Sæsonens priser</h2><div class="card">'+aw.map(function(a){return '<div class="endrow"><span></span><span class="en"><span>'+a[1]+'<small>'+a[0]+', '+esc(tn(a[2]))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[3]+'</span></div>'}).join("")+'</div>';
   h+='<h2>Nye rekorder</h2><div class="card"><div class="newrec"><span class="st">NY #1</span><div>Flest point i en sæson<br><span class="muted">94 point, '+esc(tn("me"))+'</span></div></div><div class="newrec"><span class="st">NY #2</span><div>Flest clean sheets i en sæson<br><span class="muted">21 af Alisson Becker</span></div></div></div>';
-  h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="hof">Se Hall of Fame</button><button class="btn wide" data-end="copy">Kopiér resultat</button>'+(role==="player"?'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>':'<button class="btn wide" data-end="again">Ny sæson med samme gruppe</button>')+'</div>';
+  h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="hof">Se Highscore</button><button class="btn wide" data-end="copy">Kopiér resultat</button>'+(role==="player"?'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>':'<button class="btn wide" data-end="again">Ny sæson med samme gruppe</button>')+'</div>';
   $("endbody").innerHTML=h;
 }
 $("endbody").addEventListener("click",function(e){
@@ -1337,7 +1357,7 @@ var awayT=null,awayLeft=600;
 function fmtT(n){var m=Math.floor(n/60),s2=n%60;return (m<10?"0":"")+m+":"+(s2<10?"0":"")+s2}
 function renderAway(){
   var closed=awayLeft<=0,h='<div class="card">';
-  if(!closed)h+='<h3>Admin er ude af lobbyen</h3><p class="note" style="margin:0">Vi venter på, at admin joiner igen med koden <b style="color:var(--text)">'+esc(F.code||"BRY-4K")+'</b>. Du kan blive i lobbyen.</p><div class="bigcode" style="text-align:center;margin:18px 0 4px">'+fmtT(awayLeft)+'</div><p class="note" style="text-align:center;margin:0">Lobbyen lukker, hvis alle har været ude i 10 minutter.</p><div class="row2"><button class="btn" data-away="leave">Forlad lobbyen</button><button class="btn p" data-away="stay">Bliv her</button></div>';
+  if(!closed)h+='<h3>Admin er ude af lobbyen</h3><p class="note" style="margin:0">Vi venter på, at admin joiner igen med koden <b style="color:var(--text)">'+esc(F.code||"BRY4K2")+'</b>. Du kan blive i lobbyen.</p><div class="bigcode" style="text-align:center;margin:18px 0 4px">'+fmtT(awayLeft)+'</div><p class="note" style="text-align:center;margin:0">Lobbyen lukker, hvis alle har været ude i 10 minutter.</p><div class="row2"><button class="btn" data-away="leave">Forlad lobbyen</button><button class="btn p" data-away="stay">Bliv her</button></div>';
   else h+='<h3>Lobbyen er lukket</h3><p class="note" style="margin:0">Alle var ude af lobbyen i 10 minutter, så den er lukket. Opret et nyt spil for at komme i gang igen.</p><div class="row2"><button class="btn p wide" data-away="start">Til startskærm</button></div>';
   $("away").innerHTML=h+'</div>';
 }
@@ -1367,6 +1387,8 @@ var toastT=null;
 function toast(t,ms){var e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){e.hidden=true},ms||3600)}
 
 /* start */
-SAVED=loadSaved();fresh();$("oppC").innerHTML=crest("CHE",34);$("myC").innerHTML=hcrest("me",34);buildReel();renderTop();renderFlow();renderDraft();renderTable();renderStats();showOthers(false);renderReady();
+SAVED=loadSaved();fresh();
+var __cp=(new URLSearchParams(location.search).get("code")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);if(__cp.length===6){role="player";fresh();F.joinInput=__cp;F.timer=60;F.step=0}
+$("oppC").innerHTML=crest("CHE",34);$("myC").innerHTML=hcrest("me",34);buildReel();renderTop();renderFlow();renderDraft();renderTable();renderStats();showOthers(false);renderReady();
 })();
 </script>
