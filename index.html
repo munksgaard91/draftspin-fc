@@ -1618,14 +1618,15 @@ async function liveSeasonApply(){
   if(NET.seasonBusy)return;NET.seasonBusy=true;
   try{
     await NET.pl;
-    var g=NET.game,key=g.status+"|"+g.current_round;
+    var g=NET.game,key=g.status+"|"+g.current_round,msg=function(t){var d=$("doneBox");if(d)d.innerHTML='<p class="note fade" style="margin-top:16px">'+t+'</p>'};
+    if(g.current_round<1){
+      if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/ikke|Draften/.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
+      msg(g.pace==="quick"?"Sæsonen simuleres. Det tager et øjeblik...":"Sæsonen startes...");return;
+    }
+    if(g.pace==="quick"&&g.status!=="done"){msg("Sæsonen simuleres. Det tager et øjeblik...");return}
     if(!NET.season||NET.seasonKey!==key){
       var ok=await liveSeasonLoad();
-      if(!ok||g.current_round<1){
-        if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/ikke|Draften/.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
-        var d=$("doneBox");if(d)d.innerHTML='<p class="note fade" style="margin-top:16px">'+(g.pace==="quick"?"Sæsonen simuleres. Det tager et øjeblik...":"Sæsonen startes...")+'</p>';
-        return;
-      }
+      if(!ok){msg("Sæsonen startes...");return}
       NET.seasonKey=key;
     }
     if(!NET.seasonOn){NET.seasonOn=true;liveSeasonStart();return}
