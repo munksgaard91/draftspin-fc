@@ -329,12 +329,18 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .pitch.sm .dot{width:26px;height:26px;font-size:8.5px}
 .pitch.sm .nm{display:none}
 @keyframes pl{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 45%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
-.sheet{position:fixed;left:0;right:0;bottom:calc(52px + env(safe-area-inset-bottom,0px));z-index:6;background:var(--bgb);border-top:1px solid var(--line);padding:14px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px))}
-.sheetin{max-width:440px;margin:0 auto;display:flex;gap:16px;align-items:center}
-.sheetin .pitch{width:150px;flex:none}
-.sheetin .t{flex:1;min-width:0}
-.sheetin .t b{display:block;font-size:17px;font-weight:600}
-.app.sheeted{padding-bottom:420px}
+.sheet{position:fixed;inset:0;z-index:6;background:#000000bf;display:grid;place-items:center;padding:14px}
+.sheetin{width:100%;max-width:440px;background:var(--bgb);border:1px solid var(--line);border-radius:16px;padding:12px 12px 14px;box-shadow:0 20px 60px -10px #000}
+.sheetin .hd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.sheetin .hd b{font-size:19px;font-weight:600}
+.sheetin .hd .muted{font-size:14px}
+.sheetin .hd .x{margin-left:auto;background:none;border:0;color:var(--mut);text-decoration:underline;text-underline-offset:3px;font-size:13.5px;padding:6px 2px;cursor:pointer}
+.sheetin .pitch{width:100%;max-width:100%;aspect-ratio:7/6;margin:8px auto 0}
+.sheetin .pitch.sm .slot{width:56px}
+.sheetin .pitch.sm .dot{width:40px;height:40px;font-size:11px}
+.sheetin .pitch.sm .nm{display:none}
+.sheetin .hint{font-size:13px;color:var(--mut);margin:8px 0 0;text-align:center}
+.app.sheeted{padding-bottom:24px}
 .row{cursor:pointer}
 .row.dis{cursor:default}
 .row.sel{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}
@@ -1059,11 +1065,11 @@ function renderSheet(){
   if(!S.sel||!S.club){sh.hidden=true;app.classList.remove("sheeted");return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===S.sel})[0];
   sh.hidden=false;app.classList.add("sheeted");
-  sh.innerHTML='<div class="sheetin"><div class="pitch" id="spitch"></div><div class="t"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1],p)+'</span><button class="btn" data-cancel="1" style="margin-top:10px">Vælg en anden</button>'+'</div></div>';
+  sh.innerHTML='<div class="sheetin"><div class="hd"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1],p)+'</span><button class="x" data-cancel="1">Vælg en anden</button></div><div class="pitch" id="spitch"></div><p class="hint">Tryk på en plads på banen</p></div>';
   renderPitch($("spitch"),S.form,S.squad,false,eligible(p[1],p),slotsIn(S.form,S.squad,p[1],p).alt);
 }
 $("sheet").addEventListener("click",function(e){
-  if(e.target.closest("[data-cancel]")){S.sel=null;renderList();renderSheet();return}
+  if(e.target.closest("[data-cancel]")||e.target===$("sheet")){S.sel=null;renderList();renderSheet();return}
   var sl=e.target.closest(".slot.hl");if(!sl||!S.sel)return;
   lockPick(S.sel,+sl.dataset.i);
 });
