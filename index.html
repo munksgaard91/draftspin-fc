@@ -224,6 +224,14 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .row .why{font-size:13px;color:var(--mut)}
 .status{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}
 .status b{font:500 22px var(--mono)}
+.badges{display:flex;justify-content:center;gap:6px;margin-top:10px}
+.bdg{position:relative;width:52px;text-align:center;font-size:11px;color:var(--mut);display:flex;flex-direction:column;align-items:center;min-width:0}
+.bdg .bn{position:absolute;top:-5px;left:-1px;font:600 10px var(--mono)}
+.bdgc{display:inline-flex;padding:4px;border-radius:12px;border:2px solid transparent;line-height:0}
+.bdg.now .bdgc{border-color:var(--acc);box-shadow:0 0 14px -2px var(--acc)}
+.bdg.now{color:var(--text)}
+.bdg .bnm{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.bdg .bct{font:500 10.5px var(--mono)}
 .counts{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:14px}
 .counts span{display:flex;align-items:center;gap:7px;color:var(--mut)}
 .counts span.now{color:var(--text);font-weight:600}
@@ -934,8 +942,18 @@ function status(p){
   return {ok:true,pen:sl.pen};
 }
 function myTurn(){return S.phase==="draft"&&S.pickIdx<S.seq.length&&S.seq[S.pickIdx]==="me"}
+var FCR={};
 function renderCounts(){
   var cur=S.phase==="draft"&&S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null,h="";
+  if(LIVE&&S.order&&S.order.length>1){
+    S.order.forEach(function(k,i){
+      var me=k==="me",c=me?filled():(S.counts[k]||0),nm=me?"Dig":(teamName(k)||"");
+      var cr=me?ucrest(S.crest||0,S.color,S.color2,initials(S.team||"Mit hold"),32):(FCR[k]?ucrest(FCR[k][0],FCR[k][1],FCR[k][2],initials(nm),32):"");
+      h+='<div class="bdg'+(k===cur?" now":"")+'" title="'+esc(nm)+'"><span class="bn">'+(i+1)+'</span><span class="bdgc">'+cr+'</span><span class="bnm">'+esc(nm)+'</span><span class="bct">'+c+'/11</span></div>';
+    });
+    $("counts").className="badges";$("counts").innerHTML=h;return;
+  }
+  $("counts").className="counts";
   ids().forEach(function(k){
     var c=k==="me"?filled():S.counts[k];
     h+='<span class="'+(k===cur?"now":"")+'"><i class="dotc" style="background:'+(k==="me"?"var(--me-dot)":FRIENDS[k])+'"></i>'+(k==="me"?"Dig":(LIVE?esc(teamName(k)):k))+' <span class="mono">'+c+'/11</span></span>';
@@ -980,7 +998,7 @@ function renderDraft(){
   $("missing").textContent=(S.view==="me"||!S.fsq[S.view])?"":"Formation "+S.fsq[S.view].form;
   $("penNote").innerHTML="";
   renderCounts();renderFeed();renderClub();
-  $("ordLine").textContent=S.order.length?"Rækkefølge: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
+  $("ordLine").textContent=(LIVE&&S.order.length>1)?"":S.order.length?"Rækkefølge: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
   var cur=S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null;
   $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club);
   $("spinBtn").textContent=done?"Draften er færdig":(!myTurn()?"Venter på "+(cur?teamName(cur):""):(S.club?"Vælg en spiller herunder":"Spin for en klub"));
@@ -2084,8 +2102,8 @@ function liveDraftApply(){
 function liveDraftSync(){
   var g=NET.game,pl=NET.players;
   var me=pl.filter(function(p){return p.user_id===NET.uid})[0];
-  P={me:{joined:true,ready:true}};FRIENDS={};FTEAM={};
-  pl.forEach(function(p){var k=keyOf(p.user_id);if(k==="me")return;P[k]={joined:true,ready:true};FRIENDS[k]=p.color1||"#8c97b5";FTEAM[k]=p.team_name||"Spiller"});
+  P={me:{joined:true,ready:true}};FRIENDS={};FTEAM={};FCR={};
+  pl.forEach(function(p){var k=keyOf(p.user_id);if(k==="me")return;P[k]={joined:true,ready:true};FRIENDS[k]=p.color1||"#8c97b5";FTEAM[k]=p.team_name||"Spiller";FCR[k]=[(p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5"]});
   S.team=me.team_name||S.team;S.color=me.color1||S.color;S.color2=me.color2||S.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe();
   S.order=(g.draft_order||[]).map(keyOf);
   var n=S.order.length;S.seq=[];
