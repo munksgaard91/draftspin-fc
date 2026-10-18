@@ -18,6 +18,10 @@ async function loadPlayers() {
 async function chunked(table, rows, size = 400) {
   for (let i = 0; i < rows.length; i += size) chk(await admin.from(table).insert(rows.slice(i, i + size)));
 }
+// hændelser: dubletter ignoreres (unik nøgle), så samtidige kørsler ikke kan skabe dobbelte hændelser
+async function chunkedEvents(rows, size = 400) {
+  for (let i = 0; i < rows.length; i += size) chk(await admin.from("match_events").upsert(rows.slice(i, i + size), { onConflict: "match_id,minute,type,team,player_id,pen", ignoreDuplicates: true }));
+}
 
 // ---------- start sæsonen ----------
 async function initSeason(game) {
@@ -51,7 +55,7 @@ async function initSeason(game) {
   const { luck, dark, unlucky } = E.setupSeason(field.map((t) => ({ key: t.key, kind: t.kind, strength: t.strength })), seed);
 
   // først den hemmelige række: den der lykkes, vinder racet
-  const ins = await admin.from("season_secret").insert({ game_id: game.id, seed, luck, dark, unlucky });
+  const ins = await admin.from("season_secret").insert({ game_id: game.id, seed, luck, dark, unlucky, engine_version: E.ENGINE_VERSION });
   if (ins.error) { if (ins.error.code === "23505") return { already: true }; throw new Error(ins.error.message); }
 
   const rng = E.makeRng(seed + "|order");
@@ -95,7 +99,7 @@ async function playRound(gameId, ctx, round) {
     }
   }
   for (let i = 0; i < upd.length; i += 200) chk(await admin.from("matches").upsert(upd.slice(i, i + 200), { onConflict: "id" }));
-  await chunked("match_events", evs);
+  await chunkedEvents(evs);
 }
 
 async function setRound(gameId, from, to, done) {
@@ -107,6 +111,7 @@ async function setRound(gameId, from, to, done) {
 }
 
 async function runTo(game, target) {
+  target = Math.min(target, 38);
   const ctx = await loadCtx(game.id);
   let r = game.current_round;
   // gør en evt. halvfærdig runde færdig (hvis en tidligere kørsel blev afbrudt)
@@ -116,6 +121,11 @@ async function runTo(game, target) {
     r++;
     await playRound(game.id, ctx, r);
     if (r === 38) { await finalizeSeason(game.id); chk(await admin.from("games").update({ status: "done" }).eq("id", game.id).select("id")); }
+  }
+  // selvhelende afslutning: runde 38 er spillet, men en tidligere kørsel nåede ikke at gemme rekorder og sætte status
+  if (r >= 38) {
+    const g2 = await getGame(game.id);
+    if (g2.status !== "done") { await finalizeSeason(game.id); chk(await admin.from("games").update({ status: "done" }).eq("id", game.id).select("id")); }
   }
 }
 
@@ -212,16 +222,18 @@ Deno.serve(async (req) => {
       }
     } else if (action === "advance") {
       if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");
-      const gps = chk(await admin.from("game_players").select("user_id,ready_round").eq("game_id", game_id));
-      const allReady = gps.every((g) => g.ready_round >= game.current_round);
+      const gps = chk(await admin.from("game_players").select("user_id,ready_round,last_seen_at").eq("game_id", game_id));
+      // en spiller, der ikke er set i 90 sekunder, regnes som klar (reglen om fraværende spillere)
+      const allReady = gps.every((g) => g.ready_round >= game.current_round || Date.now() - Date.parse(g.last_seen_at) > 90000);
       if (!allReady && !(force && isAdmin)) throw new Fejl("Ikke alle er klar");
       await runTo(game, game.current_round + 1);
     } else if (action === "quick") {
       if (!isAdmin) throw new Fejl("Kun admin kan køre hurtigt spil");
+      if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");
       await runTo(game, 38);
     } else throw new Fejl("Ukendt handling");
     game = await getGame(game_id);
-    return json({ ok: true, current_round: game.current_round, status: game.status });
+    return json({ ok: true, current_round: game.current_round, status: game.status, engine_version: E.ENGINE_VERSION });
   } catch (e) {
     return json({ error: e.message }, e instanceof Fejl ? 400 : 500);
   }

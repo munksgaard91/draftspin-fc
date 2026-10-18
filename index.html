@@ -710,6 +710,7 @@ $("flow").addEventListener("click",function(e){
   var f=t.closest(".fcard");if(f){S.form=f.dataset.f;S.squad=new Array(11).fill(null);renderFlow();return}
   var b=t.closest("[data-act]");if(!b)return;
   var a=b.dataset.act,st=stepsFor()[F.step];
+  if(a==="hofopen"){$("navwrap").hidden=true;go("hof");return}
   if(LIVE&&liveAct(a,b,st))return;
   if(a==="create"){role="admin";F.timer=0;F.step=0;renderTop();renderFlow()}
   else if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderTop();renderFlow()}
@@ -1320,7 +1321,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button></div></div>'+
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?'<button class="btn" data-act="hofopen" style="background:none;border:0;color:var(--mut);min-height:40px">Highscore</button>':'')+'</div></div>'+
     (SAVED&&!G.started?'<div class="card" style="margin-top:34px"><b>Fortsæt dit spil</b><p class="note" style="margin-top:6px">Spilkode BRY4K2.<br>Dit spil er gemt, så du kan gå tilbage, hvor du slap.</p><div class="nav2"><button class="btn" data-act="discard">Slet og start forfra</button><button class="btn p go" data-act="resume">Fortsæt spillet</button></div></div>':"");
 }
 
@@ -1461,9 +1462,15 @@ function liveSub(){
   NET.sb.rpc("touch_game",{p_game:gid});
 }
 var liveBusy=false;
+var connFail=0;
+function liveConn(ok){
+  var c=$("conn");if(!c)return;
+  if(ok){if(connFail>=2){c.className="conn ok";c.textContent="Forbindelsen er tilbage";setTimeout(function(){if(connFail===0)c.hidden=true},2000)}connFail=0}
+  else{connFail++;if(connFail>=2){c.className="conn";c.hidden=false;c.innerHTML='Forbindelsen er væk. Dine valg er gemt, og vi prøver igen<i></i><i></i><i></i>'}}
+}
 async function liveChanged(){
   if(liveBusy||!NET.gid)return;liveBusy=true;
-  try{await liveLoad();liveApply()}catch(e){}finally{liveBusy=false}
+  try{await liveLoad();liveConn(true);liveApply()}catch(e){liveConn(false)}finally{liveBusy=false}
 }
 function liveLeave(msg){
   liveUnsub();clearInterval(NET.tt);NET.gid=null;NET.game=null;NET.players=[];NET.picks=[];NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;G.started=false;
@@ -1647,10 +1654,11 @@ function liveSeasonRender(){
     if(document.getElementById("s-match").classList.contains("on")){S.matchSeen=true;startMatch()}}
   else{liveReady();var on=function(id){return document.getElementById(id).classList.contains("on")};if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive()}
   // alle er klar: den der ser det først, beder serveren spille næste runde
-  if(g.status==="season"&&g.current_round>=1&&NET.players.every(function(p){return p.ready_round>=g.current_round})&&Date.now()-NET.advAt>3000){
+  if(g.status==="season"&&g.current_round>=1&&NET.players.every(function(p){return p.ready_round>=g.current_round||lAway(p)})&&Date.now()-NET.advAt>3000){
     NET.advAt=Date.now();callEngine("advance").then(function(){liveChanged()}).catch(function(){});
   }
 }
+function lAway(p){return p.user_id!==NET.uid&&(Date.now()-Date.parse(p.last_seen_at))>90000}
 function liveMyMatch(round){return NET.season.matches.filter(function(m){return m.round===round&&(m.home_key===NET.uid||m.away_key===NET.uid)})[0]}
 function liveScript(){
   var m=liveMyMatch(NET.round);NET.myMatch=m;if(!m)return [];
@@ -1697,8 +1705,8 @@ function liveOthers(done){
 function liveReady(){
   var g=NET.game;if(!g)return;
   $("ready").innerHTML=NET.players.map(function(p){
-    var me=p.user_id===NET.uid,ok=p.ready_round>=g.current_round,nm=me?"Dig":(p.team_name||"Spiller");
-    return '<span class="'+(ok?"ok":"")+'"><i class="dotc" style="background:'+(me?"var(--me-dot)":(p.color1||"#8c97b5"))+'"></i>'+esc(nm)+(ok?", klar":"")+'</span>';
+    var me=p.user_id===NET.uid,ok=p.ready_round>=g.current_round,away=!ok&&lAway(p),nm=me?"Dig":(p.team_name||"Spiller");
+    return '<span class="'+(ok?"ok":"")+'"><i class="dotc" style="background:'+(me?"var(--me-dot)":(p.color1||"#8c97b5"))+'"></i>'+esc(nm)+(ok?", klar":(away?", væk (springes over)":""))+'</span>';
   }).join("");
 }
 function liveFinishMatch(){
@@ -1796,6 +1804,9 @@ function renderEndLive(){
   var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
   var T34=TROPHY.replace('width="54" height="54"','width="34" height="34"');
   var h='<h1>Sæsonen er slut</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div>';
+  var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
+  if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
+    h+='<div class="card" style="margin-top:22px;display:flex;align-items:center;gap:14px">'+lcrest(bt.r.k,44)+'<div><div class="muted" style="font-size:14px">Bedst blandt jer</div><b style="font-size:19px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (dig)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b><div class="muted" style="font-size:14px">Nr. '+(bt.i+1)+' i ligaen med '+bt.r.p+' point</div></div></div>'}
   h+='<div class="card champ" style="margin-top:22px"><div class="lblm">'+T34+'<span>Mester</span>'+T34+'</div>'+lcrest(champ.k,84)+'<b>'+esc(lname(champ.k))+'</b><p class="note" style="margin-top:6px">'+champ.p+' point, '+champ.w+' sejre, '+champ.d+' uafgjorte, '+champ.l+' nederlag</p></div>';
   var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
   var rest=rows.map(function(r1,i){return {r:r1,i:i}}).slice(5).filter(function(x){return lhuman(x.r.k)});
@@ -1835,15 +1846,15 @@ async function renderHofLive(){
   var tabs=[["pl","Premier League",1],["cl","Champions League",1]];
   $("hseg").innerHTML=tabs.map(function(t){return '<button data-h="'+t[0]+'" class="'+(HOFTAB===t[0]?"on":"")+'">'+t[1]+'</button>'}).join("");
   if(HOFTAB==="cl"){$("hbody").innerHTML='<div class="card" style="margin-top:22px"><b>Cuppen er ikke med endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når cuppen er bygget.</p></div>';return}
-  $("hbody").innerHTML='<p class="note" style="margin-top:22px">Henter rekorder...</p>';
+  $("hbody").innerHTML=(G.started?'':'<button class="btn" data-hofback="1" style="margin-top:14px">Tilbage</button>')+'<p class="note" style="margin-top:22px">Henter rekorder...</p>';
   var pr=await NET.sb.from("hof_players").select("*").eq("league","PL"),tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Kunne ikke hente rekorderne.</p>';return}
   var P=pr.data||[],T=tr.data||[];
   if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:22px"><b>Ingen færdige sæsoner endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når en sæson er slut.</p></div>';return}
-  var se=function(x){return x.season+(x.season_no>1?", sæson "+x.season_no:"")};
+  var se=function(x){return esc(x.season)+(x.season_no>1?", sæson "+x.season_no:"")+", "+x.players+(x.players===1?" spiller":" spillere")};
   var who=function(x){return esc(x.team_name)+(x.owner?" ("+esc(x.owner)+")":"")};
-  var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+(x.user_id===NET.uid?" mine":"")+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+', '+(note||se(x))+'</small></div><span class="hv">'+val+'</span></div>'};
-  var tRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+(x.user_id===NET.uid?" mine":"")+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(x.owner?esc(x.owner)+", ":"")+(note||se(x))+'</small></div><span class="hv">'+val+'</span></div>'};
+  var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+(x.user_id===NET.uid?" mine":"")+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+', '+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
+  var tRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+(x.user_id===NET.uid?" mine":"")+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(x.owner?esc(x.owner)+", ":"")+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
   var cat=function(title,rows){return '<div class="card hcat"><h3>'+title+'</h3>'+(rows||'<p class="note">Ingen endnu.</p>')+'</div>'};
   var h='<h2>Sæsonrekorder</h2>';
@@ -1862,8 +1873,9 @@ async function renderHofLive(){
   var by={};T.filter(function(x){return x.champion}).forEach(function(x){var k=x.user_id||x.team_name;by[k]=by[k]||Object.assign({},x,{n:0});by[k].n++;by[k].team_name=x.team_name});
   var champs=Object.keys(by).map(function(k){return by[k]});
   h+=cat("Flest mesterskaber",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" sæson":" sæsoner"))}).join(""));
-  $("hbody").innerHTML=h;
+  $("hbody").innerHTML=(G.started?'':'<button class="btn" data-hofback="1" style="margin-top:14px">Tilbage</button>')+h;
 }
+$("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))$("toStart").click()});
 
 /* ---------- live: draft ---------- */
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
@@ -1989,6 +2001,7 @@ async function livePick(name,i){
 }
 async function liveBoot(){
   SAVED=null;
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   var pre=(new URLSearchParams(location.search).get("code")||"").length===6;
   if(!pre)$("toStart").click();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
   document.querySelector(".protofoot").hidden=true;

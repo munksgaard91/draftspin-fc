@@ -14,8 +14,9 @@ export const FORMS = {
 };
 const WOFF = { ST: 0.24, LW: 0.16, RW: 0.16, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
 const WDEF = { GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
-const WGOAL = { ST: 1, LW: 0.65, RW: 0.65, AM: 0.55, CM: 0.25, DM: 0.12, LB: 0.10, RB: 0.10, CB: 0.08, GK: 0.002 };
+const WGOAL = { ST: 1, LW: 0.65, RW: 0.65, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
 const WASSIST = { AM: 1, LW: 1, RW: 1, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
+export const ENGINE_VERSION = "1.1";
 export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.4, RW_REF = 10.75; // referencesummer for et gennemsnitshold
@@ -130,7 +131,11 @@ export function simulateMatch(H, A, seed) {
     for (let k = 0; k < nR; k++) {
       const i = rng.weighted(rw), m = 1 + rng.int(90);
       if (i < 0) continue;
-      if (m > 1 && rng.next() < 0.5) { cards.push({ m: 1 + rng.int(m - 1), i, k: "y" }); cards.push({ m, i, k: "r2" }); }
+      if (m > 1 && rng.next() < 0.5) {
+        const ex = cards.find((c) => c.i === i && c.k === "y"); // genbrug et allerede trukket gult, så man ikke får tre kort
+        if (ex) { if (ex.m >= m) ex.m = 1 + rng.int(m - 1); } else cards.push({ m: 1 + rng.int(m - 1), i, k: "y" });
+        cards.push({ m, i, k: "r2" });
+      }
       else cards.push({ m, i, k: "r" });
     }
     cards.sort((x, y) => x.m - y.m || (x.k === "y" ? -1 : 1));
