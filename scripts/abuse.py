@@ -31,8 +31,13 @@ first = g["draft_order"][0]; users = {adm.id: adm, mem.id: mem}
 on, off = users[first], users[[k for k in users if k != first][0]]
 s, _ = off.rpc("spin", p_game=gid); check("spin uden for tur afvist", s >= 400)
 s, _ = out.rpc("spin", p_game=gid); check("udenforstående kan ikke spinne", s >= 400)
+s, _ = on.rpc("respin", p_game=gid); check("respin før spin afvist", s >= 400)
 club = on.rpc_ok("spin", p_game=gid); log("klub", club)
 s, c2 = on.rpc("spin", p_game=gid); check("dobbelt spin giver samme klub (ingen ny trækning)", s >= 400 or c2 == club, f"{s} {c2} {club}")
+s, _ = off.rpc("respin", p_game=gid); check("respin uden for tur afvist", s >= 400)
+s, _ = out.rpc("respin", p_game=gid); check("udenforstående kan ikke respinne", s >= 400)
+c3 = on.rpc_ok("respin", p_game=gid); check("respin giver en anden klub", c3 != club, f"{club} {c3}")
+s, _ = on.rpc("respin", p_game=gid); check("andet respin afvist", s >= 400)
 P = players(adm)
 other = next(p for p in P.values() if p["club"] != club)
 s, _ = on.rpc("pick_player", p_game=gid, p_player=other["id"], p_slot=1); check("spiller fra forkert klub afvist", s >= 400)

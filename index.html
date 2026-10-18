@@ -413,6 +413,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .lgrow{display:flex;gap:14px;justify-content:center;margin-top:34px}
 .lgrow .lg{opacity:.5}
 .lgrow .lg:first-child{opacity:1}
+.linkbtn.rsp{margin:0 0 0 auto;padding:6px 2px;font-size:13px;text-align:right;max-width:120px;line-height:1.25}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -1002,7 +1003,9 @@ function renderClub(){
   if(!S.club){el.innerHTML="";return}
   var c=CLUBS[S.club],tabs=["ALL","GK","DEF","MID","ATT"];
   if(LIVE&&!myTurn()){var cu=S.seq[S.pickIdx];el.innerHTML='<div class="card fade" style="margin-top:22px"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">'+esc(cu?teamName(cu):"")+' vælger en spiller</span></div></div></div>';return}
-  var h='<h2>Vælg en spiller</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">Hele truppen, '+c.p.length+' spillere</span></div></div>';
+  var me0=LIVE&&NET.players.filter(function(p){return p.user_id===NET.uid})[0],rsp="";
+  if(me0&&!me0.respin_used&&!S.spinning)rsp='<button class="linkbtn rsp" data-respin="1">'+(Date.now()-respinArm<3500?"Bekræft respin":"Respin (1)")+'</button>';
+  var h='<h2>Vælg en spiller</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">Hele truppen, '+c.p.length+' spillere</span></div>'+rsp+'</div>';
   h+='<p class="miss">Mangler: <b>'+missingTxt()+'</b></p>';
   h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"Alle":t)+'</button>'}).join("")+'</div>';
   h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Søg spiller" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">Skjul fyldte</button></div>';
@@ -1081,6 +1084,9 @@ function spin(){
 $("spinBtn").addEventListener("click",spin);
 $("clubpanel").addEventListener("click",function(e){
   var ft=e.target.closest("[data-flt]");if(ft){S.filter=ft.dataset.flt;renderClub();return}
+  if(e.target.closest("[data-respin]")){
+    if(Date.now()-respinArm>3500){respinArm=Date.now();renderClub();setTimeout(function(){if(S.club)renderClub()},3600);return}
+    respinArm=0;liveRespin();return}
   if(e.target.closest("[data-hide]")){S.hideFilled=!S.hideFilled;renderClub();return}
   var r=e.target.closest("[data-sel]");if(r&&myTurn()){S.sel=r.dataset.sel;renderList();renderSheet()}
 });
@@ -2193,7 +2199,7 @@ function liveDraftStart(){
 }
 function liveDraftRender(){
   var g=NET.game,cur=S.seq[S.pickIdx];
-  var dsig=JSON.stringify([S.pickIdx,S.club,S.view,S.sel,S.form,S.phase,S.spinning,S.counts,Object.keys(S.taken).length,S.feed.length,S.squad.map(function(x){return x?x.name:0}),S.filter,S.q,S.hideFilled,g.status,(S.seq||[]).length,S.order.length]);
+  var dsig=JSON.stringify([S.pickIdx,S.club,(NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{}).respin_used,S.view,S.sel,S.form,S.phase,S.spinning,S.counts,Object.keys(S.taken).length,S.feed.length,S.squad.map(function(x){return x?x.name:0}),S.filter,S.q,S.hideFilled,g.status,(S.seq||[]).length,S.order.length]);
   if(dsig===NET.dsig&&$("clubpanel").children.length+($("dpitch").children.length)>0){liveTimerTick();return}
   NET.dsig=dsig;
   $("draftMain").classList.toggle("solo",NET.players.length<2);
@@ -2208,7 +2214,7 @@ function liveDraftRender(){
   }
   liveTimerTick();
 }
-var forceArm=0;
+var forceArm=0,respinArm=0;
 $("adminForce").addEventListener("click",function(e){
   var b=e.target.closest("[data-force]");if(!b)return;
   if(Date.now()-forceArm>3500){forceArm=Date.now();b.textContent="Tryk igen for at bekræfte";return}
@@ -2238,6 +2244,18 @@ async function liveSpin(){
     var fast=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
     if(!fast){var cp=$("clubpanel");if(cp)setTimeout(function(){cp.scrollIntoView({behavior:"smooth",block:"start"})},200)}
     liveChanged();
+  });
+}
+async function liveRespin(){
+  if(!myTurn()||S.spinning||!S.club)return;
+  var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(!me0||me0.respin_used)return;
+  S.spinning=true;S.sel=null;renderDraft();renderSheet();
+  var r0=await NET.sb.rpc("respin",{p_game:NET.gid});
+  if(r0.error){S.spinning=false;renderDraft();netErr(r0.error);return}
+  me0.respin_used=true;S.club=null;
+  reelTo(r0.data,function(){
+    S.spinning=false;S.club=r0.data;S.filter="ALL";S.q="";S.sel=null;
+    renderDraft();renderSheet();liveChanged();
   });
 }
 async function livePick(name,i){
