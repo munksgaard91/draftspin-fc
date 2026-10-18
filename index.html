@@ -640,7 +640,7 @@ function renderFlow(){
     h+='<h1>Vælg sæson</h1><div class="opts">'+opt("season","2026/2027",F.season==="2026/2027","2026/2027","Aktuelle trupper og klubber",false,lbadge(F.liga,40))+'</div>'+navBtns("Fortsæt til spiltype",!F.season);
   }else if(st==="spil"){
     h+='<h1>Opret spil</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div>'+
-      '<label class="field"><span>Antal spillere, højst</span><div class="sws" id="maxsel">'+[1,2,3,4,5,6].map(function(n){return '<button class="btn" data-max="'+n+'" style="padding:10px 16px;'+(F.max===n?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+n+'</button>'}).join("")+'</div></label>'+
+      '<label class="field"><span>Antal spillere</span><div class="sws" id="maxsel">'+[1,2,3,4,5,6].map(function(n){return '<button class="btn" data-max="'+n+'" style="padding:10px 16px;'+(F.max===n?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+n+'</button>'}).join("")+'</div></label>'+
       '<div class="field"><span>Ratings</span><div class="sws">'+[[false,'Skjulte'],[true,'Vis']].map(function(o){return '<button class="btn" data-showr="'+o[0]+'" style="padding:10px 16px;'+(F.showR===o[0]?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+o[1]+'</button>'}).join("")+'</div></div>'+
       '<div class="field"><span>Tidsgrænse pr. valg</span><div class="sws">'+[0,30,60,90].map(function(n){return '<button class="btn" data-timer="'+n+'" style="padding:10px 16px;'+(F.timer===n?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+(n?n+' s':'Fra')+'</button>'}).join("")+'</div></div>'+
       navBtns("Opret spillet");
@@ -676,7 +676,7 @@ function renderFlow(){
     Object.keys(FRIENDS).forEach(function(k){if(P[k].joined)h+=rosterRow(k,FTEAM[k],k+(role==="player"&&k==="Sara"?", admin":""),P[k].ready,hcrest(k,30),adm?'<button class="btn" data-act="kick" data-k="'+k+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Fjern</button>':"")});
     if(n<F.max)h+='<div class="wait">Venter på flere, op til '+F.max+'.</div>';
     h+='</div></div>';
-    if(adm)h+='<div class="stepper"><span class="muted">Højst spillere</span><button class="btn" data-act="maxdec">−</button><b>'+F.max+'</b><button class="btn" data-act="maxinc">+</button></div>';
+    if(adm)h+='<div class="stepper"><span class="muted">Antal spillere</span><button class="btn" data-act="maxdec">−</button><b>'+F.max+'</b><button class="btn" data-act="maxinc">+</button></div>';
     h+='<p class="removed">'+n+' '+(n===1?'spiller':'spillere')+' og '+(20-n)+' AI-klubber i ligaen.'+(rem.length?' <span class="muted">Erstatter: '+rem.map(esc).join(', ')+'.</span>':'')+'</p>';
     var wait=ids().filter(function(k){return !P[k].ready}).map(function(k){return k==="me"?"dig":k});
     if(adm){
@@ -1537,7 +1537,7 @@ function lobbyLive(){
   });
   if(n<g.max_players)h+='<div class="wait">Venter på flere, op til '+g.max_players+'.</div>';
   h+='</div></div>';
-  if(adm)h+='<div class="stepper"><span class="muted">Højst spillere</span><button class="btn" data-act="maxdec">−</button><b>'+g.max_players+'</b><button class="btn" data-act="maxinc">+</button></div>';
+  if(adm)h+='<div class="stepper"><span class="muted">Antal spillere</span><button class="btn" data-act="maxdec">−</button><b>'+g.max_players+'</b><button class="btn" data-act="maxinc">+</button></div>';
   h+='<p class="removed">'+n+' '+(n===1?"spiller":"spillere")+' og '+(20-n)+' AI-klubber i ligaen.</p>';
   var wait=pl.filter(function(p){return !p.ready}).map(function(p){return p.team_name||"en spiller"});
   if(adm){
