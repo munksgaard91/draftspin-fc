@@ -712,6 +712,7 @@ $("flow").addEventListener("click",function(e){
   var a=b.dataset.act,st=stepsFor()[F.step];
   if(a==="hofopen"){$("navwrap").hidden=true;go("hof");return}
   if(a==="pushtoggle"){pushToggle();return}
+  if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(LIVE&&liveAct(a,b,st))return;
   if(a==="create"){role="admin";F.timer=0;F.step=0;renderTop();renderFlow()}
   else if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderTop();renderFlow()}
@@ -1322,7 +1323,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?'<button class="btn" data-act="hofopen" style="background:none;border:0;color:var(--mut);min-height:40px">Highscore</button>':'')+(LIVE?pushLine():'')+'</div></div>'+
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?'<button class="btn" data-act="hofopen" style="background:none;border:0;color:var(--mut);min-height:40px">Highscore</button>':'')+(LIVE?pushLine():'')+'</div></div>'+(LIVE?homeBanner():'')+
     (SAVED&&!G.started?'<div class="card" style="margin-top:34px"><b>Fortsæt dit spil</b><p class="note" style="margin-top:6px">Spilkode BRY4K2.<br>Dit spil er gemt, så du kan gå tilbage, hvor du slap.</p><div class="nav2"><button class="btn" data-act="discard">Slet og start forfra</button><button class="btn p go" data-act="resume">Fortsæt spillet</button></div></div>':"");
 }
 
@@ -1559,7 +1560,7 @@ function liveAct(a,b,st){
 function lobbyLive(){
   var g=NET.game,pl=NET.players,n=pl.length,adm=NET.uid===g.admin_id,me=pl.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var allR=n>=1&&pl.every(function(p){return p.ready});
-  var h='<h1>'+(me.ready?"Du er klar":"Lobby")+'</h1>';
+  var h='<h1>'+(me.ready?"Du er klar":"Lobby")+'</h1>'+homeBanner();
   h+='<div class="codeline"><span class="muted">Spilkode</span><button data-act="copycode">'+esc(g.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Del invitation</button><span class="muted">'+n+' af '+g.max_players+' '+(n===1?"deltager":"deltagere")+'</span></div>';
   h+='<div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div>';
   if(adm){
@@ -2012,9 +2013,15 @@ function pushState(){
   if(Notification.permission==="denied")return "denied";
   return PUSH.on?"on":"off";
 }
+function homeBanner(){
+  if(pushStandalone()||!(navigator.maxTouchPoints>0)||Math.min(screen.width,screen.height)>820)return "";
+  try{var t=+localStorage.getItem("dsfc-homehide")||0;if(Date.now()-t<7*864e5)return ""}catch(e){}
+  var how=pushIOS()?'Tryk på <b>Del</b>-ikonet (firkant med pil) og vælg <b>Føj til hjemmeskærm</b>.':'Tryk på menuen (<b>⋮</b>) og vælg <b>Føj til startskærm</b> eller <b>Installer app</b>.';
+  return '<div class="card" style="margin-top:20px"><b>Læg spillet på din hjemmeskærm</b><p class="note" style="margin-top:6px">'+how+' Så åbner det som en rigtig app, din plads i spillet bliver ikke ryddet af telefonen, og du kan få besked, når det er din tur.</p><div class="nav2"><button class="btn" data-act="homehide">Skjul i 7 dage</button></div></div>';
+}
 function pushLine(){
   var s=pushState(),st='style="background:none;border:0;color:var(--mut);min-height:40px"';
-  if(s==="home")return '<p class="note" style="margin-top:14px;text-align:center">Læg spillet på hjemmeskærmen (Del → Føj til hjemmeskærm), så kan du få besked, når det er din tur.</p>';
+  if(s==="home")return "";
   if(s==="denied")return '<p class="note" style="margin-top:14px;text-align:center">Beskeder er slået fra i telefonens indstillinger.</p>';
   if(s==="off")return '<button class="btn" data-act="pushtoggle" '+st+'>Få besked, når det er din tur</button>';
   if(s==="on")return '<button class="btn" data-act="pushtoggle" '+st+'>Beskeder er slået til · Slå fra</button>';
