@@ -906,7 +906,7 @@ function renderDraft(){
   $("turnTxt").textContent=done?"Din trup er klar.":(myTurn()?(S.club?"Klubben er valgt. Vælg frit blandt spillerne.":"Din tur. Spin for at få en klub."):(cur?teamName(cur)+" er i gang.":""));
   $("doneBox").innerHTML=done?(LIVE?'<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen og kampene bygger vi i næste trin.</p>':'<button class="btn p wide fade" id="toMatch" style="margin-top:16px">Til første kamp</button>'):"";
   if($("toMatch"))$("toMatch").onclick=function(){go("match")};
-  if(G.started)$("navwrap").hidden=!done;
+  if(G.started)$("navwrap").hidden=(LIVE||!done);
 }
 function advance(){
   renderDraft();saveGame();
