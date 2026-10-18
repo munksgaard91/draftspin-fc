@@ -230,7 +230,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .ar.dn{border-top:6px solid var(--red)}
 #fprev{max-width:230px;margin:0 auto}
 .crests{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.sw{border-color:#ffffff26}.sw.on{border-color:var(--text)}.sw:disabled{opacity:.25;cursor:not-allowed}
+.sw{border-color:#ffffff4d}.sw.on{border-color:var(--text)}.sw:disabled{opacity:.25;cursor:not-allowed}
 .cbtn{appearance:none;background:var(--surf);border:1.5px solid transparent;border-radius:10px;padding:8px;cursor:pointer;line-height:0}
 .cbtn.on{border-color:var(--text)}
 .cbtn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -1864,7 +1864,7 @@ async function renderHofLive(){
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Kunne ikke hente rekorderne.</p>';return}
   var P=pr.data||[],T=tr.data||[];
   if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:22px"><b>Ingen færdige sæsoner endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når en sæson er slut.</p></div>';return}
-  var se=function(x){return esc(x.season)+(x.season_no>1?", sæson "+x.season_no:"")+", "+x.players+(x.players===1?" spiller":" spillere")};
+  var se=function(x){return esc(x.season)+(x.season_no>1?", sæson "+x.season_no:"")+(x.players?", "+x.players+(x.players===1?" spiller":" spillere"):"")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
   var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+', '+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
