@@ -1861,8 +1861,7 @@ async function renderHofLive(){
   var P=pr.data||[],T=tr.data||[];
   if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:22px"><b>Ingen færdige sæsoner endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når en sæson er slut.</p></div>';return}
   var se=function(x){return esc(x.season)+(x.season_no>1?", sæson "+x.season_no:"")+", "+x.players+(x.players===1?" spiller":" spillere")};
-  var mine={};(NET.players||[]).forEach(function(p){if(p.team_name)mine[p.team_name]=1});if(S.team)mine[S.team]=1;
-  var isMine=function(x){return mine[x.team_name]?" mine":""};
+  var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
   var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+', '+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var tRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
@@ -2026,7 +2025,7 @@ function homeBanner(){
   if(pushStandalone()||!(navigator.maxTouchPoints>0)||Math.min(screen.width,screen.height)>820)return "";
   try{var t=+localStorage.getItem("dsfc-homehide")||0;if(Date.now()-t<7*864e5)return ""}catch(e){}
   var how=pushIOS()?'Tryk på <b>Del</b>-ikonet (firkant med pil) og vælg <b>Føj til hjemmeskærm</b>.':'Tryk på menuen (<b>⋮</b>) og vælg <b>Føj til startskærm</b> eller <b>Installer app</b>.';
-  return '<div class="card" style="margin-top:20px"><b>Læg spillet på din hjemmeskærm</b><p class="note" style="margin-top:6px">'+how+' Så åbner det som en rigtig app, din plads i spillet bliver ikke ryddet af telefonen, og du kan få besked, når det er din tur.</p><div class="nav2"><button class="btn" data-act="homehide">Skjul i 7 dage</button></div></div>';
+  return '<div class="card" style="margin-top:20px"><b>Læg spillet på din hjemmeskærm</b><p class="note" style="margin-top:6px">'+how+' Så åbner det som en rigtig app, din plads i spillet er langt sikrere mod at blive ryddet af telefonen, og du kan få besked, når det er din tur.</p><div class="nav2"><button class="btn" data-act="homehide">Skjul i 7 dage</button></div></div>';
 }
 function pushLine(){
   var s=pushState(),st='style="background:none;border:0;color:var(--mut);min-height:40px"';
