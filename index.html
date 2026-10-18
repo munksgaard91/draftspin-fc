@@ -1679,10 +1679,11 @@ function lhname(k,right){
   return '<span class="'+(lhuman(k)?"hu":"")+'">'+(right?ic+nm:nm+ic)+'</span>';
 }
 function liveOthers(done){
+  if(!NET.season)return;
   var ms=NET.season.matches.filter(function(m){return m.round===NET.round});
   var mine=ms.filter(function(m){return m.home_key===NET.uid||m.away_key===NET.uid}),oth=ms.filter(function(m){return !(m.home_key===NET.uid||m.away_key===NET.uid)});
   $("others").innerHTML=mine.concat(oth).map(function(m){
-    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(done?m.home_goals+" – "+m.away_goals:"–")+'</span>'+lhname(m.away_key,true).replace('<span class="">','<span>')+'</span></div>'.replace("</span></div>","</div>");
+    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(done?m.home_goals+" – "+m.away_goals:"–")+'</span>'+lhname(m.away_key,true)+'</div>';
   }).join("");
 }
 function liveReady(){
