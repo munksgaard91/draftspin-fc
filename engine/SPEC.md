@@ -49,3 +49,6 @@ Leicester-agtige sæsoner (mesteren var plads 8 eller dårligere på papiret): 0
 Ved hvert spil udpeger serveren hemmeligt ét AI-hold uden for top 10 (efter styrke) og giver det et ekstra sæsonheld oveni det almindelige. Spillerhold får aldrig bonussen (retfærdigt mellem vennerne). Aldrig afsløret. Resultater (`engine/reference/dark_sim.py`): bonus +10 giver 3 % titler og 26 % top 4; +12 giver 5 % og 37 %; +15 giver 9 % og 52 %.
 
 Beslutning (Rasmus, 2026-10-18): mørk hest-bonus er **+6**.
+
+## Uheld (Rasmus, 2026-10-18)
+Ved hvert spil udpeger serveren hemmeligt ét AI-hold i top 10 (efter styrke) og giver det **−6** sæsonheld. Kun AI-hold, aldrig spillerhold, aldrig afsløret, tilfældigt hver gang. Effekt (`engine/reference/unlucky_sim.py`): rammes City, falder deres titelchance fra cirka 42 % til cirka 20 %, Arsenal fra 25 % til cirka 5 %. Samlet over mange spil ændrer det kun lidt (City 44, Arsenal 24, Liverpool 22 pr. 100 spil), fordi det oftest rammer et hold uden for top 3.
