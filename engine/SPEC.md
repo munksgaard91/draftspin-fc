@@ -22,3 +22,19 @@ Uden justering vinder det bedste spillerhold ligaen i 1 til 8 % af tilfældene, 
 
 ## Ikke afprøvet endnu
 Røde kort, minutter, scorer og assist, kort, straffeskytter og tidslinje (kun resultater er kalibreret). Formationsneutralitet er neutral pr. konstruktion, når alle pladser har samme rating, men skal testes med rigtige trupper.
+
+## Held og tilfældighed (afprøvet 2026-10-18)
+Pointen med spillet er også at slå vennerne, ikke kun ligaen. Målet er derfor, at et bedre draft vinder oftere, men ikke altid (reference: `engine/reference/luck_sim2.py`).
+
+Skjult sæsonheld (et fast tillæg til alle spillere på et hold hele sæsonen, trukket ved sæsonstart) og en skjult formsvingning pr. runde (autokorreleret):
+
+| Spillere | Held | Bedste draft vinder gruppen | Dårligste draft vinder gruppen | Bedre slår dårligere (parvist) |
+|---|---|---|---|---|
+| 2 | ingen ekstra | 79 % | 21 % | 79 % |
+| 2 | sæsonheld sd 5 + form sd 3 | 63 % | 37 % | 62 % |
+| 4 | ingen ekstra | 52 % | 5 % | 72 % |
+| 4 | sæsonheld sd 3 + form sd 2 | 46 % | 9 % | 68 % |
+| 4 | sæsonheld sd 5 + form sd 3 | 44 % | 12 % | 65 % |
+| 4 | sæsonheld sd 7 + form sd 4 | 39 % | 12 % | 62 % |
+
+Leicester-agtige sæsoner (mesteren var plads 8 eller dårligere på papiret): 0 % uden ekstra held, 0,2 til 1,2 % med sæsonheld 3 til 5. Forslag: sæsonheld sd 5 og formsvingning sd 3 (rho 0,8), og afslør heldet ved sæsonslut ("Sæsonens heldsvin").
