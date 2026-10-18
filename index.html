@@ -404,13 +404,13 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 
   <!-- KAMP -->
   <section id="s-match" class="screen">
-    <div class="status" style="justify-content:flex-start;gap:10px"><h1 style="margin:0">Runde 12</h1><span class="muted">af 38</span></div>
+    <div class="status" style="justify-content:flex-start;gap:10px"><h1 style="margin:0">Runde <span id="rndNo">12</span></h1><span class="muted">af 38</span></div>
 
     <div class="card" style="margin-top:22px">
       <div class="sb">
         <div class="tm"><span id="myC"></span><span class="myname">Rasmus FC</span></div>
         <div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div>
-        <div class="tm"><span id="oppC"></span><span>Chelsea</span></div>
+        <div class="tm"><span id="oppC"></span><span id="oppName">Chelsea</span></div>
       </div>
       <div class="clock"><span id="clk">Anspark</span></div>
       <div class="bar"><i id="prog"></i></div>
@@ -441,9 +441,9 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
   <!-- TABEL -->
   <section id="s-table" class="screen">
     <h1>Tabel</h1>
-    <p class="sub">Efter 11 af 38 runder.</p>
+    <p class="sub" id="tblSub">Efter 11 af 38 runder.</p>
     <div class="card" style="margin-top:22px;padding:12px 14px"><div id="tbl"></div></div>
-    <div class="legend"><span><i class="dotc"></i>Dig</span><span><i class="dotc" style="background:var(--c-sara)"></i><i class="dotc" style="background:var(--c-jonas)"></i><i class="dotc" style="background:var(--c-marie)"></i>Venner</span><span><i class="dotc" style="background:var(--line)"></i>AI-klubber</span></div>
+    <div class="legend" id="legend"></div>
   </section>
 
   <!-- STATS -->
@@ -906,7 +906,7 @@ function renderDraft(){
   $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club);
   $("spinBtn").textContent=done?"Draften er færdig":(!myTurn()?"Venter på "+(cur?teamName(cur):""):(S.club?"Vælg en spiller herunder":"Spin for en klub"));
   $("turnTxt").textContent=done?"Din trup er klar.":(myTurn()?(S.club?"Klubben er valgt. Vælg frit blandt spillerne.":"Din tur. Spin for at få en klub."):(cur?teamName(cur)+" er i gang.":""));
-  $("doneBox").innerHTML=done?(LIVE?'<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen og kampene bygger vi i næste trin.</p>':'<button class="btn p wide fade" id="toMatch" style="margin-top:16px">Til første kamp</button>'):"";
+  $("doneBox").innerHTML=done?(LIVE?'<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen startes...</p>':'<button class="btn p wide fade" id="toMatch" style="margin-top:16px">Til første kamp</button>'):"";
   if($("toMatch"))$("toMatch").onclick=function(){go("match")};
   if(G.started)$("navwrap").hidden=(LIVE||!done);
 }
@@ -1012,6 +1012,7 @@ function squadNow(){
   return DEFAULT_SQUAD.map(function(p){return {name:p[0],pos:p[1]}});
 }
 function script(){
+  if(LIVE)return liveScript();
   var sq=squadNow();
   function by(arr){return sq.filter(function(p){return arr.indexOf(p.pos)>-1})}
   var att=by(["ST","LW","RW","AM"]),cre=by(["AM","CM","LW","RW","DM"]),cbs=by(["CB"]),dm=by(["DM","CM"]),gks=by(["GK"]);
@@ -1035,7 +1036,7 @@ function evRow(e){
   var cls="ev "+(e.t==="sys"?"sys":(e.t==="goal"?"goal ":"")+e.s);
   var ic=e.t==="goal"?'<i class="ic"></i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?'<i class="ic r"></i>':(e.t==="pm"?'<i class="ic x"></i>':'<i class="ic s"></i>')));
   var head=e.t==="goal"?"Mål, "+esc(e.x)+(e.pen?' <span class="pk">Straffe</span>':''):(e.t==="y"?"Gult kort, "+esc(e.x):(e.t==="r"?"Rødt kort, "+esc(e.x):(e.t==="pm"?"Straffe misset, "+esc(e.x):esc(e.x))));
-  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?"Slut":clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a?'<small>'+esc(e.a)+'</small>':'')+(e.t!=="sys"?'<small class="tg">'+(e.s==="me"?esc(S.team.trim()||"Mit hold"):"Chelsea")+'</small>':'')+'</div></div>';
+  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?"Slut":clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a?'<small>'+esc(e.a)+'</small>':'')+(e.t!=="sys"?'<small class="tg">'+(e.s==="me"?esc(S.team.trim()||"Mit hold"):esc(LIVE?NET.oppName:"Chelsea"))+'</small>':'')+'</div></div>';
 }
 function hname(n,right){
   var k=n==="me"?"me":NAME_H[n],txt=n==="me"?(S.team.trim()||"Mit hold"):n;
@@ -1044,6 +1045,7 @@ function hname(n,right){
   return '<span class="'+(k?"hu":"")+'">'+(right?ic+nmH:nmH+ic)+'</span>';
 }
 function showOthers(done){
+  if(LIVE){liveOthers(done);return}
   var rows=[["me","Chelsea",done?+$("sh").textContent:null,done?+$("sa").textContent:null]].concat(OTH);
   $("others").innerHTML=rows.map(function(r){
     var left=hname(r[0],false),right=hname(r[1],true).replace('<span class="">','<span>');
@@ -1051,14 +1053,17 @@ function showOthers(done){
   }).join("");
 }
 function renderReady(){
+  if(LIVE){liveReady();return}
   var names=[["Dig",readySt.me],["Sara",readySt.Sara],["Jonas",readySt.Jonas],["Marie",readySt.Marie]];
   $("ready").innerHTML=names.map(function(n){return '<span class="'+(n[1]?"ok":"")+'"><i class="dotc" style="background:'+(n[0]==="Dig"?"var(--me-dot)":FRIENDS[n[0]])+'"></i>'+n[0]+(n[1]?", klar":"")+'</span>'}).join("");
 }
 $("readyBtn").addEventListener("click",function(){
+  if(LIVE){liveReadyPress();return}
   readySt.me=true;$("readyBtn").disabled=true;$("readyBtn").textContent="Venter på de andre";renderReady();
 });
 function finishMatch(){
   clearInterval(timer);timer=null;
+  if(LIVE){liveFinishMatch();return}
   $("prog").style.width="100%";$("clk").textContent="Slut";
   showOthers(true);
   $("playBtn").disabled=false;$("skipBtn").disabled=true;
@@ -1069,10 +1074,11 @@ function finishMatch(){
 }
 var SPEED=1;
 $("spdBtn").addEventListener("click",function(){SPEED=SPEED===1?2:1;$("spdBtn").textContent=SPEED+"x"});
-$("forceBtn").addEventListener("click",function(){readyTimers.forEach(clearTimeout);readyTimers=[];for(var k in readySt)readySt[k]=true;renderReady();toast("Runden tvunget videre. Fraværende spillere sat til klar.",3200)});
+$("forceBtn").addEventListener("click",function(){if(LIVE){liveForce();return}readyTimers.forEach(clearTimeout);readyTimers=[];for(var k in readySt)readySt[k]=true;renderReady();toast("Runden tvunget videre. Fraværende spillere sat til klar.",3200)});
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
   readySt={me:false,Sara:false,Jonas:false,Marie:false};renderReady();
+  if(LIVE)liveMatchHeader();
   $("readyBtn").disabled=true;$("readyBtn").textContent="Næste kamp";
   var sc=script(),h=0,a=0,shown=0,t0=Date.now(),TOTAL=26000/SPEED,MIN=94,tl=[],skip=false;
   $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
@@ -1097,6 +1103,7 @@ $("playBtn").addEventListener("click",function(){startMatch()});
 var TBL=[["Arsenal",8,2,1,22,8],["Man City",7,2,2,24,11],["Liverpool",7,2,2,21,12],["me",7,1,3,20,13],["Chelsea",6,3,2,19,12],["Sara United",6,2,3,18,14],["Newcastle",5,4,2,15,11],["Tottenham",5,3,3,17,14],["Aston Villa",5,3,3,14,12],["Jonas Rovers",5,2,4,16,15],["Brighton",4,4,3,15,14],["Man Utd",4,3,4,14,16],["Marie Athletic",4,2,5,13,16],["Crystal Palace",3,5,3,11,11],["Fulham",3,4,4,12,15],["Leeds",3,3,5,11,17],["Brentford",3,2,6,12,18],["Everton",2,4,5,9,15],["Bournemouth",2,3,6,10,19],["Nottm Forest",1,3,7,8,20]];
 var PREVORD=["Man City","Arsenal","Liverpool","Chelsea","me","Sara United","Tottenham","Newcastle","Aston Villa","Brighton","Jonas Rovers","Man Utd","Crystal Palace","Marie Athletic","Fulham","Brentford","Leeds","Everton","Bournemouth","Nottm Forest"];
 function renderTable(){
+  if(LIVE){renderTableLive();return}
   var rows=TBL.map(function(r){return {n:r[0],w:r[1],d:r[2],l:r[3],gd:r[4]-r[5],gf:r[4],p:r[1]*3+r[2]}});
   rows.sort(function(a,b){return b.p-a.p||b.gd-a.gd||b.gf-a.gf});
   var h='<div class="tr h"><span>#</span><span>Hold</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
@@ -1124,6 +1131,7 @@ function squadStats(){
   });
 }
 function renderStats(){
+  if(LIVE){renderStatsLive();return}
   var tabs=Object.keys(ST).concat(["squad"]);
   $("seg").innerHTML=tabs.map(function(k){return '<button data-t="'+k+'" class="'+(k===statTab?"on":"")+'">'+(k==="squad"?"Din trup":ST[k].t)+'</button>'}).join("");
   var h="";
@@ -1351,6 +1359,7 @@ $("sbg").innerHTML=bgInner();
 /* ---------- sæsonslut ---------- */
 var TROPHY='<svg class="tr0" width="54" height="54" viewBox="0 0 64 64" aria-hidden="true"><path d="M20 8h24v14c0 9-5 15-12 17-7-2-12-8-12-17z" fill="#e4c47a"/><path d="M20 12h-8c0 9 4 14 10 15M44 12h8c0 9-4 14-10 15" fill="none" stroke="#e4c47a" stroke-width="3"/><rect x="29" y="38" width="6" height="8" fill="#e4c47a"/><rect x="21" y="46" width="22" height="7" rx="2" fill="#c9a24e"/></svg>';
 function renderEnd(){
+  if(LIVE){renderEndLive();return}
   var tn=function(n){return n==="me"?(S.team.trim()||"Mit hold"):n};
   var fin=[["me",94,29,7,2],["Sara United",91,28,7,3],["Arsenal",80,24,8,6],["Man City",77,23,8,7],["Jonas Rovers",75,22,9,7]];
   var AWI={ball:'⚽',pass:'🎯',glove:'🧤'};
@@ -1367,7 +1376,7 @@ function renderEnd(){
 $("endbody").addEventListener("click",function(e){
   var b=e.target.closest("[data-end]");if(!b)return;var a=b.dataset.end;
   if(a==="hof")go("hof");
-  else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(S.team.trim()||"Mit hold")+" blev mester med 94 point.";try{navigator.clipboard.writeText(t).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent="Kopiér resultat"},1500)}
+  else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(LIVE&&NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"Mit hold")+" sluttede som nr. "+(i+1)+" med "+rw[i].p+" point."})():(S.team.trim()||"Mit hold")+" blev mester med 94 point.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent="Kopiér resultat"},1500)}
   else if(a==="again"){if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}
 });
 
@@ -1465,7 +1474,8 @@ function liveApply(){
   if(!NET.players.some(function(p){return p.user_id===NET.uid})){liveLeave("Du er ikke med i spillet længere.");return}
   role=g.admin_id===NET.uid?"admin":"player";
   F.code=g.code;F.max=g.max_players;F.timer=g.timer_seconds;F.showR=g.show_ratings;
-  if(g.status!=="lobby"){liveDraftApply();return}
+  if(g.status==="draft"){liveDraftApply();return}
+  if(g.status!=="lobby"){liveSeasonApply();return}
   if(stepsFor()[F.step]==="lobby")renderFlow();
 }
 function liveEnter(){
@@ -1473,7 +1483,8 @@ function liveEnter(){
   role=g.admin_id===NET.uid?"admin":"player";
   F.code=g.code;F.max=g.max_players;F.timer=g.timer_seconds;F.showR=g.show_ratings;
   if(me&&me.team_name){S.team=me.team_name;S.color=me.color1;S.color2=me.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe()}
-  if(g.status!=="lobby"){liveDraftApply();return}
+  if(g.status==="draft"){liveDraftApply();return}
+  if(g.status!=="lobby"){liveSeasonApply();return}
   var steps=stepsFor();
   F.step=me&&me.team_name&&me.formation?steps.indexOf("lobby"):steps.indexOf("hold");
   $("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow();
@@ -1564,6 +1575,235 @@ function lobbyLive(){
   h+='<div class="nav2"><button class="btn" data-act="'+(me.ready?"unready":"back")+'">'+(me.ready?"Jeg er ikke klar endnu":"Tilbage")+'</button></div>';
   return h;
 }
+/* ---------- live: sæson ---------- */
+NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;NET.round=0;NET.shownRound=0;NET.myMatch=null;NET.oppName="";NET.advAt=0;
+var SHORTN={};Object.keys(NAMECODE).forEach(function(n){SHORTN[NAMECODE[n]]=n});
+function lname(k){var t=NET.season&&NET.season.teams[k];if(!t)return"?";return t.kind==="ai"?(SHORTN[t.club]||t.name):t.name}
+function lcrest(k,px){var t=NET.season&&NET.season.teams[k];if(!t)return"";return t.kind==="ai"?crest(t.club,px):ucrest((t.crest||1)-1,t.color1||"#3b4a6b",t.color2||"#e6ebf5",initials(t.name),px)}
+function lhuman(k){var t=NET.season&&NET.season.teams[k];return !!t&&t.kind==="human"}
+function pname(pid){var x=NET.byId[pid];return x?x.p[0]:"Ukendt"}
+async function fetchAll(table){
+  var rows=[];
+  for(var from=0;;from+=1000){
+    var r0=await NET.sb.from(table).select("*").eq("game_id",NET.gid).order("id").range(from,from+999);
+    if(r0.error)throw r0.error;rows=rows.concat(r0.data);if(r0.data.length<1000)break;
+  }
+  return rows;
+}
+async function liveSeasonLoad(){
+  var s0={teams:{},lineups:{},matches:[],events:[]};
+  var tm=await NET.sb.from("season_teams").select("*").eq("game_id",NET.gid);if(tm.error)throw tm.error;
+  if(!tm.data.length)return false;
+  tm.data.forEach(function(t){s0.teams[t.team_key]=t});
+  var lu=await NET.sb.from("season_lineups").select("*").eq("game_id",NET.gid);if(lu.error)throw lu.error;
+  lu.data.forEach(function(l){(s0.lineups[l.team_key]=s0.lineups[l.team_key]||[])[l.slot-1]=l.player_id});
+  s0.matches=await fetchAll("matches");
+  s0.events=await fetchAll("match_events");
+  NET.season=s0;return true;
+}
+async function callEngine(action,extra){
+  var body={action:action,game_id:NET.gid};if(extra)for(var k in extra)body[k]=extra[k];
+  var r0=await NET.sb.functions.invoke("engine",{body:body});
+  if(r0.error){var msg=r0.error.message;try{var j=await r0.error.context.json();if(j&&j.error)msg=j.error}catch(x){}throw new Error(msg)}
+  return r0.data;
+}
+async function liveSeasonApply(){
+  if(NET.seasonBusy)return;NET.seasonBusy=true;
+  try{
+    await NET.pl;
+    var g=NET.game,key=g.status+"|"+g.current_round;
+    if(!NET.season||NET.seasonKey!==key){
+      var ok=await liveSeasonLoad();
+      if(!ok||g.current_round<1){
+        if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/ikke|Draften/.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
+        var d=$("doneBox");if(d)d.innerHTML='<p class="note fade" style="margin-top:16px">'+(g.pace==="quick"?"Sæsonen simuleres. Det tager et øjeblik...":"Sæsonen startes...")+'</p>';
+        return;
+      }
+      NET.seasonKey=key;
+    }
+    if(!NET.seasonOn){NET.seasonOn=true;liveSeasonStart();return}
+    liveSeasonRender();
+  }catch(e){}finally{NET.seasonBusy=false}
+}
+function liveSeasonStart(){
+  var g=NET.game;
+  G.started=true;keepAwake();$("sbg").hidden=true;$("app").classList.remove("pre");$("navwrap").hidden=false;
+  var d=document.querySelector('#nav [data-s="draft"]'),h=document.querySelector('#nav [data-s="hof"]');if(d)d.hidden=true;if(h)h.hidden=true;
+  NET.round=g.current_round;NET.shownRound=(g.status==="done"&&g.pace==="quick")?38:Math.max(0,g.current_round-1);
+  S.matchSeen=false;clearInterval(NET.tt);
+  if(g.status==="done"&&g.pace==="quick")go("end");else go("match");
+}
+function liveSeasonRender(){
+  var g=NET.game;
+  if(g.current_round!==NET.round){NET.round=g.current_round;S.matchSeen=false;
+    if(document.getElementById("s-match").classList.contains("on")){S.matchSeen=true;startMatch()}}
+  else{liveReady();var on=function(id){return document.getElementById(id).classList.contains("on")};if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive()}
+  // alle er klar: den der ser det først, beder serveren spille næste runde
+  if(g.status==="season"&&g.current_round>=1&&NET.players.every(function(p){return p.ready_round>=g.current_round})&&Date.now()-NET.advAt>3000){
+    NET.advAt=Date.now();callEngine("advance").then(function(){liveChanged()}).catch(function(){});
+  }
+}
+function liveMyMatch(round){return NET.season.matches.filter(function(m){return m.round===round&&(m.home_key===NET.uid||m.away_key===NET.uid)})[0]}
+function liveScript(){
+  var m=liveMyMatch(NET.round);NET.myMatch=m;if(!m)return [];
+  var side=m.home_key===NET.uid?"h":"a",out=[],oppK=side==="h"?m.away_key:m.home_key;
+  NET.season.events.filter(function(e){return e.match_id===m.id}).sort(function(a,b){return a.minute-b.minute||a.id-b.id}).forEach(function(e){
+    var sd=e.team===side?"me":"opp",x=pname(e.player_id);
+    if(e.type==="goal")out.push({m:e.minute,t:"goal",s:sd,x:x,a:e.pen?"Straffespark":(e.assist_id?"Assist: "+pname(e.assist_id):""),pen:e.pen?1:0});
+    else if(e.type==="yellow")out.push({m:e.minute,t:"y",s:sd,x:x});
+    else if(e.type==="red")out.push({m:e.minute,t:"r",s:sd,x:x});
+    else if(e.type==="second_yellow")out.push({m:e.minute,t:"r",s:sd,x:x,a:"2. gult"});
+    else if(e.type==="pen_miss")out.push({m:e.minute,t:"pm",s:sd,x:x,a:e.assist_id?"Straffen blev reddet af "+pname(e.assist_id):"Straffen gik forbi"});
+  });
+  out.push({m:45,t:"sys",x:"Pause"});out.push({m:94,t:"sys",x:"Slutfløjt"});
+  out.sort(function(a,b){return a.m-b.m||(a.t==="sys"?-1:1)});
+  return out;
+}
+function liveMatchHeader(){
+  var m=liveMyMatch(NET.round);if(!m)return;
+  var oppK=m.home_key===NET.uid?m.away_key:m.home_key;NET.oppName=lname(oppK);
+  $("rndNo").textContent=NET.round;
+  document.querySelectorAll(".myname").forEach(function(x){x.textContent=lname(NET.uid)});
+  $("myC").innerHTML=lcrest(NET.uid,34);$("oppC").innerHTML=lcrest(oppK,34);$("oppName").textContent=NET.oppName;
+  var nx=liveNextText();$("nextOpp").textContent=nx;
+}
+function liveNextText(){
+  var g=NET.game,r=NET.round;
+  if(r>=38)return "Det var sæsonens sidste runde.";
+  var m=NET.season.matches.filter(function(x){return x.round===r+1&&(x.home_key===NET.uid||x.away_key===NET.uid)})[0];
+  if(!m)return "";var home=m.home_key===NET.uid;
+  return "Næste: runde "+(r+1)+" af 38 · "+lname(home?m.away_key:m.home_key)+" ("+(home?"hjemme":"ude")+")";
+}
+function lhname(k,right){
+  var ic=lcrest(k,20),nm='<span class="t">'+esc(lname(k))+'</span>';
+  return '<span class="'+(lhuman(k)?"hu":"")+'">'+(right?ic+nm:nm+ic)+'</span>';
+}
+function liveOthers(done){
+  var ms=NET.season.matches.filter(function(m){return m.round===NET.round});
+  var mine=ms.filter(function(m){return m.home_key===NET.uid||m.away_key===NET.uid}),oth=ms.filter(function(m){return !(m.home_key===NET.uid||m.away_key===NET.uid)});
+  $("others").innerHTML=mine.concat(oth).map(function(m){
+    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(done?m.home_goals+" – "+m.away_goals:"–")+'</span>'+lhname(m.away_key,true).replace('<span class="">','<span>')+'</span></div>'.replace("</span></div>","</div>");
+  }).join("");
+}
+function liveReady(){
+  var g=NET.game;if(!g)return;
+  $("ready").innerHTML=NET.players.map(function(p){
+    var me=p.user_id===NET.uid,ok=p.ready_round>=g.current_round,nm=me?"Dig":(p.team_name||"Spiller");
+    return '<span class="'+(ok?"ok":"")+'"><i class="dotc" style="background:'+(me?"var(--me-dot)":(p.color1||"#8c97b5"))+'"></i>'+esc(nm)+(ok?", klar":"")+'</span>';
+  }).join("");
+}
+function liveFinishMatch(){
+  var g=NET.game,r=NET.round;
+  $("prog").style.width="100%";$("clk").textContent="Slut";
+  NET.shownRound=r;showOthers(true);
+  $("playBtn").disabled=false;$("skipBtn").disabled=true;
+  var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
+  var rb=$("readyBtn");
+  if(r>=38){rb.textContent="Se sæsonens slutresultat";rb.disabled=false;rb.dataset.end="1"}
+  else{rb.dataset.end="";rb.textContent=me.ready_round>=r?"Venter på de andre":"Næste kamp";rb.disabled=me.ready_round>=r}
+  $("forceBtn").hidden=!(g.admin_id===NET.uid&&g.status==="season"&&r<38);
+  liveReady();
+  var up=document.getElementById("s-table").classList.contains("on");if(up)renderTableLive();
+}
+async function liveReadyPress(){
+  var rb=$("readyBtn"),g=NET.game;
+  if(rb.dataset.end==="1"){go("end");return}
+  rb.disabled=true;rb.textContent="Venter på de andre";
+  try{
+    var r0=await NET.sb.rpc("ready_round",{p_game:NET.gid,p_round:NET.round});if(r0.error)throw r0.error;
+    await liveChanged();
+    callEngine("advance").catch(function(){}).then(function(){liveChanged()});
+  }catch(e){netErr(e);rb.disabled=false;rb.textContent="Næste kamp"}
+}
+async function liveForce(){
+  try{await callEngine("advance",{force:true});toast("Runden er tvunget videre.",2600);liveChanged()}catch(e){netErr(e)}
+}
+function standingsLive(upTo){
+  var t={};Object.keys(NET.season.teams).forEach(function(k){t[k]={k:k,w:0,d:0,l:0,gf:0,ga:0}});
+  NET.season.matches.forEach(function(m){
+    if(!m.played||m.round>upTo)return;var h=t[m.home_key],a=t[m.away_key];
+    h.gf+=m.home_goals;h.ga+=m.away_goals;a.gf+=m.away_goals;a.ga+=m.home_goals;
+    if(m.home_goals>m.away_goals){h.w++;a.l++}else if(m.home_goals<m.away_goals){a.w++;h.l++}else{h.d++;a.d++}
+  });
+  var rows=Object.keys(t).map(function(k){var r1=t[k];r1.p=r1.w*3+r1.d;r1.gd=r1.gf-r1.ga;return r1});
+  rows.sort(function(a,b){return b.p-a.p||b.gd-a.gd||b.gf-a.gf||(lname(a.k)<lname(b.k)?-1:1)});
+  return rows;
+}
+function renderTableLive(){
+  if(!NET.season)return;
+  var up=NET.shownRound,rows=standingsLive(up),prev={};
+  if(up>1)standingsLive(up-1).forEach(function(r1,i){prev[r1.k]=i});
+  $("tblSub").textContent=up<1?"Ingen kampe er spillet endnu.":"Efter "+up+" af 38 runder.";
+  var h='<div class="tr h"><span>#</span><span>Hold</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
+  rows.forEach(function(r1,i){
+    var me=r1.k===NET.uid,fr=lhuman(r1.k)&&!me,d=prev[r1.k]!==undefined?prev[r1.k]-i:0;
+    var ar=d>0?'<i class="ar up" title="Op '+d+'"></i>':(d<0?'<i class="ar dn" title="Ned '+(-d)+'"></i>':'');
+    h+='<div class="tr'+(me?" mine":"")+(fr?" friend":"")+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(r1.k,20)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>';
+  });
+  $("tbl").innerHTML=h;
+  var lg='<span><i class="dotc" style="background:var(--me-dot)"></i>Dig</span>';
+  Object.keys(NET.season.teams).forEach(function(k){var t=NET.season.teams[k];if(t.kind==="human"&&k!==NET.uid)lg+='<span><i class="dotc" style="background:'+(t.color1||"#8c97b5")+'"></i>'+esc(t.name)+'</span>'});
+  $("legend").innerHTML=lg;
+}
+function liveStatMaps(){
+  var s0=NET.season,up=NET.shownRound,owner={},mr={};
+  Object.keys(s0.teams).forEach(function(k){if(s0.teams[k].kind==="human")(s0.lineups[k]||[]).forEach(function(pid){owner[pid]=k})});
+  s0.matches.forEach(function(m){mr[m.id]=m.round});
+  var g={},a={},y={},rd={},cs={};
+  var inc=function(o,p){o[p]=(o[p]||0)+1};
+  s0.events.forEach(function(e){
+    if(mr[e.match_id]>up)return;
+    if(e.type==="goal"){if(owner[e.player_id])inc(g,e.player_id);if(e.assist_id&&owner[e.assist_id])inc(a,e.assist_id)}
+    else if(e.type==="yellow"&&owner[e.player_id])inc(y,e.player_id);
+    else if((e.type==="red"||e.type==="second_yellow")&&owner[e.player_id])inc(rd,e.player_id);
+    else if(e.type==="clean_sheet"&&owner[e.player_id])inc(cs,e.player_id);
+  });
+  return {owner:owner,g:g,a:a,y:y,rd:rd,cs:cs};
+}
+var STATLIVE={goals:["Mål","mål"],assists:["Assists","assists"],cards:["Kort",""],cs:["Clean sheets",""]};
+function renderStatsLive(){
+  if(!NET.season)return;
+  var st=liveStatMaps(),tabs=["goals","assists","cards","cs","squad"];
+  if(tabs.indexOf(statTab)<0)statTab="goals";
+  $("seg").innerHTML=tabs.map(function(k){return '<button data-t="'+k+'" class="'+(k===statTab?"on":"")+'">'+(k==="squad"?"Din trup":STATLIVE[k][0])+'</button>'}).join("");
+  var h="",top=function(map,val){return Object.keys(map).map(function(pid){return [+pid,map[pid]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,10)};
+  var row=function(i,pid,v){var k=st.owner[pid];return '<div class="sr"><span class="rk">'+(i+1)+'</span><div>'+esc(pname(pid))+'<small>'+lcrest(k,18)+esc(lname(k))+'</small></div><span class="v">'+v+'</span></div>'};
+  if(statTab==="squad"){
+    (NET.season.lineups[NET.uid]||[]).forEach(function(pid){
+      var p=NET.byId[pid].p,isg=p[1]==="GK";
+      h+='<div class="sr"><span class="rk">'+POSC[p[1]]+'</span><div>'+esc(p[0])+'<small>'+(isg?(st.cs[pid]||0)+" clean sheets":(st.g[pid]||0)+" mål, "+(st.a[pid]||0)+" assists")+'</small></div><span class="v">'+(st.y[pid]||0)+'<small>gule</small>'+(st.rd[pid]?' '+st.rd[pid]+'<small>rødt</small>':'')+'</span></div>';
+    });
+  }else if(statTab==="cards"){
+    var ids={};Object.keys(st.y).concat(Object.keys(st.rd)).forEach(function(p){ids[p]=(st.y[p]||0)+3*(st.rd[p]||0)});
+    top(ids).forEach(function(x,i){h+=row(i,x[0],(st.y[x[0]]||0)+'<small>gule</small> '+(st.rd[x[0]]||0)+'<small>rødt</small>')});
+  }else{
+    var map=statTab==="goals"?st.g:(statTab==="assists"?st.a:st.cs),u=STATLIVE[statTab][1];
+    top(map).forEach(function(x,i){h+=row(i,x[0],x[1]+(u?'<small>'+u+'</small>':""))});
+  }
+  $("slist").innerHTML=h||'<p class="note">Ingen endnu.</p>';
+}
+function renderEndLive(){
+  if(!NET.season){$("endbody").innerHTML='<h1>Sæsonen er ikke slut</h1>';return}
+  var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
+  var T34=TROPHY.replace('width="54" height="54"','width="34" height="34"');
+  var h='<h1>Sæsonen er slut</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div>';
+  h+='<div class="card champ" style="margin-top:22px"><div class="lblm">'+T34+'<span>Mester</span>'+T34+'</div>'+lcrest(champ.k,84)+'<b>'+esc(lname(champ.k))+'</b><p class="note" style="margin-top:6px">'+champ.p+' point, '+champ.w+' sejre, '+champ.d+' uafgjorte, '+champ.l+' nederlag</p></div>';
+  var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
+  var rest=rows.map(function(r1,i){return {r:r1,i:i}}).slice(5).filter(function(x){return lhuman(x.r.k)});
+  h+='<h2>Slutstilling</h2><div class="card">'+rows.slice(0,5).map(function(r1,i){return er(i,r1.k,r1.p)}).join("")+rest.map(function(x){return '<div style="text-align:center;color:var(--mut);padding:2px 0">⋯</div>'+er(x.i,x.r.k,x.r.p)}).join("")+'</div>';
+  var best=function(map){var b=null;Object.keys(map).forEach(function(p){if(!b||map[p]>map[b])b=p});return b};
+  var aw=[["Topscorer",best(st.g),st.g,"mål","⚽"],["Flest assists",best(st.a),st.a,"assists","🎯"],["Bedste målmand",best(st.cs),st.cs,"clean sheets","🧤"]].filter(function(a){return a[1]});
+  if(aw.length)h+='<h2>Sæsonens priser</h2><div class="card">'+aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+a[4]+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[2][a[1]]+' '+a[3]+'</span></div>'}).join("")+'</div>';
+  var mine=NET.season.matches.filter(function(m){return m.played&&(m.home_key===NET.uid||m.away_key===NET.uid)}).sort(function(a,b){return a.round-b.round});
+  h+='<h2>Dine kampe</h2><div class="card">'+mine.map(function(m){
+    var home=m.home_key===NET.uid,gf=home?m.home_goals:m.away_goals,ga=home?m.away_goals:m.home_goals,opp=home?m.away_key:m.home_key;
+    var res=gf>ga?"V":(gf===ga?"U":"T"),col=gf>ga?"var(--acc)":(gf===ga?"var(--mut)":"var(--red)");
+    return '<div class="endrow"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"h":"u")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
+  }).join("")+'</div>';
+  h+='<div class="nav2" style="flex-direction:column"><button class="btn wide" data-end="copy">Kopiér resultat</button></div>';
+  $("endbody").innerHTML=h;
+}
+
 /* ---------- live: draft ---------- */
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
 function livePlayers(){
