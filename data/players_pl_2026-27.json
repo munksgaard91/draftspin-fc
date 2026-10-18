@@ -1240,7 +1240,7 @@
   "age": 27,
   "ca": 183,
   "pa": 184,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -3060,7 +3060,7 @@
   "age": 29,
   "ca": 146,
   "pa": 155,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 16,
@@ -3882,7 +3882,7 @@
   "age": 27,
   "ca": 148,
   "pa": 155,
-  "position": "LW",
+  "position": "AM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -4162,7 +4162,7 @@
   "age": 20,
   "ca": 118,
   "pa": 139,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -5312,7 +5312,7 @@
   "age": 24,
   "ca": 142,
   "pa": 155,
-  "position": "DM",
+  "position": "CM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -6411,7 +6411,7 @@
   "age": 21,
   "ca": 137,
   "pa": 160,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 17,
@@ -7110,7 +7110,7 @@
   "age": 26,
   "ca": 145,
   "pa": 153,
-  "position": "LB",
+  "position": "RB",
   "familiarity": {
    "GK": 1,
    "RB": 19,
@@ -8092,7 +8092,7 @@
   "age": 21,
   "ca": 150,
   "pa": 173,
-  "position": "CM",
+  "position": "LB",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -8275,7 +8275,7 @@
   "age": 26,
   "ca": 145,
   "pa": 164,
-  "position": "LW",
+  "position": "RW",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -8337,7 +8337,7 @@
   "age": 24,
   "ca": 156,
   "pa": 165,
-  "position": "AM",
+  "position": "ST",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -8518,7 +8518,7 @@
   "age": 36,
   "ca": 137,
   "pa": 165,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 12,
@@ -8704,7 +8704,7 @@
   "age": 20,
   "ca": 141,
   "pa": 163,
-  "position": "CB",
+  "position": "LB",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -9792,7 +9792,7 @@
   "age": 30,
   "ca": 127,
   "pa": 135,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -12100,7 +12100,7 @@
   "age": 31,
   "ca": 132,
   "pa": 155,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -12162,7 +12162,7 @@
   "age": 22,
   "ca": 159,
   "pa": 177,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -13275,7 +13275,7 @@
   "age": 30,
   "ca": 151,
   "pa": 175,
-  "position": "AM",
+  "position": "LW",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -13566,7 +13566,7 @@
   "age": 20,
   "ca": 116,
   "pa": 130,
-  "position": "AM",
+  "position": "LW",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -13859,7 +13859,7 @@
   "age": 24,
   "ca": 141,
   "pa": 152,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -14099,7 +14099,7 @@
   "age": 19,
   "ca": 88,
   "pa": 133,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -14927,7 +14927,7 @@
   "age": 28,
   "ca": 141,
   "pa": 160,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -14989,7 +14989,7 @@
   "age": 30,
   "ca": 147,
   "pa": 155,
-  "position": "CM",
+  "position": "LW",
   "familiarity": {
    "GK": 1,
    "RB": 10,
@@ -15920,7 +15920,7 @@
   "age": 31,
   "ca": 143,
   "pa": 146,
-  "position": "DM",
+  "position": "CM",
   "familiarity": {
    "GK": 1,
    "RB": 10,
@@ -16093,7 +16093,7 @@
   "age": 24,
   "ca": 117,
   "pa": 142,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -17811,7 +17811,7 @@
   "age": 22,
   "ca": 138,
   "pa": 162,
-  "position": "LW",
+  "position": "AM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -18177,7 +18177,7 @@
   "age": 29,
   "ca": 140,
   "pa": 150,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -18524,7 +18524,7 @@
   "age": 30,
   "ca": 124,
   "pa": 134,
-  "position": "AM",
+  "position": "ST",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -18751,7 +18751,7 @@
   "age": 28,
   "ca": 138,
   "pa": 139,
-  "position": "ST",
+  "position": "LW",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -19103,7 +19103,7 @@
   "age": 25,
   "ca": 140,
   "pa": 145,
-  "position": "DM",
+  "position": "CB",
   "familiarity": {
    "GK": 1,
    "RB": 10,
@@ -19809,7 +19809,7 @@
   "age": 26,
   "ca": 141,
   "pa": 146,
-  "position": "LW",
+  "position": "ST",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -19871,7 +19871,7 @@
   "age": 27,
   "ca": 140,
   "pa": 140,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -20978,7 +20978,7 @@
   "age": 28,
   "ca": 154,
   "pa": 165,
-  "position": "LW",
+  "position": "RW",
   "familiarity": {
    "GK": 1,
    "RB": 6,
@@ -21617,7 +21617,7 @@
   "age": 24,
   "ca": 164,
   "pa": 169,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -22189,7 +22189,7 @@
   "age": 23,
   "ca": 162,
   "pa": 173,
-  "position": "CM",
+  "position": "DM",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -22836,7 +22836,7 @@
   "age": 24,
   "ca": 170,
   "pa": 180,
-  "position": "CB",
+  "position": "LB",
   "familiarity": {
    "GK": 1,
    "RB": 1,
@@ -29122,7 +29122,7 @@
   "age": 21,
   "ca": 139,
   "pa": 152,
-  "position": "DM",
+  "position": "CM",
   "familiarity": {
    "GK": 1,
    "RB": 13,
