@@ -2279,6 +2279,28 @@ async function liveBoot(){
   }
 }
 function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET.draftOn)keepAwake()}}
+/* skjult fejlsøgning: tryk 5 gange hurtigt på logoet på startskærmen */
+(function(){
+  var taps=[];
+  document.addEventListener("click",function(e){
+    if(!e.target.closest(".wm3,.startwrap svg"))return;
+    var t=Date.now();taps=taps.filter(function(x){return t-x<2500});taps.push(t);
+    if(taps.length>=5){taps=[];dbgToggle()}
+  });
+  var dbgT=null;
+  function dbgToggle(){
+    var d=document.getElementById("dbg");
+    if(d){d.remove();clearInterval(dbgT);return}
+    d=document.createElement("div");d.id="dbg";
+    d.innerHTML='<div style="position:fixed;top:0;left:0;right:0;height:8px;background:#f33;z-index:99999"></div><div style="position:fixed;bottom:0;left:0;right:0;height:8px;background:#3af;z-index:99999"></div><div style="position:fixed;left:0;right:0;bottom:60px;z-index:99999;background:#000c;color:#fff;font:11px/1.35 monospace;padding:8px 10px;white-space:pre-wrap" id="dbgt"></div><div id="dbgp" style="position:fixed;visibility:hidden;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)"></div>';
+    document.body.appendChild(d);
+    function upd(){
+      var p=document.getElementById("dbgp"),cs=getComputedStyle(p),vv=window.visualViewport||{};
+      document.getElementById("dbgt").textContent=["innerH "+innerHeight+"  clientH "+document.documentElement.clientHeight,"visualVP "+Math.round(vv.height)+" off "+Math.round(vv.offsetTop||0)+" scale "+(vv.scale||1),"scrollH "+document.documentElement.scrollHeight+"  scrollY "+Math.round(scrollY),"screen "+screen.height+" avail "+screen.availHeight,"inset top "+cs.paddingTop+" bottom "+cs.paddingBottom,"standalone "+(navigator.standalone||matchMedia("(display-mode: standalone)").matches),"app padB "+getComputedStyle(document.getElementById("app")).paddingBottom,"nav hidden "+document.getElementById("navwrap").hidden].join("\n");
+    }
+    upd();dbgT=setInterval(upd,500);
+  }
+})();
 document.addEventListener("visibilitychange",function(){if(LIVE)liveWake()});
 window.addEventListener("pageshow",function(){if(LIVE)liveWake()});
 
