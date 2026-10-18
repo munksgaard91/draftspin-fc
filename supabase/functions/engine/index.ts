@@ -143,7 +143,7 @@ async function allRows(table, gameId) {
 async function finalizeSeason(gameId) {
   const game = await getGame(gameId);
   const st = chk(await admin.from("season_teams").select("*").eq("game_id", gameId));
-  const gps = chk(await admin.from("game_players").select("user_id,display_name").eq("game_id", gameId));
+  const gps = chk(await admin.from("game_players").select("user_id,display_name,missed_rounds").eq("game_id", gameId));
   const lu = chk(await admin.from("season_lineups").select("*").eq("game_id", gameId));
   const matches = await allRows("matches", gameId), events = await allRows("match_events", gameId);
   const nameOf = (k) => (st.find((x) => x.team_key === k) || {}).name || k;
@@ -158,7 +158,9 @@ async function finalizeSeason(gameId) {
   const order = Object.keys(t).map((k) => ({ k, p: t[k].w * 3 + t[k].d, gd: t[k].gf - t[k].ga, gf: t[k].gf })).sort((a, b) => b.p - a.p || b.gd - a.gd || b.gf - a.gf);
   const pos = {};
   order.forEach((x, i) => (pos[x.k] = i + 1));
-  const humans = st.filter((x) => x.kind === "human");
+  // hold, der var væk i for mange runder, udgår af Highscore (sæsonen er stadig spillet færdig)
+  const MAX_MISSED = 8;
+  const humans = st.filter((x) => x.kind === "human" && ((gps.find((g) => g.user_id === x.user_id) || {}).missed_rounds || 0) < MAX_MISSED);
   const owner = (uid) => (gps.find((g) => g.user_id === uid) || {}).display_name || null;
   const season = String(game.season).replace(/^(\d{4})\/\d{2}(\d{2})$/, "$1/$2");
   const teamRows = humans.map((h) => {
@@ -192,7 +194,7 @@ async function finalizeSeason(gameId) {
     const tm = own[pid], s = stats[pid];
     return { game_id: gameId, player_id: Number(pid), league: "PL", season, season_no: game.season_no, user_id: tm.user_id, team_name: tm.name, owner: owner(tm.user_id), goals: s.goals, assists: s.assists, clean_sheets: s.cs, reds: s.reds, best_match_goals: bm[pid] ? bm[pid].n : 0, best_match_text: bm[pid] ? bm[pid].text : null };
   });
-  chk(await admin.from("hof_teams").upsert(teamRows, { onConflict: "game_id,team_key" }));
+  if (teamRows.length) chk(await admin.from("hof_teams").upsert(teamRows, { onConflict: "game_id,team_key" }));
   if (playerRows.length) chk(await admin.from("hof_players").upsert(playerRows, { onConflict: "game_id,player_id" }));
 }
 
@@ -226,6 +228,9 @@ Deno.serve(async (req) => {
       // en spiller, der ikke er set i 90 sekunder, regnes som klar (reglen om fraværende spillere)
       const allReady = gps.every((g) => g.ready_round >= game.current_round || Date.now() - Date.parse(g.last_seen_at) > 90000);
       if (!allReady && !(force && isAdmin)) throw new Fejl("Ikke alle er klar");
+      // spillere, der ikke var klar og blev sprunget over, tæller som "væk" i runden (idempotent pr. runde)
+      const absent = gps.filter((g) => g.ready_round < game.current_round && Date.now() - Date.parse(g.last_seen_at) > 90000).map((g) => g.user_id);
+      if (absent.length) chk(await admin.rpc("bump_missed", { p_game: game_id, p_round: game.current_round, p_users: absent }));
       await runTo(game, game.current_round + 1);
     } else if (action === "quick") {
       if (!isAdmin) throw new Fejl("Kun admin kan køre hurtigt spil");

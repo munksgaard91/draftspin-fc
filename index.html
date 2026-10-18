@@ -1601,7 +1601,8 @@ function lobbyLive(){
 /* ---------- live: sæson ---------- */
 NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;NET.round=0;NET.shownRound=0;NET.myMatch=null;NET.oppName="";NET.advAt=0;
 var SHORTN={};Object.keys(NAMECODE).forEach(function(n){SHORTN[NAMECODE[n]]=n});
-function lname(k){var t=NET.season&&NET.season.teams[k];if(!t)return"?";return t.kind==="ai"?(SHORTN[t.club]||t.name):t.name}
+function dropped(t){var p=t&&t.kind==="human"?NET.players.filter(function(x){return x.user_id===t.user_id})[0]:null;return !!(p&&(p.missed_rounds||0)>=8)}
+function lname(k){var t=NET.season&&NET.season.teams[k];if(!t)return"?";return t.kind==="ai"?(SHORTN[t.club]||t.name):t.name+(dropped(t)?" (udgået)":"")}
 function lcrest(k,px){var t=NET.season&&NET.season.teams[k];if(!t)return"";return t.kind==="ai"?crest(t.club,px):ucrest((t.crest||1)-1,t.color1||"#3b4a6b",t.color2||"#e6ebf5",initials(t.name),px)}
 function lhuman(k){var t=NET.season&&NET.season.teams[k];return !!t&&t.kind==="human"}
 function pname(pid){var x=NET.byId[pid];return x?x.p[0]:"Ukendt"}
