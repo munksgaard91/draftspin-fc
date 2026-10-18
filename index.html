@@ -786,7 +786,7 @@ $("flow").addEventListener("click",function(e){
   if(a==="pushtoggle"){pushToggle();return}
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(LIVE&&liveAct(a,b,st))return;
-  if(a==="create"){role="admin";F.timer=0;F.max=4;F.step=0;F.sub=0;renderTop();renderFlow()}
+  if(a==="create"){role="admin";F.timer=0;F.max=1;F.step=0;F.sub=0;renderTop();renderFlow()}
   else if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderTop();renderFlow()}
   else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Hop ind i mit DraftSpin-spil med koden "+F.code;try{if(navigator.share)navigator.share({title:"DraftSpin FC",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation kopieret")},function(){})}catch(x){}}
   else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
