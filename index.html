@@ -19,6 +19,30 @@
 .simcard{padding:14px 12px;text-align:center}
 .simtl{margin-top:10px;min-height:44px;text-align:left;border-top:1px solid var(--line);padding-top:8px}
 .stl{display:flex;gap:8px;font-size:13.5px;padding:2px 0}.stl .m{font:500 12.5px var(--mono);color:var(--mut);min-width:30px}.stl small{color:var(--mut);font-size:12.5px}.stl.opp{color:var(--mut)}
+.simtop{flex:none}
+#simbody:has(.simtop){display:flex;flex-direction:column;height:calc(100dvh - 54px)}
+.simlive{padding:12px 10px;margin:0}
+.simlive .simt{gap:5px;font-size:13.5px}
+.simlive .sims{font-size:40px;min-width:110px}
+.sims.pop{animation:simpop .5s ease-out}
+@keyframes simpop{0%{transform:scale(1.35);color:var(--acc-lt,#a9d4ad)}100%{transform:scale(1)}}
+.siminfo{margin:8px 0 0;padding:8px 12px 6px}
+.sirow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
+.siminfo .simbar{margin:6px 0 6px;height:4px}
+.tr.sm{padding:0;font-size:12.5px;line-height:20px;grid-template-columns:30px 1fr 20px 20px 20px 32px 28px}
+.tr.sm .rk{font-size:12px}
+.simlist{flex:1;min-height:0;overflow-y:auto;margin-top:8px;-webkit-overflow-scrolling:touch}
+.simlh{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;padding:2px 2px 4px;position:sticky;top:0;background:var(--bg)}
+.srow{display:grid;grid-template-columns:22px 1fr auto 1fr;gap:6px;align-items:center;padding:5px 8px;margin-bottom:4px;border-radius:8px;background:var(--surf);border-left:3px solid var(--mut);font-size:13px}
+.srow.w{border-left-color:var(--acc)}.srow.l{border-left-color:var(--red)}.srow.d{border-left-color:var(--yel)}
+.srow .srn{font:500 11.5px var(--mono);color:var(--mut)}
+.srow .sh{text-align:right}.srow .sh>span,.srow .sa>span{display:inline-flex;align-items:center;gap:6px}
+.srow .ss{font:600 14px var(--mono);text-align:center;min-width:46px}
+.srow .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
+.srow .hu{font-weight:600}
+.simlh .linkbtn{margin:0;padding:4px 6px;font-size:13px}
+.srow.in{animation:simin .5s ease-out}
+@keyframes simin{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
 .simwrap .res{padding:2px 0;font-size:13px}
 .simm{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
 .simt{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:14px;font-weight:500;min-width:0}
@@ -389,6 +413,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .lgrow{display:flex;gap:14px;justify-content:center;margin-top:34px}
 .lgrow .lg{opacity:.5}
 .lgrow .lg:first-child{opacity:1}
+.hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
 .codecard{text-align:center;margin-top:24px}
@@ -860,7 +885,7 @@ function go(s){
   if(s==="icon")renderIcon();
   var nh=$("navHome");if(nh)nh.hidden=!(LIVE&&NET.game&&NET.game.status==="done");
 }
-$("nav").addEventListener("click",function(e){var b=e.target.closest("button");if(b)go(b.dataset.s)});
+$("nav").addEventListener("click",function(e){var b=e.target.closest("button");if(b&&b.dataset.s)go(b.dataset.s)});
 
 /* ---------- pitch ---------- */
 function renderPitch(el,form,squad,mini,hl,alt){
@@ -1437,7 +1462,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?'<button class="btn wide" data-act="hofopen">Highscore</button>':'')+(LIVE?pushLine():'')+'</div></div>'+(LIVE?homeBanner():'')+
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?pushLine():'')+'</div></div>'+(LIVE?'<button class="hsfix" data-act="hofopen">🏆 Highscore</button>':'')+(LIVE?homeBanner():'')+
     (SAVED&&!G.started?'<div class="card" style="margin-top:34px"><b>Fortsæt dit spil</b><p class="note" style="margin-top:6px">Spilkode BRY4K2.<br>Dit spil er gemt, så du kan gå tilbage, hvor du slap.</p><div class="nav2"><button class="btn" data-act="discard">Slet og start forfra</button><button class="btn p go" data-act="resume">Fortsæt spillet</button></div></div>':"");
 }
 
@@ -1787,42 +1812,51 @@ function liveSimWaiting(txt){
   $("simbody").innerHTML='<div class="simwait"><div class="spin"></div><h2>'+txt+'</h2><p class="note">Det tager et øjeblik.</p></div>';
 }
 function liveSimStart(){
-  clearTimeout(NET.simT);NET.simWait=null;
+  simClear();NET.simWait=null;
   NET.sim={r:0,end:false};NET.shownRound=0;
   $("navwrap").hidden=true;go("sim");liveSimStep();
 }
+function simClear(){clearTimeout(NET.simT);(NET.simG||[]).forEach(clearTimeout);NET.simG=[]}
 function liveSimStep(){
   var s=NET.sim;if(!s||s.end)return;
   if(s.r>=38){liveSimDone();return}
   s.r++;NET.shownRound=s.r;liveSimRender("A");
-  NET.simT=setTimeout(function(){liveSimRender("B");NET.simT=setTimeout(liveSimStep,1700)},1400);
-}
-function liveSimTl(m){
-  var ev=liveScriptFor(m).filter(function(e){return e.t==="goal"});
-  if(!ev.length)return '<div class="note" style="margin-top:2px">Ingen mål</div>';
-  return ev.map(function(e){
-    var mine=e.s==="me";
-    return '<div class="stl '+(mine?"me":"opp")+'"><span class="m">'+e.m+"'</span><span>⚽ "+(e.ai?esc(e.x)+" scorer":esc(e.x))+(e.pen?' (straffe)':'')+(e.a&&!e.pen?' <small>'+esc(e.a.replace("Assist: ","assist "))+'</small>':'')+'</span></div>';
-  }).join("");
+  var m=liveMyMatch(s.r);NET.simG=[];
+  if(m){
+    var h=0,a=0;
+    NET.season.events.filter(function(e){return e.match_id===m.id&&e.type==="goal"}).sort(function(x,y){return x.minute-y.minute||x.id-y.id}).forEach(function(e){
+      if(e.team==="h")h++;else a++;var hh=h,aa=a;
+      NET.simG.push(setTimeout(function(){var el=$("simscore");if(!el||s.end)return;el.textContent=hh+" – "+aa;el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop")},400+e.minute/95*2500));
+    });
+  }
+  NET.simT=setTimeout(function(){liveSimRender("B");NET.simT=setTimeout(liveSimStep,1100)},3300);
 }
 function liveSimRender(ph){
   var s=NET.sim,r=s.r,m=liveMyMatch(r);if(!m){NET.simT=setTimeout(liveSimStep,50);return}
-  var B=ph==="B",rows=standingsLive(B?r:r-1),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
-  var home=m.home_key===NET.uid,mg=home?m.home_goals:m.away_goals,og=home?m.away_goals:m.home_goals;
-  var cls=mg>og?"w":(mg<og?"l":"d"),lab=mg>og?"Sejr":(mg<og?"Nederlag":"Uafgjort");
-  var side=function(k){return '<div class="simt">'+lcrest(k,44)+'<span>'+esc(lname(k))+'</span></div>'};
-  var h='<div class="status" style="margin-top:2px"><h1 style="margin:0;font-size:22px">Sæsonen spilles</h1><span class="muted">Runde '+r+' af 38</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
-    '<div class="card simcard"><div class="simm">'+side(m.home_key)+'<div class="sims">'+(B?m.home_goals+' – '+m.away_goals:'<span class="dots"><i></i><i></i><i></i></span>')+'</div>'+side(m.away_key)+'</div><div class="simres '+(B?cls:"")+'">'+(B?lab:(home?"Hjemmekamp":"Udekamp"))+'</div><div class="simtl">'+(B?liveSimTl(m):'')+'</div></div>'+
-    '<div class="card" style="margin-top:8px;padding:8px 14px"><div class="simrec" style="margin:0;font-size:14px"><b style="color:var(--text)">Din sæson</b> · '+(r-(B?0:1)<1?"første kamp er i gang":"plads "+(mi+1)+" · "+me.p+" point · "+me.w+"V "+me.d+"U "+me.l+"T")+'</div></div>';
-  if(B){
-    var oth=NET.season.matches.filter(function(x){return x.round===r&&x.id!==m.id});
-    h+='<div class="card simwrap" style="margin-top:8px;padding:8px 14px"><b style="font-size:14px">Runden i øvrigt</b><div style="margin-top:2px">'+oth.map(function(x){return '<div class="res">'+lhname(x.home_key,false)+'<span class="r">'+x.home_goals+' – '+x.away_goals+'</span>'+lhname(x.away_key,true)+'</div>'}).join("")+'</div></div>';
+  var B=ph==="B",up=B?r:r-1,rows=standingsLive(up),prev={};
+  if(up>1)standingsLive(up-1).forEach(function(x,i){prev[x.k]=i});
+  var mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
+  var side=function(k){return '<div class="simt">'+lcrest(k,40)+'<span>'+esc(lname(k))+'</span></div>'};
+  var h='<div class="simtop"><div class="card simcard simlive"><div class="simm">'+side(m.home_key)+'<div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div>'+side(m.away_key)+'</div></div>'+
+    '<div class="card siminfo"><div class="sirow"><b>Runde '+r+' af 38</b><span class="muted">'+(up<1?"Første kamp er i gang":"Din plads: "+(mi+1)+" · "+me.p+" point · "+me.w+"V "+me.d+"U "+me.l+"T")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
+    '<div class="tr h sm"><span>#</span><span>Hold</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
+  rows.forEach(function(x,i){
+    var mine=x.k===NET.uid,fr=lhuman(x.k)&&!mine,d=prev[x.k]!==undefined?prev[x.k]-i:0;
+    var ar=d>0?'<i class="ar up"></i>':(d<0?'<i class="ar dn"></i>':'');
+    h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
+  });
+  h+='</div></div><div class="simlist"><div class="simlh"><b>Dine kampe</b><button class="linkbtn" data-act="simskip">Spring til slut</button></div>';
+  for(var i=up;i>=1;i--){
+    var mm=liveMyMatch(i);if(!mm)continue;
+    var home=mm.home_key===NET.uid,mg=home?mm.home_goals:mm.away_goals,og=home?mm.away_goals:mm.home_goals;
+    h+='<div class="srow '+(mg>og?"w":(mg<og?"l":"d"))+(B&&i===up?" in":"")+'"><span class="srn">'+i+'</span><span class="sh">'+lhname(mm.home_key,false)+'</span><b class="ss">'+mm.home_goals+' – '+mm.away_goals+'</b><span class="sa">'+lhname(mm.away_key,true)+'</span></div>';
   }
-  h+='<button class="btn wide" data-act="simskip" style="margin-top:12px">Spring til slut</button>';
+  if(up<1)h+='<div class="note" style="padding:8px 0">Dine resultater dukker op her.</div>';
+  h+='</div>';
   $("simbody").innerHTML=h;
 }
 function liveSimDone(){
-  var s=NET.sim;if(s)s.end=true;clearTimeout(NET.simT);NET.shownRound=38;
+  var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
   var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
   $("simbody").innerHTML='<div class="simwait" style="padding-top:60px"><h1>Sæsonen er spillet</h1><p class="sub" style="margin-top:10px">Du sluttede som nr. '+(mi+1)+' med '+me.p+' point ('+me.w+' sejre, '+me.d+' uafgjorte, '+me.l+' nederlag).</p><button class="btn p wide go" data-act="simend" style="margin-top:28px">Slut sæson</button></div>';
 }
@@ -2239,8 +2273,8 @@ function pushLine(){
   var s=pushState(),st='';
   if(s==="home")return "";
   if(s==="denied")return '<p class="note" style="margin-top:14px;text-align:center">Beskeder er slået fra i telefonens indstillinger.</p>';
-  if(s==="off")return '<button class="btn wide" data-act="pushtoggle" '+st+'>Få besked, når det er din tur</button>';
-  if(s==="on")return '<button class="btn wide" data-act="pushtoggle" '+st+'>Beskeder er slået til · Slå fra</button>';
+  if(s==="off")return '<button class="linkbtn" data-act="pushtoggle" '+st+'>Få besked, når det er din tur</button>';
+  if(s==="on")return '<button class="linkbtn" data-act="pushtoggle" '+st+'>Beskeder er slået til · Slå fra</button>';
   return "";
 }
 function b64u(b){var p="=".repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,"+").replace(/_/g,"/")),o=new Uint8Array(r.length);for(var i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
