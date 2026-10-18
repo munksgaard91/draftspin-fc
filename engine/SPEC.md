@@ -37,4 +37,10 @@ Skjult sæsonheld (et fast tillæg til alle spillere på et hold hele sæsonen, 
 | 4 | sæsonheld sd 5 + form sd 3 | 44 % | 12 % | 65 % |
 | 4 | sæsonheld sd 7 + form sd 4 | 39 % | 12 % | 62 % |
 
-Leicester-agtige sæsoner (mesteren var plads 8 eller dårligere på papiret): 0 % uden ekstra held, 0,2 til 1,2 % med sæsonheld 3 til 5. Forslag: sæsonheld sd 5 og formsvingning sd 3 (rho 0,8), og afslør heldet ved sæsonslut ("Sæsonens heldsvin").
+Leicester-agtige sæsoner (mesteren var plads 8 eller dårligere på papiret): 0 % uden ekstra held, 0,2 til 1,2 % med sæsonheld 3 til 5. 
+
+## Beslutninger om held og sværhedsgrad (Rasmus, 2026-10-18)
+- Skjult sæsonheld (sd 5) og skjult formsvingning (sd 3, rho 0,8) indføres.
+- Heldet trækkes tilfældigt for hvert hold, hver sæson og hvert spil, af serveren ved sæsonstart. Det gemmes kun i en privat tabel, som klienter ikke kan læse. Det afsløres ALDRIG, hverken undervejs eller ved sæsonslut. Ingen priser, ingen visning.
+- Der indføres ingen sværhedsgrad. AI-klubberne beholder deres rigtige styrke (ingen nedskalering).
+- Hurtigt spil og hele sæsonen giver samme resultater ved samme seed (seedet er hemmeligt på serveren).
