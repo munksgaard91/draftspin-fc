@@ -44,3 +44,6 @@ Leicester-agtige sæsoner (mesteren var plads 8 eller dårligere på papiret): 0
 - Heldet trækkes tilfældigt for hvert hold, hver sæson og hvert spil, af serveren ved sæsonstart. Det gemmes kun i en privat tabel, som klienter ikke kan læse. Det afsløres ALDRIG, hverken undervejs eller ved sæsonslut. Ingen priser, ingen visning.
 - Der indføres ingen sværhedsgrad. AI-klubberne beholder deres rigtige styrke (ingen nedskalering).
 - Hurtigt spil og hele sæsonen giver samme resultater ved samme seed (seedet er hemmeligt på serveren).
+
+## Mørk hest (forslag, 2026-10-18)
+Ved hvert spil udpeger serveren hemmeligt ét AI-hold uden for top 10 (efter styrke) og giver det et ekstra sæsonheld oveni det almindelige. Spillerhold får aldrig bonussen (retfærdigt mellem vennerne). Aldrig afsløret. Resultater (`engine/reference/dark_sim.py`): bonus +10 giver 3 % titler og 26 % top 4; +12 giver 5 % og 37 %; +15 giver 9 % og 52 %.
