@@ -530,8 +530,8 @@ LEAGUE.forEach(function(c){
 var FRIENDS={Sara:"var(--c-sara)",Jonas:"var(--c-jonas)",Marie:"var(--c-marie)"};
 var FTEAM={Sara:"Sara United",Jonas:"Jonas Rovers",Marie:"Marie Athletic"};
 var FR_NAMES=["Sara United","Jonas Rovers","Marie Athletic"];
-var CNAME={"#6b8f6e":"Grøn","#3a6fd8":"Blå","#c29a3d":"Guld","#c4688b":"Rosa","#8c6bc4":"Lilla","#cf4a4a":"Rød","#e6ebf5":"Hvid","#1b2540":"Mørkeblå"};
-var SWATCH=["#6b8f6e","#3a6fd8","#c29a3d","#c4688b","#8c6bc4","#cf4a4a","#e6ebf5","#1b2540"];
+var CNAME={"#6b8f6e":"Grøn","#3a6fd8":"Blå","#c29a3d":"Guld","#c4688b":"Rosa","#8c6bc4":"Lilla","#cf4a4a":"Rød","#e6ebf5":"Hvid","#1b2540":"Mørkeblå","#e08a2e":"Orange","#e3c93a":"Gul","#2fa7a0":"Turkis","#7bc043":"Lysegrøn","#7a1f35":"Bordeaux","#6ab7e6":"Himmelblå","#8a93a6":"Grå","#111418":"Sort"};
+var SWATCH=["#6b8f6e","#3a6fd8","#c29a3d","#c4688b","#8c6bc4","#cf4a4a","#e6ebf5","#1b2540","#e08a2e","#e3c93a","#2fa7a0","#7bc043","#7a1f35","#6ab7e6","#8a93a6","#111418"];
 var DEFAULT_SQUAD=[["Alisson Becker","GK"],["Ben White","RB"],["William Saliba","CB"],["Virgil van Dijk","CB"],["Riccardo Calafiori","LB"],["Ryan Gravenberch","DM"],["Declan Rice","CM"],["Alexis Mac Allister","CM"],["Cody Gakpo","LW"],["Noni Madueke","RW"],["Alexander Isak","ST"]];
 var MAXP=6,NL=LEAGUE.length;
 var LIVE=!!(window.supabase&&window.supabase.createClient);
@@ -1197,8 +1197,18 @@ function ucrest(k,c1,c2,t,px){
     g=clip(SH)+'<path d="'+SH+'" style="fill:'+c1+'"/><g clip-path="url(#'+id+')"><path d="M-5 34L50 66L105 34V52L50 84L-5 52Z" style="fill:'+c2+'"/><path d="M-5 62L50 94L105 62V70L50 102L-5 70Z" style="fill:'+c2+';opacity:.55"/></g><path d="'+SH+'" style="fill:none;stroke:'+c2+';stroke-width:4"/>'+tx(46,c2,t.length>2?16:20);
   }else if(k===3){
     g='<defs><clipPath id="'+id+'"><path transform="translate(7 15) scale(.86)" d="'+SH+'"/></clipPath></defs><g clip-path="url(#'+id+')"><rect x="0" y="0" width="50" height="100" style="fill:'+c1+'"/><rect x="50" y="0" width="50" height="100" style="fill:'+c2+'"/></g><path transform="translate(7 15) scale(.86)" d="'+SH+'" style="fill:none;stroke:'+c2+';stroke-width:4.4"/><polygon points="32,20 35,5 42,13 50,3 58,13 65,5 68,20" style="fill:'+c2+';stroke:'+c1+';stroke-width:1.5;stroke-linejoin:round"/><rect x="24" y="50" width="52" height="24" rx="3" style="fill:#0c1220;fill-opacity:.88"/>'+tx(68,"#ffffff");
-  }else{
+  }else if(k===4){
     g='<polygon points="50,3 91,26 91,74 50,97 9,74 9,26" style="fill:'+c1+';stroke:'+c2+';stroke-width:4;stroke-linejoin:round"/><polygon points="50,11 84,30 84,70 50,89 16,70 16,30" style="fill:none;stroke:'+c2+';stroke-opacity:.55;stroke-width:1.4"/><polygon points="'+star(50,37,17)+'" style="fill:'+c2+'"/>'+tx(80,c2,t.length>2?16:20);
+  }else if(k===5){
+    g='<defs><clipPath id="'+id+'"><circle cx="50" cy="50" r="44"/></clipPath></defs><circle cx="50" cy="50" r="47" style="fill:'+c2+'"/><circle cx="50" cy="50" r="44" style="fill:'+c1+'"/><g clip-path="url(#'+id+')"><polygon points="0,62 100,22 100,44 0,84" style="fill:'+c2+'"/></g><text transform="rotate(-21.8 50 53)" x="50" y="59" text-anchor="middle" style="font:700 '+(t.length>2?15:19)+'px Outfit,sans-serif;fill:'+c1+'">'+esc(t)+'</text>';
+  }else if(k===6){
+    g=clip(SH)+'<path d="'+SH+'" style="fill:'+c1+'"/><g clip-path="url(#'+id+')"><rect x="0" y="40" width="100" height="26" style="fill:'+c2+'"/></g><path d="'+SH+'" style="fill:none;stroke:'+c2+';stroke-width:4"/><polygon points="'+star(50,27,10)+'" style="fill:'+c2+'"/>'+tx(59,c1,t.length>2?16:20);
+  }else if(k===7){
+    g='<polygon points="50,3 97,50 50,97 3,50" style="fill:'+c1+';stroke:'+c2+';stroke-width:4;stroke-linejoin:round"/><polygon points="50,14 86,50 50,86 14,50" style="fill:none;stroke:'+c2+';stroke-opacity:.55;stroke-width:1.4"/>'+tx(58,c2,t.length>2?17:21);
+  }else if(k===8){
+    g=clip(SH)+'<path d="'+SH+'" style="fill:'+c1+'"/><g clip-path="url(#'+id+')"><path d="M-5 60L50 34L105 60V76L50 50L-5 76Z" style="fill:'+c2+'"/><path d="M-5 82L50 56L105 82V90L50 64L-5 90Z" style="fill:'+c2+';opacity:.55"/></g><path d="'+SH+'" style="fill:none;stroke:'+c2+';stroke-width:4"/>'+tx(29,c2,t.length>2?13:15);
+  }else{
+    g='<defs><clipPath id="'+id+'"><circle cx="50" cy="50" r="44"/></clipPath></defs><circle cx="50" cy="50" r="47" style="fill:'+c2+'"/><circle cx="50" cy="50" r="44" style="fill:'+c1+'"/><g clip-path="url(#'+id+')"><rect x="12" y="0" width="9" height="100" style="fill:'+c2+'"/><rect x="30" y="0" width="9" height="100" style="fill:'+c2+'"/><rect x="61" y="0" width="9" height="100" style="fill:'+c2+'"/><rect x="79" y="0" width="9" height="100" style="fill:'+c2+'"/></g><circle cx="50" cy="50" r="22" style="fill:'+c2+';stroke:'+c1+';stroke-width:3"/>'+tx(57,c1,t.length>2?15:19);
   }
   return '<span class="cr"><svg width="'+px+'" height="'+px+'" viewBox="0 0 100 100" aria-hidden="true">'+g+'</svg></span>';
 }
@@ -1207,7 +1217,7 @@ function hcrest(k,px){
   var h=HC[k];return ucrest(h[0],h[1],h[2],initials(FTEAM[k]),px);
 }
 function crestBtns(){
-  return [0,1,2,3,4].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Våbenskjold '+(i+1)+'">'+ucrest(i,S.color,S.color2,initials(S.team||"Mit hold"),44)+'</button>'}).join("");
+  return [0,1,2,3,4,5,6,7,8,9].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Våbenskjold '+(i+1)+'">'+ucrest(i,S.color,S.color2,initials(S.team||"Mit hold"),44)+'</button>'}).join("");
 }
 function nm(n){return NAMECODE[n]?crest(NAMECODE[n],16)+n:n}
 
