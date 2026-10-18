@@ -44,11 +44,7 @@ class U:
     def engine(self, action, gid, **x):
         return http("POST", "/functions/v1/engine", self.tok, dict(action=action, game_id=gid, **x))
 
-FORMS = {
- "4-3-3": "LW ST RW CM DM CM LB CB CB RB GK".split(), "4-4-2": "ST ST LW CM CM RW LB CB CB RB GK".split(),
- "4-2-3-1": "ST LW AM RW DM DM LB CB CB RB GK".split(), "3-5-2": "ST ST LW CM DM CM RW CB CB CB GK".split(),
- "5-3-2": "ST ST CM DM CM LB CB CB CB RB GK".split(),
-}
+FORMS = {'4-3-3': ['LW', 'ST', 'RW', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-4-2': ['ST', 'ST', 'LM', 'CM', 'CM', 'RM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-2-3-1': ['ST', 'LW', 'AM', 'RW', 'DM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-1-4-1': ['ST', 'LM', 'CM', 'CM', 'RM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-1-2-1-2': ['ST', 'ST', 'AM', 'CM', 'CM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '3-5-2': ['ST', 'ST', 'LM', 'CM', 'DM', 'CM', 'RM', 'CB', 'CB', 'CB', 'GK'], '3-4-3': ['LW', 'ST', 'RW', 'CM', 'CM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '5-3-2': ['ST', 'ST', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '5-4-1': ['ST', 'LM', 'CM', 'CM', 'RM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '4-5-1': ['ST', 'LM', 'CM', 'DM', 'CM', 'RM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-4-1-1': ['ST', 'AM', 'LM', 'CM', 'CM', 'RM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-3-1-2': ['ST', 'ST', 'AM', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-2-2-2': ['ST', 'ST', 'AM', 'AM', 'DM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '3-4-2-1': ['ST', 'AM', 'AM', 'CM', 'CM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '4-3-2-1': ['ST', 'AM', 'AM', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'RB', 'GK']}
 PLAYERS = None
 def players(u):
     global PLAYERS
@@ -61,8 +57,10 @@ def players(u):
             if len(rows) < 1000: break
             off += 1000
     return PLAYERS
+FIT = {"GK": {"GK": 2}, "CB": {"CB": 2}, "LB": {"LB": 2, "RB": 1}, "RB": {"RB": 2, "LB": 1}, "DM": {"DM": 2, "CM": 1}, "CM": {"CM": 2, "DM": 1, "AM": 1},
+       "AM": {"AM": 2, "CM": 1}, "LW": {"LW": 2, "LM": 2, "ST": 1}, "RW": {"RW": 2, "RM": 2, "ST": 1}, "ST": {"ST": 2, "LW": 1, "RW": 1}}
 def slot_ok(p, slot):
-    return p["pos"] == slot or ((p.get("alts") or {}).get(slot) or {}).get("fit", 0) >= 5
+    return FIT.get(p["pos"], {}).get(slot, 0) > 0
 
 def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
 checks = []
@@ -77,10 +75,10 @@ def make_game(users, pace, timer=0):
     if code is None: code = adm.sel("games", f"select=code&id=eq.{gid}")[0]["code"]
     ids["games"].append(gid); save_ids()
     for u in users[1:]: u.rpc_ok("join_game", p_code=code)
-    forms = list(FORMS)
+    forms = list(FORMS)  # alle 15 formationer, så de alle bliver prøvet
     cols = ["#6b8f6e", "#3a6fd8", "#c29a3d", "#c4688b", "#8c6bc4", "#cf4a4a", "#e08a2e", "#2fa7a0"]
     for i, u in enumerate(users):
-        u.rpc_ok("update_team", p_game=gid, p_name=f"Bot {u.name} FC", p_c1=cols[i], p_c2="#e6ebf5", p_crest=1 + (i * 3) % 10, p_formation=forms[i % len(forms)], p_display=f"Bot{i+1}")
+        u.rpc_ok("update_team", p_game=gid, p_name=f"Bot {u.name} FC", p_c1=cols[i], p_c2="#e6ebf5", p_crest=1 + (i * 3) % 10, p_formation=forms[(i * 4 + len(ids["games"])) % len(forms)], p_display=f"Bot{i+1}")
         u.rpc_ok("set_ready", p_game=gid, p_ready=True)
     adm.rpc_ok("start_game", p_game=gid)
     return gid

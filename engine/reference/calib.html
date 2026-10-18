@@ -1,0 +1,31 @@
+<!doctype html><meta charset=utf-8><body><pre id=o>kører</pre>
+<script type=module>
+const E = await import(location.search.includes("old")?"./engine_old.js":"./engine.js");
+const P=await (await fetch("players.json")).json();
+const clubs={};P.forEach(p=>(clubs[p.club]=clubs[p.club]||[]).push(p));
+const teams=Object.keys(clubs).sort().map(c=>{const b=E.bestClubXI(clubs[c]);return b?{key:c,kind:"ai",xi:b.xi,form:b.form,strength:b.strength}:null}).filter(Boolean);
+// vælg de 20 stærkeste hold (som i spillet: svageste AI-klubber fjernes)
+teams.sort((a,b)=>b.strength-a.strength);
+const field=teams.slice(0,20);
+const forms={};field.forEach(t=>forms[t.form]=(forms[t.form]||0)+1);
+const sched=E.schedule(field.length);
+let matches=0,goals=0,H=0,D=0,A=0,y=0,r=0,pens=0;const titles={};const SEAS=200;
+let penUse=0,slots=0;field.forEach(t=>t.xi.forEach(x=>{slots++;if(x.f<1)penUse++}));
+for(let s=0;s<SEAS;s++){
+  const sec=E.setupSeason(field,"seed"+s);
+  const pts={};field.forEach(t=>pts[t.key]=0);const gd={};field.forEach(t=>gd[t.key]=0);
+  sched.forEach((rd,ri)=>rd.forEach(([h,a])=>{
+    const th=field[h],ta=field[a];
+    const res=E.simulateMatch({xi:th.xi,shift:sec.luck[th.key].season+sec.luck[th.key].form[ri]},{xi:ta.xi,shift:sec.luck[ta.key].season+sec.luck[ta.key].form[ri]},"seed"+s+"|"+ri+"|"+th.key);
+    matches++;goals+=res.hg+res.ag;
+    if(res.hg>res.ag){H++;pts[th.key]+=3}else if(res.hg<res.ag){A++;pts[ta.key]+=3}else{D++;pts[th.key]++;pts[ta.key]++}
+    gd[th.key]+=res.hg-res.ag;gd[ta.key]+=res.ag-res.hg;
+    res.events.forEach(e=>{if(e.type==="yellow")y++;if(e.type==="red"||e.type==="second_yellow")r++;if(e.pen)pens++});
+  }));
+  const w=Object.keys(pts).sort((a,b)=>pts[b]-pts[a]||gd[b]-gd[a])[0];titles[w]=(titles[w]||0)+1;
+}
+const top=Object.entries(titles).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>k+" "+(v/SEAS*100).toFixed(0));
+const st=field.map(t=>t.key+" "+t.form+" "+t.strength.toFixed(1)).join("; ");
+window.RESULT={engine:E.ENGINE_VERSION,matches,goalsPerMatch:+(goals/matches).toFixed(2),H:+(H/matches*100).toFixed(1),D:+(D/matches*100).toFixed(1),A:+(A/matches*100).toFixed(1),yellowPerMatch:+(y/matches).toFixed(2),redPerMatch:+(r/matches).toFixed(3),penPerMatch:+(pens/matches).toFixed(2),titlesPer100:top.join(", "),penSlotsInAiXI:penUse+" af "+slots,forms,strengths:st};
+document.getElementById("o").textContent=JSON.stringify(window.RESULT,null,1);
+</script>

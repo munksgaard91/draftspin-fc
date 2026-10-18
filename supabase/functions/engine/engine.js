@@ -1,22 +1,28 @@
 // DraftSpin FC kampmotor. Ren JavaScript uden afhængigheder, så den kan testes i en browser og køre i en Supabase edge function.
-// Kalibreret mod Python-referencen i engine/reference (k = 40, muH = 1,37, muA = 1,05).
+// Kalibreret mod Python-referencen i engine/reference. v1.2: nye positionsregler (fast straf 0,90) og 15 formationer med LM/RM.
 
 export const FORMS = {
   "4-3-3": ["LW", "ST", "RW", "CM", "DM", "CM", "LB", "CB", "CB", "RB", "GK"],
-  "4-4-2": ["ST", "ST", "LW", "CM", "CM", "RW", "LB", "CB", "CB", "RB", "GK"],
+  "4-4-2": ["ST", "ST", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "RB", "GK"],
   "4-2-3-1": ["ST", "LW", "AM", "RW", "DM", "DM", "LB", "CB", "CB", "RB", "GK"],
-  "4-1-4-1": ["ST", "LW", "CM", "CM", "RW", "DM", "LB", "CB", "CB", "RB", "GK"],
+  "4-1-4-1": ["ST", "LM", "CM", "CM", "RM", "DM", "LB", "CB", "CB", "RB", "GK"],
   "4-1-2-1-2": ["ST", "ST", "AM", "CM", "CM", "DM", "LB", "CB", "CB", "RB", "GK"],
-  "3-5-2": ["ST", "ST", "LW", "CM", "DM", "CM", "RW", "CB", "CB", "CB", "GK"],
+  "3-5-2": ["ST", "ST", "LM", "CM", "DM", "CM", "RM", "CB", "CB", "CB", "GK"],
   "3-4-3": ["LW", "ST", "RW", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
   "5-3-2": ["ST", "ST", "CM", "DM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
-  "5-4-1": ["ST", "LW", "CM", "CM", "RW", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "5-4-1": ["ST", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "4-5-1": ["ST", "LM", "CM", "DM", "CM", "RM", "LB", "CB", "CB", "RB", "GK"],
+  "4-4-1-1": ["ST", "AM", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "RB", "GK"],
+  "4-3-1-2": ["ST", "ST", "AM", "CM", "DM", "CM", "LB", "CB", "CB", "RB", "GK"],
+  "4-2-2-2": ["ST", "ST", "AM", "AM", "DM", "DM", "LB", "CB", "CB", "RB", "GK"],
+  "3-4-2-1": ["ST", "AM", "AM", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "4-3-2-1": ["ST", "AM", "AM", "CM", "DM", "CM", "LB", "CB", "CB", "RB", "GK"],
 };
-const WOFF = { ST: 0.24, LW: 0.16, RW: 0.16, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
-const WDEF = { GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
-const WGOAL = { ST: 1, LW: 0.65, RW: 0.65, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
-const WASSIST = { AM: 1, LW: 1, RW: 1, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.1";
+const WOFF = { ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
+const WDEF = { GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
+const WGOAL = { ST: 1, LW: 0.65, RW: 0.65, LM: 0.4, RM: 0.4, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
+const WASSIST = { AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
+export const ENGINE_VERSION = "1.2";
 export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.4, RW_REF = 10.75; // referencesummer for et gennemsnitshold
@@ -42,10 +48,15 @@ export function makeRng(seedStr) {
 }
 
 // ---------- opstilling ----------
+// Positionsregler: spillerens position -> plads. Naturlig plads = 1, plads med straf = PEN_FACTOR, ellers null (kan ikke spille der).
+// Skal være identisk med slot_fit() i databasen (migration 020).
+export const PEN_FACTOR = 0.90;
+const PENALTY_SLOTS = { LB: ["RB"], RB: ["LB"], DM: ["CM"], CM: ["DM", "AM"], AM: ["CM"], LW: ["ST"], RW: ["ST"], ST: ["LW", "RW"] };
+const NATURAL_EXTRA = { LW: ["LM"], RW: ["RM"] };
 export function fac(p, slotPos) {
-  if (p.pos === slotPos) return 1;
-  const a = p.alts && p.alts[slotPos];
-  return a ? a.factor : null;
+  if (p.pos === slotPos || (NATURAL_EXTRA[p.pos] || []).includes(slotPos)) return 1;
+  if ((PENALTY_SLOTS[p.pos] || []).includes(slotPos)) return PEN_FACTOR;
+  return null;
 }
 export function bestXI(players, form) {
   const slots = FORMS[form], used = new Set(), xi = new Array(11);
@@ -59,9 +70,11 @@ export function bestXI(players, form) {
   return xi;
 }
 export function xiStrength(xi) { return xi.reduce((a, x) => a + x.p.rating * x.f, 0) / 11; }
-export function bestClubXI(players) {
+// AI-klubberne vælger kun blandt de oprindelige ni formationer (de nye er til spillerne), så ligaens styrkebalance bevares
+export const AI_FORMS = ["4-3-3", "4-4-2", "4-2-3-1", "4-1-4-1", "4-1-2-1-2", "3-5-2", "3-4-3", "5-3-2", "5-4-1"];
+export function bestClubXI(players, forms = AI_FORMS) {
   let b = null, bf = null;
-  for (const f of Object.keys(FORMS)) { const x = bestXI(players, f); if (x && (b === null || xiStrength(x) > xiStrength(b))) { b = x; bf = f; } }
+  for (const f of forms) { const x = bestXI(players, f); if (x && (b === null || xiStrength(x) > xiStrength(b))) { b = x; bf = f; } }
   return b ? { form: bf, xi: b, strength: xiStrength(b) } : null;
 }
 

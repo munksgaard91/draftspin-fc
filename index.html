@@ -30,6 +30,11 @@
 .simwait{text-align:center;padding:90px 0 40px}
 .spin{width:38px;height:38px;border-radius:50%;border:3px solid var(--surf2);border-top-color:var(--acc);margin:0 auto 22px;animation:simsp 0.9s linear infinite}
 @keyframes simsp{to{transform:rotate(360deg)}}
+
+.slot.hl .dot{border-color:#46c46f;background:color-mix(in srgb,#46c46f 35%,transparent);color:#fff}
+.slot.hl.alt .dot{border-color:var(--yel);background:color-mix(in srgb,var(--yel) 32%,transparent);color:#fff}
+.pitch.dim .slot:not(.hl) .dot{border:1.5px solid #ffffff2e;background:#ffffff12;color:#ffffff59}
+.pitch.dim .slot:not(.hl){opacity:.85}
 </style>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -508,20 +513,26 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 <script>
 (function(){
 "use strict";
-var POSC={GK:"GK",RB:"RB",CB:"CB",LB:"LB",DM:"CDM",CM:"CM",AM:"CAM",LW:"LW",RW:"RW",ST:"ST"};
-var POSN={GK:"Goalkeeper",RB:"Right back",CB:"Centre back",LB:"Left back",DM:"Defensive midfielder",CM:"Central midfielder",AM:"Attacking midfielder",LW:"Left winger",RW:"Right winger",ST:"Striker"};
+var POSC={GK:"GK",RB:"RB",CB:"CB",LB:"LB",DM:"CDM",CM:"CM",AM:"CAM",LM:"LM",RM:"RM",LW:"LW",RW:"RW",ST:"ST"};
+var POSN={GK:"Goalkeeper",RB:"Right back",CB:"Centre back",LB:"Left back",DM:"Defensive midfielder",CM:"Central midfielder",AM:"Attacking midfielder",LM:"Left midfielder",RM:"Right midfielder",LW:"Left winger",RW:"Right winger",ST:"Striker"};
 var POSORD=["GK","RB","CB","LB","DM","CM","AM","RW","LW","ST"];
 var GROUPS={GK:["GK"],DEF:["RB","CB","LB"],MID:["DM","CM","AM"],ATT:["LW","RW","ST"]};
 var FORMS={
   "4-3-3":[["LW","ST","RW"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
-  "4-4-2":[["ST","ST"],["LW","CM","CM","RW"],["LB","CB","CB","RB"],["GK"]],
+  "4-4-2":[["ST","ST"],["LM","CM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
   "4-2-3-1":[["ST"],["LW","AM","RW"],["DM","DM"],["LB","CB","CB","RB"],["GK"]],
-  "4-1-4-1":[["ST"],["LW","CM","CM","RW"],["DM"],["LB","CB","CB","RB"],["GK"]],
+  "4-1-4-1":[["ST"],["LM","CM","CM","RM"],["DM"],["LB","CB","CB","RB"],["GK"]],
   "4-1-2-1-2":[["ST","ST"],["AM"],["CM","CM"],["DM"],["LB","CB","CB","RB"],["GK"]],
-  "3-5-2":[["ST","ST"],["LW","CM","DM","CM","RW"],["CB","CB","CB"],["GK"]],
+  "3-5-2":[["ST","ST"],["LM","CM","DM","CM","RM"],["CB","CB","CB"],["GK"]],
   "3-4-3":[["LW","ST","RW"],["CM","CM"],["LB","CB","CB","CB","RB"],["GK"]],
   "5-3-2":[["ST","ST"],["CM","DM","CM"],["LB","CB","CB","CB","RB"],["GK"]],
-  "5-4-1":[["ST"],["LW","CM","CM","RW"],["LB","CB","CB","CB","RB"],["GK"]]
+  "5-4-1":[["ST"],["LM","CM","CM","RM"],["LB","CB","CB","CB","RB"],["GK"]],
+  "4-5-1":[["ST"],["LM","CM","DM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
+  "4-4-1-1":[["ST"],["AM"],["LM","CM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
+  "4-3-1-2":[["ST","ST"],["AM"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
+  "4-2-2-2":[["ST","ST"],["AM","AM"],["DM","DM"],["LB","CB","CB","RB"],["GK"]],
+  "3-4-2-1":[["ST"],["AM","AM"],["CM","CM"],["LB","CB","CB","CB","RB"],["GK"]],
+  "4-3-2-1":[["ST"],["AM","AM"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]]
 };
 var LEAGUE=[["ARS","Arsenal"],["AVL","Aston Villa"],["BOU","Bournemouth"],["BRE","Brentford"],["BHA","Brighton"],["CHE","Chelsea"],["COV","Coventry City"],["CRY","Crystal Palace"],["EVE","Everton"],["FUL","Fulham"],["HUL","Hull City"],["IPS","Ipswich Town"],["LEE","Leeds United"],["LIV","Liverpool"],["MCI","Manchester City"],["MUN","Manchester United"],["NEW","Newcastle United"],["NFO","Nottingham Forest"],["SUN","Sunderland"],["TOT","Tottenham Hotspur"]];
 var REMOVED=["Hull City","Ipswich Town","Coventry City","Sunderland","Leeds United","Nottingham Forest"];
@@ -817,8 +828,8 @@ function renderPitch(el,form,squad,mini,hl,alt){
     var base=10+i*(80/(n-1));
     r.forEach(function(pos,j){
       var left=(j+1)/(r.length+1)*100,p=squad?squad[idx]:null;
-      var top=base+(pos==="DM"?6:(pos==="AM"?-6:0));
-      html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":(p?p.num:POSC[pos]))+'</div>'+(p&&!mini?'<div class="nm">'+esc(lastName(p.name))+'</div>':'')+'</div>';
+      var top=base+(pos==="DM"?2:(pos==="AM"?-2:0));
+      html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
   });
@@ -867,13 +878,13 @@ function setStrip(k,anim){
   s.style.transform="translateY("+(30-k*60)+"px)";
   void s.offsetHeight;
 }
-/* en CAM eller CDM må fylde en CM-plads med lille straf */
-var ALT={RB:["LB","CB"],LB:["RB","CB"],CB:["LB","RB"],CM:["AM","DM"],AM:["CM"],DM:["CM"],LW:["RW","ST"],RW:["LW","ST"],ST:["LW","RW"]};
-function posTxt(pos,p){var a=altsOf(pos,p);return POSC[pos]+(a.length?" ("+a.map(function(x){return POSC[x]}).join(", ")+")":"")}
-function altsOf(pos,p){return (LIVE&&p&&p[4])?Object.keys(p[4]):(ALT[pos]||[])}
+/* positionsregler: 2 = naturlig plads (grøn), 1 = plads med straf (gul), ellers grå. Identisk med slot_fit() i databasen og fac() i motoren. */
+var FIT={GK:{GK:2},CB:{CB:2},LB:{LB:2,RB:1},RB:{RB:2,LB:1},DM:{DM:2,CM:1},CM:{CM:2,DM:1,AM:1},AM:{AM:2,CM:1},LW:{LW:2,LM:2,ST:1},RW:{RW:2,RM:2,ST:1},ST:{ST:2,LW:1,RW:1}};
+function fit(pos,slot){return (FIT[pos]||{})[slot]||0}
+function posTxt(pos,p){return POSC[pos]}
 function slotsIn(form,squad,pos,p){
-  var f=FORMS[form].reduce(function(a,r){return a.concat(r)},[]),ex=[],alt=[],al=altsOf(pos,p);
-  f.forEach(function(sp,k){if(!squad[k]){if(sp===pos)ex.push(k);else if(al.indexOf(sp)>-1)alt.push(k)}});
+  var f=FORMS[form].reduce(function(a,r){return a.concat(r)},[]),ex=[],alt=[];
+  f.forEach(function(sp,k){if(!squad[k]){var v=fit(pos,sp);if(v===2)ex.push(k);else if(v===1)alt.push(k)}});
   return {ex:ex,alt:alt};
 }
 function slotFor(pos,p){
@@ -928,7 +939,7 @@ function renderList(){
   list.forEach(function(p){
     var st=status(p);
     if(S.hideFilled&&!st.ok&&st.why==="Position fyldt")return;
-    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?(st.pen?'<span class="ptag">Naboplads</span>':(LIVE&&NET.game&&NET.game.show_ratings?'<span class="mono muted">'+p[5]+'</span>':'<span></span>')):'<span class="rp">'+st.why+'</span>')+'</div>';
+    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?((LIVE&&NET.game&&NET.game.show_ratings?'<span class="mono muted">'+p[5]+'</span>':'<span></span>')):'<span class="rp">'+st.why+'</span>')+'</div>';
   });
   $("clist").innerHTML=h||'<p class="note">Ingen spillere matcher.</p>';
 }
@@ -1002,7 +1013,7 @@ function renderSheet(){
   if(!S.sel||!S.club){sh.hidden=true;app.classList.remove("sheeted");return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===S.sel})[0];
   sh.hidden=false;app.classList.add("sheeted");
-  sh.innerHTML='<div class="sheetin"><div class="pitch" id="spitch"></div><div class="t"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1],p)+'</span><button class="btn" data-cancel="1" style="margin-top:10px">Vælg en anden</button>'+(slotsIn(S.form,S.squad,p[1],p).alt.length?'<p class="hint2"><span style="color:var(--acc)">Grøn</span> = rigtig plads. <span style="color:var(--yel)">Gul</span> = naboplads med lille straf.</p>':'')+'</div></div>';
+  sh.innerHTML='<div class="sheetin"><div class="pitch" id="spitch"></div><div class="t"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1],p)+'</span><button class="btn" data-cancel="1" style="margin-top:10px">Vælg en anden</button>'+'</div></div>';
   renderPitch($("spitch"),S.form,S.squad,false,eligible(p[1],p),slotsIn(S.form,S.squad,p[1],p).alt);
 }
 $("sheet").addEventListener("click",function(e){
@@ -1013,7 +1024,7 @@ $("sheet").addEventListener("click",function(e){
 function lockPick(name,i){
   if(LIVE){livePick(name,i);return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0];
-  S.squad[i]={name:p[0],pos:p[1],club:S.club,pen:flat()[i]!==p[1],num:p[2]};
+  S.squad[i]={name:p[0],pos:p[1],club:S.club,pen:fit(p[1],flat()[i])===1,num:p[2]};
   S.taken[p[0]]="Rasmus FC";
   S.feed.unshift({who:"Dig",name:p[0],pos:p[1],club:S.club});
   S.sel=null;S.club=null;S.auto=false;clearTurnTimer();S.pickIdx++;
@@ -2019,7 +2030,7 @@ function liveDraftSync(){
     var info=NET.byId[pk.player_id];if(!info)return;
     var k=keyOf(pk.user_id),owner=pl.filter(function(p){return p.user_id===pk.user_id})[0];
     var slotPos=FORMS[owner.formation].reduce(function(a,r2){return a.concat(r2)},[])[pk.slot-1];
-    var e={name:info.p[0],pos:info.p[1],club:info.club,num:info.p[2],pen:slotPos!==info.p[1]};
+    var e={name:info.p[0],pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos)===1};
     if(k==="me")S.squad[pk.slot-1]=e;else if(S.fsq[k])S.fsq[k].squad[pk.slot-1]=e;
     S.counts[k]=(S.counts[k]||0)+1;S.taken[info.p[0]]=k==="me"?(S.team.trim()||"Mit hold"):(FTEAM[k]||"Spiller");
     feed.push({who:k==="me"?"Dig":(FTEAM[k]||"Spiller"),name:info.p[0],pos:info.p[1],club:info.club});
