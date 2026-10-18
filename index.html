@@ -88,12 +88,12 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .stepno{font-size:13px;color:var(--mut);margin-top:10px}
 .opts{display:grid;gap:10px;margin-top:22px}
 .opt{appearance:none;text-align:left;background:var(--surf);border:1.5px solid transparent;border-radius:10px;padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.opt.on{border-color:var(--acc)}
+.opt.on{border-color:var(--text)}
 .opt:disabled{opacity:.45;cursor:default}
 .opt b{font-weight:500;display:block}
 .opt small{color:var(--mut);font-size:13.5px}
 .opt .rd{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--mut);flex:none}
-.opt.on .rd{border:5px solid var(--acc)}
+.opt.on .rd{border:5px solid var(--text)}
 .nav2{display:flex;gap:10px;margin-top:26px}
 .nav2 .btn.p{flex:1}
 .field{display:block;margin-top:22px}
@@ -108,7 +108,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .kit .dotc{width:28px;height:28px}
 .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
 .fcard{appearance:none;text-align:left;background:var(--surf);border:1.5px solid transparent;border-radius:10px;padding:10px;cursor:pointer}
-.fcard.on{border-color:var(--acc)}
+.fcard.on{border-color:var(--text)}
 .fcard .fn{font:500 13px var(--mono);margin-bottom:8px;color:var(--mut)}
 .fcard.on .fn{color:var(--text)}
 .roster{margin-top:12px}
@@ -219,7 +219,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .crests{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .sw{border-color:#ffffff26}.sw.on{border-color:var(--text)}.sw:disabled{opacity:.25;cursor:not-allowed}
 .cbtn{appearance:none;background:var(--surf);border:1.5px solid transparent;border-radius:10px;padding:8px;cursor:pointer;line-height:0}
-.cbtn.on{border-color:var(--acc)}
+.cbtn.on{border-color:var(--text)}
 .cbtn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .ready{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
 .ready span{display:flex;gap:7px;align-items:center;color:var(--mut)}
@@ -238,7 +238,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .legend span{display:flex;gap:7px;align-items:center}
 .seg{display:flex;gap:20px;overflow-x:auto;margin:16px 0 4px;border-bottom:1px solid var(--line)}
 .seg button{appearance:none;white-space:nowrap;border:0;border-bottom:2px solid transparent;background:none;padding:8px 0 10px;font-size:15px;color:var(--mut);cursor:pointer}
-.seg button.on{color:var(--text);font-weight:600;border-color:var(--acc)}
+.seg button.on{color:var(--text);font-weight:600;border-color:var(--text)}
 .sr{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
 .sr:last-child{border:0}
 .sr .rk{font:400 13px var(--mono);color:var(--mut)}
@@ -270,7 +270,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .tools{display:flex;gap:10px;align-items:center;margin:14px 0 4px}
 .tools .inp{padding:10px 12px;flex:1;min-width:0}
 .tools .btn{padding:11px 14px;font-size:14px;white-space:nowrap}
-.tools .btn.on{background:var(--acc);color:var(--acc-ink)}
+.tools .btn.on{background:var(--surf2);border-color:var(--text);color:var(--text)}
 .miss{font-size:14px;color:var(--mut);margin:10px 0 0}
 .miss b{color:var(--text);font-weight:500}
 .timer{font:500 15px var(--mono);margin:6px 0 0;color:var(--mut)}
@@ -331,10 +331,13 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
 .conn i{display:inline-block;width:5px;height:5px;border-radius:50%;background:currentColor;margin-left:5px;animation:cd 1.2s infinite ease-in-out}
 .conn i:nth-of-type(2){animation-delay:.2s}.conn i:nth-of-type(3){animation-delay:.4s}
 @keyframes cd{0%,80%,100%{opacity:.25}40%{opacity:1}}
-.champ{text-align:center;padding:26px 18px}
+.champ{text-align:center;padding:26px 18px;border:1px solid #e4c47a55;background:radial-gradient(120% 80% at 50% 0%,#e4c47a2e,transparent 62%),var(--surf);box-shadow:0 0 0 1px #e4c47a14,0 22px 60px -24px #e4c47a88}
 .champ .tr0{display:block;margin:0 auto 10px}
 .champ b{display:block;font-size:26px;font-weight:600;margin-top:10px;letter-spacing:-.01em}
-.champ .lblm{font-size:14px;color:#e4c47a;font-weight:500}
+.champ .lblm{display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.champ .lblm span{position:relative;top:-5px;background:linear-gradient(100deg,#b8913a 10%,#fff3c4 40%,#e4c47a 55%,#b8913a 90%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3.2s ease-in-out infinite}
+@keyframes shine{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.champ .lblm svg{filter:drop-shadow(0 0 8px #e4c47a99)}
 .endrow{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
 .endrow:last-child{border:0}
 .endrow .hk{font:500 15px var(--mono);color:var(--mut);text-align:center}
@@ -403,7 +406,7 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
     </div>
 
     <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="btn p" id="playBtn" style="flex:1">Se kampen igen</button>
+      <button class="btn" id="playBtn" style="flex:1">Se kampen igen</button>
       <button class="btn" id="spdBtn" style="min-width:56px">1x</button>
       <button class="btn" id="skipBtn">Spring til resultat</button>
     </div>
@@ -447,9 +450,9 @@ h2{font-size:17px;font-weight:600;margin:36px 0 12px}
     <div class="seg" id="hseg"></div>
     <div id="hbody"></div>
   </section>
-  <section id="s-end" class="screen"><div id="endbody"></div><div id="restartBox" style="margin-top:20px"></div></section>
+  <section id="s-end" class="screen"><div id="endbody"></div><div id="restartBox" hidden></div></section>
   <section id="s-icon" class="screen"><div id="iconbody"></div></section>
-  <div class="protofoot"><span>Prototype:</span><button id="toStart">startskærm</button><button data-pv="end">sæsonslut</button><button data-pv="conn">forbindelse væk</button><button data-pv="away">admin ude</button><button data-pv="closed">lobby lukket</button><button data-pv="nopl">ingen spiller</button><button data-pv="icon">app-ikon</button></div>
+  <div class="protofoot"><span>Prototype:</span><button id="toStart">startskærm</button><button data-pv="end">sæsonslut</button><button data-pv="conn">forbindelse væk</button><button data-pv="away">admin ude</button><button data-pv="closed">lobby lukket</button><button data-pv="icon">app-ikon</button></div>
 </div>
 
 <div class="toast" id="toast" hidden></div>
@@ -625,12 +628,10 @@ function renderFlow(){
   }else if(st==="saeson"){
     h+='<h1>Vælg sæson</h1><div class="opts">'+opt("season","2026/2027",F.season==="2026/2027","2026/2027","Aktuelle trupper og klubber",false,lbadge(F.liga,40))+'</div>'+navBtns("Fortsæt til spiltype",!F.season);
   }else if(st==="spil"){
-    h+='<h1>Opret spil</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div><div class="opts" style="margin-top:18px">'+
-      opt("mode","season",true,"Sæson","38 kampe mod hinanden og AI-klubber")+
-      opt("mode","cup",false,"Sæson og cup","Kommer senere",true)+'</div>'+
-      '<label class="field"><span>Antal spillere, højst</span><div class="sws" id="maxsel">'+[2,3,4,5,6].map(function(n){return '<button class="btn" data-max="'+n+'" style="padding:10px 16px;'+(F.max===n?'background:var(--acc);color:var(--acc-ink);font-weight:600':'')+'">'+n+'</button>'}).join("")+'</div></label>'+
-      '<div class="field"><span>Ratings</span><div class="sws">'+[[false,'Skjulte'],[true,'Vis']].map(function(o){return '<button class="btn" data-showr="'+o[0]+'" style="padding:10px 16px;'+(F.showR===o[0]?'background:var(--acc);color:var(--acc-ink);font-weight:600':'')+'">'+o[1]+'</button>'}).join("")+'</div><p class="note" style="margin:6px 0 0">Skjulte ratings gør draften mere spændende. Du kan ændre det, mens I er i lobbyen.</p></div>'+
-      '<div class="field"><span>Tidsgrænse pr. valg</span><div class="sws">'+[0,30,60,90].map(function(n){return '<button class="btn" data-timer="'+n+'" style="padding:10px 16px;'+(F.timer===n?'background:var(--acc);color:var(--acc-ink);font-weight:600':'')+'">'+(n?n+' s':'Fra')+'</button>'}).join("")+'</div></div>'+
+    h+='<h1>Opret spil</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div><p class="sub" style="margin-top:12px">Sæson med 38 kampe mod hinanden og AI-klubber.</p>'+
+      '<label class="field"><span>Antal spillere, højst</span><div class="sws" id="maxsel">'+[2,3,4,5,6].map(function(n){return '<button class="btn" data-max="'+n+'" style="padding:10px 16px;'+(F.max===n?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+n+'</button>'}).join("")+'</div></label>'+
+      '<div class="field"><span>Ratings</span><div class="sws">'+[[false,'Skjulte'],[true,'Vis']].map(function(o){return '<button class="btn" data-showr="'+o[0]+'" style="padding:10px 16px;'+(F.showR===o[0]?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+o[1]+'</button>'}).join("")+'</div></div>'+
+      '<div class="field"><span>Tidsgrænse pr. valg</span><div class="sws">'+[0,30,60,90].map(function(n){return '<button class="btn" data-timer="'+n+'" style="padding:10px 16px;'+(F.timer===n?'background:var(--surf2);border-color:var(--text);color:var(--text);font-weight:600':'')+'">'+(n?n+' s':'Fra')+'</button>'}).join("")+'</div></div>'+
       navBtns("Opret spillet");
   }else if(st==="join"){
     h='<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div></div><div class="joinbox"><label class="field" style="margin-top:0"><span>Spilkode</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
@@ -1156,7 +1157,7 @@ function ucrest(k,c1,c2,t,px){
   if(k===0){
     g=clip(SH)+'<path d="'+SH+'" style="fill:'+c1+'"/><g clip-path="url(#'+id+')"><rect x="22" y="0" width="7" height="100" style="fill:'+c2+';opacity:.85"/><rect x="71" y="0" width="7" height="100" style="fill:'+c2+';opacity:.85"/></g><path d="'+SH+'" style="fill:none;stroke:'+c2+';stroke-width:4"/><path d="M50 11L84 19V50C84 70 69 83 50 90C31 83 16 70 16 50V19Z" style="fill:none;stroke:'+c2+';stroke-opacity:.55;stroke-width:1.4"/><polygon points="'+star(50,29,9)+'" style="fill:'+c2+'"/><rect x="26" y="46" width="48" height="26" rx="3" style="fill:'+c2+'"/>'+tx(65,c1);
   }else if(k===1){
-    g='<circle cx="50" cy="50" r="47" style="fill:'+c2+'"/><circle cx="50" cy="50" r="42" style="fill:'+c1+'"/><circle cx="50" cy="50" r="35" style="fill:none;stroke:'+c2+';stroke-opacity:.6;stroke-width:1.4"/><polygon points="'+star(34,30,6)+'" style="fill:'+c2+'"/><polygon points="'+star(50,24,7)+'" style="fill:'+c2+'"/><polygon points="'+star(66,30,6)+'" style="fill:'+c2+'"/><rect x="9" y="41" width="82" height="26" rx="3" style="fill:'+c2+'"/>'+tx(60,c1)+'<text x="50" y="84" text-anchor="middle" style="font:700 10px Outfit,sans-serif;fill:'+c2+';letter-spacing:2px">FC</text>';
+    g='<circle cx="50" cy="50" r="47" style="fill:'+c2+'"/><circle cx="50" cy="50" r="42" style="fill:'+c1+'"/><circle cx="50" cy="50" r="35" style="fill:none;stroke:'+c2+';stroke-opacity:.6;stroke-width:1.4"/><polygon points="'+star(34,30,6)+'" style="fill:'+c2+'"/><polygon points="'+star(50,24,7)+'" style="fill:'+c2+'"/><polygon points="'+star(66,30,6)+'" style="fill:'+c2+'"/><rect x="9" y="41" width="82" height="26" rx="3" style="fill:'+c2+'"/>'+tx(60,c1)+'<text x="50" y="82" text-anchor="middle" style="font:700 10px Outfit,sans-serif;fill:'+c2+';letter-spacing:2px">FC</text>';
   }else if(k===2){
     g=clip(SH)+'<path d="'+SH+'" style="fill:'+c1+'"/><g clip-path="url(#'+id+')"><path d="M-5 34L50 66L105 34V52L50 84L-5 52Z" style="fill:'+c2+'"/><path d="M-5 62L50 94L105 62V70L50 102L-5 70Z" style="fill:'+c2+';opacity:.55"/></g><path d="'+SH+'" style="fill:none;stroke:'+c2+';stroke-width:4"/>'+tx(46,c2,t.length>2?16:20);
   }else if(k===3){
@@ -1244,6 +1245,7 @@ var HOF={
  ]}
 };
 function tcrest(n,px){
+  if(NAMECODE[n])return crest(NAMECODE[n],px);
   if(n==="me")return hcrest("me",px);
   if(NAME_H[n])return hcrest(NAME_H[n],px);
   var h=hash(n),pal=[["#8c2f39","#f1e3c6"],["#1f5f8b","#f2f2f2"],["#2f7d4f","#f5d547"],["#5b3a8c","#eadfff"],["#c8651b","#1c1c1c"],["#1d6f6a","#f0f0f0"]];
@@ -1329,12 +1331,15 @@ var TROPHY='<svg class="tr0" width="54" height="54" viewBox="0 0 64 64" aria-hid
 function renderEnd(){
   var tn=function(n){return n==="me"?(S.team.trim()||"Mit hold"):n};
   var fin=[["me",94,29,7,2],["Sara United",91,28,7,3],["Arsenal",80,24,8,6],["Man City",77,23,8,7],["Jonas Rovers",75,22,9,7]];
-  var aw=[["Topscorer","Erling Haaland","Sara United","31 mål"],["Flest assists","Alexis Mac Allister","me","19 assists"],["Bedste målmand","Alisson Becker","me","21 clean sheets"]];
+  var AWI={ball:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#e4c47a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5l3.8 2.8-1.5 4.4H9.7L8.2 10.3z"/><path d="M12 7.5V3.2M15.8 10.3l4-1.3M14.3 14.7l2.5 3.4M9.7 14.7l-2.5 3.4M8.2 10.3l-4-1.3"/></svg>',
+    pass:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#e4c47a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="18" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><path d="M8 16.4C12.5 14.4 12 10.4 16 8"/><path d="M13.4 7.6l2.9.3-.6 2.9"/></svg>',
+    glove:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#e4c47a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 21v-5L5 11.5a1.4 1.4 0 012.5-1.3L9 12V5.4a1.3 1.3 0 012.6 0V4a1.3 1.3 0 012.6 0v1.4a1.3 1.3 0 012.6 0V13l1.4-1.8a1.4 1.4 0 012.2 1.7L17 17.5V21z"/></svg>'};
+  var aw=[["Topscorer","Erling Haaland","Sara United","31 mål","ball"],["Flest assists","Alexis Mac Allister","me","19 assists","pass"],["Bedste målmand","Alisson Becker","me","21 clean sheets","glove"]];
   var h='<h1>Sæsonen er slut</h1><div class="kit" style="margin-top:6px">'+lbadge(F.liga||"pl",34)+'<span>'+LNAME[F.liga||"pl"]+' '+(F.season||"2026/2027")+'</span></div>';
-  h+='<div class="card champ" style="margin-top:22px">'+TROPHY+'<div class="lblm">Mester</div>'+tcrest("me",84)+'<b>'+esc(tn("me"))+'</b><p class="note" style="margin-top:6px">94 point, 29 sejre, 7 uafgjorte, 2 nederlag</p></div>';
+  h+='<div class="card champ" style="margin-top:22px"><div class="lblm">'+TROPHY.replace('width="54" height="54"','width="34" height="34"')+'<span>Mester</span>'+TROPHY.replace('width="54" height="54"','width="34" height="34"')+'</div>'+tcrest("me",84)+'<b>'+esc(tn("me"))+'</b><p class="note" style="margin-top:6px">94 point, 29 sejre, 7 uafgjorte, 2 nederlag</p></div>';
   var extra=[["Marie Athletic",58,9]];
   h+='<h2>Slutstilling</h2><div class="card">'+fin.map(function(r,i){return '<div class="endrow'+(r[0]==="me"?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+extra.map(function(r){return '<div style="text-align:center;color:var(--mut);padding:2px 0">⋯</div><div class="endrow"><span class="hk">'+r[2]+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+'</div>';
-  h+='<h2>Sæsonens priser</h2><div class="card">'+aw.map(function(a){return '<div class="endrow"><span></span><span class="en"><span>'+a[1]+'<small>'+a[0]+', '+esc(tn(a[2]))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[3]+'</span></div>'}).join("")+'</div>';
+  h+='<h2>Sæsonens priser</h2><div class="card">'+aw.map(function(a){return '<div class="endrow"><span style="display:flex;justify-content:center">'+AWI[a[4]]+'</span><span class="en"><span>'+a[1]+'<small>'+a[0]+', '+esc(tn(a[2]))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[3]+'</span></div>'}).join("")+'</div>';
   h+='<h2>Nye rekorder</h2><div class="card"><div class="newrec"><span class="st">NY #1</span><div>Flest point i en sæson<br><span class="muted">94 point, '+esc(tn("me"))+'</span></div></div><div class="newrec"><span class="st">NY #2</span><div>Flest clean sheets i en sæson<br><span class="muted">21 af Alisson Becker</span></div></div></div>';
   h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="hof">Se Highscore</button><button class="btn wide" data-end="copy">Kopiér resultat</button>'+(role==="player"?'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>':'<button class="btn wide" data-end="again">Ny sæson med samme gruppe</button>')+'</div>';
   $("endbody").innerHTML=h;
@@ -1370,17 +1375,17 @@ $("away").addEventListener("click",function(e){
 
 /* ---------- app-ikon ---------- */
 function iconSvg(px,round){
-  return '<svg width="'+px+'" height="'+px+'" viewBox="0 0 100 100" aria-hidden="true" style="display:block;'+(round?'border-radius:22.4%;':'')+'flex:none"><defs><linearGradient id="ig1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d2847"/><stop offset="1" stop-color="#0a101d"/></linearGradient><radialGradient id="ig2" cx=".5" cy=".4" r=".62"><stop offset="0" stop-color="#7be0a0" stop-opacity=".30"/><stop offset="1" stop-color="#7be0a0" stop-opacity="0"/></radialGradient></defs><rect width="100" height="100" fill="url(#ig1)"/><rect width="100" height="100" fill="url(#ig2)"/><g transform="translate(14.5 17.5) scale(1.45)"><rect x="3" y="6" width="34" height="36" rx="6" fill="#26345a"/><circle cx="12" cy="13" r="3" fill="#3f4f77"/><rect x="18" y="11.8" width="14" height="2.4" rx="1.2" fill="#3f4f77"/><circle cx="12" cy="24" r="4.2" fill="#7be0a0"/><rect x="19" y="22.6" width="13" height="2.8" rx="1.4" fill="#e6ebf5"/><circle cx="12" cy="35" r="3" fill="#3f4f77"/><rect x="18" y="33.8" width="14" height="2.4" rx="1.2" fill="#3f4f77"/><path d="M3 18.5H37M3 29.5H37" stroke="#7be0a0" stroke-width="1.6" fill="none"/><path d="M37 24H43V11" stroke="#e6ebf5" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="43" cy="8.5" r="3.4" fill="#7be0a0"/></g></svg>';
+  return '<svg width="'+px+'" height="'+px+'" viewBox="0 0 100 100" aria-hidden="true" style="display:block;'+(round?'border-radius:22.4%;':'')+'flex:none"><defs><linearGradient id="ig1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d2847"/><stop offset="1" stop-color="#0a101d"/></linearGradient><radialGradient id="ig2" cx=".5" cy=".4" r=".62"><stop offset="0" stop-color="#7be0a0" stop-opacity=".30"/><stop offset="1" stop-color="#7be0a0" stop-opacity="0"/></radialGradient></defs><rect width="100" height="100" fill="url(#ig1)"/><rect width="100" height="100" fill="url(#ig2)"/><g transform="translate(19 3.5) scale(1.25)"><rect x="3" y="6" width="34" height="36" rx="6" fill="#26345a"/><circle cx="12" cy="13" r="3" fill="#3f4f77"/><rect x="18" y="11.8" width="14" height="2.4" rx="1.2" fill="#3f4f77"/><circle cx="12" cy="24" r="4.2" fill="#7be0a0"/><rect x="19" y="22.6" width="13" height="2.8" rx="1.4" fill="#e6ebf5"/><circle cx="12" cy="35" r="3" fill="#3f4f77"/><rect x="18" y="33.8" width="14" height="2.4" rx="1.2" fill="#3f4f77"/><path d="M3 18.5H37M3 29.5H37" stroke="#7be0a0" stroke-width="1.6" fill="none"/><path d="M37 24H43V11" stroke="#e6ebf5" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="43" cy="8.5" r="3.4" fill="#7be0a0"/></g><text x="50" y="82" text-anchor="middle" font-family="Outfit,Helvetica,Arial,sans-serif" font-weight="700" font-size="12.5" fill="#e6ebf5">DraftSpin <tspan fill="#7be0a0">FC</tspan></text></svg>';
 }
 function renderIcon(){
   var ph="";for(var i=0;i<7;i++)ph+='<div class="papp"><div class="pph"></div><span>&nbsp;</span></div>';
-  $("iconbody").innerHTML='<h1>App-ikon</h1><p class="sub">Sådan ser DraftSpin ud på hjemmeskærmen.</p><div class="card" style="margin-top:22px"><div style="display:flex;justify-content:center">'+iconSvg(168,true)+'</div><div class="sizes" style="justify-content:center">'+[120,80,60,40].map(function(n){return iconSvg(n,true)}).join("")+'</div></div><h2>Hjemmeskærm</h2><div class="phone"><div class="pgrid">'+ph+'<div class="papp">'+iconSvg(52,true)+'<span>DraftSpin</span></div></div></div><p class="note" style="text-align:center">Navnet under ikonet er DraftSpin. Hele navnet er DraftSpin FC.</p>';
+  $("iconbody").innerHTML='<h1>App-ikon</h1><p class="sub">Sådan ser DraftSpin ud på hjemmeskærmen.</p><div class="card" style="margin-top:22px"><div style="display:flex;justify-content:center">'+iconSvg(168,true)+'</div><div class="sizes" style="justify-content:center">'+[120,80,60,40].map(function(n){return iconSvg(n,true)}).join("")+'</div></div><h2>Hjemmeskærm</h2><div class="phone"><div class="pgrid">'+ph+'<div class="papp">'+iconSvg(52,true)+'<span>DraftSpin</span></div></div></div><p class="note" style="text-align:center">Navnet står både i ikonet og under det på hjemmeskærmen.</p>';
 }
 $(".protofoot".slice(0,0)||"toStart");
 document.querySelector(".protofoot").addEventListener("click",function(e){
   var b=e.target.closest("[data-pv]");if(!b)return;var v=b.dataset.pv;
   if(v==="end")go("end");else if(v==="icon")go("icon");else if(v==="conn")simConn();
-  else if(v==="away")openAway(false);else if(v==="closed")openAway(true);else if(v==="nopl")toast("Der var ingen passende spillere fra Everton. Hjulet spinner igen.",4200);
+  else if(v==="away")openAway(false);else if(v==="closed")openAway(true);
 });
 
 var toastT=null;
