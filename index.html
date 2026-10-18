@@ -19,7 +19,7 @@
 .simcard{padding:14px 12px;text-align:center}
 .simtl{margin-top:10px;min-height:44px;text-align:left;border-top:1px solid var(--line);padding-top:8px}
 .stl{display:flex;gap:8px;font-size:13.5px;padding:2px 0}.stl .m{font:500 12.5px var(--mono);color:var(--mut);min-width:30px}.stl small{color:var(--mut);font-size:12.5px}.stl.opp{color:var(--mut)}
-.simwrap .res{padding:3px 0;font-size:13px}
+.simwrap .res{padding:2px 0;font-size:13px}
 .simm{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
 .simt{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:14px;font-weight:500;min-width:0}
 .simt span{overflow-wrap:anywhere;line-height:1.2}
@@ -282,6 +282,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .tr.friend .nm span:last-child{font-weight:500}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-top:6px}
 .legend span{display:flex;gap:7px;align-items:center}
+.seg.hcats{overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none}
+.seg.hcats::-webkit-scrollbar{display:none}
 .seg{display:flex;gap:20px;overflow-x:auto;margin:10px 0 2px;border-bottom:1px solid var(--line)}
 .seg button{appearance:none;white-space:nowrap;border:0;border-bottom:2px solid transparent;background:none;padding:8px 0 10px;font-size:15px;color:var(--mut);cursor:pointer}
 .seg button.on{color:var(--text);font-weight:600;border-color:var(--text)}
@@ -327,7 +329,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .seg button.lock{opacity:.45}
 .hcat{margin-top:14px}
 .hcat h3{font-size:17px;font-weight:600;margin:0 0 4px}
-.hrow{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.hrow{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .hrow:last-child{border:0}
 .hrow .hk{font:500 15px var(--mono);color:var(--mut);text-align:center}
 .hrow.r1 .hk{color:#e4c47a}.hrow.r2 .hk{color:#c3ccd9}.hrow.r3 .hk{color:#cf9a68}
@@ -379,12 +381,15 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 @keyframes cd{0%,80%,100%{opacity:.25}40%{opacity:1}}
 .champ{text-align:center;padding:26px 18px;border:1px solid #e4c47a55;background:radial-gradient(120% 80% at 50% 0%,#e4c47a2e,transparent 62%),var(--surf);box-shadow:0 0 0 1px #e4c47a14,0 22px 60px -24px #e4c47a88}
 .champ .tr0{display:block;margin:0 auto 10px}
+.champ.sm{padding:12px 14px}
+.champ.sm b{font-size:21px;margin-top:6px}
+.champ.sm .lblm{font-size:15px}
 .champ b{display:block;font-size:26px;font-weight:600;margin-top:10px;letter-spacing:-.01em}
 .champ .lblm{display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
 .champ .lblm span{position:relative;top:-5px;background:linear-gradient(100deg,#b8913a 10%,#fff3c4 40%,#e4c47a 55%,#b8913a 90%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3.2s ease-in-out infinite}
 @keyframes shine{0%{background-position:120% 0}100%{background-position:-120% 0}}
 .champ .lblm svg{filter:drop-shadow(0 0 8px #e4c47a99)}
-.endrow{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.endrow{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .endrow:last-child{border:0}
 .endrow .hk{font:500 15px var(--mono);color:var(--mut);text-align:center}
 .endrow .en{display:flex;align-items:center;gap:10px;font-weight:500}
@@ -452,24 +457,21 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="bar"><i id="prog"></i></div>
     </div>
 
-    <div class="card" style="margin-top:10px;padding:2px 12px"><div id="tl" style="min-height:96px;max-height:270px;overflow-y:auto"></div></div>
+    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Hændelser</button><button data-mt="others">Resten af runden</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div></div>
 
-    <div style="display:flex;gap:10px;margin-top:12px">
+    <div style="display:flex;gap:8px;margin-top:10px">
       <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Igen</button>
       <button class="btn" id="spdBtn" style="min-width:56px">1x</button>
-      <button class="btn" id="skipBtn" style="flex:2">Spring til resultat</button>
+      <button class="btn" id="skipBtn" style="flex:2;white-space:nowrap">Spring til resultat</button>
     </div>
 
-    <h2 style="margin-top:14px">Næste kamp</h2>
-    <div class="card" style="padding:12px 14px">
-      <div class="muted" id="nextOpp" style="margin-bottom:10px">Næste: runde 13 af 38 · Sara United (ude)</div>
+    <div class="card" style="margin-top:10px;padding:10px 14px">
+      <div class="muted" id="nextOpp" style="margin-bottom:6px">Næste: runde 13 af 38 · Sara United (ude)</div>
       <div class="ready" id="ready"></div>
-      <button class="btn p wide" id="readyBtn" style="margin-top:14px" disabled>Næste kamp</button>
+      <button class="btn p wide" id="readyBtn" style="margin-top:8px" disabled>Næste kamp</button>
       <button class="btn wide" id="forceBtn" style="margin-top:8px" hidden>Tving næste runde (admin)</button>
     </div>
 
-    <h2 style="margin-top:14px">Resten af runden</h2>
-    <div class="card"><div id="others"></div></div>
 
   </section>
 
@@ -1158,6 +1160,7 @@ function startMatch(){
   timer=setInterval(tick,120);
   $("skipBtn").onclick=function(){skip=true;tick()};
 }
+$("mseg").addEventListener("click",function(e){var b=e.target.closest("[data-mt]");if(!b)return;var t=b.dataset.mt;$("tl").hidden=t!=="tl";$("others").hidden=t!=="others";[].forEach.call($("mseg").children,function(x){x.classList.toggle("on",x===b)})});
 $("playBtn").addEventListener("click",function(){startMatch()});
 
 /* ---------- tabel ---------- */
@@ -1445,6 +1448,7 @@ function renderEnd(){
 $("navHome").addEventListener("click",function(){liveLeave()});
 $("hofBack").addEventListener("click",function(){var w=HOFBACK;HOFBACK=null;if(w==="end")go("end");else $("toStart").click()});
 $("endbody").addEventListener("click",function(e){
+  var et=e.target.closest("[data-et]");if(et){S.endTab=et.dataset.et;renderEnd();return}
   var b=e.target.closest("[data-end]");if(!b)return;var a=b.dataset.end;
   if(a==="hof"){HOFBACK="end";go("hof")}
   else if(a==="newseason"){if(LIVE)liveLeave();else{if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}}
@@ -1740,12 +1744,12 @@ function liveSimRender(ph){
   var home=m.home_key===NET.uid,mg=home?m.home_goals:m.away_goals,og=home?m.away_goals:m.home_goals;
   var cls=mg>og?"w":(mg<og?"l":"d"),lab=mg>og?"Sejr":(mg<og?"Nederlag":"Uafgjort");
   var side=function(k){return '<div class="simt">'+lcrest(k,44)+'<span>'+esc(lname(k))+'</span></div>'};
-  var h='<h1>Sæsonen spilles</h1><p class="sub">Runde '+r+' af 38</p><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
+  var h='<div class="status" style="margin-top:2px"><h1 style="margin:0;font-size:22px">Sæsonen spilles</h1><span class="muted">Runde '+r+' af 38</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
     '<div class="card simcard"><div class="simm">'+side(m.home_key)+'<div class="sims">'+(B?m.home_goals+' – '+m.away_goals:'<span class="dots"><i></i><i></i><i></i></span>')+'</div>'+side(m.away_key)+'</div><div class="simres '+(B?cls:"")+'">'+(B?lab:(home?"Hjemmekamp":"Udekamp"))+'</div><div class="simtl">'+(B?liveSimTl(m):'')+'</div></div>'+
-    '<div class="card" style="margin-top:10px;padding:10px 14px"><b>Din sæson</b><div class="simrec" style="margin-top:2px">'+(r-(B?0:1)<1?"Første kamp er i gang":"Plads "+(mi+1)+" · "+me.p+" point · "+me.w+" sejre, "+me.d+" uafgjorte, "+me.l+" nederlag")+'</div></div>';
+    '<div class="card" style="margin-top:8px;padding:8px 14px"><div class="simrec" style="margin:0;font-size:14px"><b style="color:var(--text)">Din sæson</b> · '+(r-(B?0:1)<1?"første kamp er i gang":"plads "+(mi+1)+" · "+me.p+" point · "+me.w+"V "+me.d+"U "+me.l+"T")+'</div></div>';
   if(B){
     var oth=NET.season.matches.filter(function(x){return x.round===r&&x.id!==m.id});
-    h+='<div class="card simwrap" style="margin-top:10px;padding:10px 14px"><b>Runden i øvrigt</b><div style="margin-top:4px">'+oth.map(function(x){return '<div class="res">'+lhname(x.home_key,false)+'<span class="r">'+x.home_goals+' – '+x.away_goals+'</span>'+lhname(x.away_key,true)+'</div>'}).join("")+'</div></div>';
+    h+='<div class="card simwrap" style="margin-top:8px;padding:8px 14px"><b style="font-size:14px">Runden i øvrigt</b><div style="margin-top:2px">'+oth.map(function(x){return '<div class="res">'+lhname(x.home_key,false)+'<span class="r">'+x.home_goals+' – '+x.away_goals+'</span>'+lhname(x.away_key,true)+'</div>'}).join("")+'</div></div>';
   }
   h+='<button class="btn wide" data-act="simskip" style="margin-top:12px">Spring til slut</button>';
   $("simbody").innerHTML=h;
@@ -1935,26 +1939,31 @@ function renderStatsLive(){
 function renderEndLive(){
   if(!NET.season){$("endbody").innerHTML='<h1>Sæsonen er ikke slut</h1>';return}
   var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
-  var T34=TROPHY.replace('width="54" height="54"','width="34" height="34"');
-  var h='<h1>Sæsonen er slut</h1><div class="kit" style="margin-top:6px">'+lbadge("pl",34)+'<span>Premier League 2026/2027</span></div>';
+  var T34=TROPHY.replace('width="54" height="54"','width="26" height="26"');
+  var tab=S.endTab||"stil";
+  var h='<h1 style="margin-top:2px">Sæsonen er slut</h1>';
+  h+='<div class="card champ sm" style="margin-top:10px"><div class="lblm">'+T34+'<span>Mester</span>'+T34+'</div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b><p class="note" style="margin-top:2px">'+champ.p+' point, '+champ.w+' sejre, '+champ.d+' uafgjorte, '+champ.l+' nederlag</p></div>';
   var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
   if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
-    h+='<div class="card" style="margin-top:22px;display:flex;align-items:center;gap:14px">'+lcrest(bt.r.k,44)+'<div><div class="muted" style="font-size:14px">Bedst blandt jer</div><b style="font-size:19px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (dig)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b><div class="muted" style="font-size:14px">Nr. '+(bt.i+1)+' i ligaen med '+bt.r.p+' point</div></div></div>'}
-  h+='<div class="card champ" style="margin-top:22px"><div class="lblm">'+T34+'<span>Mester</span>'+T34+'</div>'+lcrest(champ.k,84)+'<b>'+esc(lname(champ.k))+'</b><p class="note" style="margin-top:6px">'+champ.p+' point, '+champ.w+' sejre, '+champ.d+' uafgjorte, '+champ.l+' nederlag</p></div>';
+    h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Bedst blandt jer</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (dig)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">nr. '+(bt.i+1)+', '+bt.r.p+' point</span></div></div>'}
+  h+='<div class="seg" style="margin-top:10px">'+[["stil","Slutstilling"],["pris","Priser"],["kampe","Dine kampe"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
   var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
-  var rest=rows.map(function(r1,i){return {r:r1,i:i}}).slice(5).filter(function(x){return lhuman(x.r.k)});
-  h+='<h2>Slutstilling</h2><div class="card">'+rows.slice(0,5).map(function(r1,i){return er(i,r1.k,r1.p)}).join("")+rest.map(function(x){return '<div style="text-align:center;color:var(--mut);padding:2px 0">⋯</div>'+er(x.i,x.r.k,x.r.p)}).join("")+'</div>';
-  var best=function(map){var b=null;Object.keys(map).forEach(function(p){if(!b||map[p]>map[b])b=p});return b};
-  var aw=[["Topscorer",best(st.g),st.g,"mål","⚽"],["Flest assists",best(st.a),st.a,"assists","🎯"],["Bedste målmand",best(st.cs),st.cs,"clean sheets","🧤"]].filter(function(a){return a[1]});
-  if(aw.length)h+='<h2>Sæsonens priser</h2><div class="card">'+aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+a[4]+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[2][a[1]]+' '+a[3]+'</span></div>'}).join("")+'</div>';
-  var mine=NET.season.matches.filter(function(m){return m.played&&(m.home_key===NET.uid||m.away_key===NET.uid)}).sort(function(a,b){return a.round-b.round});
-  h+='<h2>Dine kampe</h2><div class="card">'+mine.map(function(m){
-    var home=m.home_key===NET.uid,gf=home?m.home_goals:m.away_goals,ga=home?m.away_goals:m.home_goals,opp=home?m.away_key:m.home_key;
-    var res=gf>ga?"V":(gf===ga?"U":"T"),col=gf>ga?"var(--acc)":(gf===ga?"var(--mut)":"var(--red)");
-    return '<div class="endrow"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"h":"u")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
-  }).join("")+'</div>';
-  var adm=NET.game&&NET.game.admin_id===NET.uid;
-  h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="newseason">Ny sæson</button><button class="btn wide" data-end="hof">Se Highscore</button></div>';
+  if(tab==="stil"){
+    var rest=rows.map(function(r1,i){return {r:r1,i:i}}).slice(5).filter(function(x){return lhuman(x.r.k)});
+    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+rows.slice(0,5).map(function(r1,i){return er(i,r1.k,r1.p)}).join("")+rest.map(function(x){return '<div style="text-align:center;color:var(--mut);padding:0">⋯</div>'+er(x.i,x.r.k,x.r.p)}).join("")+'</div>';
+  }else if(tab==="pris"){
+    var best=function(map){var b=null;Object.keys(map).forEach(function(p){if(!b||map[p]>map[b])b=p});return b};
+    var aw=[["Topscorer",best(st.g),st.g,"mål","⚽"],["Flest assists",best(st.a),st.a,"assists","🎯"],["Bedste målmand",best(st.cs),st.cs,"clean sheets","🧤"]].filter(function(a){return a[1]});
+    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+(aw.length?aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+a[4]+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[2][a[1]]+' '+a[3]+'</span></div>'}).join(""):'<p class="note">Ingen priser denne sæson.</p>')+'</div>';
+  }else{
+    var mine=NET.season.matches.filter(function(m){return m.played&&(m.home_key===NET.uid||m.away_key===NET.uid)}).sort(function(a,b){return a.round-b.round});
+    h+='<div class="card" style="margin-top:10px;padding:2px 14px;max-height:330px;overflow-y:auto">'+mine.map(function(m){
+      var home=m.home_key===NET.uid,gf=home?m.home_goals:m.away_goals,ga=home?m.away_goals:m.home_goals,opp=home?m.away_key:m.home_key;
+      var res=gf>ga?"V":(gf===ga?"U":"T"),col=gf>ga?"var(--acc)":(gf===ga?"var(--mut)":"var(--red)");
+      return '<div class="endrow" style="padding:6px 0"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"h":"u")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
+    }).join("")+'</div>';
+  }
+  h+='<div class="nav2" style="margin-top:12px"><button class="btn p go" data-end="newseason" style="flex:1">Ny sæson</button><button class="btn" data-end="hof">Highscore</button></div>';
   $("endbody").innerHTML=h;
 }
 
@@ -1978,25 +1987,25 @@ async function liveGoNext(id){
 async function renderHofLive(){
   var tabs=[["pl","Premier League",1],["cl","Champions League",1]];
   $("hseg").innerHTML=tabs.map(function(t){return '<button data-h="'+t[0]+'" class="'+(HOFTAB===t[0]?"on":"")+'">'+t[1]+'</button>'}).join("");
-  if(HOFTAB==="cl"){$("hbody").innerHTML='<div class="card" style="margin-top:22px"><b>Cuppen er ikke med endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når cuppen er bygget.</p></div>';return}
-  $("hbody").innerHTML=(G.started?'':'<button class="btn" data-hofback="1" style="margin-top:14px">Tilbage</button>')+'<p class="note" style="margin-top:22px">Henter rekorder...</p>';
+  if(HOFTAB==="cl"){$("hbody").innerHTML='<div class="card" style="margin-top:10px"><b>Cuppen er ikke med endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når cuppen er bygget.</p></div>';return}
+  $("hbody").innerHTML='<p class="note" style="margin-top:14px">Henter rekorder...</p>';
   var pr=await NET.sb.from("hof_players").select("*").eq("league","PL"),tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Kunne ikke hente rekorderne.</p>';return}
   var P=pr.data||[],T=tr.data||[];
-  if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:22px"><b>Ingen færdige sæsoner endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når en sæson er slut.</p></div>';return}
+  if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:10px"><b>Ingen færdige sæsoner endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når en sæson er slut.</p></div>';return}
   var se=function(x){return esc(x.season)+(x.season_no>1?", sæson "+x.season_no:"")+(x.players?", "+x.players+(x.players===1?" spiller":" spillere"):"")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
   var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+', '+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var tRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
-  var cat=function(title,rows){return '<div class="card hcat"><h3>'+title+'</h3>'+(rows||'<p class="note">Ingen endnu.</p>')+'</div>'};
-  var h='<h2>Sæsonrekorder</h2>';
+  var C=[];
+  var cat=function(title,rows){C.push([title,'<div class="card hcat" style="margin-top:10px"><h3>'+title+'</h3>'+(rows||'<p class="note">Ingen endnu.</p>')+'</div>']);return ""};
+  var h='';
   h+=cat("Flest mål i en sæson",top(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}).join(""));
   h+=cat("Flest assists i en sæson",top(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}).join(""));
   h+=cat("Flest clean sheets i en sæson",top(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}).join(""));
   h+=cat("Flest point i en sæson",top(T,"points").map(function(x,i){return tRow(i,x,x.points,x.w+" sejre, "+x.d+" uafgjorte, "+x.l+" nederlag")}).join(""));
-  h+='<h2>Flere priser</h2>';
   h+=cat("Flest mål i en kamp",top(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,x.best_match_goals+" "+x.best_match_text)}).join(""));
   var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
   h+=cat("Bedste målforskel",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd)}).join(""));
@@ -2007,8 +2016,12 @@ async function renderHofLive(){
   var by={};T.filter(function(x){return x.champion}).forEach(function(x){var k=x.user_id||x.team_name;by[k]=by[k]||Object.assign({},x,{n:0});by[k].n++;by[k].team_name=x.team_name});
   var champs=Object.keys(by).map(function(k){return by[k]});
   h+=cat("Flest mesterskaber",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" sæson":" sæsoner"))}).join(""));
-  $("hbody").innerHTML=(G.started?'':'<button class="btn" data-hofback="1" style="margin-top:14px">Tilbage</button>')+h;
+  var SH={"Flest mål i en sæson":"Mål","Flest assists i en sæson":"Assists","Flest clean sheets i en sæson":"Clean sheets","Flest point i en sæson":"Point","Flest mål i en kamp":"Mål i kamp","Bedste målforskel":"Målforskel","Færreste mål imod":"Mål imod","Længste sejrsrække":"Sejrsrække","Største sejr":"Største sejr","Flest røde kort i en sæson":"Røde kort","Flest mesterskaber":"Mesterskaber"};
+  var ci=C.map(function(c){return c[0]}).indexOf(HOFCAT);if(ci<0)ci=0;HOFCAT=C[ci][0];
+  $("hbody").innerHTML='<div class="seg hcats">'+C.map(function(c){return '<button data-hc="'+esc(c[0])+'" class="'+(c[0]===HOFCAT?"on":"")+'">'+(SH[c[0]]||c[0])+'</button>'}).join("")+'</div>'+C[ci][1];
 }
+var HOFCAT="";
+$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-hc]");if(b){HOFCAT=b.dataset.hc;var sc=$("hbody").querySelector(".hcats"),x=sc?sc.scrollLeft:0;renderHofLive().then(function(){var s2=$("hbody").querySelector(".hcats");if(s2)s2.scrollLeft=x});}});
 $("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))$("toStart").click()});
 
 /* ---------- live: draft ---------- */
