@@ -414,6 +414,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .lgrow .lg{opacity:.5}
 .lgrow .lg:first-child{opacity:1}
 .linkbtn.rsp{margin:0 0 0 auto;padding:6px 2px;font-size:13px;text-align:right;max-width:120px;line-height:1.25}
+.tagrow{display:flex;gap:10px;align-items:flex-end;margin-top:12px}.tagrow .field{margin:0}.tagrow .field:first-child{flex:1;min-width:0}.tagf{width:84px;flex:none}.tagf .inp{text-align:center;text-transform:uppercase;letter-spacing:1px}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -659,7 +660,7 @@ function fresh(){
   simT.forEach(clearTimeout);simT=[];draftT.forEach(clearTimeout);draftT=[];clearInterval(tIv);tIv=null;
   clearInterval(timer);timer=null;readyTimers.forEach(clearTimeout);readyTimers=[];
   S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Rasmus FC",color:SWATCH[0],color2:"#e6ebf5",form:"4-3-3",squad:new Array(11).fill(null),
-     taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
+     taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},tag:"",k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
      phase:"order",order:[],seq:[],pickIdx:0,matchSeen:false};
   P={me:{joined:true,ready:false},Sara:{joined:false,ready:false},Jonas:{joined:false,ready:false},Marie:{joined:false,ready:false}};
   F={step:0,simStarted:false,liga:"pl",season:"2026/2027",showR:false,pace:"full",mode:"season",max:6,timer:role==="player"?60:0,auth:{email:"",sent:false,ok:false},code:"",joinInput:"",joinErr:false};
@@ -770,11 +771,11 @@ function renderFlow(){
     var ct=F.ctab==="s"?"s":"p";
     h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"Mit hold")+'</span></div>'+
       (LIVE?'<label class="field"><span>Dit navn</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="Fx Rasmus" autocomplete="off"></label>':'')+
-      '<label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="Fx Valby IF" autocomplete="off"></label>'+
+      '<div class="tagrow"><label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="Fx Valby IF" autocomplete="off"></label><label class="field tagf"><span>Forkortelse</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"Mit hold"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primær farve</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Sekundær farve</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primær":"Sekundær")+' farve: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
       '<div class="field"><span>Våbenskjold</span><div class="crests">'+crestBtns()+'</div></div>'+
-      navBtns("Fortsæt til formation",!S.team.trim()||(LIVE&&S.pname.trim().length<2));
+      navBtns("Fortsæt til formation",!holdOk());
   }else if(st==="form"){
     h+='<h1>Vælg formation</h1><p class="sub">Den kan ikke ændres, når spillet er startet.</p><div class="fchips">'+
       Object.keys(FORMS).map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+f+'</button>'}).join("")+'</div>'+
@@ -856,10 +857,16 @@ $("flow").addEventListener("input",function(e){
   if(e.target.id==="joinCode"){e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);F.joinInput=e.target.value;F.joinErr=false;var nb=$("flow").querySelector("[data-act=next]");if(nb)nb.disabled=e.target.value.trim().length<6;var er=$("flow").querySelector(".err");if(er)er.remove();if(e.target.value.length===6&&nb)setTimeout(function(){if(!nb.disabled&&$("joinCode")&&$("joinCode").value.length===6)nb.click()},180)}
   if(e.target.id==="loginEmail"){F.auth.email=e.target.value.trim();var sb=$("flow").querySelector("[data-act=sendcode]");if(sb)sb.disabled=!/.+@.+\..+/.test(F.auth.email)}
   if(e.target.id==="loginCode"){var vb=$("flow").querySelector("[data-act=verify]");if(vb)vb.disabled=!/^\d{6}$/.test(e.target.value)}
-  if(e.target.id==="pname"){S.pname=e.target.value;try{localStorage.setItem("dsfc-name",S.pname.trim())}catch(x){}var nb2=$("flow").querySelector("[data-act=next]");if(nb2)nb2.disabled=!S.team.trim()||S.pname.trim().length<2}
+  if(e.target.id==="pname"){S.pname=e.target.value;try{localStorage.setItem("dsfc-name",S.pname.trim())}catch(x){}var nb2=$("flow").querySelector("[data-act=next]");if(nb2)nb2.disabled=!holdOk()}
+  if(e.target.id==="ttag"){
+    S.tag=e.target.value.toUpperCase().replace(/[^A-ZÆØÅ0-9]/g,"").slice(0,3);e.target.value=S.tag;
+    var nt=$("flow").querySelector("[data-act=next]");if(nt)nt.disabled=!holdOk();
+    var kc2=$("flow").querySelector(".kitc");if(kc2)kc2.innerHTML=hcrest("me",52);
+    var cs2=$("flow").querySelector(".crests");if(cs2)cs2.innerHTML=crestBtns();
+  }
   if(e.target.id==="tname"){
     S.team=e.target.value;
-    var nx=$("flow").querySelector("[data-act=next]");if(nx)nx.disabled=!S.team.trim()||(LIVE&&S.pname.trim().length<2);
+    var nx=$("flow").querySelector("[data-act=next]");if(nx)nx.disabled=!holdOk();var tt=$("ttag");if(tt)tt.placeholder=initials(S.team||"Mit hold");
     var kn=$("flow").querySelector(".kitname");if(kn)kn.textContent=S.team.trim()||"Mit hold";
     var kc=$("flow").querySelector(".kitc");if(kc)kc.innerHTML=hcrest("me",52);
     var cs=$("flow").querySelector(".crests");if(cs)cs.innerHTML=crestBtns();
@@ -981,7 +988,7 @@ function renderCounts(){
   if(LIVE&&S.order&&S.order.length>1){
     S.order.forEach(function(k,i){
       var me=k==="me",c=me?filled():(S.counts[k]||0),nm=me?"Dig":(teamName(k)||"");
-      var cr=me?ucrest(S.crest||0,S.color,S.color2,initials(S.team||"Mit hold"),32):(FCR[k]?ucrest(FCR[k][0],FCR[k][1],FCR[k][2],initials(nm),32):"");
+      var cr=me?ucrest(S.crest||0,S.color,S.color2,mytag(),32):(FCR[k]?ucrest(FCR[k][0],FCR[k][1],FCR[k][2],FCR[k][3]||initials(nm),32):"");
       h+='<div class="bdg'+(k===cur?" now":"")+'" title="'+esc(nm)+'"><span class="bn">'+(i+1)+'</span><span class="bdgc">'+cr+'</span><span class="bnm">'+esc(nm)+'</span><span class="bct">'+c+'/11</span></div>';
     });
     $("counts").className="badges";$("counts").innerHTML=h;return;
@@ -1314,6 +1321,9 @@ var MARK='<svg class="pm" viewBox="0 0 100 100" preserveAspectRatio="none" aria-
 var HC={Sara:[1,"#3a6fd8","#e6ebf5"],Jonas:[2,"#c29a3d","#1b2540"],Marie:[3,"#c4688b","#e6ebf5"]};
 var NAME_H={"Sara United":"Sara","Jonas Rovers":"Jonas","Marie Athletic":"Marie"};
 var CPID=0;
+function mytag(){return S.tag&&S.tag.length>1?S.tag:initials(S.team||"Mit hold")}
+function holdOk(){return !!S.team.trim()&&!(LIVE&&S.pname.trim().length<2)&&(S.tag||"").length!==1}
+function utag(uid,name){var p=NET.players&&NET.players.filter(function(x){return x.user_id===uid})[0];return p&&p.crest_tag?p.crest_tag:initials(name)}
 function initials(n){var w=String(n).trim().split(/\s+/).filter(Boolean);var r=w.length>1?w.map(function(x){return x[0]}).join(""):String(n).trim().slice(0,2);return r.slice(0,3).toUpperCase()}
 function star(cx,cy,r){var p=[];for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1))}return p.join(" ")}
 function ucrest(k,c1,c2,t,px){
@@ -1348,11 +1358,11 @@ function ucrest(k,c1,c2,t,px){
   return '<span class="cr"><svg width="'+px+'" height="'+px+'" viewBox="0 0 100 100" aria-hidden="true">'+g+'</svg></span>';
 }
 function hcrest(k,px){
-  if(k==="me")return ucrest(S.crest||0,S.color,S.color2,initials(S.team||"Mit hold"),px);
+  if(k==="me")return ucrest(S.crest||0,S.color,S.color2,mytag(),px);
   var h=HC[k];return ucrest(h[0],h[1],h[2],initials(FTEAM[k]),px);
 }
 function crestBtns(){
-  return [0,1,2,3,4,5,6,7,8,9,10,11].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Våbenskjold '+(i+1)+'">'+ucrest(i,S.color,S.color2,initials(S.team||"Mit hold"),38)+'</button>'}).join("");
+  return [0,1,2,3,4,5,6,7,8,9,10,11].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Våbenskjold '+(i+1)+'">'+ucrest(i,S.color,S.color2,mytag(),38)+'</button>'}).join("");
 }
 function nm(n){return NAMECODE[n]?crest(NAMECODE[n],16)+n:n}
 
@@ -1642,7 +1652,7 @@ function liveEnter(){
   role=g.admin_id===NET.uid?"admin":"player";
   F.code=g.code;F.max=g.max_players;F.timer=g.timer_seconds;F.showR=g.show_ratings;
   if(me&&me.display_name)S.pname=me.display_name;
-  if(me&&me.team_name){S.team=me.team_name;S.color=me.color1;S.color2=me.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe()}
+  if(me&&me.team_name){S.tag=me.crest_tag||"";S.team=me.team_name;S.color=me.color1;S.color2=me.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe()}
   if(g.next_game_id&&g.status==="done"){liveGoNext(g.next_game_id);return}
   if(g.status==="draft"){liveDraftApply();return}
   if(g.status!=="lobby"){liveSeasonApply();return}
@@ -1682,7 +1692,7 @@ async function liveTeamDone(){
       NET.gid=rc.data.id;F.code=rc.data.code;role="admin";
       try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
     }
-    var r0=await NET.sb.rpc("update_team",{p_game:NET.gid,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:(S.crest||0)+1,p_formation:S.form,p_display:S.pname.trim()});
+    var r0=await NET.sb.rpc("update_team",{p_game:NET.gid,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:(S.crest||0)+1,p_formation:S.form,p_display:S.pname.trim(),p_tag:S.tag.length>1?S.tag:null});
     if(r0.error)throw r0.error;
     r0=await NET.sb.rpc("set_ready",{p_game:NET.gid,p_ready:true});if(r0.error)throw r0.error;
     await liveLoad();if(!NET.ch)liveSub();
@@ -1736,7 +1746,7 @@ function lobbyLive(){
   if(!solo){
     h+='<h2 style="margin-top:12px;margin-bottom:6px;font-size:15px">Deltagere</h2><div class="card" style="padding:2px 14px"><div class="roster">';
     pl.forEach(function(p){
-      var icon=p.team_name?ucrest((p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",initials(p.team_name),30):'<span class="cr" style="width:30px;height:30px;display:inline-block;border-radius:50%;background:var(--surf2)"></span>';
+      var icon=p.team_name?ucrest((p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",p.crest_tag||initials(p.team_name),30):'<span class="cr" style="width:30px;height:30px;display:inline-block;border-radius:50%;background:var(--surf2)"></span>';
       var who=(p.display_name||"Spiller")+(p.user_id===NET.uid?" (dig)":"")+(p.user_id===g.admin_id?", admin":"");
       h+=rosterRow(p.user_id,p.team_name||"Laver sit hold",who,p.ready,icon,adm&&p.user_id!==NET.uid?'<button class="btn" data-act="kick" data-k="'+p.user_id+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Fjern</button>':"");
     });
@@ -1762,7 +1772,7 @@ NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.ini
 var SHORTN={};Object.keys(NAMECODE).forEach(function(n){SHORTN[NAMECODE[n]]=n});
 function dropped(t){var p=t&&t.kind==="human"?NET.players.filter(function(x){return x.user_id===t.user_id})[0]:null;return !!(p&&(p.missed_rounds||0)>=8)}
 function lname(k){var t=NET.season&&NET.season.teams[k];if(!t)return"?";return t.kind==="ai"?(SHORTN[t.club]||t.name):t.name+(dropped(t)?" (udgået)":"")}
-function lcrest(k,px){var t=NET.season&&NET.season.teams[k];if(!t)return"";return t.kind==="ai"?crest(t.club,px):ucrest((t.crest||1)-1,t.color1||"#3b4a6b",t.color2||"#e6ebf5",initials(t.name),px)}
+function lcrest(k,px){var t=NET.season&&NET.season.teams[k];if(!t)return"";return t.kind==="ai"?crest(t.club,px):ucrest((t.crest||1)-1,t.color1||"#3b4a6b",t.color2||"#e6ebf5",utag(t.user_id,t.name),px)}
 function lhuman(k){var t=NET.season&&NET.season.teams[k];return !!t&&t.kind==="human"}
 function pname(pid){var x=NET.byId[pid];return x?x.p[0]:"Ukendt"}
 async function fetchAll(table){
@@ -2161,8 +2171,8 @@ function liveDraftSync(){
   var g=NET.game,pl=NET.players;
   var me=pl.filter(function(p){return p.user_id===NET.uid})[0];
   P={me:{joined:true,ready:true}};FRIENDS={};FTEAM={};FCR={};
-  pl.forEach(function(p){var k=keyOf(p.user_id);if(k==="me")return;P[k]={joined:true,ready:true};FRIENDS[k]=p.color1||"#8c97b5";FTEAM[k]=p.team_name||"Spiller";FCR[k]=[(p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5"]});
-  S.team=me.team_name||S.team;S.color=me.color1||S.color;S.color2=me.color2||S.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe();
+  pl.forEach(function(p){var k=keyOf(p.user_id);if(k==="me")return;P[k]={joined:true,ready:true};FRIENDS[k]=p.color1||"#8c97b5";FTEAM[k]=p.team_name||"Spiller";FCR[k]=[(p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",p.crest_tag||""]});
+  S.tag=me.crest_tag||"";S.team=me.team_name||S.team;S.color=me.color1||S.color;S.color2=me.color2||S.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe();
   S.order=(g.draft_order||[]).map(keyOf);
   var n=S.order.length;S.seq=[];
   for(var rr=0;rr<11;rr++){var o=rr%2?S.order.slice().reverse():S.order;S.seq=S.seq.concat(o)}

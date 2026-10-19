@@ -22,6 +22,9 @@ s, _ = mem.rpc("update_team", p_game=gid, p_name='Citat "x" & \'y\'', p_c1="#6b8
 check("anførselstegn og & tilladt i holdnavn (klienten escaper)", s < 300, str(s))
 s, _ = mem.rpc("update_team", p_game=gid, p_name="Skjold tolv", p_c1="#6b8f6e", p_c2="#e6ebf5", p_crest=12, p_formation="3-4-1-2", p_display="Nn")
 check("skjold 12 og formation 3-4-1-2 tilladt", s < 300, str(s))
+for nm, tg, ok in [("forkortelse med 1 tegn afvist", "A", False), ("forkortelse med 4 tegn afvist", "ABCD", False), ("forkortelse med specialtegn afvist", "A<", False), ("forkortelse 'øk' tilladt", "øk", True), ("tom forkortelse tilladt (auto)", "", True)]:
+    s, _ = mem.rpc("update_team", p_game=gid, p_name="Tag FC", p_c1="#6b8f6e", p_c2="#e6ebf5", p_crest=1, p_formation="4-4-2", p_display="Nn", p_tag=tg)
+    check(nm, (s < 300) == ok, str(s))
 mem.rpc_ok("update_team", p_game=gid, p_name="Medlem FC", p_c1="#3a6fd8", p_c2="#e6ebf5", p_crest=2, p_formation="4-4-2", p_display="Medlem")
 adm.rpc_ok("update_team", p_game=gid, p_name="Admin FC", p_c1="#cf4a4a", p_c2="#e6ebf5", p_crest=3, p_formation="4-3-3", p_display="Admin")
 adm.rpc_ok("set_ready", p_game=gid, p_ready=True); mem.rpc_ok("set_ready", p_game=gid, p_ready=True)
