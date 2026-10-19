@@ -1027,8 +1027,22 @@ function renderClub(){
   h+='<p class="miss">Mangler: <b>'+missingTxt()+'</b></p>';
   h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"Alle":t)+'</button>'}).join("")+'</div>';
   h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Søg spiller" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">Skjul fyldte</button></div>';
-  h+='<p class="note" style="margin:6px 0 0">Tryk på en spiller, og vælg derefter hans plads på banen.</p><div id="clist"></div></div>';
+  h+='<p class="note" style="margin:6px 0 0">Tryk på en spiller, og vælg derefter hans plads på banen.</p><div id="clist"></div><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Vælg for mig</button></div>';
   el.innerHTML=h;renderList();
+}
+function autoPick(){
+  if(!S.club||!myTurn()||NET.pending)return;
+  var c=CLUBS[S.club],f=flat(),nat=[],pen=[];
+  c.p.forEach(function(p){
+    if(S.taken[p[0]])return;
+    var n=[],q=[];
+    f.forEach(function(sp,k){if(S.squad[k])return;var v=fit(p[1],sp,p[4]);if(v===2)n.push(k);else if(v===1)q.push(k)});
+    if(n.length)nat.push([p,n]);else if(q.length)pen.push([p,q]);
+  });
+  var pool=nat.length?nat:pen;
+  if(!pool.length){toast("Ingen spillere passer på en ledig plads.",2400);return}
+  var x=pool[Math.floor(Math.random()*pool.length)],k=x[1][Math.floor(Math.random()*x[1].length)];
+  livePick(x[0][0],k);
 }
 function renderList(){
   if(!S.club||!CLUBS[S.club])return;
@@ -1103,6 +1117,7 @@ function spin(){
 $("spinBtn").addEventListener("click",spin);
 $("clubpanel").addEventListener("click",function(e){
   var ft=e.target.closest("[data-flt]");if(ft){S.filter=ft.dataset.flt;renderClub();return}
+  if(e.target.closest("[data-auto]")){autoPick();return}
   if(e.target.closest("[data-respin]")){
     if(Date.now()-respinArm>3500){respinArm=Date.now();renderClub();setTimeout(function(){if(S.club)renderClub()},3600);return}
     respinArm=0;liveRespin();return}
