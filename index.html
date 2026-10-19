@@ -965,11 +965,11 @@ function setStrip(k,anim){
 }
 /* positionsregler: 2 = naturlig plads (grøn), 1 = plads med straf (gul), ellers grå. Identisk med slot_fit() i databasen og fac() i motoren. */
 var FIT={GK:{GK:2},CB:{CB:2},LB:{LB:2,RB:1},RB:{RB:2,LB:1},DM:{DM:2,CM:1},CM:{CM:2,DM:1,AM:1},AM:{AM:2,CM:1},LW:{LW:2,LM:2,ST:1,RW:1},RW:{RW:2,RM:2,ST:1,LW:1},ST:{ST:2,LW:1,RW:1}};
-function fit(pos,slot){return (FIT[pos]||{})[slot]||0}
-function posTxt(pos,p){return POSC[pos]}
+function fit(pos,slot,alts){var v=(FIT[pos]||{})[slot]||0;if(v<2&&alts&&alts[slot]&&alts[slot].nat)return 2;return v}
+function posTxt(pos,p){var a=p&&p[4]||{};return POSC[pos]+Object.keys(a).filter(function(k){return a[k]&&a[k].nat&&POSC[k]}).map(function(k){return "/"+POSC[k]}).join("")}
 function slotsIn(form,squad,pos,p){
   var f=FORMS[form].reduce(function(a,r){return a.concat(r)},[]),ex=[],alt=[];
-  f.forEach(function(sp,k){if(!squad[k]){var v=fit(pos,sp);if(v===2)ex.push(k);else if(v===1)alt.push(k)}});
+  f.forEach(function(sp,k){if(!squad[k]){var v=fit(pos,sp,p&&p[4]);if(v===2)ex.push(k);else if(v===1)alt.push(k)}});
   return {ex:ex,alt:alt};
 }
 function slotFor(pos,p){
@@ -1126,7 +1126,7 @@ $("sheet").addEventListener("click",function(e){
 function lockPick(name,i){
   if(LIVE){livePick(name,i);return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0];
-  S.squad[i]={name:p[0],pos:p[1],club:S.club,pen:fit(p[1],flat()[i])===1,num:p[2]};
+  S.squad[i]={name:p[0],pos:p[1],club:S.club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2]};
   S.taken[p[0]]="Mit hold";
   S.feed.unshift({who:"Dig",name:p[0],pos:p[1],club:S.club});
   S.sel=null;S.club=null;S.auto=false;clearTurnTimer();S.pickIdx++;
@@ -2281,7 +2281,7 @@ function liveDraftSync(){
     var info=NET.byId[pk.player_id];if(!info)return;
     var k=keyOf(pk.user_id),owner=pl.filter(function(p){return p.user_id===pk.user_id})[0];
     var slotPos=FORMS[owner.formation].reduce(function(a,r2){return a.concat(r2)},[])[pk.slot-1];
-    var e={name:info.p[0],pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos)===1};
+    var e={name:info.p[0],pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos,info.p[4])===1};
     if(k==="me")S.squad[pk.slot-1]=e;else if(S.fsq[k])S.fsq[k].squad[pk.slot-1]=e;
     S.counts[k]=(S.counts[k]||0)+1;S.taken[info.p[0]]=k==="me"?(S.team.trim()||"Mit hold"):(FTEAM[k]||"Spiller");
     feed.push({who:k==="me"?"Dig":(FTEAM[k]||"Spiller"),name:info.p[0],pos:info.p[1],club:info.club});

@@ -24,3 +24,9 @@ check("alle 16 formationer accepteres", not bad, str(bad))
 s, r = u.rpc("update_team", p_game=gid, p_name="Regel FC", p_c1="#6b8f6e", p_c2="#e6ebf5", p_crest=1, p_formation="2-2-2-2-3", p_display="Rr")
 check("ukendt formation afvises", s >= 400)
 print(sum(1 for c in bots.checks if not c[1]), "fejl")
+# to naturlige positioner (migration 029): Rice er CM/DM, Gvardiol LB/CB, João Pedro ST/AM
+rows = u.sel("players", "select=name,pos,alts&name=in.(%22Declan%20Rice%22,%22Jo%C5%A1ko%20Gvardiol%22,%22Jo%C3%A3o%20Pedro%22)")
+d = {r["name"]: r for r in rows}
+check("Rice er CM med DM som 2. naturlige", d["Declan Rice"]["pos"] == "CM" and d["Declan Rice"]["alts"].get("DM", {}).get("nat") is True, str(d.get("Declan Rice")))
+check("Gvardiol er LB med CB som 2. naturlige", d["Joško Gvardiol"]["alts"].get("CB", {}).get("nat") is True, str(d.get("Joško Gvardiol")))
+check("João Pedro er ST med AM som 2. naturlige", d["João Pedro"]["pos"] == "ST" and d["João Pedro"]["alts"].get("AM", {}).get("nat") is True, str(d.get("João Pedro")))

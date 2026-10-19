@@ -23,7 +23,7 @@ const WOFF = { ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0
 const WDEF = { GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
 const WGOAL = { ST: 1, LW: 0.65, RW: 0.65, LM: 0.4, RM: 0.4, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
 const WASSIST = { AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.2";
+export const ENGINE_VERSION = "1.3";
 export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.4, RW_REF = 10.75; // referencesummer for et gennemsnitshold
@@ -50,12 +50,12 @@ export function makeRng(seedStr) {
 
 // ---------- opstilling ----------
 // Positionsregler: spillerens position -> plads. Naturlig plads = 1, plads med straf = PEN_FACTOR, ellers null (kan ikke spille der).
-// Skal være identisk med slot_fit() i databasen (migration 020/021).
+// Skal være identisk med slot_fit() i databasen (migration 020/021). v1.3: spillere kan have en 2. naturlig position (alts.<pos>.nat).
 export const PEN_FACTOR = 0.90;
 const PENALTY_SLOTS = { LB: ["RB"], RB: ["LB"], DM: ["CM"], CM: ["DM", "AM"], AM: ["CM"], LW: ["ST", "RW"], RW: ["ST", "LW"], ST: ["LW", "RW"] };
 const NATURAL_EXTRA = { LW: ["LM"], RW: ["RM"] };
 export function fac(p, slotPos) {
-  if (p.pos === slotPos || (NATURAL_EXTRA[p.pos] || []).includes(slotPos)) return 1;
+  if (p.pos === slotPos || (NATURAL_EXTRA[p.pos] || []).includes(slotPos) || p.alts?.[slotPos]?.nat === true) return 1;
   if ((PENALTY_SLOTS[p.pos] || []).includes(slotPos)) return PEN_FACTOR;
   return null;
 }
