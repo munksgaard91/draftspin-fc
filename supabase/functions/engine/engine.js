@@ -9,23 +9,27 @@ export const FORMS = {
   "4-2-3-1": ["ST", "LW", "AM", "RW", "DM", "DM", "LB", "CB", "CB", "RB", "GK"],
   "4-1-4-1": ["ST", "LM", "CM", "CM", "RM", "DM", "LB", "CB", "CB", "RB", "GK"],
   "4-1-2-1-2": ["ST", "ST", "AM", "CM", "CM", "DM", "LB", "CB", "CB", "RB", "GK"],
-  "3-5-2": ["ST", "ST", "LM", "CM", "DM", "CM", "RM", "CB", "CB", "CB", "GK"],
-  "3-4-3": ["LW", "ST", "RW", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
-  "5-3-2": ["ST", "ST", "CM", "DM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
-  "5-4-1": ["ST", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "3-5-2": ["ST", "ST", "LWB", "CM", "DM", "CM", "RWB", "CB", "CB", "CB", "GK"],
+  "3-4-3": ["LW", "ST", "RW", "CM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "5-3-2": ["ST", "ST", "CM", "DM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "5-4-1": ["ST", "LM", "CM", "CM", "RM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
   "4-5-1": ["ST", "LM", "CM", "DM", "CM", "RM", "LB", "CB", "CB", "RB", "GK"],
   "4-4-1-1": ["ST", "AM", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "RB", "GK"],
   "4-3-1-2": ["ST", "ST", "AM", "CM", "DM", "CM", "LB", "CB", "CB", "RB", "GK"],
   "4-2-2-2": ["ST", "ST", "AM", "AM", "DM", "DM", "LB", "CB", "CB", "RB", "GK"],
-  "3-4-2-1": ["ST", "AM", "AM", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "3-4-2-1": ["ST", "AM", "AM", "CM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
   "4-3-2-1": ["ST", "AM", "AM", "CM", "DM", "CM", "LB", "CB", "CB", "RB", "GK"],
-  "3-4-1-2": ["ST", "ST", "AM", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "3-4-1-2": ["ST", "ST", "AM", "CM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "L3-5-2": ["ST", "ST", "LM", "CM", "DM", "CM", "RM", "CB", "CB", "CB", "GK"],
+  "L3-4-3": ["LW", "ST", "RW", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "L5-3-2": ["ST", "ST", "CM", "DM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "L5-4-1": ["ST", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "CB", "RB", "GK"],
 };
-const WOFF = { ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
-const WDEF = { GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
-const WGOAL = { ST: 1, LW: 0.65, RW: 0.65, LM: 0.4, RM: 0.4, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
-const WASSIST = { AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.4";
+const WOFF = { LWB: 0.07, RWB: 0.07, ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
+const WDEF = { LWB: 0.07, RWB: 0.07, GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
+const WGOAL = { LWB: 0.25, RWB: 0.25, ST: 1, LW: 0.65, RW: 0.65, LM: 0.4, RM: 0.4, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
+const WASSIST = { LWB: 0.75, RWB: 0.75, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
+export const ENGINE_VERSION = "1.5";
 export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.4, RW_REF = 10.75; // referencesummer for et gennemsnitshold
@@ -54,7 +58,7 @@ export function makeRng(seedStr) {
 // Positionsregler: spillerens position -> plads. Naturlig plads = 1, plads med straf = PEN_FACTOR, ellers null (kan ikke spille der).
 // Skal være identisk med slot_fit() i databasen (migration 020/021). v1.3: spillere kan have en 2. naturlig position (alts.<pos>.nat).
 export const PEN_FACTOR = 0.90;
-const PENALTY_SLOTS = { LB: ["RB"], RB: ["LB"], DM: ["CM"], CM: ["DM", "AM"], AM: ["CM"], LW: ["ST", "RW"], RW: ["ST", "LW"], ST: ["LW", "RW"] };
+const PENALTY_SLOTS = { LB: ["RB", "LWB"], RB: ["LB", "RWB"], LWB: ["LB", "LM", "LW"], RWB: ["RB", "RM", "RW"], DM: ["CM"], CM: ["DM", "AM"], AM: ["CM"], LW: ["ST", "RW"], RW: ["ST", "LW"], ST: ["LW", "RW"] };
 const NATURAL_EXTRA = { LW: ["LM"], RW: ["RM"] };
 export function fac(p, slotPos) {
   if (p.pos === slotPos || (NATURAL_EXTRA[p.pos] || []).includes(slotPos) || p.alts?.[slotPos]?.nat === true) return 1;
@@ -73,8 +77,8 @@ export function bestXI(players, form) {
   return xi;
 }
 export function xiStrength(xi) { return xi.reduce((a, x) => a + x.p.rating * x.f, 0) / 11; }
-// AI-klubberne vælger kun blandt de oprindelige ni formationer (de nye er til spillerne), så ligaens styrkebalance bevares
-export const AI_FORMS = ["4-3-3", "4-4-2", "4-2-3-1", "4-1-4-1", "4-1-2-1-2", "3-5-2", "3-4-3", "5-3-2", "5-4-1"];
+// AI-klubberne vælger kun blandt de oprindelige ni formationer (uden wingbacks, 'L'-nøglerne), så ligaens styrkebalance bevares
+export const AI_FORMS = ["4-3-3", "4-4-2", "4-2-3-1", "4-1-4-1", "4-1-2-1-2", "L3-5-2", "L3-4-3", "L5-3-2", "L5-4-1"];
 export function bestClubXI(players, forms = AI_FORMS) {
   let b = null, bf = null;
   for (const f of forms) { const x = bestXI(players, f); if (x && (b === null || xiStrength(x) > xiStrength(b))) { b = x; bf = f; } }

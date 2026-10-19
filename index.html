@@ -604,10 +604,10 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 <script>
 (function(){
 "use strict";
-var POSC={GK:"GK",RB:"RB",CB:"CB",LB:"LB",DM:"CDM",CM:"CM",AM:"CAM",LM:"LM",RM:"RM",LW:"LW",RW:"RW",ST:"ST"};
-var POSN={GK:"Goalkeeper",RB:"Right back",CB:"Centre back",LB:"Left back",DM:"Defensive midfielder",CM:"Central midfielder",AM:"Attacking midfielder",LM:"Left midfielder",RM:"Right midfielder",LW:"Left winger",RW:"Right winger",ST:"Striker"};
-var POSORD=["GK","RB","CB","LB","DM","CM","AM","RW","LW","ST"];
-var GROUPS={GK:["GK"],DEF:["RB","CB","LB"],MID:["DM","CM","AM"],ATT:["LW","RW","ST"]};
+var POSC={GK:"GK",RB:"RB",CB:"CB",LB:"LB",LWB:"LWB",RWB:"RWB",DM:"CDM",CM:"CM",AM:"CAM",LM:"LM",RM:"RM",LW:"LW",RW:"RW",ST:"ST"};
+var POSN={GK:"Goalkeeper",RB:"Right back",CB:"Centre back",LB:"Left back",LWB:"Left wing back",RWB:"Right wing back",DM:"Defensive midfielder",CM:"Central midfielder",AM:"Attacking midfielder",LM:"Left midfielder",RM:"Right midfielder",LW:"Left winger",RW:"Right winger",ST:"Striker"};
+var POSORD=["GK","RWB","RB","CB","LB","LWB","DM","CM","AM","RW","LW","ST"];
+var GROUPS={GK:["GK"],DEF:["RB","CB","LB","RWB","LWB"],MID:["DM","CM","AM"],ATT:["LW","RW","ST"]};
 var FORMS={
   "4-3-3":[["LW","ST","RW"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
   "4-3-3 (D)":[["LW","ST","RW"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
@@ -616,17 +616,17 @@ var FORMS={
   "4-2-3-1":[["ST"],["LW","AM","RW"],["DM","DM"],["LB","CB","CB","RB"],["GK"]],
   "4-1-4-1":[["ST"],["LM","CM","CM","RM"],["DM"],["LB","CB","CB","RB"],["GK"]],
   "4-1-2-1-2":[["ST","ST"],["AM"],["CM","CM"],["DM"],["LB","CB","CB","RB"],["GK"]],
-  "3-5-2":[["ST","ST"],["LM","CM","DM","CM","RM"],["CB","CB","CB"],["GK"]],
-  "3-4-3":[["LW","ST","RW"],["CM","CM"],["LB","CB","CB","CB","RB"],["GK"]],
-  "5-3-2":[["ST","ST"],["CM","DM","CM"],["LB","CB","CB","CB","RB"],["GK"]],
-  "5-4-1":[["ST"],["LM","CM","CM","RM"],["LB","CB","CB","CB","RB"],["GK"]],
+  "3-5-2":[["ST","ST"],["LWB","CM","DM","CM","RWB"],["CB","CB","CB"],["GK"]],
+  "3-4-3":[["LW","ST","RW"],["CM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
+  "5-3-2":[["ST","ST"],["CM","DM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
+  "5-4-1":[["ST"],["LM","CM","CM","RM"],["LWB","CB","CB","CB","RWB"],["GK"]],
   "4-5-1":[["ST"],["LM","CM","DM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
   "4-4-1-1":[["ST"],["AM"],["LM","CM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
   "4-3-1-2":[["ST","ST"],["AM"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
   "4-2-2-2":[["ST","ST"],["AM","AM"],["DM","DM"],["LB","CB","CB","RB"],["GK"]],
-  "3-4-2-1":[["ST"],["AM","AM"],["CM","CM"],["LB","CB","CB","CB","RB"],["GK"]],
+  "3-4-2-1":[["ST"],["AM","AM"],["CM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
   "4-3-2-1":[["ST"],["AM","AM"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
-  "3-4-1-2":[["ST","ST"],["AM"],["CM","CM"],["LB","CB","CB","CB","RB"],["GK"]]
+  "3-4-1-2":[["ST","ST"],["AM"],["CM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]]
 };
 /* formationer til valg: flest forsvarsspillere først; "4-3-3" er kun den gamle nøgle i ældre spil */
 var FORM_ORDER=Object.keys(FORMS).filter(function(f){return f!=="4-3-3"}).sort(function(a,b){
@@ -936,10 +936,11 @@ function renderPitch(el,form,squad,mini,hl,alt){
   var rows=FORMS[form],n=rows.length,html=MARK,idx=0;
   el.className="pitch"+(mini?" mini":"")+(hl?" dim sm":"")+(el.dataset.wide?" wide":"");
   rows.forEach(function(r,i){
-    var base=10+i*(80/(n-1));
+    var sp=80/(n-1),base=10+i*sp,back=r.indexOf("CB")>-1;
     r.forEach(function(pos,j){
       var left=(j+1)/(r.length+1)*100,p=squad?squad[idx]:null;
       var top=base+(pos==="DM"?2:(pos==="AM"?-2:0));
+      if(pos==="LWB"||pos==="RWB"){left=pos==="LWB"?12:88;if(back)top=base-sp*.45}
       html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
@@ -999,9 +1000,9 @@ function setStrip(k,anim){
   void s.offsetHeight;
 }
 /* positionsregler: 2 = naturlig plads (grøn), 1 = plads med straf (gul), ellers grå. Identisk med slot_fit() i databasen og fac() i motoren. */
-var FIT={GK:{GK:2},CB:{CB:2},LB:{LB:2,RB:1},RB:{RB:2,LB:1},DM:{DM:2,CM:1},CM:{CM:2,DM:1,AM:1},AM:{AM:2,CM:1},LW:{LW:2,LM:2,ST:1,RW:1},RW:{RW:2,RM:2,ST:1,LW:1},ST:{ST:2,LW:1,RW:1}};
+var FIT={GK:{GK:2},CB:{CB:2},LB:{LB:2,RB:1,LWB:1},RB:{RB:2,LB:1,RWB:1},LWB:{LWB:2,LB:2,RB:1,LM:1,LW:1},RWB:{RWB:2,RB:2,LB:1,RM:1,RW:1},DM:{DM:2,CM:1},CM:{CM:2,DM:1,AM:1},AM:{AM:2,CM:1},LW:{LW:2,LM:2,ST:1,RW:1},RW:{RW:2,RM:2,ST:1,LW:1},ST:{ST:2,LW:1,RW:1}};
 function fit(pos,slot,alts){var v=(FIT[pos]||{})[slot]||0;if(v<2&&alts&&alts[slot]&&alts[slot].nat)return 2;return v}
-function posTxt(pos,p){var a=p&&p[4]||{};return POSC[pos]+Object.keys(a).filter(function(k){return a[k]&&a[k].nat&&POSC[k]}).map(function(k){return "/"+POSC[k]}).join("")}
+function posTxt(pos,p){var a=p&&p[4]||{};return POSC[pos]+(pos==="LWB"?"/LB":(pos==="RWB"?"/RB":""))+Object.keys(a).filter(function(k){return a[k]&&a[k].nat&&POSC[k]}).map(function(k){return "/"+POSC[k]}).join("")}
 function slotsIn(form,squad,pos,p){
   var f=FORMS[form].reduce(function(a,r){return a.concat(r)},[]),ex=[],alt=[];
   f.forEach(function(sp,k){if(!squad[k]){var v=fit(pos,sp,p&&p[4]);if(v===2)ex.push(k);else if(v===1)alt.push(k)}});
