@@ -1219,18 +1219,18 @@ function finishMatch(){
   });
 }
 var SPEED=1;
-$("spdBtn").addEventListener("click",function(){SPEED=SPEED===1?2:1;$("spdBtn").textContent=SPEED+"x"});
+$("spdBtn").addEventListener("click",function(){SPEED=SPEED>=3?1:SPEED+1;$("spdBtn").textContent=SPEED+"x"});
 $("forceBtn").addEventListener("click",function(){if(LIVE){liveForce();return}readyTimers.forEach(clearTimeout);readyTimers=[];for(var k in readySt)readySt[k]=true;renderReady();toast("Runden tvunget videre. Fraværende spillere sat til klar.",3200)});
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
   readySt={me:false,Sara:false,Jonas:false,Marie:false};renderReady();
   if(LIVE)liveMatchHeader();
   $("readyBtn").disabled=true;$("readyBtn").textContent="Næste kamp";
-  var sc=script(),h=0,a=0,shown=0,t0=Date.now(),TOTAL=26000/SPEED,MIN=94,tl=[],skip=false;
+  var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false;
   $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
   $("playBtn").disabled=true;$("skipBtn").disabled=false;showOthers(false);
   function tick(){
-    var el=skip?TOTAL:Date.now()-t0,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
+    var now=Date.now();acc+=(now-last)*SPEED;last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
       if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop")}
