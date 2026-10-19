@@ -422,6 +422,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .btn.skipb{border:1px solid #e0b85a80;background:linear-gradient(#e0b85a26,#e0b85a10);color:#ecc977;font-weight:600}.btn.skipb:disabled{opacity:.4}
 .livetag{display:inline-flex;align-items:center;gap:5px;color:#6fcf8a;font:700 11.5px var(--mono);letter-spacing:.8px}.livetag i{width:7px;height:7px;border-radius:50%;background:#6fcf8a;animation:livep 1.4s infinite ease-in-out}@keyframes livep{0%,100%{opacity:1}50%{opacity:.3}}
 .mctl .btn{min-height:38px;padding:0 14px;font-size:14px}
+.nxo{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -2014,14 +2015,15 @@ function liveMatchHeader(){
   $("rndNo").textContent=NET.round;
   document.querySelectorAll(".myname").forEach(function(x){x.textContent=lname(NET.uid)});
   $("myC").innerHTML=lcrest(NET.uid,34);$("oppC").innerHTML=lcrest(oppK,34);$("myF").innerHTML=formOf(NET.uid,NET.round);$("oppF").innerHTML=formOf(oppK,NET.round);$("oppName").textContent=NET.oppName;
-  var nx=liveNextText();$("nextOpp").textContent=nx;
+  $("nextOpp").innerHTML=liveNextText();
 }
 function liveNextText(){
   var g=NET.game,r=NET.round;
   if(r>=38)return "Det var sæsonens sidste runde.";
   var m=NET.season.matches.filter(function(x){return x.round===r+1&&(x.home_key===NET.uid||x.away_key===NET.uid)})[0];
   if(!m)return "";var home=m.home_key===NET.uid;
-  return "Næste: runde "+(r+1)+" af 38 · "+lname(home?m.away_key:m.home_key)+" ("+(home?"hjemme":"ude")+")";
+  var ok=home?m.away_key:m.home_key;
+  return 'Næste: runde '+(r+1)+' af 38 · <span class="nxo">'+lcrest(ok,20)+esc(lname(ok))+' ('+(home?"H":"U")+')</span>';
 }
 function lhname(k,right){
   var ic=lcrest(k,20),nm='<span class="t">'+esc(lname(k))+'</span>';
