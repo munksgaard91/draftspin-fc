@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.7.2">
+<meta name="app-version" content="2.7.3">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -31,7 +31,7 @@
 .siminfo{margin:8px 0 0;padding:8px 12px 6px}
 .sirow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
 .siminfo .simbar{margin:6px 0 6px;height:4px}
-.tr.sm{padding:0;font-size:12.5px;line-height:20px;grid-template-columns:30px 1fr 20px 20px 20px 32px 28px}
+.tr.sm{padding:0;font-size:12.5px;line-height:20px;grid-template-columns:28px 1fr 20px 20px 20px 20px 32px 28px}
 .tr.sm .rk{font-size:12px}
 .simlist{flex:1;min-height:0;overflow-y:auto;margin-top:8px;-webkit-overflow-scrolling:touch}
 .simlh{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;padding:2px 2px 4px;position:sticky;top:0;background:var(--bg)}
@@ -321,11 +321,11 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .ready span.ok{color:var(--text)}
 
 /* tabel og stats */
-.tr{display:grid;grid-template-columns:34px 1fr 22px 22px 22px 34px 30px;gap:4px;align-items:center;padding:2px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.tr{display:grid;grid-template-columns:30px 1fr 20px 20px 20px 20px 30px 26px;gap:3px;align-items:center;padding:2px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .tr.h{font-size:13px;color:var(--mut)}
 .tr .num{font-family:var(--mono);text-align:right;color:var(--mut)}
 .tr .pts{font-family:var(--mono);text-align:right;font-weight:500}
-.tr .nm{display:flex;gap:8px;align-items:center;min-width:0}
+.tr .nm{display:flex;gap:6px;align-items:center;min-width:0}
 .tr .nm span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tr.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}
 .tr.friend{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}.tr.mine .nm span:last-child{font-weight:700}
@@ -1985,11 +1985,11 @@ function liveSimRender(ph){
   var side=function(k){return '<div class="simt">'+lcrest(k,40)+'<span>'+esc(lname(k))+'</span><div class="frm">'+formOf(k,r)+'</div></div>'};
   var h='<div class="simtop"><div class="card simcard simlive"><div class="simm">'+side(m.home_key)+'<div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div>'+side(m.away_key)+'</div></div>'+
     '<div class="card siminfo"><div class="sirow"><b>Runde '+r+' af 38</b><span class="muted">'+(up<1?"Første kamp er i gang":"Din plads: "+(mi+1)+" · "+me.p+" point · "+me.w+"V "+me.d+"U "+me.l+"T")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
-    '<div class="tr h sm"><span>#</span><span>Hold</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
+    '<div class="tr h sm"><span>#</span><span>Hold</span><span class="num">K</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
   rows.forEach(function(x,i){
     var mine=x.k===NET.uid,fr=lhuman(x.k)&&!mine,d=prev[x.k]!==undefined?prev[x.k]-i:0;
     var ar=d>0?'<i class="ar up"></i>':(d<0?'<i class="ar dn"></i>':'');
-    h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
+    h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+(x.w+x.d+x.l)+'</span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
   });
   h+='</div></div><div class="simlist"><div class="simlh"><b>Dine kampe</b><span><button class="linkbtn" data-act="simleave">Forlad</button><button class="linkbtn" data-act="simskip">Spring til slut</button></span></div>';
   for(var i=up;i>=1;i--){
@@ -2153,11 +2153,11 @@ function renderTableLive(){
   var up=NET.shownRound,rows=standingsLive(up),prev={};
   if(up>1)standingsLive(up-1).forEach(function(r1,i){prev[r1.k]=i});
   $("tblSub").textContent=up<1?"Ingen kampe er spillet endnu.":"Efter "+up+" af 38 runder.";
-  var h='<div class="tr h"><span>#</span><span>Hold</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
+  var h='<div class="tr h"><span>#</span><span>Hold</span><span class="num">K</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
   rows.forEach(function(r1,i){
     var me=r1.k===NET.uid,fr=lhuman(r1.k)&&!me,d=prev[r1.k]!==undefined?prev[r1.k]-i:0;
     var ar=d>0?'<i class="ar up" title="Op '+d+'"></i>':(d<0?'<i class="ar dn" title="Ned '+(-d)+'"></i>':'');
-    h+='<div class="tr'+(me?" mine":"")+(fr?" friend":"")+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(r1.k,20)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>';
+    h+='<div class="tr'+(me?" mine":"")+(fr?" friend":"")+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(r1.k,20)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+(r1.w+r1.d+r1.l)+'</span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>';
   });
   $("tbl").innerHTML=h;
   var lg='<span><i class="dotc" style="background:var(--me-dot)"></i>Dig</span>';
