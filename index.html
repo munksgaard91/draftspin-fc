@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.10.1">
+<meta name="app-version" content="2.10.2">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -367,7 +367,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sheetin .hd b{font-size:19px;font-weight:600}
 .sheetin .hd .muted{font-size:14px}
 .sheetin .hd .x{margin-left:auto;background:none;border:0;color:var(--mut);text-decoration:underline;text-underline-offset:3px;font-size:13.5px;padding:6px 2px;cursor:pointer}
-.sheetin .pitch{width:100%;max-width:100%;aspect-ratio:7/6;margin:8px auto 0}
+.sheetin .pitch{width:100%;max-width:100%;aspect-ratio:6/7;margin:8px auto 0}
 .sheetin .pitch.sm .slot{width:56px}
 .sheetin .pitch.sm .dot{width:40px;height:40px;font-size:11px}
 .sheetin .pitch.sm .nm{display:none}
@@ -433,9 +433,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .mctl .btn{min-height:38px;padding:0 14px;font-size:14px}
 .nxo{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
 .lrow .btn.num{width:36px;min-width:36px;padding-inline:0}
-.verbox{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.verok{font-size:11.5px;color:var(--mut);opacity:.75}
-.ver{font:500 11px var(--mono);color:var(--mut);opacity:.75;letter-spacing:.3px}
+.verbox{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding:6px 10px;border-radius:10px;background:color-mix(in srgb,var(--bg) 88%,transparent)}
+.verok{font-size:11.5px;color:color-mix(in srgb,var(--mut) 70%,var(--text))}
+.ver{font:500 11px var(--mono);color:color-mix(in srgb,var(--mut) 70%,var(--text));letter-spacing:.3px}
 .updbtn{appearance:none;border:1px solid #6fe39a99;background:linear-gradient(#6fe39a33,#6fe39a14);color:#8dffb5;font-size:12.5px;font-weight:600;border-radius:99px;padding:7px 13px;cursor:pointer;box-shadow:0 0 18px -2px #6fe39a88;animation:updglow 2.2s infinite ease-in-out}
 @keyframes updglow{0%,100%{box-shadow:0 0 12px -3px #6fe39a66}50%{box-shadow:0 0 22px 0 #6fe39acc}}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
@@ -515,7 +515,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div id="clubpanel"></div>
 
       <div class="seg" id="sqTabs" style="margin-top:12px"></div>
-      <div class="card" style="margin-top:12px"><div class="pitch" id="dpitch" style="max-width:100%;aspect-ratio:7/6;margin:0 auto"></div><p class="miss" id="missing"></p><div id="penNote"></div></div>
+      <div class="card" style="margin-top:12px"><div class="pitch" id="dpitch" style="max-width:100%;aspect-ratio:5/6;margin:0 auto"></div><p class="miss" id="missing"></p><div id="penNote"></div></div>
       <div id="doneBox"></div>
       <button class="linkbtn" id="draftLeave">Forlad spillet</button>
 
@@ -936,7 +936,7 @@ $("nav").addEventListener("click",function(e){var b=e.target.closest("button");i
 /* ---------- pitch ---------- */
 /* hver position har ALTID sin faste plads på banen, uanset formation (flere ens i samme række: fast parplacering) */
 var PX={GK:50,LB:12,LWB:12,LM:12,RB:88,RWB:88,RM:88,LW:16,RW:84};
-var PY={ST:11,LW:25,RW:25,AM:27,LM:40,RM:40,CM:47,LWB:62,RWB:62,DM:62,LB:70,RB:70,CB:76,GK:90};
+var PY={ST:11,LW:25,RW:25,AM:27,LM:40,RM:40,CM:47,LWB:62,RWB:62,DM:62,LB:74,RB:74,CB:74,GK:91};
 var PAIR={CB:[37,63],DM:[30,70],CM:[33,67],AM:[35,65],ST:[37,63]};
 function renderPitch(el,form,squad,mini,hl,alt){
   var rows=FORMS[form],html=MARK,idx=0;
