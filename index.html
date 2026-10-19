@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.11.1.1">
+<meta name="app-version" content="2.11.2">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -57,6 +57,14 @@
 @keyframes simd{0%,80%,100%{opacity:.25}40%{opacity:1}}
 .simrec{font-size:15px;color:var(--mut);margin-top:6px}
 .simwait{text-align:center;padding:90px 0 40px}
+.rgring{position:relative;width:300px;height:300px;margin:0 auto 26px;animation:rgspin 20s linear infinite}
+.rg{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(var(--a)) translateY(-128px)}
+.rgu{position:absolute;left:0;top:0;transform:rotate(calc(var(--a) * -1))}
+.rgi{display:block;transform:translate(-50%,-50%);animation:rgback 20s linear infinite}
+.rgi .cr{display:block}
+@keyframes rgspin{to{transform:rotate(360deg)}}
+@keyframes rgback{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+@media (prefers-reduced-motion:reduce){.rgring,.rgi{animation:none}}
 .spin{width:38px;height:38px;border-radius:50%;border:3px solid var(--surf2);border-top-color:var(--acc);margin:0 auto 22px;animation:simsp 0.9s linear infinite}
 @keyframes simsp{to{transform:rotate(360deg)}}
 
@@ -2003,7 +2011,21 @@ function simKey(){return "dsfc-sim-"+NET.gid}
 function liveSimWaiting(txt){
   if(NET.simWait===txt)return;NET.simWait=txt;
   $("navwrap").hidden=true;go("sim");
-  $("simbody").innerHTML='<div class="simwait"><div class="spin"></div><h2>'+txt+'</h2><p class="note">Det tager et øjeblik.</p></div>';
+  $("simbody").innerHTML='<div class="simwait">'+waitRing()+'<h2>'+txt+'</h2><p class="note">Det tager et øjeblik.</p></div>';
+}
+/* ring af de deltagende holds crests, mens sæsonen gøres klar */
+function waitRing(){
+  var pl=NET.players||[],rem=REMOVED.slice(0,Math.max(0,pl.length));
+  var ai=LEAGUE.filter(function(c){return rem.indexOf(c[1])<0}).map(function(c){return crest(c[0],30)});
+  var hu=pl.map(function(p){return ucrest((p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",utag(p.user_id,p.team_name),34)});
+  var items=[],hi=0,total=ai.length+hu.length;
+  for(var i=0;i<total;i++){
+    var slot=hu.length&&Math.floor((i+1)*hu.length/total)>hi;
+    if(slot){items.push(hu[hi++])}else items.push(ai.shift())
+  }
+  var n=items.length,h='<div class="rgring">';
+  items.forEach(function(it,i){h+='<span class="rg" style="--a:'+(i*360/n)+'deg"><span class="rgu"><span class="rgi">'+it+'</span></span></span>'});
+  return h+'</div>';
 }
 function liveSimStart(){
   simClear();NET.simWait=null;
