@@ -1223,7 +1223,7 @@ function finishMatch(){
   });
 }
 var SPEED=1;
-$("spdBtn").addEventListener("click",function(){SPEED=SPEED>=3?1:SPEED+1;$("spdBtn").textContent=SPEED+"x"});
+$("spdBtn").addEventListener("click",function(){var SP=[0.5,1,2,3];SPEED=SP[(SP.indexOf(SPEED)+1)%SP.length];$("spdBtn").textContent=(SPEED===0.5?"0,5":SPEED)+"x"});
 $("forceBtn").addEventListener("click",function(){if(LIVE){liveForce();return}readyTimers.forEach(clearTimeout);readyTimers=[];for(var k in readySt)readySt[k]=true;renderReady();toast("Runden tvunget videre. Fraværende spillere sat til klar.",3200)});
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
