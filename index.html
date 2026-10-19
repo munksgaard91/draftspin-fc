@@ -969,9 +969,18 @@ $("orderWrap").addEventListener("click",function(e){
 });
 
 /* ---------- draft ---------- */
+var REEL=LEAGUE.slice(),REELSEED="",LOCSEED=String(Math.random());
+function reelOrder(own){
+  var seed=(typeof LIVE!=="undefined"&&LIVE&&NET.gid)?String(NET.gid):LOCSEED;
+  if(seed===REELSEED)return;REELSEED=seed;
+  var x=2166136261;for(var i=0;i<seed.length;i++){x^=seed.charCodeAt(i);x=Math.imul(x,16777619)>>>0}
+  var rnd=function(){x=(Math.imul(x,1664525)+1013904223)>>>0;return x/4294967296};
+  REEL=LEAGUE.slice();for(var j=REEL.length-1;j>0;j--){var k=Math.floor(rnd()*(j+1)),t=REEL[j];REEL[j]=REEL[k];REEL[k]=t}
+  if(!own&&$("strip").children.length)buildReel();
+}
 function buildReel(){
-  var h="";
-  for(var r=0;r<14;r++)LEAGUE.forEach(function(c){h+='<div class="ri">'+crest(c[0],38)+'<span>'+c[1]+'</span></div>'});
+  var h="";reelOrder(1);
+  for(var r=0;r<14;r++)REEL.forEach(function(c){h+='<div class="ri">'+crest(c[0],38)+'<span>'+c[1]+'</span></div>'});
   $("strip").innerHTML=h;setStrip(S.k,false);
 }
 function setStrip(k,anim){
@@ -1118,7 +1127,7 @@ function spin(){
   if(!myTurn()||S.spinning||S.club)return;
   S.spinning=true;renderDraft();
   var all=Object.keys(CLUBS),codes=all.filter(function(c){return CLUBS[c].p.some(function(p){return status(p).ok})});if(!codes.length)codes=all;var code=codes[Math.floor(Math.random()*codes.length)];
-  var t=LEAGUE.findIndex(function(c){return c[0]===code}),k1=S.k+NL*5+((((t-S.k)%NL)+NL)%NL);
+  var t=(reelOrder(),REEL.findIndex(function(c){return c[0]===code})),k1=S.k+NL*5+((((t-S.k)%NL)+NL)%NL);
   S.k=k1;setStrip(k1,true);
   var fast=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
   draftT.push(setTimeout(function(){
@@ -2320,9 +2329,9 @@ function livePlayers(){
   })();
 }
 function keyOf(u){return u===NET.uid?"me":u}
-function reelSet(code){var t=LEAGUE.findIndex(function(c){return c[0]===code});S.k=2*NL+t;setStrip(S.k,false)}
+function reelSet(code){var t=(reelOrder(),REEL.findIndex(function(c){return c[0]===code}));S.k=2*NL+t;setStrip(S.k,false)}
 function reelTo(code,done){
-  var t=LEAGUE.findIndex(function(c){return c[0]===code}),k1=S.k+NL*5+((((t-S.k)%NL)+NL)%NL);
+  var t=(reelOrder(),REEL.findIndex(function(c){return c[0]===code})),k1=S.k+NL*5+((((t-S.k)%NL)+NL)%NL);
   S.k=k1;setStrip(k1,true);
   var fast=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
   draftT.push(setTimeout(function(){S.k=2*NL+t;setStrip(S.k,false);done()},fast?50:3900));
