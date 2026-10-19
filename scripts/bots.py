@@ -2,7 +2,7 @@
 """Bot-test af DraftSpin FC mod produktionsdatabasen (kun egne testbrugere/-spil).
 Kør: python3 bots.py <scenarie> ...   Scenarier: full6, quick4, solo, duo, conc
 Gemmer testens spil-id'er og bruger-id'er i testids.json til oprydning."""
-import json, random, sys, time, urllib.request, urllib.error, threading, os, collections
+import re, json, random, sys, time, urllib.request, urllib.error, threading, os, collections
 
 BASE = "https://apagcfedizgjnnuefzfo.supabase.co"
 KEY = "sb_publishable_WhuPfaDfcTcZJhWwAcgvhg_YyhNG4lf"
@@ -44,7 +44,15 @@ class U:
     def engine(self, action, gid, **x):
         return http("POST", "/functions/v1/engine", self.tok, dict(action=action, game_id=gid, **x))
 
-FORMS = {'4-3-3': ['LW', 'ST', 'RW', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-4-2': ['ST', 'ST', 'LM', 'CM', 'CM', 'RM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-2-3-1': ['ST', 'LW', 'AM', 'RW', 'DM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-1-4-1': ['ST', 'LM', 'CM', 'CM', 'RM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-1-2-1-2': ['ST', 'ST', 'AM', 'CM', 'CM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '3-5-2': ['ST', 'ST', 'LM', 'CM', 'DM', 'CM', 'RM', 'CB', 'CB', 'CB', 'GK'], '3-4-3': ['LW', 'ST', 'RW', 'CM', 'CM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '5-3-2': ['ST', 'ST', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '5-4-1': ['ST', 'LM', 'CM', 'CM', 'RM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '4-5-1': ['ST', 'LM', 'CM', 'DM', 'CM', 'RM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-4-1-1': ['ST', 'AM', 'LM', 'CM', 'CM', 'RM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-3-1-2': ['ST', 'ST', 'AM', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'RB', 'GK'], '4-2-2-2': ['ST', 'ST', 'AM', 'AM', 'DM', 'DM', 'LB', 'CB', 'CB', 'RB', 'GK'], '3-4-2-1': ['ST', 'AM', 'AM', 'CM', 'CM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK'], '4-3-2-1': ['ST', 'AM', 'AM', 'CM', 'DM', 'CM', 'LB', 'CB', 'CB', 'RB', 'GK'], '3-4-1-2': ['ST', 'ST', 'AM', 'CM', 'CM', 'LB', 'CB', 'CB', 'CB', 'RB', 'GK']}
+def _load_forms():
+    """Formationerne læses fra motoren (engine.js), så testen aldrig kommer bagud i forhold til serveren. 'L'-nøglerne er kun til AI-klubber."""
+    src = open(os.path.join(os.path.dirname(__file__), "..", "supabase", "functions", "engine", "engine.js"), encoding="utf-8").read()
+    blk = src[src.index("export const FORMS = {"):src.index("};", src.index("export const FORMS = {"))]
+    out = {}
+    for m in re.finditer(r'"([^"]+)":\s*\[([^\]]+)\]', blk):
+        if not m.group(1).startswith("L") and m.group(1) != "3-5-2": out[m.group(1)] = re.findall(r'"([A-Z]+)"', m.group(2))
+    return out
+FORMS = _load_forms()
 PLAYERS = None
 def players(u):
     global PLAYERS

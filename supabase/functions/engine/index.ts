@@ -94,7 +94,10 @@ async function loadCtx(gameId) {
 }
 
 async function playRound(gameId, ctx, round) {
-  const ms = chk(await admin.from("matches").select("*").eq("game_id", gameId).eq("round", round)); // hele runden spilles om ved genstart: deterministisk og idempotent
+  const all = chk(await admin.from("matches").select("*").eq("game_id", gameId).eq("round", round));
+  // kun kampe der ikke er spillet, eller en menneskekamp uden hændelser (afbrudt kørsel). Færdige kampe røres aldrig, så et spillet resultat ikke kan ændre sig.
+  const withEv = new Set(all.length ? chk(await admin.from("match_events").select("match_id").in("match_id", all.map((m) => m.id))).map((e) => e.match_id) : []);
+  const ms = all.filter((m) => !m.played || ((ctx.teams[m.home_key].kind === "human" || ctx.teams[m.away_key].kind === "human") && !withEv.has(m.id)));
   const upd = [], evs = [];
   for (const m of ms) {
     const th = ctx.teams[m.home_key], ta = ctx.teams[m.away_key];
