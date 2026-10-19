@@ -327,7 +327,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .tr .nm{display:flex;gap:8px;align-items:center;min-width:0}
 .tr .nm span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tr.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}
-.tr.friend{background:#e0b85a2e;margin:0 -10px;padding-inline:10px;border-radius:6px;box-shadow:inset 3px 0 0 #e0b85a}.tr.friend .nm span:last-child{font-weight:600}
+.tr.friend{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}.tr.mine .nm span:last-child{font-weight:700}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-top:6px}
 .legend span{display:flex;gap:7px;align-items:center}
 .seg.hcats{overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
@@ -457,7 +457,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .endrow .en{display:flex;align-items:center;gap:10px;font-weight:500}
 .endrow small{display:block;color:var(--mut);font-size:13.5px;font-weight:400}
 .endrow .ev2{font:500 18px var(--mono)}
-.endrow.fr{background:#e0b85a2e;margin:0 -10px;padding-inline:10px;border-radius:8px;box-shadow:inset 3px 0 0 #e0b85a}
+.endrow.fr{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}.endrow.me .en>span:last-child{font-weight:700}
 .endrow.me{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
 .newrec{display:flex;gap:12px;align-items:flex-start;padding:10px 0}
 .newrec .st{font:500 12px var(--mono);background:#e4c47a22;color:#e4c47a;border-radius:6px;padding:3px 8px;white-space:nowrap}
@@ -2105,7 +2105,7 @@ function renderTableLive(){
   });
   $("tbl").innerHTML=h;
   var lg='<span><i class="dotc" style="background:var(--me-dot)"></i>Dig</span>';
-  Object.keys(NET.season.teams).forEach(function(k){var t=NET.season.teams[k];if(t.kind==="human"&&k!==NET.uid)lg+='<span><i class="dotc" style="background:#e0b85a"></i>'+esc(t.name)+'</span>'});
+  Object.keys(NET.season.teams).forEach(function(k){var t=NET.season.teams[k];if(t.kind==="human"&&k!==NET.uid)lg+='<span><i class="dotc" style="background:'+(t.color1||"#8c97b5")+'"></i>'+esc(t.name)+'</span>'});
   $("legend").innerHTML=lg;
 }
 function liveStatMaps(){
