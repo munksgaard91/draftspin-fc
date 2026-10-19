@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.13.11">
+<meta name="app-version" content="2.13.12">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1303,8 +1303,8 @@ function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
 function evRow(e){
   var cls="ev "+(e.t==="sys"?"sys":(e.t==="goal"?"goal ":"")+e.s);
   var ic=e.t==="goal"?'<i class="ic g">⚽</i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?'<i class="ic r"></i>':(e.t==="pm"?'<i class="ic g">❌</i>':'<i class="ic w"></i>')));
-  var head=e.t==="goal"?(e.ai?esc(e.x)+" scorer":esc(e.x))+'':(e.t==="y"?"Gult kort":(e.t==="r"?"Rødt kort":(e.t==="pm"?(e.ai?"Straffe misset":"Straffe misset, "+esc(e.x)):esc(e.x))));
-  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?(e.lab||"Slut"):clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a?(e.t==="goal"&&/^Assist/.test(e.a)?'<small class="asl">👏 '+esc(e.a)+'</small>':(e.t==="goal"&&e.pen?'<small class="asl">🥅 '+esc(e.a)+'</small>':'<small>'+esc(e.a)+'</small>')):'')+((e.t==="y"||e.t==="r")?'<small class="tg" style="margin-left:6px">'+(e.ai?esc(LIVE?NET.oppName:"Chelsea"):esc(e.x))+'</small>':(e.t!=="sys"&&e.s!=="me"&&!(e.ai&&e.t==="goal")?'<small class="tg" style="margin-left:6px">'+esc(LIVE?NET.oppName:"Chelsea")+'</small>':''))+'</div></div>';
+  var head=e.t==="goal"?(e.ai?esc(e.x)+" scorer":esc(e.x))+'':(e.t==="y"?"Gult kort":(e.t==="r"?"Rødt kort":(e.t==="pm"?"Brændt straffe":esc(e.x))));
+  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?(e.lab||"Slut"):clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a&&e.t!=="pm"?(e.t==="goal"&&/^Assist/.test(e.a)?'<small class="asl">👏 '+esc(e.a)+'</small>':(e.t==="goal"&&e.pen?'<small class="asl">🥅 '+esc(e.a)+'</small>':'<small>'+esc(e.a)+'</small>')):'')+((e.t==="y"||e.t==="r"||e.t==="pm")?'<small class="tg" style="margin-left:6px">'+(e.ai?esc(LIVE?NET.oppName:"Chelsea"):esc(e.x))+'</small>':(e.t!=="sys"&&e.s!=="me"&&!(e.ai&&e.t==="goal")?'<small class="tg" style="margin-left:6px">'+esc(LIVE?NET.oppName:"Chelsea")+'</small>':''))+'</div></div>';
 }
 function hname(n,right){
   var k=n==="me"?"me":NAME_H[n],txt=n==="me"?(S.team.trim()||"Mit hold"):n;
