@@ -811,11 +811,11 @@ function renderFlow(){
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primær farve</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Sekundær farve</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primær":"Sekundær")+' farve: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
       '<div class="field"><span>Våbenskjold</span><div class="crests">'+crestBtns()+'</div></div>'+
-      navBtns("Fortsæt til formation",!holdOk(),LIVE);
+      navBtns("Fortsæt til formation",!holdOk(),LIVE)+(LIVE&&NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
   }else if(st==="form"){
     h+='<h1>Vælg formation</h1><p class="sub">Den kan ikke ændres, når spillet er startet.</p><div class="fchips">'+
       FORM_ORDER.map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+f+'</button>'}).join("")+'</div>'+
-      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("Jeg er klar til draft");
+      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("Jeg er klar til draft")+(LIVE&&NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
   }else if(LIVE){
     h+=lobbyLive();
   }else{
@@ -862,6 +862,7 @@ $("flow").addEventListener("click",function(e){
   var a=b.dataset.act,st=stepsFor()[F.step];
   if(a==="hofopen"){HOFBACK="start";$("navwrap").hidden=true;$("sbg").hidden=true;go("hof");return}
   if(a==="update"){hardReload();return}
+  if(a==="leavesetup"){askLeave(false);leaveAct=liveAbort;return}
   if(a==="pushtoggle"){pushToggle();return}
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(LIVE&&liveAct(a,b,st))return;
