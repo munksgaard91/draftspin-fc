@@ -668,7 +668,7 @@ var FRIENDS={Sara:"var(--c-sara)",Jonas:"var(--c-jonas)",Marie:"var(--c-marie)"}
 var FTEAM={Sara:"Sara United",Jonas:"Jonas Rovers",Marie:"Marie Athletic"};
 var FR_NAMES=["Sara United","Jonas Rovers","Marie Athletic"];
 var CNAME={"#6b8f6e":"Grøn","#3a6fd8":"Blå","#c29a3d":"Guld","#c4688b":"Rosa","#8c6bc4":"Lilla","#cf4a4a":"Rød","#e6ebf5":"Hvid","#1b2540":"Mørkeblå","#e08a2e":"Orange","#e3c93a":"Gul","#2fa7a0":"Turkis","#7bc043":"Lysegrøn","#7a1f35":"Bordeaux","#6ab7e6":"Himmelblå","#8a93a6":"Grå","#111418":"Sort","#6b4226":"Brun","#0f5b46":"Skovgrøn"};
-var SWATCH=["#6b8f6e","#3a6fd8","#c29a3d","#c4688b","#8c6bc4","#cf4a4a","#e6ebf5","#1b2540","#e08a2e","#e3c93a","#2fa7a0","#7bc043","#7a1f35","#6ab7e6","#8a93a6","#111418","#6b4226","#0f5b46"];
+var SWATCH=["#111418","#1b2540","#3a6fd8","#6ab7e6","#0f5b46","#6b8f6e","#2fa7a0","#7bc043","#8a93a6","#7a1f35","#cf4a4a","#c4688b","#8c6bc4","#6b4226","#e08a2e","#c29a3d","#e3c93a","#e6ebf5"];
 var DEFAULT_SQUAD=[["Alisson Becker","GK"],["Ben White","RB"],["William Saliba","CB"],["Virgil van Dijk","CB"],["Riccardo Calafiori","LB"],["Ryan Gravenberch","DM"],["Declan Rice","CM"],["Alexis Mac Allister","CM"],["Cody Gakpo","LW"],["Noni Madueke","RW"],["Alexander Isak","ST"]];
 var MAXP=6,NL=LEAGUE.length;
 var LIVE=!!(window.supabase&&window.supabase.createClient);
@@ -694,7 +694,7 @@ function lastName(n){var w=n.split(" ");if(w.length>2&&w[w.length-2]===w[w.lengt
 function fresh(){
   simT.forEach(clearTimeout);simT=[];draftT.forEach(clearTimeout);draftT=[];clearInterval(tIv);tIv=null;
   clearInterval(timer);timer=null;readyTimers.forEach(clearTimeout);readyTimers=[];
-  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Mit hold",color:SWATCH[0],color2:"#e6ebf5",form:"4-3-3 (D)",squad:new Array(11).fill(null),
+  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Mit hold",color:"#6b8f6e",color2:"#e6ebf5",form:"4-3-3 (D)",squad:new Array(11).fill(null),
      taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},tag:"",k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
      phase:"order",order:[],seq:[],pickIdx:0,matchSeen:false};
   P={me:{joined:true,ready:false},Sara:{joined:false,ready:false},Jonas:{joined:false,ready:false},Marie:{joined:false,ready:false}};
