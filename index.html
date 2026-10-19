@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.13.16">
+<meta name="app-version" content="2.14.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1787,24 +1787,41 @@ function toast(t,ms){var e=$("toast");e.textContent=t;e.hidden=false;clearTimeou
 var SB_URL="https://apagcfedizgjnnuefzfo.supabase.co",SB_KEY="sb_publishable_WhuPfaDfcTcZJhWwAcgvhg_YyhNG4lf";
 var NET={sb:null,uid:null,gid:null,game:null,players:[],ch:null,hb:null,poll:null,ready:null,draftShown:false};
 function netErr(e){toast((e&&e.message)||String(e),4200)}
+/* lokalt lager: sidste kendte tilstand, så appen kan vise den med det samme uden forbindelse */
+function cset(k,v){try{localStorage.setItem("dsfc-c-"+k,JSON.stringify(v))}catch(e){try{Object.keys(localStorage).forEach(function(x){if(x.indexOf("dsfc-c-g")===0||x.indexOf("dsfc-c-s")===0)localStorage.removeItem(x)})}catch(x){}}}
+function cget(k){try{var t=localStorage.getItem("dsfc-c-"+k);return t?JSON.parse(t):null}catch(e){return null}}
+function netDown(e){var m=String((e&&e.message)||e||"");return navigator.onLine===false||/fetch|network|load failed|timeout|abort/i.test(m)}
 function liveInit(){
   NET.sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
   NET.ready=(async function(){
-    var s0=await NET.sb.auth.getSession(),sess=s0.data&&s0.data.session;
-    if(!sess){var r0=await NET.sb.auth.signInAnonymously();if(r0.error)throw r0.error;sess=r0.data.session}
-    NET.uid=sess.user.id;
+    try{
+      var s0=await NET.sb.auth.getSession(),sess=s0.data&&s0.data.session;
+      if(!sess){var r0=await NET.sb.auth.signInAnonymously();if(r0.error)throw r0.error;sess=r0.data.session}
+      NET.uid=sess.user.id;cset("uid",NET.uid);
+    }catch(e){
+      var u=cget("uid");if(!u)throw e;
+      NET.uid=u;
+    }
   })();
   return NET.ready;
 }
 async function liveLoad(){
   if(!NET.gid)return;
-  var rs=await Promise.all([NET.sb.from("games").select("*").eq("id",NET.gid).maybeSingle(),NET.sb.from("game_players").select("*").eq("game_id",NET.gid).order("joined_at")]);
-  var g=rs[0],p=rs[1];
-  if(g.error||p.error)throw (g.error||p.error);
-  NET.game=g.data;NET.players=p.data||[];NET.picks=[];
-  if(NET.game&&NET.game.status!=="lobby"){
-    var d=await NET.sb.from("draft_picks").select("*").eq("game_id",NET.gid).order("pick_number");
-    if(d.error)throw d.error;NET.picks=d.data||[];
+  try{
+    var rs=await Promise.all([NET.sb.from("games").select("*").eq("id",NET.gid).maybeSingle(),NET.sb.from("game_players").select("*").eq("game_id",NET.gid).order("joined_at")]);
+    var g=rs[0],p=rs[1];
+    if(g.error||p.error)throw (g.error||p.error);
+    var gm=g.data,pls=p.data||[],pks=[];
+    if(gm&&gm.status!=="lobby"){
+      var d=await NET.sb.from("draft_picks").select("*").eq("game_id",NET.gid).order("pick_number");
+      if(d.error)throw d.error;pks=d.data||[];
+    }
+    NET.game=gm;NET.players=pls;NET.picks=pks;
+    if(gm)cset("g",{gid:NET.gid,game:gm,players:pls,picks:pks});
+  }catch(e){
+    var c=cget("g");
+    if(NET.game||!c||c.gid!==NET.gid||!netDown(e))throw e;
+    NET.game=c.game;NET.players=c.players;NET.picks=c.picks;NET.fromCache=true;
   }
 }
 function liveUnsub(){if(NET.ch){NET.sb.removeChannel(NET.ch);NET.ch=null}clearInterval(NET.poll);clearInterval(NET.hb)}
@@ -2041,6 +2058,14 @@ async function fetchAll(table){
   return rows;
 }
 async function liveSeasonLoad(){
+  try{return await liveSeasonLoad0()}
+  catch(e){
+    var c=cget("s");
+    if(NET.season||!c||c.gid!==NET.gid||!netDown(e))throw e;
+    NET.season=c.season;NET.fromCache=true;return true;
+  }
+}
+async function liveSeasonLoad0(){
   var s0={teams:{},lineups:{},matches:[],events:[]};
   var tm=await NET.sb.from("season_teams").select("*").eq("game_id",NET.gid);if(tm.error)throw tm.error;
   if(!tm.data.length)return false;
@@ -2049,7 +2074,7 @@ async function liveSeasonLoad(){
   lu.data.forEach(function(l){(s0.lineups[l.team_key]=s0.lineups[l.team_key]||[])[l.slot-1]=l.player_id});
   s0.matches=await fetchAll("matches");
   s0.events=await fetchAll("match_events");
-  NET.season=s0;return true;
+  NET.season=s0;cset("s",{gid:NET.gid,season:s0});return true;
 }
 async function callEngine(action,extra){
   var body={action:action,game_id:NET.gid};if(extra)for(var k in extra)body[k]=extra[k];
@@ -2502,7 +2527,8 @@ NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn
 function livePlayers(){
   NET.pl=(async function(){
     var r0=await NET.sb.from("players").select("id,club,number,name,pos,alts,rating,short_name").order("club").order("number");
-    if(r0.error)throw r0.error;
+    if(r0.error){var pc=cget("pl");if(!pc||!netDown(r0.error))throw r0.error;r0={data:pc}}
+    else cset("pl",r0.data);
     CLUBS={};LEAGUE.forEach(function(c){CLUBS[c[0]]={n:c[1],p:[]}});
     NET.byId={};NET.byName={};
     r0.data.forEach(function(x){var a=[x.name,x.pos,x.number,x.id,x.alts||{},x.rating,x.short_name||""];CLUBS[x.club].p.push(a);NET.byId[x.id]={p:a,club:x.club};NET.byName[x.name]=a});
@@ -2704,6 +2730,7 @@ async function liveBoot(){
   var pre=(new URLSearchParams(location.search).get("code")||"").length===6;
   if(!pre)$("toStart").click();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
   document.querySelector(".protofoot").hidden=true;
+  try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}
   try{await liveInit()}catch(e){toast("Kunne ikke logge ind. Tjek forbindelsen og prøv igen.",6000);return}
   pushInit();
   livePlayers();
@@ -2712,8 +2739,12 @@ async function liveBoot(){
     NET.gid=gid;
     try{
       await liveLoad();
-      if(NET.game&&NET.game.status!=="closed"&&NET.players.some(function(p){return p.user_id===NET.uid})){liveSub();liveEnter();return}
-    }catch(e){}
+      if(NET.game&&NET.game.status!=="closed"&&NET.players.some(function(p){return p.user_id===NET.uid})){
+        liveSub();liveEnter();
+        if(NET.fromCache){NET.fromCache=false;connFail=1;liveConn(false)}
+        return;
+      }
+    }catch(e){if(netDown(e)){NET.gid=null;return}}
     NET.gid=null;try{localStorage.removeItem("dsfc-gid")}catch(x){}
   }
 }
