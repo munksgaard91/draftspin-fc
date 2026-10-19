@@ -179,7 +179,7 @@ async function finalizeSeason(gameId) {
   const own = {};
   lu.forEach((l) => { const tm = humans.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });
   const stats = {}, pm = {}, mById = new Map(matches.map((m) => [m.id, m]));
-  const ens = (pid) => (stats[pid] = stats[pid] || { goals: 0, assists: 0, cs: 0, reds: 0 });
+  const ens = (pid) => (stats[pid] = stats[pid] || { goals: 0, assists: 0, cs: 0, reds: 0, yellows: 0 });
   // en spiller kan stå på både et menneskehold og en AI-klub: tæl kun hændelser for det hold, der ejer ham
   const evTeam = (e) => { const m = mById.get(e.match_id); return m ? (e.team === "h" ? m.home_key : m.away_key) : null; };
   const mineEv = (e, pid) => !!pid && !!own[pid] && evTeam(e) === own[pid].team_key;
@@ -188,6 +188,7 @@ async function finalizeSeason(gameId) {
     if (e.type === "goal" && e.assist_id && mineEv(e, e.assist_id)) ens(e.assist_id).assists++;
     if (e.type === "clean_sheet" && mineEv(e, e.player_id)) ens(e.player_id).cs++;
     if ((e.type === "red" || e.type === "second_yellow") && mineEv(e, e.player_id)) ens(e.player_id).reds++;
+    if (e.type === "yellow" && mineEv(e, e.player_id)) ens(e.player_id).yellows++;
   }
   const bm = {};
   for (const k of Object.keys(pm)) {
@@ -197,7 +198,7 @@ async function finalizeSeason(gameId) {
   }
   const playerRows = Object.keys(stats).map((pid) => {
     const tm = own[pid], s = stats[pid];
-    return { game_id: gameId, player_id: Number(pid), league: "PL", season, season_no: game.season_no, user_id: tm.user_id, team_name: tm.name, owner: owner(tm.user_id), goals: s.goals, assists: s.assists, clean_sheets: s.cs, reds: s.reds, best_match_goals: bm[pid] ? bm[pid].n : 0, best_match_text: bm[pid] ? bm[pid].text : null };
+    return { game_id: gameId, player_id: Number(pid), league: "PL", season, season_no: game.season_no, user_id: tm.user_id, team_name: tm.name, owner: owner(tm.user_id), goals: s.goals, assists: s.assists, clean_sheets: s.cs, reds: s.reds, yellows: s.yellows, best_match_goals: bm[pid] ? bm[pid].n : 0, best_match_text: bm[pid] ? bm[pid].text : null };
   });
   if (teamRows.length) chk(await admin.from("hof_teams").upsert(teamRows, { onConflict: "game_id,team_key" }));
   if (playerRows.length) chk(await admin.from("hof_players").upsert(playerRows, { onConflict: "game_id,player_id" }));
