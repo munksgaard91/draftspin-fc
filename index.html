@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.10.0">
+<meta name="app-version" content="2.10.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -934,15 +934,22 @@ function go(s){
 $("nav").addEventListener("click",function(e){var b=e.target.closest("button");if(b&&b.dataset.s)go(b.dataset.s)});
 
 /* ---------- pitch ---------- */
+/* hver position har ALTID sin faste plads på banen, uanset formation (flere ens i samme række: fast parplacering) */
+var PX={GK:50,LB:12,LWB:12,LM:12,RB:88,RWB:88,RM:88,LW:16,RW:84};
+var PY={ST:11,LW:25,RW:25,AM:27,LM:40,RM:40,CM:47,LWB:62,RWB:62,DM:62,LB:70,RB:70,CB:76,GK:90};
+var PAIR={CB:[37,63],DM:[30,70],CM:[33,67],AM:[35,65],ST:[37,63]};
 function renderPitch(el,form,squad,mini,hl,alt){
-  var rows=FORMS[form],n=rows.length,html=MARK,idx=0;
+  var rows=FORMS[form],html=MARK,idx=0;
   el.className="pitch"+(mini?" mini":"")+(hl?" dim sm":"")+(el.dataset.wide?" wide":"");
-  rows.forEach(function(r,i){
-    var sp=80/(n-1),base=10+i*sp,back=r.indexOf("CB")>-1;
-    r.forEach(function(pos,j){
-      var left=(j+1)/(r.length+1)*100,p=squad?squad[idx]:null;
-      var top=base+(pos==="DM"?2:(pos==="AM"?-2:0));
-      if(pos==="LWB"||pos==="RWB"){left=pos==="LWB"?12:88;if(back)top=base-sp*.45}
+  rows.forEach(function(r){
+    var cnt={},seen={};r.forEach(function(q){cnt[q]=(cnt[q]||0)+1});
+    r.forEach(function(pos){
+      var p=squad?squad[idx]:null,left,c=cnt[pos],k=seen[pos]=(seen[pos]||0)+1;
+      if(PX[pos]!==undefined)left=PX[pos];
+      else if(c===1)left=50;
+      else if(c===2)left=PAIR[pos][k-1];
+      else left=28+(k-1)*22;
+      var top=PY[pos];
       html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
