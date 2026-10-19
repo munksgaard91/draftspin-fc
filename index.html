@@ -424,6 +424,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .mctl .btn{min-height:38px;padding:0 14px;font-size:14px}
 .nxo{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
 .lrow .btn.num{width:36px;min-width:36px;padding-inline:0}
+.ver{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:14px;z-index:6;font:500 11px var(--mono);color:var(--mut);opacity:.7;letter-spacing:.3px}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -1513,7 +1514,9 @@ function startHtml(){
 }
 
 /* valgfrit login: lille knap på forsiden */
-function cornerLogin(){return ""}
+/* Version: 2.MINOR.PATCH. MINOR = ny funktion eller samlet batch af ændringer, PATCH = rettelser. Det store tal skiftes kun efter aftale med Rasmus. */
+var APP_VERSION="2.6.0";
+function cornerLogin(){return '<span class="ver">v'+APP_VERSION+'</span>'}
 function openAuth(){$("auth").hidden=false;renderAuth();var i=$("authEmail")||$("authCode");if(i)setTimeout(function(){try{i.focus()}catch(x){}},50)}
 function closeAuth(){$("auth").hidden=true;renderFlow()}
 function renderAuth(){
