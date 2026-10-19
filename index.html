@@ -509,7 +509,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 
     <div class="card" style="margin-top:12px">
       <div class="sb">
-        <div class="tm"><span id="myC"></span><span class="myname">Rasmus FC</span><div class="frm" id="myF"></div></div>
+        <div class="tm"><span id="myC"></span><span class="myname">Mit hold</span><div class="frm" id="myF"></div></div>
         <div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div>
         <div class="tm"><span id="oppC"></span><span id="oppName">Chelsea</span><div class="frm" id="oppF"></div></div>
       </div>
@@ -665,7 +665,7 @@ function lastName(n){var w=n.split(" ");if(w.length>2&&w[w.length-2]===w[w.lengt
 function fresh(){
   simT.forEach(clearTimeout);simT=[];draftT.forEach(clearTimeout);draftT=[];clearInterval(tIv);tIv=null;
   clearInterval(timer);timer=null;readyTimers.forEach(clearTimeout);readyTimers=[];
-  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Rasmus FC",color:SWATCH[0],color2:"#e6ebf5",form:"4-3-3",squad:new Array(11).fill(null),
+  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Mit hold",color:SWATCH[0],color2:"#e6ebf5",form:"4-3-3",squad:new Array(11).fill(null),
      taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},tag:"",k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
      phase:"order",order:[],seq:[],pickIdx:0,matchSeen:false};
   P={me:{joined:true,ready:false},Sara:{joined:false,ready:false},Jonas:{joined:false,ready:false},Marie:{joined:false,ready:false}};
@@ -777,7 +777,7 @@ function renderFlow(){
   }else if(st==="hold"){
     var ct=F.ctab==="s"?"s":"p";
     h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"Mit hold")+'</span></div>'+
-      '<div class="tagrow"><label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="Fx Valby IF" autocomplete="off"></label><label class="field tagf"><span>Forkortelse</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"Mit hold"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
+      '<div class="tagrow"><label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="Fx Dream Team" autocomplete="off"></label><label class="field tagf"><span>Forkortelse</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"Mit hold"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primær farve</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Sekundær farve</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primær":"Sekundær")+' farve: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
       '<div class="field"><span>Våbenskjold</span><div class="crests">'+crestBtns()+'</div></div>'+
@@ -1121,7 +1121,7 @@ function lockPick(name,i){
   if(LIVE){livePick(name,i);return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0];
   S.squad[i]={name:p[0],pos:p[1],club:S.club,pen:fit(p[1],flat()[i])===1,num:p[2]};
-  S.taken[p[0]]="Rasmus FC";
+  S.taken[p[0]]="Mit hold";
   S.feed.unshift({who:"Dig",name:p[0],pos:p[1],club:S.club});
   S.sel=null;S.club=null;S.auto=false;clearTurnTimer();S.pickIdx++;
   renderSheet();advance();
@@ -1791,7 +1791,7 @@ function lobbyLive(){
   var kick=function(p){return adm&&p.user_id!==NET.uid?'<button class="btn" data-act="kick" data-k="'+p.user_id+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Fjern</button>':""};
   if(!setup){
     if(!solo)h+='<div class="codeline"><span class="muted">Spilkode</span><button data-act="copycode">'+esc(g.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Del invitation</button></div>';
-    h+='<div class="namerow"><span class="muted">Dit navn</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="Fx Rasmus" autocomplete="off"></div>';
+    h+='<div class="namerow"><span class="muted">Dit navn</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="Fx Emil" autocomplete="off"></div>';
     var segb=function(act,key,cur,opts,dis){return opts.map(function(o){return '<button class="btn'+(cur===o[0]?" sel":"")+'" data-act="'+act+'"'+(key?' data-k="'+key+'"':'')+' data-v="'+o[0]+'"'+(dis&&dis(o[0])?" disabled":"")+' style="padding:8px 11px">'+o[1]+'</button>'}).join("")};
     var row=function(label,inner){return '<div class="field lrow"><span>'+label+'</span><div class="sws">'+inner+'</div></div>'};
     h+='<div class="card" style="margin-top:10px;padding:6px 14px 12px"><b style="font-size:15px">Spilregler</b>';
