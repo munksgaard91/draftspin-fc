@@ -8107,13 +8107,7 @@
   "card_risk": 57,
   "yellow_w": 1.36,
   "red_w": 0.99,
-  "alts": {
-   "CM": {
-    "fit": 20,
-    "factor": 1,
-    "nat": true
-   }
-  },
+  "alts": {},
   "pen_rank": 3
  },
  {
@@ -14971,13 +14965,7 @@
   "card_risk": 25,
   "yellow_w": 1.06,
   "red_w": 0.59,
-  "alts": {
-   "CM": {
-    "fit": 20,
-    "factor": 1,
-    "nat": true
-   }
-  },
+  "alts": {},
   "fpl_pen_order": 3
  },
  {
@@ -19067,13 +19055,7 @@
   "card_risk": 54,
   "yellow_w": 1.33,
   "red_w": 0.93,
-  "alts": {
-   "DM": {
-    "fit": 20,
-    "factor": 1,
-    "nat": true
-   }
-  }
+  "alts": {}
  },
  {
   "club": "LEE",
@@ -22834,13 +22816,7 @@
   "card_risk": 84,
   "yellow_w": 1.37,
   "red_w": 1.55,
-  "alts": {
-   "CM": {
-    "fit": 20,
-    "factor": 1,
-    "nat": true
-   }
-  },
+  "alts": {},
   "fpl_pen_order": 4
  },
  {
@@ -23009,13 +22985,7 @@
   "card_risk": 23,
   "yellow_w": 0.88,
   "red_w": 0.58,
-  "alts": {
-   "CM": {
-    "fit": 20,
-    "factor": 1,
-    "nat": true
-   }
-  }
+  "alts": {}
  },
  {
   "club": "MCI",
