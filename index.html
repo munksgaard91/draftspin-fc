@@ -573,8 +573,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   <!-- HIGHSCORE -->
   <section id="s-hof" class="screen">
     <button class="btn" id="hofBack" hidden style="margin-bottom:10px">← Tilbage</button>
-    <h1>Highscore</h1>
-    <p class="sub">De bedste resultater i alle spil, der nogensinde er spillet.</p>
+    <h1>Hall of Fame 🏆</h1>
     <div class="seg" id="hseg"></div>
     <div id="hbody"></div>
   </section>
@@ -2295,10 +2294,10 @@ async function renderHofLive(){
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Kunne ikke hente rekorderne.</p>';return}
   var P=pr.data||[],T=tr.data||[];
   if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:10px"><b>Ingen færdige sæsoner endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når en sæson er slut.</p></div>';return}
-  var se=function(x){return esc(x.season)+(x.season_no>1?", sæson "+x.season_no:"")+(x.players?", "+x.players+(x.players===1?" spiller":" spillere"):"")};
+  var se=function(x){return [x.season_no>1?"sæson "+x.season_no:"",x.players?x.players+(x.players===1?" spiller":" spillere"):""].filter(Boolean).join(", ")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
-  var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+', '+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
+  var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+((note||se(x))?', ':'')+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var tRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
   var C=[];
