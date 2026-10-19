@@ -327,7 +327,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .tr .nm{display:flex;gap:8px;align-items:center;min-width:0}
 .tr .nm span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tr.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}
-.tr.friend .nm span:last-child{font-weight:500}
+.tr.friend{background:#e0b85a2e;margin:0 -10px;padding-inline:10px;border-radius:6px;box-shadow:inset 3px 0 0 #e0b85a}.tr.friend .nm span:last-child{font-weight:600}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-top:6px}
 .legend span{display:flex;gap:7px;align-items:center}
 .seg.hcats{overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
@@ -457,6 +457,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .endrow .en{display:flex;align-items:center;gap:10px;font-weight:500}
 .endrow small{display:block;color:var(--mut);font-size:13.5px;font-weight:400}
 .endrow .ev2{font:500 18px var(--mono)}
+.endrow.fr{background:#e0b85a2e;margin:0 -10px;padding-inline:10px;border-radius:8px;box-shadow:inset 3px 0 0 #e0b85a}
 .endrow.me{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
 .newrec{display:flex;gap:12px;align-items:flex-start;padding:10px 0}
 .newrec .st{font:500 12px var(--mono);background:#e4c47a22;color:#e4c47a;border-radius:6px;padding:3px 8px;white-space:nowrap}
@@ -2104,7 +2105,7 @@ function renderTableLive(){
   });
   $("tbl").innerHTML=h;
   var lg='<span><i class="dotc" style="background:var(--me-dot)"></i>Dig</span>';
-  Object.keys(NET.season.teams).forEach(function(k){var t=NET.season.teams[k];if(t.kind==="human"&&k!==NET.uid)lg+='<span><i class="dotc" style="background:'+(t.color1||"#8c97b5")+'"></i>'+esc(t.name)+'</span>'});
+  Object.keys(NET.season.teams).forEach(function(k){var t=NET.season.teams[k];if(t.kind==="human"&&k!==NET.uid)lg+='<span><i class="dotc" style="background:#e0b85a"></i>'+esc(t.name)+'</span>'});
   $("legend").innerHTML=lg;
 }
 function liveStatMaps(){
@@ -2157,7 +2158,7 @@ function renderEndLive(){
   if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
     h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Bedst blandt jer</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (dig)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">nr. '+(bt.i+1)+', '+bt.r.p+' point</span></div></div>'}
   h+='<div class="seg" style="margin-top:10px">'+[["stil","Slutstilling"],["pris","Priser"],["kampe","Dine kampe"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
-  var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
+  var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":(lhuman(k)?" fr":""))+'"><span class="hk">'+(i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
   if(tab==="stil"){
     var rest=rows.map(function(r1,i){return {r:r1,i:i}}).slice(5).filter(function(x){return lhuman(x.r.k)});
     h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+rows.slice(0,5).map(function(r1,i){return er(i,r1.k,r1.p)}).join("")+rest.map(function(x){return '<div style="text-align:center;color:var(--mut);padding:0">⋯</div>'+er(x.i,x.r.k,x.r.p)}).join("")+'</div>';
