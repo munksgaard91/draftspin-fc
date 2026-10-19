@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.13.8">
+<meta name="app-version" content="2.13.9">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -585,7 +585,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="bar"><i id="prog"></i></div>
     </div>
 
-    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Kampfakta</button><button data-mt="others">Andre resultater</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div></div>
+    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Kampfakta</button><button data-mt="others">Andre resultater</button><button data-mt="squad">Dit hold</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
 
     <div class="mctl" style="display:flex;gap:8px;margin-top:10px">
       <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Replay</button>
@@ -1384,7 +1384,16 @@ function startMatch(){
   timer=setInterval(tick,120);
   $("skipBtn").onclick=function(){skip=true;tick()};
 }
-$("mseg").addEventListener("click",function(e){var b=e.target.closest("[data-mt]");if(!b)return;var t=b.dataset.mt;$("tl").hidden=t!=="tl";$("others").hidden=t!=="others";[].forEach.call($("mseg").children,function(x){x.classList.toggle("on",x===b)})});
+function renderMySquad(){
+  var form,sq;
+  if(LIVE&&NET.season&&NET.season.teams[NET.uid]){
+    form=NET.season.teams[NET.uid].formation;
+    sq=(NET.season.lineups[NET.uid]||[]).map(function(pid){var i=NET.byId[pid];return i?{name:i.p[0],sn:i.p[6]||"",pos:i.p[1]}:null});
+  }else{form=S.form;sq=S.squad}
+  if(!FORMS[form])return;
+  renderPitch($("mpitch"),form,sq,false);
+}
+$("mseg").addEventListener("click",function(e){var b=e.target.closest("[data-mt]");if(!b)return;var t=b.dataset.mt;$("tl").hidden=t!=="tl";$("others").hidden=t!=="others";$("msquad").hidden=t!=="squad";if(t==="squad")renderMySquad();[].forEach.call($("mseg").children,function(x){x.classList.toggle("on",x===b)})});
 $("playBtn").addEventListener("click",function(){startMatch()});
 
 /* ---------- tabel ---------- */
