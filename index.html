@@ -328,6 +328,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .tr .nm{display:flex;gap:6px;align-items:center;min-width:0}
 .tr .nm span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tr.z{margin:0 -10px;padding-inline:10px;border-radius:0}
+.tr.zrd{background:#e0555529}.tr.zrd.mine,.tr.zrd.friend{background-color:#e0555529}
 .tr.zcl{background:#4a7bf733}.tr.zel{background:#f39c3a2e}.tr.zec{background:#3fcf8e29}
 .tr.z.mine,.tr.z.friend{background-image:linear-gradient(#ffffff1c,#ffffff1c)}
 .tr.zcl.mine,.tr.zcl.friend{background-color:#4a7bf733}.tr.zel.mine,.tr.zel.friend{background-color:#f39c3a2e}.tr.zec.mine,.tr.zec.friend{background-color:#3fcf8e29}
@@ -2143,7 +2144,7 @@ async function liveForce(){
   try{await callEngine("advance",{force:true});toast("Runden er tvunget videre.",2600);liveChanged()}catch(e){netErr(e)}
 }
 /* europæiske pladser: kun baggrundsfarve (1-4 Champions League, 5-6 Europa League, 7 Conference League) */
-function zone(i){return i<4?" z zcl":(i<6?" z zel":(i===6?" z zec":""))}
+function zone(i){return i<4?" z zcl":(i<6?" z zel":(i===6?" z zec":(i>=17?" z zrd":"")))}
 function standingsLive(upTo){
   var t={};Object.keys(NET.season.teams).forEach(function(k){t[k]={k:k,w:0,d:0,l:0,gf:0,ga:0}});
   NET.season.matches.forEach(function(m){
