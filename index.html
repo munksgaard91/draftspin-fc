@@ -423,6 +423,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .livetag{display:inline-flex;align-items:center;gap:5px;color:#6fcf8a;font:700 11.5px var(--mono);letter-spacing:.8px}.livetag i{width:7px;height:7px;border-radius:50%;background:#6fcf8a;animation:livep 1.4s infinite ease-in-out}@keyframes livep{0%,100%{opacity:1}50%{opacity:.3}}
 .mctl .btn{min-height:38px;padding:0 14px;font-size:14px}
 .nxo{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
+.lrow .btn.num{width:36px;min-width:36px;padding-inline:0}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -763,7 +764,7 @@ function renderFlow(){
       h+='<h2 style="margin-top:18px">Hvor mange spillere?</h2><p class="sub">Dig og dine venner. Vælg 1 for at spille alene mod computeren.</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px">'+
         [1,2,3,4,5,6].map(function(n){return '<button style="'+CB+on(F.max===n)+'align-items:center;justify-content:center;padding:22px 0" data-max="'+n+'"><b style="font-size:26px;font-weight:600">'+n+'</b></button>'}).join("")+'</div>';
     }else if(sb===1){
-      h+='<h2 style="margin-top:18px">Hvor hurtigt skal sæsonen spilles?</h2><div class="opts" style="margin-top:18px">'+big("data-pace","full",F.pace==="full","Hele sæsonen","Alle 38 runder, én kamp ad gangen")+big("data-pace","quick",F.pace==="quick","Hurtigt spil","Kampene spilles af hurtigt, kun resultater")+'</div>';
+      h+='<h2 style="margin-top:18px">Hvor hurtigt skal sæsonen spilles?</h2><div class="opts" style="margin-top:18px">'+big("data-pace","full",F.pace==="full","Classic","Alle 38 runder, én kamp ad gangen")+big("data-pace","quick",F.pace==="quick","Hurtigt spil","Kampene spilles af hurtigt, kun resultater")+'</div>';
     }else if(sb===2){
       h+='<h2 style="margin-top:18px">Skal spillernes ratings vises?</h2><div class="opts" style="margin-top:18px">'+big("data-showr","false",F.showR===false,"Skjulte","Svært: du skal bruge dit eget fodboldsyn")+big("data-showr","true",F.showR===true,"Vis","Du kan se hver spillers rating")+'</div>';
     }else{
@@ -1145,7 +1146,7 @@ function lockPick(name,i){
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0];
   S.squad[i]={name:p[0],sn:p[6]||"",pos:p[1],club:S.club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2]};
   S.taken[p[0]]="Mit hold";
-  S.feed.unshift({who:"Dig",name:p[0],pos:p[1],club:S.club});
+  S.feed.unshift({who:"Du",name:p[0],pos:p[1],club:S.club});
   S.sel=null;S.club=null;S.auto=false;clearTurnTimer();S.pickIdx++;
   renderSheet();advance();
   window.scrollTo({top:0,behavior:"smooth"});
@@ -1830,17 +1831,17 @@ function lobbyLive(){
   var kick=function(p){return adm&&p.user_id!==NET.uid?'<button class="btn" data-act="kick" data-k="'+p.user_id+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Fjern</button>':""};
   if(!setup){
     if(!solo)h+='<div class="codeline"><span class="muted">Spilkode</span><button data-act="copycode">'+esc(g.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Del invitation</button></div>';
-    var segb=function(act,key,cur,opts,dis){return opts.map(function(o){return '<button class="btn'+(cur===o[0]?" sel":"")+'" data-act="'+act+'"'+(key?' data-k="'+key+'"':'')+' data-v="'+o[0]+'"'+(dis&&dis(o[0])?" disabled":"")+' style="padding:8px 11px">'+o[1]+'</button>'}).join("")};
+    var segb=function(act,key,cur,opts,dis,cls){return opts.map(function(o){return '<button class="btn'+(cur===o[0]?" sel":"")+(cls?" "+cls:"")+'" data-act="'+act+'"'+(key?' data-k="'+key+'"':'')+' data-v="'+o[0]+'"'+(dis&&dis(o[0])?" disabled":"")+' style="padding:8px 11px">'+o[1]+'</button>'}).join("")};
     var row=function(label,inner){return '<div class="field lrow"><span>'+label+'</span><div class="sws">'+inner+'</div></div>'};
     h+='<div class="card" style="margin-top:10px;padding:6px 14px 12px"><b style="font-size:15px">Spilregler</b>';
     if(adm){
-      h+=row("Spillere",segb("setmax",null,g.max_players,[1,2,3,4,5,6].map(function(x){return [x,x]}),function(v){return v<n}));
+      h+=row("Spillere",segb("setmax",null,g.max_players,[1,2,3,4,5,6].map(function(x){return [x,x]}),function(v){return v<n},"num"));
       h+=row("Tid pr. valg",segb("lset","timer",g.timer_seconds,[[0,"Fra"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]));
-      h+=row("Tempo",segb("lset","pace",g.pace,[["full","Hele sæsonen"],["quick","Hurtigt spil"]]));
+      h+=row("Tempo",segb("lset","pace",g.pace,[["full","Classic"],["quick","Hurtigt spil"]]));
       h+=row("Ratings",segb("lset","show",g.show_ratings,[[false,"Skjulte"],[true,"Vis"]]));
-      h+=row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]})));
+      h+=row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
     }else{
-      h+='<p class="note" style="margin-top:6px">Spillere: '+g.max_players+' · Tid pr. valg: '+(g.timer_seconds?g.timer_seconds+" s":"fra")+' · Tempo: '+(g.pace==="quick"?"hurtigt spil":"hele sæsonen")+' · Ratings: '+(g.show_ratings?"vises":"skjulte")+' · Respins: '+g.respins+'</p>';
+      h+='<p class="note" style="margin-top:6px">Spillere: '+g.max_players+' · Tid pr. valg: '+(g.timer_seconds?g.timer_seconds+" s":"fra")+' · Tempo: '+(g.pace==="quick"?"hurtigt spil":"classic")+' · Ratings: '+(g.show_ratings?"vises":"skjulte")+' · Respins: '+g.respins+'</p>';
     }
     h+='</div>';
     if(!solo){
@@ -1851,13 +1852,10 @@ function lobbyLive(){
       });
       if(!full)h+='<div class="wait">Venter på flere, op til '+g.max_players+'.</div>';
       h+='</div></div>';
-      h+='<p class="removed">'+n+' '+(n===1?"spiller":"spillere")+' og '+(20-n)+' AI-klubber i ligaen.</p>';
-    }else{
-      h+='<p class="removed">Du spiller alene mod 19 AI-klubber.</p>';
     }
     if(adm){
       h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(full?"":" disabled")+'>Start spillet</button>';
-      h+='<p class="note">'+(!full?"Spillet kan starte, når alle pladser er fyldt. Mangler "+(g.max_players-n)+" "+(g.max_players-n===1?"spiller":"spillere")+".":(solo?"Næste: navn, hold og formation.":"Alle er med. Når du starter, vælger alle navn, hold og formation samtidig."))+'</p>';
+      h+='<p class="note">'+(!full?"Spillet kan starte, når alle pladser er fyldt. Mangler "+(g.max_players-n)+" "+(g.max_players-n===1?"spiller":"spillere")+".":(solo?"":"Alle er med. Når du starter, vælger alle navn, hold og formation samtidig."))+'</p>';
     }else{
       h+='<p class="note">'+(!full?"Venter på flere spillere ("+n+" af "+g.max_players+").":"Venter på, at admin starter spillet.")+'</p>';
     }
@@ -2316,7 +2314,7 @@ function liveDraftSync(){
     var e={name:info.p[0],sn:info.p[6]||"",pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos,info.p[4])===1};
     if(k==="me")S.squad[pk.slot-1]=e;else if(S.fsq[k])S.fsq[k].squad[pk.slot-1]=e;
     S.counts[k]=(S.counts[k]||0)+1;S.taken[info.p[0]]=k==="me"?(S.team.trim()||"Mit hold"):(FTEAM[k]||"Spiller");
-    feed.push({who:k==="me"?"Dig":(FTEAM[k]||"Spiller"),name:info.p[0],pos:info.p[1],club:info.club});
+    feed.push({who:k==="me"?"Du":(FTEAM[k]||"Spiller"),name:info.p[0],pos:info.p[1],club:info.club});
   });
   S.feed=feed.reverse();
   var mine=S.seq[S.pickIdx]==="me",cc=g.current_club;
@@ -2343,7 +2341,7 @@ function liveDraftRender(){
   NET.dsig=dsig;
   $("draftMain").classList.toggle("solo",NET.players.length<2);
   if(cur==="me"&&NET.lastPick!==S.pickIdx&&!S.club&&!S.spinning){toast("Din tur. Spin the wheel.",2200)}
-  if(NET.lastPick!==S.pickIdx){S.view="me"}
+  if(NET.lastPick!==S.pickIdx){S.view=cur&&(cur==="me"||S.fsq[cur])?cur:"me"}
   NET.lastPick=S.pickIdx;
   renderDraft();renderSheet();
   var af=$("adminForce");
