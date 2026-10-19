@@ -86,7 +86,8 @@
 :root[data-league="ll"]{--bg:#170b0e;--surf:#241216;--surf2:#321a1f;--line:#4b2a31;--acc:#ff6f5e;--acc-ink:#1b0705;--bga:#170b0ef7;--bgb:#170b0efa;--glow1:#ff4b4436;--glow2:#f2a23a22;--acc-lt:#ffb7ab;--btn1:#ff8a6b;--btn2:#e4503f;--btnh1:#ff9b80;--btnh2:#ee5f4e;--btn-ink:#1b0705;--btn-bd:#ff9a8a55;--btn-sh:#e4503faa}
 :root[data-league="sa"]{--bg:#07111f;--surf:#0e1c30;--surf2:#15294a;--line:#223d65;--acc:#4aa8ff;--acc-ink:#04101c;--bga:#07111ff7;--bgb:#07111ffa;--glow1:#0e5a9c40;--glow2:#00b7a81f;--acc-lt:#a8d4ff;--btn1:#6dbcff;--btn2:#2f86e0;--btnh1:#82c6ff;--btnh2:#3f93ea;--btn-ink:#04101c;--btn-bd:#8ccaff55;--btn-sh:#2f86e0aa}
 *{box-sizing:border-box}
-html{background:var(--bg);overscroll-behavior-y:none}
+html{background:var(--bg);overscroll-behavior-y:none;touch-action:manipulation}
+body,button,a,input{touch-action:manipulation}
 body{color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button,input{font:inherit;color:inherit}
