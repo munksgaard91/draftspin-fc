@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.12.5">
+<meta name="app-version" content="2.12.6">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -64,6 +64,7 @@
 .sumrow:last-child{border:0}
 .sumrow .si{font-size:22px;line-height:1.2;width:28px;text-align:center;flex:none}
 .sumrow b{display:block;font-weight:600}
+.recl{display:block;margin-top:6px}.recl:first-child{margin-top:2px}.sumrow .recl b{display:inline;font-weight:600;color:var(--text)}
 .sumrow small{display:block;color:var(--mut);font-size:13.5px;line-height:1.45;margin-top:1px}
 .etabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
 .etabs button{appearance:none;padding:10px 8px;border-radius:10px;background:var(--surf);border:1px solid var(--line);color:var(--mut);font:inherit;font-size:14.5px;font-weight:500;cursor:pointer}
@@ -2103,9 +2104,9 @@ function liveSimDone(){
   var eu=mi<4?["🌟","Champions League","Du kvalificerede dig til Champions League."]:(mi<6?["⭐","Europa League","Du kvalificerede dig til Europa League."]:(mi===6?["✨","Conference League","Du kvalificerede dig til Conference League."]:null));
   var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>Sæsonen er slut</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist" id="sumlist">'+
     (mi===0?row("🏆","Du blev mester! 🏆","","sumwin"):"")+
-    (mi>=17?row("⬇️","Du rykkede ned ⬇️","","sumdown"):"")+
-    row("📊","Placering",(mi+1)+". plads af "+n+" · "+me.p+" point")+
-    row("⚽","Resultater",me.w+" sejre · "+me.d+" uafgjorte · "+me.l+" nederlag · målforskel "+(me.gf-me.ga>0?"+":"")+(me.gf-me.ga))+
+    (mi>=17?row("⬇️","Du rykkede ned","","sumdown"):"")+
+    row("📊","Placering",(mi+1)+". plads · "+me.p+" point")+
+    row("⚽","Resultater",me.w+" sejre · "+me.d+" uafgjorte · "+me.l+" nederlag<br>målforskel "+(me.gf-me.ga>0?"+":"")+(me.gf-me.ga))+
     (eu?row(eu[0],eu[1],eu[2]):"")+
     '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">Videre</button>';
   $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
@@ -2121,10 +2122,10 @@ async function sumRecords(){
     var best=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return Object.keys(b).map(function(k){return b[k]})};
     var catP=function(title,key,min){
       var l=best(P.filter(function(x){return x[key]>min}),key).sort(function(a,b){return b[key]-a[key]});
-      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+": "+pname(x.player_id)+" ("+x[key]+")"])})};
+      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+":",pname(x.player_id)+" ("+x[key]+")"])})};
     var catT=function(title,fn,asc,ok){
       var l=T.filter(function(x){return ok(x)}).sort(function(a,b){return asc?fn(a)-fn(b):fn(b)-fn(a)});
-      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+" ("+fn(x)+")"])})};
+      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+":",lname(NET.uid)+" ("+fn(x)+")"])})};
     catP("Flest mål i en sæson","goals",0);catP("Flest assists i en sæson","assists",0);catP("Flest clean sheets i en sæson","clean_sheets",0);
     catP("Flest mål i en kamp","best_match_goals",1);catP("Flest røde kort i en sæson","reds",0);
     catT("Flest point i en sæson",function(x){return x.points},false,function(){return true});
@@ -2135,7 +2136,7 @@ async function sumRecords(){
     if(!out.length)return;
     out.sort(function(a,b){return a[0]-b[0]});
     var el=document.createElement("div");el.className="sumrow";
-    el.innerHTML='<span class="si">'+medal[out[0][0]]+'</span><div><b>'+(out[0][0]===0?"Ny rekord!":"Hall of Fame")+'</b><small>'+out.slice(0,4).map(function(o){return medal[o[0]]+" "+esc(o[1])}).join("<br>")+(out.length>4?"<br>og "+(out.length-4)+" mere":"")+'</small></div>';
+    el.innerHTML='<span class="si">'+medal[out[0][0]]+'</span><div><b>'+(out[0][0]===0?"Ny rekord!":"Hall of Fame")+'</b><small>'+out.slice(0,4).map(function(o){return '<span class="recl">'+medal[o[0]]+" "+esc(o[1])+"<br><b>"+esc(o[2])+"</b></span>"}).join("")+(out.length>4?'<span class="recl">og '+(out.length-4)+" mere</span>":"")+'</small></div>';
     box.appendChild(el);
   }catch(e){}
 }
