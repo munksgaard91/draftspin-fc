@@ -914,7 +914,7 @@ function renderPitch(el,form,squad,mini,hl,alt){
     r.forEach(function(pos,j){
       var left=(j+1)/(r.length+1)*100,p=squad?squad[idx]:null;
       var top=base+(pos==="DM"?2:(pos==="AM"?-2:0));
-      html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(lastName(p.name))+'</div>':'')+'</div>';
+      html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
   });
@@ -1126,7 +1126,7 @@ $("sheet").addEventListener("click",function(e){
 function lockPick(name,i){
   if(LIVE){livePick(name,i);return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0];
-  S.squad[i]={name:p[0],pos:p[1],club:S.club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2]};
+  S.squad[i]={name:p[0],sn:p[6]||"",pos:p[1],club:S.club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2]};
   S.taken[p[0]]="Mit hold";
   S.feed.unshift({who:"Dig",name:p[0],pos:p[1],club:S.club});
   S.sel=null;S.club=null;S.auto=false;clearTurnTimer();S.pickIdx++;
@@ -2242,11 +2242,11 @@ $("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofba
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
 function livePlayers(){
   NET.pl=(async function(){
-    var r0=await NET.sb.from("players").select("id,club,number,name,pos,alts,rating").order("club").order("number");
+    var r0=await NET.sb.from("players").select("id,club,number,name,pos,alts,rating,short_name").order("club").order("number");
     if(r0.error)throw r0.error;
     CLUBS={};LEAGUE.forEach(function(c){CLUBS[c[0]]={n:c[1],p:[]}});
     NET.byId={};NET.byName={};
-    r0.data.forEach(function(x){var a=[x.name,x.pos,x.number,x.id,x.alts||{},x.rating];CLUBS[x.club].p.push(a);NET.byId[x.id]={p:a,club:x.club};NET.byName[x.name]=a});
+    r0.data.forEach(function(x){var a=[x.name,x.pos,x.number,x.id,x.alts||{},x.rating,x.short_name||""];CLUBS[x.club].p.push(a);NET.byId[x.id]={p:a,club:x.club};NET.byName[x.name]=a});
     NET.plReady=true;
   })();
 }
@@ -2281,7 +2281,7 @@ function liveDraftSync(){
     var info=NET.byId[pk.player_id];if(!info)return;
     var k=keyOf(pk.user_id),owner=pl.filter(function(p){return p.user_id===pk.user_id})[0];
     var slotPos=FORMS[owner.formation].reduce(function(a,r2){return a.concat(r2)},[])[pk.slot-1];
-    var e={name:info.p[0],pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos,info.p[4])===1};
+    var e={name:info.p[0],sn:info.p[6]||"",pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos,info.p[4])===1};
     if(k==="me")S.squad[pk.slot-1]=e;else if(S.fsq[k])S.fsq[k].squad[pk.slot-1]=e;
     S.counts[k]=(S.counts[k]||0)+1;S.taken[info.p[0]]=k==="me"?(S.team.trim()||"Mit hold"):(FTEAM[k]||"Spiller");
     feed.push({who:k==="me"?"Dig":(FTEAM[k]||"Spiller"),name:info.p[0],pos:info.p[1],club:info.club});
