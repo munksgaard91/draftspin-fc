@@ -567,7 +567,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 <div class="conn" id="conn" hidden></div>
 <div class="modal" id="away" hidden></div>
 <div class="modal" id="auth" hidden></div>
-<div class="modal" id="leaveBox" hidden><div class="card"><h3>Forlad ligaen?</h3><p class="note" style="margin:0">Er du sikker på, at du vil forlade den nuværende liga? Hvis du ikke er færdig med at kigge, så bliv her.</p><div class="row2"><button class="btn" id="leaveYes">Forlad</button><button class="btn p go" id="leaveNo">Bliv her</button></div></div></div>
+<div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Forlad ligaen?</h3><p class="note" style="margin:0" id="leaveP">Er du sikker på, at du vil forlade den nuværende liga? Hvis du ikke er færdig med at kigge, så bliv her.</p><div class="row2"><button class="btn" id="leaveYes">Forlad</button><button class="btn p go" id="leaveNo">Bliv her</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
 
 <nav class="nav" id="navwrap" hidden><div class="navin" id="nav">
@@ -1535,7 +1535,12 @@ function renderEnd(){
   h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="hof">Se Highscore</button>'+(role==="player"?'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>':'<button class="btn wide" data-end="again">Ny sæson med samme gruppe</button>')+'</div>';
   $("endbody").innerHTML=h;
 }
-$("navHome").addEventListener("click",function(){$("leaveBox").hidden=false});
+function askLeave(ns){
+  $("leaveH").textContent=ns?"Starte en ny sæson?":"Forlad ligaen?";
+  $("leaveP").textContent="Er du sikker på, at du vil forlade den nuværende liga"+(ns?" og starte forfra?":"?")+" Hvis du ikke er færdig med at kigge, så bliv her.";
+  $("leaveYes").textContent=ns?"Ny sæson":"Forlad";$("leaveBox").hidden=false;
+}
+$("navHome").addEventListener("click",function(){askLeave(false)});
 $("leaveNo").addEventListener("click",function(){$("leaveBox").hidden=true});
 $("leaveBox").addEventListener("click",function(e){if(e.target===$("leaveBox"))$("leaveBox").hidden=true});
 $("leaveYes").addEventListener("click",function(){$("leaveBox").hidden=true;liveLeave()});
@@ -1544,7 +1549,7 @@ $("endbody").addEventListener("click",function(e){
   var et=e.target.closest("[data-et]");if(et){S.endTab=et.dataset.et;renderEnd();return}
   var b=e.target.closest("[data-end]");if(!b)return;var a=b.dataset.end;
   if(a==="hof"){HOFBACK="end";go("hof")}
-  else if(a==="newseason"){if(LIVE)liveLeave();else{if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}}
+  else if(a==="newseason"){if(LIVE)askLeave(true);else{if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}}
   else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(LIVE&&NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"Mit hold")+" sluttede som nr. "+(i+1)+" med "+rw[i].p+" point."})():(S.team.trim()||"Mit hold")+" blev mester med 94 point.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent="Kopiér resultat"},1500)}
   else if(a==="again"){if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}
 });
