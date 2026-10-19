@@ -420,6 +420,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .av{width:30px;height:30px;flex:none;border-radius:50%;background:var(--surf2);display:grid;place-items:center;font-weight:600;font-size:13px;color:var(--mut)}
 .tagrow{display:flex;gap:10px;align-items:flex-end;margin-top:12px}.tagrow .field{margin:0}.tagrow .field:first-child{flex:1;min-width:0}.tagf{width:84px;flex:none}.tagf .inp{text-align:center;text-transform:uppercase;letter-spacing:1px}
 .btn.skipb{border:1px solid #e0b85a80;background:linear-gradient(#e0b85a26,#e0b85a10);color:#ecc977;font-weight:600}.btn.skipb:disabled{opacity:.4}
+.livetag{display:inline-flex;align-items:center;gap:5px;color:#6fcf8a;font:700 11.5px var(--mono);letter-spacing:.8px}.livetag i{width:7px;height:7px;border-radius:50%;background:#6fcf8a;animation:livep 1.4s infinite ease-in-out}@keyframes livep{0%,100%{opacity:1}50%{opacity:.3}}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -2030,7 +2031,7 @@ function liveOthers(mode){
   var mine=ms.filter(function(m){return m.home_key===NET.uid||m.away_key===NET.uid}),oth=ms.filter(function(m){return !(m.home_key===NET.uid||m.away_key===NET.uid)});
   var h=mine.concat(oth).map(function(m){
     var mi=m.home_key===NET.uid||m.away_key===NET.uid,show=mode===true||(mode==="mine"&&mi);
-    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(show?m.home_goals+" – "+m.away_goals:"–")+'</span>'+lhname(m.away_key,true)+'</div>';
+    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(show?m.home_goals+" – "+m.away_goals:'<span class="livetag"><i></i>LIVE</span>')+'</span>'+lhname(m.away_key,true)+'</div>';
   }).join("");
   if(mode==="mine")h+='<p class="note" style="margin:8px 0 4px;text-align:center">De andre resultater vises, når alle er færdige med kampen.</p>';
   $("others").innerHTML=h;
