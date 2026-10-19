@@ -1509,13 +1509,13 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?pushLine():'')+'</div></div>'+(LIVE?'<button class="hsfix" data-act="hofopen">🏆 Highscore</button>':'')+(LIVE?homeBanner():'')+
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?pushLine():'')+'</div></div>'+(LIVE?'<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>':'')+(LIVE?homeBanner():'')+
     (SAVED&&!G.started?'<div class="card" style="margin-top:34px"><b>Fortsæt dit spil</b><p class="note" style="margin-top:6px">Spilkode BRY4K2.<br>Dit spil er gemt, så du kan gå tilbage, hvor du slap.</p><div class="nav2"><button class="btn" data-act="discard">Slet og start forfra</button><button class="btn p go" data-act="resume">Fortsæt spillet</button></div></div>':"");
 }
 
 /* valgfrit login: lille knap på forsiden */
 /* Version: 2.MINOR.PATCH. MINOR = ny funktion eller samlet batch af ændringer, PATCH = rettelser. Det store tal skiftes kun efter aftale med Rasmus. */
-var APP_VERSION="2.6.0";
+var APP_VERSION="2.6.1";
 function cornerLogin(){return '<span class="ver">v'+APP_VERSION+'</span>'}
 function openAuth(){$("auth").hidden=false;renderAuth();var i=$("authEmail")||$("authCode");if(i)setTimeout(function(){try{i.focus()}catch(x){}},50)}
 function closeAuth(){$("auth").hidden=true;renderFlow()}
