@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.8.0">
+<meta name="app-version" content="2.9.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -585,6 +585,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 <div class="conn" id="conn" hidden></div>
 <div class="modal" id="away" hidden></div>
 <div class="modal" id="auth" hidden></div>
+<div class="modal" id="testBox" hidden><div class="card"><h3>Start testspil?</h3><p class="note" style="margin:0">Springer alt over og starter et solospil med tilfældigt hold og tilfældige spillere.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Hurtigt spil</button><button class="linkbtn" data-tm="no">Annuller</button></div></div></div>
 <div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Forlad ligaen?</h3><p class="note" style="margin:0" id="leaveP">Er du sikker på, at du vil forlade den nuværende liga? Hvis du ikke er færdig med at kigge, så bliv her.</p><div class="row2"><button class="btn" id="leaveYes">Forlad</button><button class="btn p go" id="leaveNo">Bliv her</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
 
@@ -2514,26 +2515,55 @@ async function liveBoot(){
   }
 }
 function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET.draftOn)keepAwake()}}
-/* skjult fejlsøgning: tryk 5 gange hurtigt på logoet på startskærmen */
+/* skjult testspil: tryk 5 gange hurtigt på logoet på startskærmen */
 (function(){
   var taps=[];
   document.addEventListener("click",function(e){
-    if(!e.target.closest(".wm3,.startwrap svg"))return;
+    if(!LIVE||!e.target.closest(".wm3,.startwrap svg"))return;
     var t=Date.now();taps=taps.filter(function(x){return t-x<2500});taps.push(t);
-    if(taps.length>=5){taps=[];dbgToggle()}
+    if(taps.length>=5){taps=[];$("testBox").hidden=false}
   });
-  var dbgT=null;
-  function dbgToggle(){
-    var d=document.getElementById("dbg");
-    if(d){d.remove();clearInterval(dbgT);return}
-    d=document.createElement("div");d.id="dbg";
-    d.innerHTML='<div style="position:fixed;top:0;left:0;right:0;height:8px;background:#f33;z-index:99999"></div><div style="position:fixed;bottom:0;left:0;right:0;height:8px;background:#3af;z-index:99999"></div><div style="position:fixed;left:0;right:0;bottom:60px;z-index:99999;background:#000c;color:#fff;font:11px/1.35 monospace;padding:8px 10px;white-space:pre-wrap" id="dbgt"></div><div id="dbgp" style="position:fixed;visibility:hidden;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)"></div>';
-    document.body.appendChild(d);
-    function upd(){
-      var p=document.getElementById("dbgp"),cs=getComputedStyle(p),vv=window.visualViewport||{};
-      document.getElementById("dbgt").textContent=["innerH "+innerHeight+"  clientH "+document.documentElement.clientHeight,"visualVP "+Math.round(vv.height)+" off "+Math.round(vv.offsetTop||0)+" scale "+(vv.scale||1),"scrollH "+document.documentElement.scrollHeight+"  scrollY "+Math.round(scrollY),"screen "+screen.height+" avail "+screen.availHeight,"inset top "+cs.paddingTop+" bottom "+cs.paddingBottom,"standalone "+(navigator.standalone||matchMedia("(display-mode: standalone)").matches),"app padB "+getComputedStyle(document.getElementById("app")).paddingBottom,"nav hidden "+document.getElementById("navwrap").hidden].join("\n");
-    }
-    upd();dbgT=setInterval(upd,500);
+  $("testBox").addEventListener("click",function(e){
+    var b=e.target.closest("[data-tm]");
+    if(!b){if(e.target===$("testBox"))$("testBox").hidden=true;return}
+    $("testBox").hidden=true;if(b.dataset.tm!=="no")startTestGame(b.dataset.tm);
+  });
+  var rnd=function(a){return a[Math.floor(Math.random()*a.length)]};
+  async function startTestGame(mode){
+    if(NET.creating)return;NET.creating=true;
+    toast("Starter testspil…",90000);
+    try{
+      await NET.ready;
+      var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode});
+      if(r0.error)throw r0.error;
+      NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode;
+      try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
+      var nm=S.pname.trim().length>=2?S.pname.trim():"Tester";
+      S.pname=nm;S.team="Testhold "+(10+Math.floor(Math.random()*90));S.tag="";S.form=rnd(Object.keys(FORMS));
+      S.color=rnd(SWATCH);S.color2=rnd(SWATCH.filter(function(c){return c!==S.color}));S.crest=Math.floor(Math.random()*12);
+      var g=NET.gid,call=async function(fn,a){var r=await NET.sb.rpc(fn,a);if(r.error)throw r.error;return r.data};
+      await call("open_setup",{p_game:g});
+      await call("update_team",{p_game:g,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:S.crest+1,p_formation:S.form,p_display:nm,p_tag:null});
+      await call("set_ready",{p_game:g,p_ready:true});
+      await liveLoad();liveSub();
+      if(!NET.pl)livePlayers();await NET.pl;
+      var sl=flat();
+      for(var n=0;n<11;n++){
+        var club=await call("spin",{p_game:g});
+        await liveLoad();
+        var usedS={},usedP={};NET.picks.forEach(function(pk){usedP[pk.player_id]=1;if(pk.user_id===NET.uid)usedS[pk.slot]=1});
+        var nat=[],pen=[];
+        CLUBS[club].p.forEach(function(a){
+          if(usedP[a[3]])return;var ns=[],ps=[];
+          sl.forEach(function(sp,k){if(usedS[k+1])return;var v=fit(a[1],sp,a[4]);if(v===2)ns.push(k);else if(v===1)ps.push(k)});
+          if(ns.length)nat.push([a,ns]);else if(ps.length)pen.push([a,ps]);
+        });
+        var pool=nat.length?nat:pen;if(!pool.length)throw new Error("Ingen spiller passer");
+        var x=rnd(pool);await call("pick_player",{p_game:g,p_player:x[0][3],p_slot:rnd(x[1])+1});
+      }
+      await liveLoad();liveEnter();toast("Testspil klar",1600);
+    }catch(e){netErr(e);try{liveLeave()}catch(x){}}
+    finally{NET.creating=false}
   }
 })();
 document.addEventListener("visibilitychange",function(){if(LIVE)liveWake()});
