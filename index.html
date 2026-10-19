@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="app-version" content="2.7.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -424,7 +425,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .mctl .btn{min-height:38px;padding:0 14px;font-size:14px}
 .nxo{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
 .lrow .btn.num{width:36px;min-width:36px;padding-inline:0}
-.ver{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:14px;z-index:6;font:500 11px var(--mono);color:var(--mut);opacity:.7;letter-spacing:.3px}
+.ver{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:6;font:500 11px var(--mono);color:var(--mut);opacity:.75;letter-spacing:.3px;background:none;border:0;padding:6px 6px;cursor:pointer}
+.updbar{position:fixed;left:50%;transform:translateX(-50%);top:calc(46px + env(safe-area-inset-top,0px));z-index:60;background:var(--surf2);border:1px solid #e0b85a80;color:#ecc977;border-radius:99px;padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 10px 30px -12px #000c;white-space:nowrap}.updbar[hidden]{display:none}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -839,6 +841,7 @@ $("flow").addEventListener("click",function(e){
   var b=t.closest("[data-act]");if(!b)return;
   var a=b.dataset.act,st=stepsFor()[F.step];
   if(a==="hofopen"){HOFBACK="start";$("navwrap").hidden=true;$("sbg").hidden=true;go("hof");return}
+  if(a==="update"){hardReload();return}
   if(a==="pushtoggle"){pushToggle();return}
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(LIVE&&liveAct(a,b,st))return;
@@ -1515,8 +1518,24 @@ function startHtml(){
 
 /* valgfrit login: lille knap på forsiden */
 /* Version: 2.MINOR.PATCH. MINOR = ny funktion eller samlet batch af ændringer, PATCH = rettelser. Det store tal skiftes kun efter aftale med Rasmus. */
-var APP_VERSION="2.6.1";
-function cornerLogin(){return '<span class="ver">v'+APP_VERSION+'</span>'}
+var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
+function cornerLogin(){return '<button class="ver" data-act="update">v'+APP_VERSION+' · Opdater</button>'}
+/* opdatering: hent altid friskt (omgår cache), og tjek ved start og når appen vækkes, om der er en nyere version */
+function hardReload(){try{location.replace(location.pathname+"?u="+Date.now())}catch(e){location.reload()}}
+function showUpdate(v){
+  var b=$("updbar");if(!b){b=document.createElement("div");b.id="updbar";b.className="updbar";document.body.appendChild(b);b.addEventListener("click",hardReload)}
+  b.innerHTML='Ny version '+esc(v)+' er klar · <u>Opdater</u>';b.hidden=false;
+}
+var verT=0;
+function checkVersion(){
+  if(Date.now()-verT<20000)return;verT=Date.now();
+  fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){
+    var m=t.match(new RegExp('name="app-version" content="([^"]+)"'));
+    if(m&&m[1]!==APP_VERSION)showUpdate("v"+m[1]);
+  }).catch(function(){});
+}
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")checkVersion()});
+setTimeout(checkVersion,2500);
 function openAuth(){$("auth").hidden=false;renderAuth();var i=$("authEmail")||$("authCode");if(i)setTimeout(function(){try{i.focus()}catch(x){}},50)}
 function closeAuth(){$("auth").hidden=true;renderFlow()}
 function renderAuth(){
