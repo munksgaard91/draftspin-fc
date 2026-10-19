@@ -147,8 +147,8 @@ async function finalizeSeason(gameId) {
   const lu = chk(await admin.from("season_lineups").select("*").eq("game_id", gameId));
   const matches = await allRows("matches", gameId), events = await allRows("match_events", gameId);
   const nameOf = (k) => (st.find((x) => x.team_key === k) || {}).name || k;
-  // AI-hold må aldrig stå i Highscore: modstandertekster nævner kun menneskehold
-  const vs = (k, round) => { const x = st.find((y) => y.team_key === k); return (x && x.kind === "human" ? "mod " + x.name + ", " : "") + "runde " + round; };
+  // modstanderen i rekordteksterne (også AI-hold, som Rasmus ønsker 2026-10-19)
+  const vs = (k) => "mod " + ((st.find((y) => y.team_key === k) || {}).name || k);
   const t = {};
   st.forEach((x) => (t[x.team_key] = { w: 0, d: 0, l: 0, gf: 0, ga: 0 }));
   for (const m of matches) {
