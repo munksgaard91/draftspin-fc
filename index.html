@@ -1710,9 +1710,12 @@ function liveConn(ok){
   else{connFail++;if(connFail>=2){c.className="conn";c.hidden=false;c.innerHTML='Forbindelsen er væk. Dine valg er gemt, og vi prøver igen<i></i><i></i><i></i>'}}
 }
 async function liveChanged(){
-  if(liveBusy||!NET.gid)return;liveBusy=true;
-  try{await liveLoad();liveConn(true);liveApply()}catch(e){liveConn(false)}finally{liveBusy=false}
+  if(!NET.gid)return;
+  if(liveBusy){liveAgain=true;return}
+  liveBusy=true;
+  try{await liveLoad();liveConn(true);liveApply()}catch(e){liveConn(false)}finally{liveBusy=false;if(liveAgain){liveAgain=false;liveChanged()}}
 }
+var liveAgain=false;
 function liveLeave(msg){
   liveUnsub();clearInterval(NET.tt);NET.gid=null;NET.game=null;NET.players=[];NET.picks=[];NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;G.started=false;
   try{localStorage.removeItem("dsfc-gid")}catch(x){}
@@ -2435,10 +2438,11 @@ async function livePick(name,i){
   if(NET.pending||!myTurn())return;
   var a=NET.byName[name];if(!a)return;
   NET.pending=true;
+  S.sel=null;renderSheet();
   var r0=await NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1});
   NET.pending=false;
-  if(r0.error){netErr(r0.error);S.sel=null;renderSheet();await liveChanged();return}
-  S.sel=null;S.club=null;renderSheet();
+  if(r0.error){netErr(r0.error);await liveChanged();return}
+  S.club=null;
   await liveChanged();
   window.scrollTo({top:0,behavior:"smooth"});
 }
