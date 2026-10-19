@@ -12,6 +12,11 @@ export const FORMS = {
   "3-5-2": ["ST", "ST", "LWB", "CM", "DM", "CM", "RWB", "CB", "CB", "CB", "GK"],
   "3-4-3": ["LW", "ST", "RW", "CM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
   "5-3-2": ["ST", "ST", "CM", "DM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "5-3-2 (D)": ["ST", "ST", "CM", "DM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "5-3-2 (O)": ["ST", "ST", "CM", "AM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "5-3-1-1": ["ST", "AM", "CM", "DM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "4-2-1-3": ["LW", "ST", "RW", "AM", "DM", "DM", "LB", "CB", "CB", "RB", "GK"],
+  "4-1-3-2": ["ST", "ST", "LM", "CM", "RM", "DM", "LB", "CB", "CB", "RB", "GK"],
   "5-4-1": ["ST", "LM", "CM", "CM", "RM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
   "4-5-1": ["ST", "LM", "CM", "DM", "CM", "RM", "LB", "CB", "CB", "RB", "GK"],
   "4-4-1-1": ["ST", "AM", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "RB", "GK"],
@@ -29,7 +34,7 @@ const WOFF = { LWB: 0.07, RWB: 0.07, ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM:
 const WDEF = { LWB: 0.07, RWB: 0.07, GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
 const WGOAL = { LWB: 0.25, RWB: 0.25, ST: 1, LW: 0.65, RW: 0.65, LM: 0.4, RM: 0.4, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
 const WASSIST = { LWB: 0.75, RWB: 0.75, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.5";
+export const ENGINE_VERSION = "1.6";
 export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.4, RW_REF = 10.75; // referencesummer for et gennemsnitshold

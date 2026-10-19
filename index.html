@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.10.4">
+<meta name="app-version" content="2.11.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -416,7 +416,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .codeline button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:500 15px var(--mono);letter-spacing:.1em;color:var(--text);cursor:pointer}
 .protofoot{margin-top:40px;text-align:center;display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:center;align-items:center;font-size:12.5px;color:var(--mut);opacity:.7}
 .protofoot button{appearance:none;background:none;border:0;color:var(--mut);font-size:12.5px;opacity:.6;cursor:pointer;padding:6px}
-.startwrap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;margin-top:7vh}
+.startwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:calc(100vh - 220px);min-height:calc(100svh - 220px);padding-top:6vh}
 .wm3{font-size:38px;font-weight:600;letter-spacing:-.015em;line-height:1}
 .wm3 span{font-weight:300;color:var(--acc)}
 .lgrow{display:flex;gap:14px;justify-content:center;margin-top:34px}
@@ -438,7 +438,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .ver{font:500 11px var(--mono);color:color-mix(in srgb,var(--mut) 70%,var(--text));letter-spacing:.3px}
 .updbtn{appearance:none;border:1px solid #6fe39a99;background:linear-gradient(#6fe39a33,#6fe39a14);color:#8dffb5;font-size:12.5px;font-weight:600;border-radius:99px;padding:7px 13px;cursor:pointer;box-shadow:0 0 18px -2px #6fe39a88;animation:updglow 2.2s infinite ease-in-out}
 @keyframes updglow{0%,100%{box-shadow:0 0 12px -3px #6fe39a66}50%{box-shadow:0 0 22px 0 #6fe39acc}}
-.hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
+.hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(46px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
 .codecard{text-align:center;margin-top:24px}
@@ -620,6 +620,11 @@ var FORMS={
   "3-5-2":[["ST","ST"],["LWB","CM","DM","CM","RWB"],["CB","CB","CB"],["GK"]],
   "3-4-3":[["LW","ST","RW"],["CM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
   "5-3-2":[["ST","ST"],["CM","DM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
+  "5-3-2 (D)":[["ST","ST"],["CM","DM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
+  "5-3-2 (O)":[["ST","ST"],["CM","AM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
+  "5-3-1-1":[["ST"],["AM"],["CM","DM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
+  "4-2-1-3":[["LW","ST","RW"],["AM"],["DM","DM"],["LB","CB","CB","RB"],["GK"]],
+  "4-1-3-2":[["ST","ST"],["LM","CM","RM"],["DM"],["LB","CB","CB","RB"],["GK"]],
   "5-4-1":[["ST"],["LM","CM","CM","RM"],["LWB","CB","CB","CB","RWB"],["GK"]],
   "4-5-1":[["ST"],["LM","CM","DM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
   "4-4-1-1":[["ST"],["AM"],["LM","CM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
@@ -629,8 +634,8 @@ var FORMS={
   "4-3-2-1":[["ST"],["AM","AM"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
   "3-4-1-2":[["ST","ST"],["AM"],["CM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]]
 };
-/* formationer til valg: flest forsvarsspillere først; "4-3-3" er kun den gamle nøgle i ældre spil */
-var FORM_ORDER=Object.keys(FORMS).filter(function(f){return f!=="4-3-3"}).sort(function(a,b){
+/* formationer til valg: flest forsvarsspillere først; "4-3-3", "5-3-2" og "3-5-2" er kun gamle nøgler i ældre spil */
+var FORM_ORDER=Object.keys(FORMS).filter(function(f){return f!=="4-3-3"&&f!=="5-3-2"&&f!=="3-5-2"}).sort(function(a,b){
   var x=a.replace(/ .*/,"").split("-"),y=b.replace(/ .*/,"").split("-");
   for(var i=0;i<Math.max(x.length,y.length);i++){var d=(+y[i]||0)-(+x[i]||0);if(d)return d}
   return a<b?-1:1;
@@ -810,7 +815,7 @@ function renderFlow(){
       '<div class="tagrow"><label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="Fx Dream Team" autocomplete="off"></label><label class="field tagf"><span>Forkortelse</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"Mit hold"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primær farve</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Sekundær farve</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primær":"Sekundær")+' farve: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
-      '<div class="field"><span>Våbenskjold</span><div class="crests">'+crestBtns()+'</div></div>'+
+      '<div class="field"><span>Crest</span><div class="crests">'+crestBtns()+'</div></div>'+
       navBtns("Fortsæt til formation",!holdOk(),LIVE)+(LIVE&&NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
   }else if(st==="form"){
     h+='<h1>Vælg formation</h1><p class="sub">Den kan ikke ændres, når spillet er startet.</p><div class="fchips">'+
@@ -1434,7 +1439,7 @@ function hcrest(k,px){
   var h=HC[k];return ucrest(h[0],h[1],h[2],initials(FTEAM[k]),px);
 }
 function crestBtns(){
-  return [0,1,2,3,4,5,6,7,8,9,10,11].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Våbenskjold '+(i+1)+'">'+ucrest(i,S.color,S.color2,mytag(),38)+'</button>'}).join("");
+  return [0,1,2,3,4,5,6,7,8,9,10,11].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Crest '+(i+1)+'">'+ucrest(i,S.color,S.color2,mytag(),38)+'</button>'}).join("");
 }
 function nm(n){return NAMECODE[n]?crest(NAMECODE[n],16)+n:n}
 
@@ -2502,7 +2507,7 @@ function pushLine(){
   if(s==="home")return "";
   if(s==="denied")return '<p class="note" style="margin-top:14px;text-align:center">Beskeder er slået fra i telefonens indstillinger.</p>';
   if(s==="off")return '<button class="linkbtn" data-act="pushtoggle" '+st+'>Få besked, når det er din tur</button>';
-  if(s==="on")return '<button class="linkbtn" data-act="pushtoggle" '+st+'>Beskeder er slået til · Slå fra</button>';
+  if(s==="on")return "";
   return "";
 }
 function b64u(b){var p="=".repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,"+").replace(/_/g,"/")),o=new Uint8Array(r.length);for(var i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
