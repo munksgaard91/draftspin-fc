@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.12.2">
+<meta name="app-version" content="2.12.3">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -80,12 +80,13 @@
 @media (prefers-reduced-motion:reduce){.sumwin b,.sumwin .si,.sumdown b,.sumdown .si{animation:none}}
 .simwait{text-align:center;padding:90px 0 40px}
 .rgwrap{position:relative;width:300px;height:300px;margin:0 auto 26px}
-.rgc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;line-height:0;filter:drop-shadow(0 0 18px #3d195b99)}
+.rgc{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;display:block;line-height:0}
+.rgc img{display:block;width:96px;height:96px;object-fit:contain;filter:brightness(0) invert(1) drop-shadow(0 0 14px #ffffff55)}
 .rgring{position:absolute;inset:0;animation:rgspin 20s linear infinite}
 .rg{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(var(--a)) translateY(-128px)}
-.rgu{position:absolute;left:0;top:0;transform:rotate(calc(var(--a) * -1))}
-.rgi{display:block;transform:translate(-50%,-50%);animation:rgback 20s linear infinite}
-.rgi .cr{display:block}
+.rgu{position:absolute;left:0;top:0;width:0;height:0;transform:rotate(calc(var(--a) * -1))}
+.rgi{position:absolute;left:0;top:0;display:grid;place-items:center;width:38px;height:38px;line-height:0;transform:translate(-50%,-50%);animation:rgback 20s linear infinite}
+.rgi .cr,.rgi .cr svg,.rgi .cr img{display:block}
 @keyframes rgspin{to{transform:rotate(360deg)}}
 @keyframes rgback{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
 @media (prefers-reduced-motion:reduce){.rgring,.rgi{animation:none}}
@@ -2050,7 +2051,7 @@ function waitRing(){
     var slot=hu.length&&Math.floor((i+1)*hu.length/total)>hi;
     if(slot){items.push(hu[hi++])}else items.push(ai.shift())
   }
-  var n=items.length,h='<div class="rgwrap"><span class="rgc">'+lbadge("pl",84)+'</span><div class="rgring">';
+  var n=items.length,h='<div class="rgwrap"><span class="rgc"><img src="'+PLLOGO+'" alt="Premier League" width="96" height="96"></span><div class="rgring">';
   items.forEach(function(it,i){h+='<span class="rg" style="--a:'+(i*360/n)+'deg"><span class="rgu"><span class="rgi">'+it+'</span></span></span>'});
   return h+'</div></div>';
 }
