@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.12.6">
+<meta name="app-version" content="2.12.7">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -311,9 +311,15 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sb .sc{font:500 44px var(--mono)}
 .sc.pop{animation:gpop .8s ease-out}
 @keyframes gpop{0%{transform:scale(1)}25%{transform:scale(1.35)}100%{transform:scale(1)}}
-.sb.fl-me{animation:flme 1s ease-out}.sb.fl-opp{animation:flopp 1s ease-out}
-@keyframes flme{0%{box-shadow:0 0 0 3px var(--acc),0 0 40px var(--acc)}100%{box-shadow:0 0 0 0 transparent}}
-@keyframes flopp{0%{box-shadow:0 0 0 3px var(--red),0 0 40px var(--red)}100%{box-shadow:0 0 0 0 transparent}}
+.sb{position:relative;isolation:isolate}
+.sb::after{content:"";position:absolute;inset:-14px -10px;z-index:-1;border-radius:22px;opacity:0;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 52%,color-mix(in srgb,var(--glow,var(--acc)) 42%,transparent),transparent 72%)}
+.sb.fl-me,.sb.fl-opp{--glow:var(--acc)}
+.sb.fl-opp{--glow:var(--red)}
+.sb.fl-me::after,.sb.fl-opp::after{animation:bloom 1.25s cubic-bezier(.2,.7,.2,1)}
+@keyframes bloom{0%{opacity:0;transform:scale(.7)}22%{opacity:1}100%{opacity:0;transform:scale(1.25)}}
+.sb.fl-me>.tm:first-child .cr,.sb.fl-opp>.tm:last-child .cr{animation:cpulse .9s cubic-bezier(.3,1.6,.5,1)}
+@keyframes cpulse{0%{transform:scale(1)}30%{transform:scale(1.22)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.sb::after,.sb .cr{animation:none!important}}
 .ev .tg{color:var(--mut);font-size:12.5px}
 .clock{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);margin:16px 0 6px}
 .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
