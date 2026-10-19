@@ -421,6 +421,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .tagrow{display:flex;gap:10px;align-items:flex-end;margin-top:12px}.tagrow .field{margin:0}.tagrow .field:first-child{flex:1;min-width:0}.tagf{width:84px;flex:none}.tagf .inp{text-align:center;text-transform:uppercase;letter-spacing:1px}
 .btn.skipb{border:1px solid #e0b85a80;background:linear-gradient(#e0b85a26,#e0b85a10);color:#ecc977;font-weight:600}.btn.skipb:disabled{opacity:.4}
 .livetag{display:inline-flex;align-items:center;gap:5px;color:#6fcf8a;font:700 11.5px var(--mono);letter-spacing:.8px}.livetag i{width:7px;height:7px;border-radius:50%;background:#6fcf8a;animation:livep 1.4s infinite ease-in-out}@keyframes livep{0%,100%{opacity:1}50%{opacity:.3}}
+.mctl .btn{min-height:38px;padding:0 14px;font-size:14px}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .bigcode{font:500 40px var(--mono);letter-spacing:.14em;margin:6px 0 14px}
@@ -491,7 +492,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 
       <div class="card" style="margin-top:10px;padding:10px">
         <div class="reel" aria-label="Klubvalg"><div id="strip"></div><div class="pay"></div></div>
-        <button class="btn p wide" id="spinBtn" style="margin-top:10px">Spin for en klub</button>
+        <button class="btn p wide" id="spinBtn" style="margin-top:10px">Spin the wheel</button>
       </div>
 
       <div id="clubpanel"></div>
@@ -519,10 +520,10 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="bar"><i id="prog"></i></div>
     </div>
 
-    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Hændelser</button><button data-mt="others">Resten af runden</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div></div>
+    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Kampfakta</button><button data-mt="others">Andre resultater</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div></div>
 
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Igen</button>
+    <div class="mctl" style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Replay</button>
       <button class="btn" id="spdBtn" style="min-width:56px">1x</button>
       <button class="btn skipb" id="skipBtn" style="flex:2;white-space:nowrap">🏁 Spring til resultat</button>
     </div>
@@ -1053,7 +1054,7 @@ function renderDraft(){
   $("ordLine").textContent=(LIVE&&S.order.length>1)?"":S.order.length?"Rækkefølge: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
   var cur=S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null;
   $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club);
-  $("spinBtn").textContent=done?"Draften er færdig":(!myTurn()?"Venter på "+(cur?teamName(cur):""):(S.club?"Vælg en spiller herunder":"Spin for en klub"));
+  $("spinBtn").textContent=done?"Draften er færdig":(!myTurn()?"Venter på "+(cur?teamName(cur):""):(S.club?"Vælg en spiller herunder":"Spin the wheel"));
   $("turnTxt").textContent=done?"Din trup er klar.":(myTurn()?(S.club?"Klubben er valgt. Vælg frit blandt spillerne.":"Din tur. Spin for at få en klub."):(cur?teamName(cur)+" er i gang.":""));
   $("doneBox").innerHTML=done?(LIVE?'<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen startes...</p>':'<button class="btn p wide fade" id="toMatch" style="margin-top:16px">Til første kamp</button>'):"";
   if($("toMatch"))$("toMatch").onclick=function(){go("match")};
@@ -1063,7 +1064,7 @@ function advance(){
   renderDraft();saveGame();
   if(S.pickIdx>=S.seq.length)return;
   var who=S.seq[S.pickIdx];
-  if(who==="me"){S.view="me";renderDraft();toast("Din tur. Spin for en klub.",2200);startTurnTimer();return}
+  if(who==="me"){S.view="me";renderDraft();toast("Din tur. Spin the wheel.",2200);startTurnTimer();return}
   draftT.push(setTimeout(function(){friendPick(who);S.pickIdx++;advance()},1700));
 }
 function pickForm(){var k=Object.keys(FORMS);return k[Math.floor(Math.random()*k.length)]}
@@ -2307,7 +2308,7 @@ function liveDraftRender(){
   if(dsig===NET.dsig&&$("clubpanel").children.length+($("dpitch").children.length)>0){liveTimerTick();return}
   NET.dsig=dsig;
   $("draftMain").classList.toggle("solo",NET.players.length<2);
-  if(cur==="me"&&NET.lastPick!==S.pickIdx&&!S.club&&!S.spinning){toast("Din tur. Spin for en klub.",2200)}
+  if(cur==="me"&&NET.lastPick!==S.pickIdx&&!S.club&&!S.spinning){toast("Din tur. Spin the wheel.",2200)}
   if(NET.lastPick!==S.pickIdx){S.view="me"}
   NET.lastPick=S.pickIdx;
   renderDraft();renderSheet();
