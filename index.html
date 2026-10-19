@@ -610,6 +610,8 @@ var POSORD=["GK","RB","CB","LB","DM","CM","AM","RW","LW","ST"];
 var GROUPS={GK:["GK"],DEF:["RB","CB","LB"],MID:["DM","CM","AM"],ATT:["LW","RW","ST"]};
 var FORMS={
   "4-3-3":[["LW","ST","RW"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
+  "4-3-3 (D)":[["LW","ST","RW"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
+  "4-3-3 (O)":[["LW","ST","RW"],["CM","AM","CM"],["LB","CB","CB","RB"],["GK"]],
   "4-4-2":[["ST","ST"],["LM","CM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
   "4-2-3-1":[["ST"],["LW","AM","RW"],["DM","DM"],["LB","CB","CB","RB"],["GK"]],
   "4-1-4-1":[["ST"],["LM","CM","CM","RM"],["DM"],["LB","CB","CB","RB"],["GK"]],
@@ -626,6 +628,12 @@ var FORMS={
   "4-3-2-1":[["ST"],["AM","AM"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
   "3-4-1-2":[["ST","ST"],["AM"],["CM","CM"],["LB","CB","CB","CB","RB"],["GK"]]
 };
+/* formationer til valg: flest forsvarsspillere først; "4-3-3" er kun den gamle nøgle i ældre spil */
+var FORM_ORDER=Object.keys(FORMS).filter(function(f){return f!=="4-3-3"}).sort(function(a,b){
+  var x=a.replace(/ .*/,"").split("-"),y=b.replace(/ .*/,"").split("-");
+  for(var i=0;i<Math.max(x.length,y.length);i++){var d=(+y[i]||0)-(+x[i]||0);if(d)return d}
+  return a<b?-1:1;
+});
 var LEAGUE=[["ARS","Arsenal"],["AVL","Aston Villa"],["BOU","Bournemouth"],["BRE","Brentford"],["BHA","Brighton"],["CHE","Chelsea"],["COV","Coventry City"],["CRY","Crystal Palace"],["EVE","Everton"],["FUL","Fulham"],["HUL","Hull City"],["IPS","Ipswich Town"],["LEE","Leeds United"],["LIV","Liverpool"],["MCI","Manchester City"],["MUN","Manchester United"],["NEW","Newcastle United"],["NFO","Nottingham Forest"],["SUN","Sunderland"],["TOT","Tottenham Hotspur"]];
 var REMOVED=["Hull City","Ipswich Town","Coventry City","Sunderland","Leeds United","Nottingham Forest"];
 /* Trupper og numre: premierleague.com, "squad numbers for 2026/27". Siden har ingen positioner, så de er mine gæt til test. */
@@ -685,7 +693,7 @@ function lastName(n){var w=n.split(" ");if(w.length>2&&w[w.length-2]===w[w.lengt
 function fresh(){
   simT.forEach(clearTimeout);simT=[];draftT.forEach(clearTimeout);draftT=[];clearInterval(tIv);tIv=null;
   clearInterval(timer);timer=null;readyTimers.forEach(clearTimeout);readyTimers=[];
-  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Mit hold",color:SWATCH[0],color2:"#e6ebf5",form:"4-3-3",squad:new Array(11).fill(null),
+  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Mit hold",color:SWATCH[0],color2:"#e6ebf5",form:"4-3-3 (D)",squad:new Array(11).fill(null),
      taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},tag:"",k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
      phase:"order",order:[],seq:[],pickIdx:0,matchSeen:false};
   P={me:{joined:true,ready:false},Sara:{joined:false,ready:false},Jonas:{joined:false,ready:false},Marie:{joined:false,ready:false}};
@@ -805,7 +813,7 @@ function renderFlow(){
       navBtns("Fortsæt til formation",!holdOk(),LIVE);
   }else if(st==="form"){
     h+='<h1>Vælg formation</h1><p class="sub">Den kan ikke ændres, når spillet er startet.</p><div class="fchips">'+
-      Object.keys(FORMS).map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+f+'</button>'}).join("")+'</div>'+
+      FORM_ORDER.map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+f+'</button>'}).join("")+'</div>'+
       '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("Jeg er klar til draft");
   }else if(LIVE){
     h+=lobbyLive();
@@ -1110,7 +1118,7 @@ function advance(){
   if(who==="me"){S.view="me";renderDraft();toast("Din tur. Spin the wheel.",2200);startTurnTimer();return}
   draftT.push(setTimeout(function(){friendPick(who);S.pickIdx++;advance()},1700));
 }
-function pickForm(){var k=Object.keys(FORMS);return k[Math.floor(Math.random()*k.length)]}
+function pickForm(){var k=FORM_ORDER;return k[Math.floor(Math.random()*k.length)]}
 function friendPick(k){
   var fs=S.fsq[k];if(!fs)return;
   var pool=[];
@@ -2562,7 +2570,7 @@ function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET
       NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode;
       try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
       var nm=S.pname.trim().length>=2?S.pname.trim():"Tester";
-      S.pname=nm;S.team="Testhold "+(10+Math.floor(Math.random()*90));S.tag="";S.form=rnd(Object.keys(FORMS));
+      S.pname=nm;S.team="Testhold "+(10+Math.floor(Math.random()*90));S.tag="";S.form=rnd(FORM_ORDER);
       S.color=rnd(SWATCH);S.color2=rnd(SWATCH.filter(function(c){return c!==S.color}));S.crest=Math.floor(Math.random()*12);
       var g=NET.gid,call=async function(fn,a){var r=await NET.sb.rpc(fn,a);if(r.error)throw r.error;return r.data};
       await call("open_setup",{p_game:g});
