@@ -23,6 +23,7 @@
 #simbody:has(.simtop){display:flex;flex-direction:column;height:calc(100dvh - 54px)}
 .simlive{padding:12px 10px;margin:0}
 .simlive .simt{gap:5px;font-size:13.5px}
+.frm{display:flex;gap:3px;justify-content:center;min-height:16px}.frm i{font:700 9.5px/16px var(--mono);font-style:normal;width:16px;height:16px;border-radius:4px;text-align:center;color:#0b1220;background:var(--mut)}.frm i.w{background:#6fcf8a}.frm i.l{background:#e86a6a}.frm i.d{background:#8c97b5}
 .simlive .sims{font-size:40px;min-width:110px}
 .sims.pop{animation:simpop .5s ease-out}
 @keyframes simpop{0%{transform:scale(1.35);color:var(--acc-lt,#a9d4ad)}100%{transform:scale(1)}}
@@ -268,7 +269,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 /* match */
 .sb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;text-align:center}
 .sb .tm{font-size:14px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
-.sb .tm span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb .tm span:nth-child(2){max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb .sc{font:500 44px var(--mono)}
 .sc.pop{animation:gpop .8s ease-out}
 @keyframes gpop{0%{transform:scale(1)}25%{transform:scale(1.35)}100%{transform:scale(1)}}
@@ -508,9 +509,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 
     <div class="card" style="margin-top:12px">
       <div class="sb">
-        <div class="tm"><span id="myC"></span><span class="myname">Rasmus FC</span></div>
+        <div class="tm"><span id="myC"></span><span class="myname">Rasmus FC</span><div class="frm" id="myF"></div></div>
         <div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div>
-        <div class="tm"><span id="oppC"></span><span id="oppName">Chelsea</span></div>
+        <div class="tm"><span id="oppC"></span><span id="oppName">Chelsea</span><div class="frm" id="oppF"></div></div>
       </div>
       <div class="clock"><span id="clk">Anspark</span></div>
       <div class="bar"><i id="prog"></i></div>
@@ -1922,7 +1923,7 @@ function liveSimRender(ph){
   var B=ph==="B",up=B?r:r-1,rows=standingsLive(up),prev={};
   if(up>1)standingsLive(up-1).forEach(function(x,i){prev[x.k]=i});
   var mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
-  var side=function(k){return '<div class="simt">'+lcrest(k,40)+'<span>'+esc(lname(k))+'</span></div>'};
+  var side=function(k){return '<div class="simt">'+lcrest(k,40)+'<span>'+esc(lname(k))+'</span><div class="frm">'+formOf(k,r)+'</div></div>'};
   var h='<div class="simtop"><div class="card simcard simlive"><div class="simm">'+side(m.home_key)+'<div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div>'+side(m.away_key)+'</div></div>'+
     '<div class="card siminfo"><div class="sirow"><b>Runde '+r+' af 38</b><span class="muted">'+(up<1?"Første kamp er i gang":"Din plads: "+(mi+1)+" · "+me.p+" point · "+me.w+"V "+me.d+"U "+me.l+"T")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
     '<div class="tr h sm"><span>#</span><span>Hold</span><span class="num">V</span><span class="num">U</span><span class="num">T</span><span class="num">+/-</span><span class="num">P</span></div>';
@@ -1997,12 +1998,16 @@ function liveScriptFor(m){
   out.sort(function(a,b){return a.m-b.m||(a.t==="sys"?-1:1)});
   return out;
 }
+function formOf(k,before){
+  var ms=NET.season.matches.filter(function(m){return m.played&&m.round<before&&(m.home_key===k||m.away_key===k)}).sort(function(a,b){return a.round-b.round}).slice(-5);
+  return ms.map(function(m){var h=m.home_key===k,g=h?m.home_goals:m.away_goals,o=h?m.away_goals:m.home_goals,c=g>o?"w":(g<o?"l":"d");return '<i class="'+c+'">'+(c==="w"?"W":(c==="l"?"L":"D"))+'</i>'}).join("");
+}
 function liveMatchHeader(){
   var m=liveMyMatch(NET.round);if(!m)return;
   var oppK=m.home_key===NET.uid?m.away_key:m.home_key;NET.oppName=lname(oppK);
   $("rndNo").textContent=NET.round;
   document.querySelectorAll(".myname").forEach(function(x){x.textContent=lname(NET.uid)});
-  $("myC").innerHTML=lcrest(NET.uid,34);$("oppC").innerHTML=lcrest(oppK,34);$("oppName").textContent=NET.oppName;
+  $("myC").innerHTML=lcrest(NET.uid,34);$("oppC").innerHTML=lcrest(oppK,34);$("myF").innerHTML=formOf(NET.uid,NET.round);$("oppF").innerHTML=formOf(oppK,NET.round);$("oppName").textContent=NET.oppName;
   var nx=liveNextText();$("nextOpp").textContent=nx;
 }
 function liveNextText(){
