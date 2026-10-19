@@ -393,6 +393,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .hrow:last-child{border:0}
 .hrow .hk{font:500 15px var(--mono);color:var(--mut);text-align:center}
 .hrow.r1 .hk{color:#e4c47a}.hrow.r2 .hk{color:#c3ccd9}.hrow.r3 .hk{color:#cf9a68}
+.hrow .hk .md{font-size:20px;line-height:1}
 .hrow .hm{min-width:0}
 .hrow .hmn{font-weight:500;display:flex;align-items:center;gap:8px}
 .hrow small{display:flex;align-items:center;gap:7px;color:var(--mut);font-size:13.5px;flex-wrap:wrap;margin-top:2px}
@@ -1517,7 +1518,7 @@ function renderHof(){
       var tn=function(n){return n==="me"?(S.team.trim()||"Mit hold"):n};
       var main=c.team?'<div class="hmn">'+tcrest(r[0],22)+'<span>'+esc(tn(r[0]))+'</span></div><small>'+esc(who)+', '+esc(r[3])+'</small>'
                       :'<div class="hmn">'+esc(r[0])+'</div><small>'+tcrest(r[1],18)+esc(tn(r[1]))+' ('+esc(who)+'), '+esc(r[3])+'</small>';
-      return '<div class="hrow r'+(i+1)+(mine?" mine":"")+'"><span class="hk">'+(i+1)+'</span><div class="hm">'+main+'</div><span class="hv">'+r[4]+'</span></div>';
+      return '<div class="hrow r'+(i+1)+(mine?" mine":"")+'"><span class="hk">'+medal(i)+'</span><div class="hm">'+main+'</div><span class="hv">'+r[4]+'</span></div>';
     }).join("");
     h+='<div class="card hcat"><h3>'+c.t+'</h3>'+rows+'</div>';
   });
@@ -2283,6 +2284,7 @@ async function liveGoNext(id){
   try{await liveLoad();liveSub();liveEnter()}catch(e){netErr(e)}
 }
 var HOFC=null;
+function medal(i){return i<3?'<span class="md">'+['🏆','🥈','🥉'][i]+'</span>':i+1}
 async function renderHofLive(){
   var tabs=[["pl","Premier League",1],["cl","Champions League",1]];
   $("hseg").innerHTML=tabs.map(function(t){return '<button data-h="'+t[0]+'" class="'+(HOFTAB===t[0]?"on":"")+'">'+t[1]+'</button>'}).join("");
@@ -2297,8 +2299,8 @@ async function renderHofLive(){
   var se=function(x){return [x.season_no>1?"sæson "+x.season_no:"",x.players?x.players+(x.players===1?" spiller":" spillere"):""].filter(Boolean).join(", ")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
-  var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+((note||se(x))?', ':'')+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
-  var tRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+(i+1)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
+  var pRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+medal(i)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+((note||se(x))?', ':'')+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
+  var tRow=function(i,x,val,note){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+medal(i)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(note?esc(note):se(x))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
   var C=[];
   var cat=function(title,rows){C.push([title,'<div class="card hcat" style="margin-top:10px"><h3>'+title+'</h3>'+(rows||'<p class="note">Ingen endnu.</p>')+'</div>']);return ""};
