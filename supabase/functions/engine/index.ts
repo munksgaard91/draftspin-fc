@@ -26,8 +26,15 @@ async function chunkedEvents(rows, size = 400) {
 // ---------- start sæsonen ----------
 async function initSeason(game) {
   if (game.status !== "season") throw new Fejl("Draften er ikke færdig");
-  const existing = chk(await admin.from("season_secret").select("game_id").eq("game_id", game.id));
-  if (existing.length) return { already: true };
+  const existing = chk(await admin.from("season_secret").select("*").eq("game_id", game.id));
+  let heal = null; // afbrudt start: byg videre med samme hemmelighed
+  if (existing.length) {
+    const mc = chk(await admin.from("matches").select("id").eq("game_id", game.id).limit(1));
+    if (mc.length || Date.now() - new Date(existing[0].created_at).getTime() < 60000) return { already: true };
+    heal = existing[0];
+    chk(await admin.from("season_lineups").delete().eq("game_id", game.id).select("game_id"));
+    chk(await admin.from("season_teams").delete().eq("game_id", game.id).select("game_id"));
+  }
 
   const { rows: allPlayers, byId } = await loadPlayers();
   const gps = chk(await admin.from("game_players").select("*").eq("game_id", game.id));
@@ -51,12 +58,14 @@ async function initSeason(game) {
   }
   ai.sort((a, b) => a.strength - b.strength);
   const field = ai.slice(teams.length).concat(teams); // de svageste AI-klubber fjernes, 1 pr. spiller
-  const seed = crypto.randomUUID() + crypto.randomUUID();
-  const { luck, dark, unlucky } = E.setupSeason(field.map((t) => ({ key: t.key, kind: t.kind, strength: t.strength })), seed);
+  const seed = heal ? heal.seed : crypto.randomUUID() + crypto.randomUUID();
+  const { luck, dark, unlucky } = heal ? heal : E.setupSeason(field.map((t) => ({ key: t.key, kind: t.kind, strength: t.strength })), seed);
 
   // først den hemmelige række: den der lykkes, vinder racet
-  const ins = await admin.from("season_secret").insert({ game_id: game.id, seed, luck, dark, unlucky, engine_version: E.ENGINE_VERSION });
-  if (ins.error) { if (ins.error.code === "23505") return { already: true }; throw new Error(ins.error.message); }
+  if (!heal) {
+    const ins = await admin.from("season_secret").insert({ game_id: game.id, seed, luck, dark, unlucky, engine_version: E.ENGINE_VERSION });
+    if (ins.error) { if (ins.error.code === "23505") return { already: true }; throw new Error(ins.error.message); }
+  }
 
   const rng = E.makeRng(seed + "|order");
   const order = field.map((t) => ({ t, k: rng.next() })).sort((a, b) => a.k - b.k).map((x) => x.t);
@@ -85,7 +94,7 @@ async function loadCtx(gameId) {
 }
 
 async function playRound(gameId, ctx, round) {
-  const ms = chk(await admin.from("matches").select("*").eq("game_id", gameId).eq("round", round).eq("played", false));
+  const ms = chk(await admin.from("matches").select("*").eq("game_id", gameId).eq("round", round)); // hele runden spilles om ved genstart: deterministisk og idempotent
   const upd = [], evs = [];
   for (const m of ms) {
     const th = ctx.teams[m.home_key], ta = ctx.teams[m.away_key];
@@ -98,8 +107,8 @@ async function playRound(gameId, ctx, round) {
       }
     }
   }
+  await chunkedEvents(evs); // hændelser først, så en kamp aldrig står som spillet uden dem
   for (let i = 0; i < upd.length; i += 200) chk(await admin.from("matches").upsert(upd.slice(i, i + 200), { onConflict: "id" }));
-  await chunkedEvents(evs);
 }
 
 async function setRound(gameId, from, to, done) {
@@ -170,7 +179,7 @@ async function finalizeSeason(gameId) {
     let streak = 0, best = 0, bigM = 0, bigScore = null, bigText = null;
     for (const m of mine) {
       const home = m.home_key === h.team_key, gf = home ? m.home_goals : m.away_goals, ga = home ? m.away_goals : m.home_goals;
-      if (gf > ga) { streak++; best = Math.max(best, streak); if (gf - ga > bigM) { bigM = gf - ga; bigScore = gf + "–" + ga; bigText = vs(home ? m.away_key : m.home_key, m.round); } }
+      if (gf > ga) { streak++; best = Math.max(best, streak); if (gf - ga > bigM) { bigM = gf - ga; bigScore = gf + "–" + ga; bigText = vs(home ? m.away_key : m.home_key); } }
       else streak = 0;
     }
     const s = t[h.team_key];
@@ -194,7 +203,7 @@ async function finalizeSeason(gameId) {
   for (const k of Object.keys(pm)) {
     const [mid, pid] = k.split("|"), m = mById.get(Number(mid)), tm = own[pid];
     if (!m || !tm) continue;
-    if (!bm[pid] || pm[k] > bm[pid].n) bm[pid] = { n: pm[k], text: vs(m.home_key === tm.team_key ? m.away_key : m.home_key, m.round) };
+    if (!bm[pid] || pm[k] > bm[pid].n) bm[pid] = { n: pm[k], text: vs(m.home_key === tm.team_key ? m.away_key : m.home_key) };
   }
   const playerRows = Object.keys(stats).map((pid) => {
     const tm = own[pid], s = stats[pid];

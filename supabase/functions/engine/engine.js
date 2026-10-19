@@ -209,6 +209,7 @@ export function simulateMatch(H, A, seed) {
     const cand = T.xi.map((x, i) => ({ i, x })).filter(({ i, x }) => pitch[i] && x.pos !== "GK").sort((p, q) => (q.x.p.pen_taking || 8) - (p.x.p.pen_taking || 8)).slice(0, 3);
     if (!cand.length) continue;
     const ci = rng.weighted([0.7, 0.2, 0.1].slice(0, cand.length)), taker = cand[ci].x.p;
+    if (ev.some((x) => x.m === m && x.s === s && x.pid === taker.id && (x.type === "pen_miss" || x.pen))) continue; // samme taker, samme minut: ville give samme hændelsesnøgle
     const pScore = Math.max(0.6, Math.min(0.92, 0.8 + 0.012 * ((taker.pen_taking || 12) - 12)));
     if (rng.next() < pScore) ev.push({ m, type: "goal", s, pid: taker.id, aid: null, pen: true });
     else {

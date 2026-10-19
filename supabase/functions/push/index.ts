@@ -25,11 +25,22 @@ async function send(cfg, user_id, title, body, tag) {
   console.log("push", user_id, "abonnementer", subs.length, "statuskoder", codes.join(","));
 }
 
+// sammenligning uden tidsforskel (XOR over alle tegn)
+function safeEq(a, b) {
+  const x = new TextEncoder().encode(a), y = new TextEncoder().encode(b);
+  let d = x.length ^ y.length;
+  for (let i = 0; i < Math.max(x.length, y.length); i++) d |= (x[i] ?? 0) ^ (y[i] ?? 0);
+  return d === 0;
+}
+
 Deno.serve(async (req) => {
   try {
+    const given = req.headers.get("x-push-secret");
+    if (!given || given.length > 200) return new Response("forbidden", { status: 403 }); // ingen DB-opslag uden hemmelighed
+    const sec = (await admin.from("push_config").select("value").eq("key", "secret").maybeSingle()).data;
+    if (!sec || !sec.value || !safeEq(given, sec.value)) return new Response("forbidden", { status: 403 });
     const cfgRows = (await admin.from("push_config").select("key,value")).data || [];
     const cfg = Object.fromEntries(cfgRows.map((r) => [r.key, r.value]));
-    if (!cfg.secret || req.headers.get("x-push-secret") !== cfg.secret) return new Response("forbidden", { status: 403 });
     const { user_id, title, body, tag } = await req.json();
     if (!user_id) return new Response("bad request", { status: 400 });
     const work = send(cfg, user_id, title, body, tag).catch((e) => console.log("push fejl", String(e && e.message || e)));

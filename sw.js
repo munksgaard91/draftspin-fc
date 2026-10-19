@@ -1,8 +1,9 @@
 // Service worker: viser besked, når det er din tur i draften, og gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v1";
+var CACHE = "dsfc-shell-v2";
 var SCOPE = self.registration.scope;
 var LIB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
-var SHELL = [SCOPE, SCOPE + "manifest.webmanifest", SCOPE + "icons/icon-192.png", SCOPE + "icons/icon-180.png", SCOPE + "favicon.png"];
+var BADGES = "ARS AVL BOU BRE BHA CHE COV CRY EVE FUL HUL IPS LEE LIV MCI MUN NEW NFO SUN TOT".split(" ");
+var SHELL = [SCOPE, SCOPE + "manifest.webmanifest", SCOPE + "icons/icon-192.png", SCOPE + "icons/icon-180.png", SCOPE + "favicon.png", SCOPE + "badges/pl-logo.svg"].concat(BADGES.map(function (c) { return SCOPE + "badges/" + c + ".png"; }));
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {
