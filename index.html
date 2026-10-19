@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.11.4">
+<meta name="app-version" content="2.12.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -56,6 +56,15 @@
 .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
 @keyframes simd{0%,80%,100%{opacity:.25}40%{opacity:1}}
 .simrec{font-size:15px;color:var(--mut);margin-top:6px}
+.sumtop{text-align:center;padding-top:28px}
+.sumtop h1{margin:10px 0 0;font-size:26px}
+.sumteam{margin:4px 0 0;font-size:19px;font-weight:600;color:var(--acc)}
+.sumlist{margin-top:18px;padding:4px 14px}
+.sumrow{display:flex;gap:14px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+.sumrow:last-child{border:0}
+.sumrow .si{font-size:22px;line-height:1.2;width:28px;text-align:center;flex:none}
+.sumrow b{display:block;font-weight:600}
+.sumrow small{display:block;color:var(--mut);font-size:13.5px;line-height:1.45;margin-top:1px}
 .simwait{text-align:center;padding:90px 0 40px}
 .rgwrap{position:relative;width:300px;height:300px;margin:0 auto 26px}
 .rgc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;line-height:0;filter:drop-shadow(0 0 18px #3d195b99)}
@@ -2075,8 +2084,48 @@ function liveSimRender(ph){
 }
 function liveSimDone(){
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
-  var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
-  $("simbody").innerHTML='<div class="simwait" style="padding-top:60px"><h1>Sæsonen er spillet</h1><p class="sub" style="margin-top:10px">Du sluttede som nr. '+(mi+1)+' med '+me.p+' point ('+me.w+' sejre, '+me.d+' uafgjorte, '+me.l+' nederlag).</p><button class="btn p wide go" data-act="simend" style="margin-top:28px">Slut sæson</button></div>';
+  var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
+  var champ=mi===0;
+  var eu=mi<4?["🌟","Champions League","Du kvalificerede dig til Champions League."]:(mi<6?["⭐","Europa League","Du kvalificerede dig til Europa League."]:(mi===6?["✨","Conference League","Du kvalificerede dig til Conference League."]:(mi>=17?["⬇️","Nedrykning","Du rykkede ned."]:["➖","Ingen europæisk plads","Du gik hverken til Europa eller ned."])));
+  var row=function(ic,t,d,id){return '<div class="sumrow"'+(id?' id="'+id+'"':'')+'><span class="si">'+ic+'</span><div><b>'+t+'</b><small>'+d+'</small></div></div>'};
+  var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>Sæsonen er slut</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist">'+
+    row(champ?"🏆":"🏁","Mester",champ?"Ja, du vandt ligaen!":"Nej, "+esc(lname(rows[0].k))+" vandt ligaen.")+
+    row("📊","Placering",(mi+1)+". plads af "+n+" · "+me.p+" point")+
+    row("⚽","Resultater",me.w+" sejre · "+me.d+" uafgjorte · "+me.l+" nederlag · målforskel "+(me.gf-me.ga>0?"+":"")+(me.gf-me.ga))+
+    row(eu[0],eu[1],eu[2])+
+    row("🥇","Rekorder","Tjekker Hall of Fame...","sumrec")+
+    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">Videre</button>';
+  $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
+  sumRecords();
+}
+async function sumRecords(){
+  var gid=NET.gid;
+  try{
+    var pr=await NET.sb.from("hof_players").select("*").eq("league","PL"),tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");
+    var el=document.getElementById("sumrec");if(!el||NET.gid!==gid)return;
+    if(pr.error||tr.error){el.querySelector("small").textContent="Kunne ikke hente rekorderne.";return}
+    var P=pr.data||[],T=tr.data||[],out=[],medal=["🏆","🥈","🥉"];
+    var mineP=function(x){return x.game_id===gid&&x.user_id===NET.uid};
+    var best=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return Object.keys(b).map(function(k){return b[k]})};
+    var catP=function(title,key,min,unit){
+      var l=best(P.filter(function(x){return x[key]>min}),key).sort(function(a,b){return b[key]-a[key]});
+      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+": "+pname(x.player_id)+" ("+x[key]+(unit||"")+")"])})};
+    var catT=function(title,fn,asc,ok){
+      var l=T.filter(function(x){return ok(x)}).sort(function(a,b){return asc?fn(a)-fn(b):fn(b)-fn(a)});
+      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+" ("+fn(x)+")"])})};
+    catP("Flest mål i en sæson","goals",0);catP("Flest assists i en sæson","assists",0);catP("Flest clean sheets i en sæson","clean_sheets",0);
+    catP("Flest mål i en kamp","best_match_goals",1);catP("Flest røde kort i en sæson","reds",0);
+    catT("Flest point i en sæson",function(x){return x.points},false,function(){return true});
+    catT("Bedste målforskel",function(x){return x.gf-x.ga},false,function(){return true});
+    catT("Færreste mål imod",function(x){return x.ga},true,function(){return true});
+    catT("Længste sejrsrække",function(x){return x.win_streak},false,function(x){return x.win_streak>0});
+    catT("Største sejr",function(x){return x.big_win_margin},false,function(x){return x.big_win_margin>0});
+    out.sort(function(a,b){return a[0]-b[0]});
+    if(!out.length){el.querySelector("b").textContent="Rekorder";el.querySelector("small").textContent="Ingen rekorder i Hall of Fame denne gang.";return}
+    el.querySelector(".si").textContent=medal[out[0][0]];
+    el.querySelector("b").textContent=out[0][0]===0?"Ny rekord!":"Hall of Fame";
+    el.querySelector("small").innerHTML=out.slice(0,4).map(function(o){return medal[o[0]]+" "+esc(o[1])}).join("<br>")+(out.length>4?"<br>og "+(out.length-4)+" mere":"");
+  }catch(e){var el2=document.getElementById("sumrec");if(el2)el2.querySelector("small").textContent="Kunne ikke hente rekorderne."}
 }
 $("simbody").addEventListener("click",function(e){
   var b=e.target.closest("[data-act]");if(!b)return;
