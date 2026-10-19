@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.13.15">
+<meta name="app-version" content="2.13.16">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1331,6 +1331,7 @@ function renderReady(){
   var names=[["Dig",readySt.me],["Sara",readySt.Sara],["Jonas",readySt.Jonas],["Marie",readySt.Marie]];
   $("ready").innerHTML=names.map(function(n){return '<span class="'+(n[1]?"ok":"")+'"><i class="dotc" style="background:'+(n[0]==="Dig"?"var(--me-dot)":FRIENDS[n[0]])+'"></i>'+n[0]+(n[1]?", klar":"")+'</span>'}).join("");
 }
+(function(){var rb=$("readyBtn"),f=function(){rb.classList.toggle("go",rb.textContent==="Næste kamp")};new MutationObserver(f).observe(rb,{childList:true,characterData:true,subtree:true});f()})();
 $("readyBtn").addEventListener("click",function(){
   if(LIVE){liveReadyPress();return}
   readySt.me=true;$("readyBtn").disabled=true;$("readyBtn").textContent="Venter på de andre";renderReady();
