@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.11.0">
+<meta name="app-version" content="2.11.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -612,6 +612,10 @@ var GROUPS={GK:["GK"],DEF:["RB","CB","LB","RWB","LWB"],MID:["DM","CM","AM"],ATT:
 var FORMS={
   "4-3-3":[["LW","ST","RW"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
   "4-3-3 (D)":[["LW","ST","RW"],["CM","DM","CM"],["LB","CB","CB","RB"],["GK"]],
+  "4-3-3 (F)":[["LW","ST","RW"],["CM","CM","CM"],["LB","CB","CB","RB"],["GK"]],
+  "4-5-1 (F)":[["ST"],["LM","CM","CM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
+  "4-2-4":[["LW","ST","ST","RW"],["CM","CM"],["LB","CB","CB","RB"],["GK"]],
+  "3-5-2 (F)":[["ST","ST"],["CM","CM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]],
   "4-3-3 (O)":[["LW","ST","RW"],["CM","AM","CM"],["LB","CB","CB","RB"],["GK"]],
   "4-4-2":[["ST","ST"],["LM","CM","CM","RM"],["LB","CB","CB","RB"],["GK"]],
   "4-2-3-1":[["ST"],["LW","AM","RW"],["DM","DM"],["LB","CB","CB","RB"],["GK"]],
@@ -635,11 +639,10 @@ var FORMS={
   "3-4-1-2":[["ST","ST"],["AM"],["CM","CM"],["LWB","CB","CB","CB","RWB"],["GK"]]
 };
 /* formationer til valg: flest forsvarsspillere først; "4-3-3", "5-3-2" og "3-5-2" er kun gamle nøgler i ældre spil */
-var FORM_ORDER=Object.keys(FORMS).filter(function(f){return f!=="4-3-3"&&f!=="5-3-2"&&f!=="3-5-2"}).sort(function(a,b){
-  var x=a.replace(/ .*/,"").split("-"),y=b.replace(/ .*/,"").split("-");
-  for(var i=0;i<Math.max(x.length,y.length);i++){var d=(+y[i]||0)-(+x[i]||0);if(d)return d}
-  return a<b?-1:1;
-});
+var FORM_LABEL={"4-3-3 (F)":"4-3-3","4-5-1 (F)":"4-5-1","3-5-2 (F)":"3-5-2","5-3-2 (D)":"3-5-2 (D)","5-3-1-1":"3-5-1-1"};
+function flabel(f){return FORM_LABEL[f]||f}
+/* formationer til valg (20, ingen dubletter), flest forsvarsspillere først; de øvrige nøgler er kun til ældre spil */
+var FORM_ORDER=["5-4-1","4-5-1 (F)","4-4-2","4-4-1-1","4-3-3 (F)","4-3-3 (D)","4-3-3 (O)","4-3-2-1","4-2-4","4-2-3-1","4-2-2-2","4-1-4-1","4-1-3-2","4-1-2-1-2","3-5-2 (F)","5-3-2 (D)","5-3-1-1","3-4-3","3-4-2-1","3-4-1-2"];
 var LEAGUE=[["ARS","Arsenal"],["AVL","Aston Villa"],["BOU","Bournemouth"],["BRE","Brentford"],["BHA","Brighton"],["CHE","Chelsea"],["COV","Coventry City"],["CRY","Crystal Palace"],["EVE","Everton"],["FUL","Fulham"],["HUL","Hull City"],["IPS","Ipswich Town"],["LEE","Leeds United"],["LIV","Liverpool"],["MCI","Manchester City"],["MUN","Manchester United"],["NEW","Newcastle United"],["NFO","Nottingham Forest"],["SUN","Sunderland"],["TOT","Tottenham Hotspur"]];
 var REMOVED=["Hull City","Ipswich Town","Coventry City","Sunderland","Leeds United","Nottingham Forest"];
 /* Trupper og numre: premierleague.com, "squad numbers for 2026/27". Siden har ingen positioner, så de er mine gæt til test. */
@@ -819,7 +822,7 @@ function renderFlow(){
       navBtns("Fortsæt til formation",!holdOk(),LIVE)+(LIVE&&NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
   }else if(st==="form"){
     h+='<h1>Vælg formation</h1><p class="sub">Den kan ikke ændres, når spillet er startet.</p><div class="fchips">'+
-      FORM_ORDER.map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+f+'</button>'}).join("")+'</div>'+
+      FORM_ORDER.map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+flabel(f)+'</button>'}).join("")+'</div>'+
       '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("Jeg er klar til draft")+(LIVE&&NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
   }else if(LIVE){
     h+=lobbyLive();
