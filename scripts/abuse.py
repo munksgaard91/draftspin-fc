@@ -95,6 +95,19 @@ st = adm.sel("games", f"select=status&id=eq.{g2}")[0]["status"]; check("draften 
 mem.rpc_ok("update_team", p_game=g2, p_name="Medlem FC", p_c1="#3a6fd8", p_c2="#e6ebf5", p_crest=2, p_formation="4-4-2", p_display=None)
 mem.rpc_ok("set_ready", p_game=g2, p_ready=True)
 st = adm.sel("games", f"select=status&id=eq.{g2}")[0]["status"]; check("draften starter automatisk, når den sidste er klar", st == "draft", st)
+# antal respins (0-3) vælges i spilreglerne
+r3 = A.rpc_ok("create_game", p_league="PL", p_season="2026/2027", p_max=1, p_timer=0, p_show=False, p_pace="quick")
+g3 = r3["id"]; bots.ids["games"].append(g3); bots.save_ids()
+for nm, v in [("4 respins afvist", 4), ("-1 respins afvist", -1)]:
+    s, _ = A.rpc("update_game_settings", p_game=g3, p_max=1, p_timer=0, p_show=False, p_pace="quick", p_respins=v); check(nm, s >= 400)
+s, _ = B.rpc("update_game_settings", p_game=g3, p_max=1, p_timer=0, p_show=False, p_pace="quick", p_respins=2); check("ikke-admin kan ikke ændre respins", s >= 400)
+A.rpc_ok("update_game_settings", p_game=g3, p_max=1, p_timer=0, p_show=False, p_pace="quick", p_respins=0)
+A.rpc_ok("update_game_settings", p_game=g3, p_max=1, p_timer=0, p_show=False, p_pace="quick", p_respins=2)
+A.rpc_ok("set_name", p_game=g3, p_name="Solo"); A.rpc_ok("open_setup", p_game=g3)
+A.rpc_ok("update_team", p_game=g3, p_name="Solo FC", p_c1="#cf4a4a", p_c2="#e6ebf5", p_crest=3, p_formation="4-3-3", p_display=None); A.rpc_ok("set_ready", p_game=g3, p_ready=True)
+A.rpc_ok("spin", p_game=g3)
+a1 = A.rpc_ok("respin", p_game=g3); a2 = A.rpc_ok("respin", p_game=g3)
+s, _ = A.rpc("respin", p_game=g3); check("respins slutter efter det valgte antal (2)", s >= 400)
 print("\nRESULTAT:", sum(1 for c in bots.checks if c[1]), "ok,", sum(1 for c in bots.checks if not c[1]), "fejl")
 for c in bots.checks:
     if not c[1]: print("  FEJL:", c[0], c[2])
