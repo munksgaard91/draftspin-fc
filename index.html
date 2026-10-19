@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.7.1">
+<meta name="app-version" content="2.7.2">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -426,6 +426,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .nxo{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
 .lrow .btn.num{width:36px;min-width:36px;padding-inline:0}
 .verbox{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.verok{font-size:11.5px;color:#6fcf8a;opacity:.9}
 .ver{font:500 11px var(--mono);color:var(--mut);opacity:.75;letter-spacing:.3px}
 .updbtn{appearance:none;border:1px solid #6fe39a99;background:linear-gradient(#6fe39a33,#6fe39a14);color:#8dffb5;font-size:12.5px;font-weight:600;border-radius:99px;padding:7px 13px;cursor:pointer;box-shadow:0 0 18px -2px #6fe39a88;animation:updglow 2.2s infinite ease-in-out}
 @keyframes updglow{0%,100%{box-shadow:0 0 12px -3px #6fe39a66}50%{box-shadow:0 0 22px 0 #6fe39acc}}
@@ -1521,8 +1522,8 @@ function startHtml(){
 /* valgfrit login: lille knap på forsiden */
 /* Version: 2.MINOR.PATCH. MINOR = ny funktion eller samlet batch af ændringer, PATCH = rettelser. Det store tal skiftes kun efter aftale med Rasmus. */
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
-var NEWV="";
-function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Hent nyeste opdatering</button>':'')+'</div>'}
+var NEWV="",VEROK=false;
+function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Hent nyeste opdatering</button>':(VEROK?'<span class="verok">Du er på nyeste version</span>':''))+'</div>'}
 /* opdatering: hent altid friskt (omgår cache), og tjek ved start og når appen vækkes, om der er en nyere version */
 function hardReload(){try{location.replace(location.pathname+"?u="+Date.now())}catch(e){location.reload()}}
 function showUpdate(v){NEWV=v;if(!role&&!G.started)renderFlow()}
@@ -1531,7 +1532,7 @@ function checkVersion(){
   if(Date.now()-verT<20000)return;verT=Date.now();
   fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){
     var m=t.match(new RegExp('name="app-version" content="([^"]+)"'));
-    if(m&&m[1]!==APP_VERSION)showUpdate(m[1]);
+    if(m&&m[1]!==APP_VERSION)showUpdate(m[1]);else if(m){NEWV="";VEROK=true;if(!role&&!G.started)renderFlow()}
   }).catch(function(){});
 }
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")checkVersion()});
