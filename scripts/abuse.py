@@ -74,6 +74,27 @@ s, r = http("POST", "/functions/v1/engine", None, {"action": "init", "game_id": 
 # ny sæson før færdig
 s, _ = adm.rpc("new_season", p_game=gid); check("ny sæson før sæsonen er slut afvist", s >= 400)
 s, _ = mem.rpc("leave_game", p_game=gid); check("forlad spil under draft afvist/ok", True, str(s))
+# ny rækkefølge: lobby først, derefter åbner admin holdopsætningen, og draften starter automatisk, når alle er klar
+r2 = adm.rpc_ok("create_game", p_league="PL", p_season="2026/2027", p_max=2, p_timer=0, p_show=False, p_pace="quick")
+g2 = r2["id"]; code2 = r2.get("code") or adm.sel("games", f"select=code&id=eq.{g2}")[0]["code"]
+bots.ids["games"].append(g2); bots.save_ids()
+s, _ = adm.rpc("open_setup", p_game=g2); check("open_setup afvist, når lobbyen ikke er fuld", s >= 400)
+mem.rpc_ok("join_game", p_code=code2)
+s, _ = adm.rpc("open_setup", p_game=g2); check("open_setup afvist uden navne", s >= 400)
+for nm, nmv in [("for kort navn", "a"), ("< i navn", "a<b"), ("for langt navn", "x" * 17)]:
+    s, _ = mem.rpc("set_name", p_game=g2, p_name=nmv); check(f"set_name afviser {nm}", s >= 400)
+s, _ = out.rpc("set_name", p_game=g2, p_name="Udenfor"); check("udenforstående kan ikke sætte navn", s >= 400)
+adm.rpc_ok("set_name", p_game=g2, p_name="Admin"); mem.rpc_ok("set_name", p_game=g2, p_name="Medlem")
+s, _ = mem.rpc("open_setup", p_game=g2); check("ikke-admin kan ikke åbne holdopsætning", s >= 400)
+adm.rpc_ok("open_setup", p_game=g2)
+s, _ = out.rpc("join_game", p_code=code2); check("nye kan ikke deltage efter holdopsætning er åbnet", s >= 400)
+s, _ = adm.rpc("update_game_settings", p_game=g2, p_max=2, p_timer=30, p_show=True, p_pace="full"); check("regler kan ikke ændres efter holdopsætning", s >= 400)
+adm.rpc_ok("update_team", p_game=g2, p_name="Admin FC", p_c1="#cf4a4a", p_c2="#e6ebf5", p_crest=3, p_formation="4-3-3", p_display=None)
+adm.rpc_ok("set_ready", p_game=g2, p_ready=True)
+st = adm.sel("games", f"select=status&id=eq.{g2}")[0]["status"]; check("draften starter ikke, før alle er klar", st == "lobby", st)
+mem.rpc_ok("update_team", p_game=g2, p_name="Medlem FC", p_c1="#3a6fd8", p_c2="#e6ebf5", p_crest=2, p_formation="4-4-2", p_display=None)
+mem.rpc_ok("set_ready", p_game=g2, p_ready=True)
+st = adm.sel("games", f"select=status&id=eq.{g2}")[0]["status"]; check("draften starter automatisk, når den sidste er klar", st == "draft", st)
 print("\nRESULTAT:", sum(1 for c in bots.checks if c[1]), "ok,", sum(1 for c in bots.checks if not c[1]), "fejl")
 for c in bots.checks:
     if not c[1]: print("  FEJL:", c[0], c[2])
