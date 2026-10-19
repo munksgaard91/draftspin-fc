@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.10.3">
+<meta name="app-version" content="2.10.4">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -936,7 +936,7 @@ $("nav").addEventListener("click",function(e){var b=e.target.closest("button");i
 /* ---------- pitch ---------- */
 /* hver position har ALTID sin faste plads på banen, uanset formation (flere ens i samme række: fast parplacering) */
 var PX={GK:50,LB:12,LWB:12,LM:12,RB:88,RWB:88,RM:88,LW:16,RW:84};
-var PY={ST:11,LW:25,RW:25,AM:27,LM:40,RM:40,CM:47,LWB:62,RWB:62,DM:62,LB:74,RB:74,CB:74,GK:91};
+var PY={ST:11,LW:25,RW:25,AM:29,LM:40,RM:40,CM:47,LWB:62,RWB:62,DM:60,LB:74,RB:74,CB:74,GK:91};
 var PAIR={CB:[37,63],DM:[30,70],CM:[33,67],AM:[35,65],ST:[37,63]};
 function renderPitch(el,form,squad,mini,hl,alt){
   var rows=FORMS[form],html=MARK,idx=0;
