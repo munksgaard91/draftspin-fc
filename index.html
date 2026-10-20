@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.24.5">
+<meta name="app-version" content="2.25.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -66,6 +66,8 @@
 .sumrow .si{font-size:22px;line-height:1.2;width:28px;text-align:center;flex:none}
 .sumrow b{display:block;font-weight:600}
 .sumrow .si .sileague{display:block;height:30px;width:auto;max-width:38px;object-fit:contain;margin:0 auto}
+.simctl{display:flex;justify-content:flex-end;margin:0 0 6px}
+.pausebtn{appearance:none;border:1px solid var(--line);background:var(--surf);color:var(--mut);font:inherit;font-size:12px;padding:3px 11px;border-radius:999px;cursor:pointer}.pausebtn.on{border-color:var(--acc);color:var(--acc)}
 .sumwin{align-items:center}.sumwin .si{line-height:0}
 .sumrow .si .silion{display:block;width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);margin:0 auto}
 .recl{display:block;margin-top:6px}.recl:first-child{margin-top:2px}.sumrow .recl b{display:inline;font-weight:600;color:var(--text)}
@@ -1712,7 +1714,7 @@ function liveSimStep(){
   var s=NET.sim;if(!s||s.end)return;
   if(s.r>=38){liveSimDone();return}
   if(s.r+1>simAvail()){NET.simT=setTimeout(liveSimStep,600);return} // resten af sæsonen er ikke klar endnu
-  s.r++;NET.shownRound=s.r;liveSimRender("A");
+  s.r++;s.ph="A";NET.shownRound=s.r;liveSimRender("A");
   var m=liveMyMatch(s.r);NET.simG=[];
   if(m){
     var h=0,a=0;
@@ -1721,7 +1723,7 @@ function liveSimStep(){
       NET.simG.push(setTimeout(function(){var el=$("simscore");if(!el||s.end)return;el.textContent=hh+" – "+aa;el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop")},400+e.minute/95*2500));
     });
   }
-  NET.simT=setTimeout(function(){liveSimRender("B");NET.simT=setTimeout(liveSimStep,1100)},3300);
+  NET.simT=setTimeout(function(){s.ph="B";liveSimRender("B");NET.simT=setTimeout(liveSimStep,1100)},3300);
 }
 function liveSimRender(ph){
   var s=NET.sim,r=s.r,m=liveMyMatch(r);if(!m){NET.simT=setTimeout(liveSimStep,50);return}
@@ -1729,8 +1731,8 @@ function liveSimRender(ph){
   if(up>1)standingsLive(up-1).forEach(function(x,i){prev[x.k]=i});
   var mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
   var side=function(k){return '<div class="simt">'+lcrest(k,40)+'<span>'+esc(lname(k))+'</span><div class="frm">'+formOf(k,r)+'</div></div>'};
-  var h='<div class="simtop"><div class="card simcard simlive"><div class="simm">'+side(m.home_key)+'<div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div>'+side(m.away_key)+'</div></div>'+
-    '<div class="card siminfo"><div class="sirow"><b>Round '+r+' of 38</b><span class="muted">'+(up<1?"First match in progress":"Your place: "+(mi+1)+" · "+me.p+" points · "+me.w+"W "+me.d+"D "+me.l+"L")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
+  var h='<div class="simctl"><button class="pausebtn'+(s.paused?" on":"")+'" data-act="simpause">'+(s.paused?"▶ Resume":"⏸ Pause")+'</button></div><div class="simtop"><div class="card simcard simlive"><div class="simm">'+side(m.home_key)+'<div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div>'+side(m.away_key)+'</div></div>'+
+    '<div class="card siminfo"><div class="sirow"><b>Round '+r+' of 38</b><span class="muted">'+(up<1?"First match in progress":ordinal(mi+1)+" place · "+me.w+"W "+me.d+"D "+me.l+"L")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
     '<div class="tr h sm"><span>#</span><span>Team</span><span class="num">P</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
   rows.forEach(function(x,i){
     var mine=x.k===NET.uid,fr=lhuman(x.k)&&!mine,d=prev[x.k]!==undefined?prev[x.k]-i:0;
@@ -1794,6 +1796,11 @@ async function sumRecords(){
 $("simbody").addEventListener("click",function(e){
   var b=e.target.closest("[data-act]");if(!b)return;
   if(b.dataset.act==="simleave"){askLeave(false);return}
+  if(b.dataset.act==="simpause"){
+    var sp=NET.sim;if(!sp||sp.end)return;
+    if(sp.paused){sp.paused=false;b.textContent="⏸ Pause";b.classList.remove("on");if(sp.ph==="A")sp.r--;liveSimStep()}
+    else{sp.paused=true;simClear();b.textContent="▶ Resume";b.classList.add("on")}
+    return}
   if(b.dataset.act==="recmore"){var m=b.parentNode.querySelector(".recmore");if(m)m.hidden=false;b.remove();return}
   if(b.dataset.act==="simskip"){if(!b.disabled&&simReady())liveSimDone()}
   else if(b.dataset.act==="simend"){
