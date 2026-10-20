@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.28.1">
+<meta name="app-version" content="2.29.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1065,7 +1065,7 @@ function renderList(){
   list.forEach(function(p){
     var st=status(p);
     if(S.hideFilled&&!st.ok&&st.why==="Position filled")return;
-    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?((NET.game&&NET.game.show_ratings?'<span class="mono muted">'+p[5]+'</span>':'<span></span>')):'<span class="rp">'+st.why+'</span>')+'</div>';
+    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?'<span></span>':'<span class="rp">'+st.why+'</span>')+'</div>';
   });
   $("clist").innerHTML=h||'<p class="note">No players match.</p>';
   var av=c.p.filter(function(p){return status(p).ok}).length;
@@ -1591,10 +1591,9 @@ function lobbyLive(){
     if(adm){
       h+=row("Time per pick",segb("lset","timer",g.timer_seconds,[[0,"Off"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]));
       h+=row("Pace",segb("lset","pace",g.pace,[["full","Classic"],["quick","Quick game"]]));
-      h+=row("Ratings",segb("lset","show",g.show_ratings,[[false,"Hidden"],[true,"Show"]]));
       h+=row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
     }else{
-      h+='<p class="note" style="margin-top:6px">Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Pace: '+(g.pace==="quick"?"quick game":"classic")+' · Ratings: '+(g.show_ratings?"shown":"hidden")+' · Respins: '+g.respins+'</p>';
+      h+='<p class="note" style="margin-top:6px">Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Pace: '+(g.pace==="quick"?"quick game":"classic")+' · Respins: '+g.respins+'</p>';
     }
     h+='</div>';
     if(!solo){
