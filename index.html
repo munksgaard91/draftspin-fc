@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.24.2">
+<meta name="app-version" content="2.24.3">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2036,7 +2036,7 @@ function renderEndLive(){
       return '<div class="endrow" style="padding:6px 0"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"H":"A")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
     }).join("")+'</div>';
   }
-  h+='<div class="nav2 endbtns"><button class="btn" data-end="home">Home</button><button class="btn gold" data-end="hof">Hall of Fame</button></div>';
+  h+='<div class="nav2 endbtns"><button class="btn" data-end="home">Home</button><button class="btn gold" data-end="hof">🏆 Hall of Fame</button></div>';
   $("endbody").innerHTML=h;
 }
 
