@@ -196,7 +196,7 @@ async function finalizeSeason(gameId) {
       else streak = 0;
     }
     const s = t[h.team_key];
-    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: humans.length, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, formation: champ && champ.team_key === h.team_key ? h.formation : null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
+    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: humans.length, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, respins: game.respins ?? 0, formation: champ && champ.team_key === h.team_key ? h.formation : null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
   });
   const own = {};
   lu.forEach((l) => { const tm = humans.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });
@@ -220,7 +220,7 @@ async function finalizeSeason(gameId) {
   }
   const playerRows = Object.keys(stats).map((pid) => {
     const tm = own[pid], s = stats[pid];
-    return { game_id: gameId, player_id: Number(pid), league: "PL", season, season_no: game.season_no, user_id: tm.user_id, team_name: tm.name, owner: owner(tm.user_id), goals: s.goals, assists: s.assists, clean_sheets: s.cs, reds: s.reds, yellows: s.yellows, best_match_goals: bm[pid] ? bm[pid].n : 0, best_match_text: bm[pid] ? bm[pid].text : null };
+    return { game_id: gameId, player_id: Number(pid), league: "PL", season, season_no: game.season_no, user_id: tm.user_id, team_name: tm.name, owner: owner(tm.user_id), goals: s.goals, assists: s.assists, clean_sheets: s.cs, reds: s.reds, yellows: s.yellows, respins: game.respins ?? 0, best_match_goals: bm[pid] ? bm[pid].n : 0, best_match_text: bm[pid] ? bm[pid].text : null };
   });
   if (teamRows.length) chk(await admin.from("hof_teams").upsert(teamRows, { onConflict: "game_id,team_key" }));
   if (playerRows.length) chk(await admin.from("hof_players").upsert(playerRows, { onConflict: "game_id,player_id" }));

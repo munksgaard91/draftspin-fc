@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.21.1">
+<meta name="app-version" content="2.22.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -452,6 +452,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .hexp::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
 .hexp.on::after{transform:rotate(225deg) translateY(-2px)}
 .hmore[hidden],.cblk[hidden]{display:none}
+.hfil{display:flex;align-items:center;gap:12px;margin:6px 0 2px}
+.hfil .hfl{font-size:13px;color:var(--mut)}
+.hfil .seg{margin:0;flex:1}
 .crow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .crow:last-of-type{border:0}
 .crow .cn{flex:1;min-width:0;font-weight:500}
@@ -2046,6 +2049,7 @@ async function renderHofLive(){
   else{pr=await NET.sb.from("hof_players").select("*").eq("league","PL");tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");if(!pr.error&&!tr.error)HOFC={at:Date.now(),pr:pr,tr:tr}}
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
   var P=pr.data||[],T=tr.data||[];
+  if(HOFRESP!=="all"){P=P.filter(function(x){return x.respins===HOFRESP});T=T.filter(function(x){return x.respins===HOFRESP})}
   var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
@@ -2088,9 +2092,10 @@ async function renderHofLive(){
   C.push(["Champions",'<div class="card hcat"><h3><span class="ci">'+CATI["Champions"]+'</span>Champions</h3>'+cb+'</div>']);
   var ORD=["Champions","Most goals","Most assists","Most clean sheets","Most yellow cards","Most red cards","Most goals in a match","Longest winning streak","Most points in a season","Most team goals in a season","Fewest goals conceded","Best goal difference","Biggest win"];
   C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
-  $("hbody").innerHTML=C.map(function(c){return c[1]}).join("");
+  var fl='<div class="hfil"><span class="hfl">Respins</span><div class="seg" id="hresp">'+["all",0,1,2,3].map(function(v){return '<button data-rs="'+v+'" class="'+(v===HOFRESP?"on":"")+'">'+(v==="all"?"All":v)+'</button>'}).join("")+'</div></div>';
+  $("hbody").innerHTML=fl+C.map(function(c){return c[1]}).join("");
 }
-var HOFOPEN={},HOFCH=0,HOFW={};
+var HOFOPEN={},HOFCH=0,HOFW={},HOFRESP="all";
 function hofTeam(id){
   var x=HOFW[id];if(!x||!x.lineup)return;
   var el=$("hsheet");
@@ -2099,6 +2104,7 @@ function hofTeam(id){
   renderPitch($("hpitch"),x.formation,x.lineup.map(function(p){return p?{name:p.n,sn:p.s}:null}));
 }
 $("hsheet").addEventListener("click",function(e){if(e.target.closest("[data-cancel]")||e.target===$("hsheet"))$("hsheet").hidden=true});
+$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(!b)return;HOFRESP=b.dataset.rs==="all"?"all":+b.dataset.rs;HOFCH=0;renderHofLive()});
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-ch]");if(b)hofTeam(b.dataset.ch)});
 $("hbody").addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var b=e.target.closest("[data-ch]");if(b){e.preventDefault();hofTeam(b.dataset.ch)}});
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-cm]");if(!b)return;var k=b.parentNode.querySelector(".cblk[hidden]");if(k){k.hidden=false;HOFCH++}if(!b.parentNode.querySelector(".cblk[hidden]"))b.remove()});
