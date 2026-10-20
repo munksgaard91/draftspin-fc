@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.22.2">
+<meta name="app-version" content="2.22.4">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -439,6 +439,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .tools .inp{padding:6px 11px;flex:1;min-width:0}
 .tools .btn{padding:6px 12px;font-size:13px;white-space:nowrap}
 .tools .btn.on{background:var(--surf2);border-color:var(--text);color:var(--text)}
+.avail{text-align:center;font-size:13px;color:var(--mut);margin:12px 0 0}
 .miss{font-size:12px;color:var(--mut);margin:6px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .miss b{color:var(--text);font-weight:500}
 .timer{font:500 15px var(--mono);margin:6px 0 0;color:var(--mut)}
@@ -499,7 +500,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .startlogo{width:132px;height:132px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:6px}
 .wm3{font-size:32px;font-weight:600;letter-spacing:-.015em;line-height:1}
 .wm3 span{font-weight:300;color:var(--acc)}
-.rspbtn{margin:0 0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;border:1px solid var(--acc);background:transparent;color:var(--acc);font:inherit;font-size:14px;line-height:1.2;cursor:pointer;flex:none}.rspbtn b{font-weight:700}.rspbtn:active{opacity:.6}
+.rspbtn{margin:0 0 0 auto;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;border:1px solid var(--acc);background:transparent;color:var(--acc);font:inherit;font-size:12px;line-height:1.2;cursor:pointer;flex:none}.rspbtn b{font-weight:600;font-size:inherit}.rspbtn:active{opacity:.6}
 .linkbtn.rsp{margin:0 0 0 auto;padding:6px 2px;font-size:13px;text-align:right;max-width:120px;line-height:1.25}
 .namerow{display:flex;align-items:center;gap:10px;margin-top:10px}.namerow .inp{flex:1;min-width:0;padding:9px 12px}
 .rr.cp{padding-block:6px}.rr.cp .n small{display:inline;margin-left:8px;font-size:12.5px}
@@ -1005,12 +1006,12 @@ function renderClub(){
   if(!myTurn()){var cu=S.seq[S.pickIdx];el.innerHTML='<div class="card fade" style="margin-top:22px"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">'+esc(cu?teamName(cu):"")+' is picking a player</span></div></div></div>';return}
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0],rsp="";
   var rleft=me0&&NET.game?(NET.game.respins||0)-(me0.respins_used||0):0;
-  if(rleft>0&&!S.spinning)rsp='<button class="rspbtn" data-respin="1" aria-label="Respin, '+rleft+' tilbage"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg><b>'+rleft+'</b> Respin</button>';
+  if(rleft>0&&!S.spinning)rsp='<button class="rspbtn" data-respin="1" aria-label="Respin, '+rleft+' tilbage"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg><b>'+rleft+'</b> Respin</button>';
   var h='<h2>Pick a player</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b></div>'+rsp+'</div>';
   h+='<p class="miss">Missing: <b>'+missingTxt()+'</b></p>';
   h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"All":t)+'</button>'}).join("")+'</div>';
   h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Search player" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">'+(S.hideFilled?"Show filled":"Hide filled")+'</button></div>';
-  h+='<p class="note" style="margin:6px 0 0">Tap a player, then choose his spot on the pitch.</p><div id="clist"></div><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Pick for me</button></div>';
+  h+='<p class="note" style="margin:6px 0 0">Tap a player, then choose his spot on the pitch.</p><div id="clist"></div><p class="avail" id="avail"></p><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Pick for me</button></div>';
   el.innerHTML=h;renderList();
 }
 function autoPick(){
@@ -1038,6 +1039,8 @@ function renderList(){
     h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?((NET.game&&NET.game.show_ratings?'<span class="mono muted">'+p[5]+'</span>':'<span></span>')):'<span class="rp">'+st.why+'</span>')+'</div>';
   });
   $("clist").innerHTML=h||'<p class="note">No players match.</p>';
+  var av=c.p.filter(function(p){return status(p).ok}).length;
+  $("avail").textContent=av+(av===1?" player available":" players available");
 }
 function renderDraft(){
   var done=S.phase==="draft"&&S.pickIdx>=S.seq.length&&S.seq.length>0;
