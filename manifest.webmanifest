@@ -1,5 +1,6 @@
 {
  "name": "DraftSpin FC",
+  "lang": "en",
  "short_name": "DraftSpin FC",
  "start_url": "./",
  "scope": "./",

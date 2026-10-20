@@ -27,7 +27,7 @@ async function chunkedEvents(rows, size = 400) {
 
 // ---------- start sæsonen ----------
 async function initSeason(game) {
-  if (game.status !== "season") throw new Fejl("Draften er ikke færdig");
+  if (game.status !== "season") throw new Fejl("The draft isn't finished");
   const existing = chk(await admin.from("season_secret").select("*").eq("game_id", game.id));
   let heal = null; // afbrudt start: byg videre med samme hemmelighed
   if (existing.length) {
@@ -49,7 +49,7 @@ async function initSeason(game) {
       const pos = E.FORMS[gp.formation][pk.slot - 1], p = byId.get(pk.player_id);
       xi[pk.slot - 1] = { pos, p, f: E.fac(p, pos) ?? 0.6 };
     }
-    if (xi.some((x) => !x)) throw new Fejl("Et hold er ikke komplet");
+    if (xi.some((x) => !x)) throw new Fejl("A team isn't complete");
     teams.push({ key: gp.user_id, kind: "human", user_id: gp.user_id, name: gp.team_name, color1: gp.color1, color2: gp.color2, crest: gp.crest, formation: gp.formation, xi, strength: E.xiStrength(xi) });
   }
   const clubs = chk(await admin.from("clubs").select("code,name"));
@@ -83,7 +83,7 @@ async function initSeason(game) {
 async function loadCtx(gameId) {
   const { byId } = await loadPlayers();
   const secret = chk(await admin.from("season_secret").select("*").eq("game_id", gameId))[0];
-  if (!secret) throw new Fejl("Sæsonen er ikke startet");
+  if (!secret) throw new Fejl("The season hasn't started");
   const st = chk(await admin.from("season_teams").select("*").eq("game_id", gameId));
   const lu = chk(await admin.from("season_lineups").select("*").eq("game_id", gameId));
   const teams = {};
@@ -162,7 +162,7 @@ async function finalizeSeason(gameId) {
   const matches = await allRows("matches", gameId), events = await allRows("match_events", gameId);
   const nameOf = (k) => (st.find((x) => x.team_key === k) || {}).name || k;
   // modstanderen i rekordteksterne (også AI-hold, som Rasmus ønsker 2026-10-19)
-  const vs = (k) => "mod " + ((st.find((y) => y.team_key === k) || {}).name || k);
+  const vs = (k) => "vs " + ((st.find((y) => y.team_key === k) || {}).name || k);
   const t = {};
   st.forEach((x) => (t[x.team_key] = { w: 0, d: 0, l: 0, gf: 0, ga: 0 }));
   for (const m of matches) {
@@ -220,7 +220,7 @@ async function finalizeSeason(gameId) {
 
 async function getGame(id) {
   const g = chk(await admin.from("games").select("*").eq("id", id))[0];
-  if (!g) throw new Fejl("Spillet findes ikke");
+  if (!g) throw new Fejl("The game doesn't exist");
   return g;
 }
 
@@ -229,11 +229,20 @@ Deno.serve(async (req) => {
   try {
     const jwt = (req.headers.get("Authorization") || "").replace("Bearer ", "");
     const { data: u } = await admin.auth.getUser(jwt);
-    if (!u || !u.user) return json({ error: "Ikke logget ind" }, 401);
+    if (!u || !u.user) return json({ error: "Not signed in" }, 401);
     const { action, game_id, force } = await req.json();
+    if (action === "hash") {
+      // kontrol af at den udgivne motor er identisk med filen i repoet: fingeraftryk af eksporterne + en fast testkamp
+      const sha = async (t) => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)))].map((b) => b.toString(16).padStart(2, "0")).join("");
+      const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
+      const mk = (o) => E.FORMS["4-4-2"].map((pos, i) => ({ pos, p: { id: o + i, rating: 140 + ((i * 7 + o) % 23), consistency: 8 + (i % 9), pen_taking: 6 + (i % 12), yellow_w: 0.9, red_w: 1 }, f: 1 }));
+      const sims = [];
+      for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
+      return json({ ok: true, fingerprint: await sha(parts), simulation: await sha(sims.join("|")) });
+    }
     let game = await getGame(game_id);
     const me = chk(await admin.from("game_players").select("*").eq("game_id", game_id).eq("user_id", u.user.id))[0];
-    if (!me) return json({ error: "Du er ikke med i spillet" }, 403);
+    if (!me) return json({ error: "You're not in the game" }, 403);
     const isAdmin = game.admin_id === u.user.id;
 
     if (action === "init") {
@@ -243,25 +252,25 @@ Deno.serve(async (req) => {
         await runTo(game, game.pace === "quick" ? QUICK_FIRST : 1);
       }
     } else if (action === "advance") {
-      if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");
+      if (game.status !== "season") throw new Fejl("The season isn't in progress");
       const gps = chk(await admin.from("game_players").select("user_id,ready_round,last_seen_at").eq("game_id", game_id));
       // en spiller, der ikke er set i 90 sekunder, regnes som klar (reglen om fraværende spillere)
       const allReady = gps.every((g) => g.ready_round >= game.current_round || Date.now() - Date.parse(g.last_seen_at) > 90000);
-      if (!allReady && !(force && isAdmin)) throw new Fejl("Ikke alle er klar");
+      if (!allReady && !(force && isAdmin)) throw new Fejl("Not everyone is ready");
       // spillere, der ikke var klar og blev sprunget over, tæller som "væk" i runden (idempotent pr. runde)
       const absent = gps.filter((g) => g.ready_round < game.current_round && Date.now() - Date.parse(g.last_seen_at) > 90000).map((g) => g.user_id);
       if (absent.length) chk(await admin.rpc("bump_missed", { p_game: game_id, p_round: game.current_round, p_users: absent }));
       await runTo(game, game.current_round + 1);
     } else if (action === "finish") {
       // alle i spillet må bede om resten af et hurtigt spil; kørslen er idempotent (runden flyttes kun af én ad gangen)
-      if (game.pace !== "quick") throw new Fejl("Kun hurtigt spil");
-      if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");
+      if (game.pace !== "quick") throw new Fejl("Quick games only");
+      if (game.status !== "season") throw new Fejl("The season isn't in progress");
       await runTo(game, 38);
     } else if (action === "quick") {
-      if (!isAdmin) throw new Fejl("Kun admin kan køre hurtigt spil");
-      if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");
+      if (!isAdmin) throw new Fejl("Only the admin can run a quick game");
+      if (game.status !== "season") throw new Fejl("The season isn't in progress");
       await runTo(game, 38);
-    } else throw new Fejl("Ukendt handling");
+    } else throw new Fejl("Unknown action");
     game = await getGame(game_id);
     return json({ ok: true, current_round: game.current_round, status: game.status, engine_version: E.ENGINE_VERSION });
   } catch (e) {

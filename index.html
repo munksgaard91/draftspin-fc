@@ -1,7 +1,8 @@
+<html lang="en">
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.15.1">
+<meta name="app-version" content="2.16.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -249,7 +250,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .slot .dot{width:30px;height:30px;border-radius:50%;margin:0 auto;border:1.5px dashed #ffffff66;display:grid;place-items:center;font:500 10px var(--mono);color:#ffffffb3}
 .linkbtn:disabled{opacity:.35;pointer-events:none}
 .slot.sv .nm{opacity:.7}
-.slot.sv::after{content:"Gemmer…";display:block;font-size:9px;color:#ffffffb3;margin-top:1px}
+.slot.sv::after{content:"Saving…";display:block;font-size:9px;color:#ffffffb3;margin-top:1px}
 .slot.f .dot{background:var(--me);border:2.5px solid var(--me2);color:var(--me2)}
 .slot .nm{font-size:10.5px;margin-top:2px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;text-shadow:0 1px 2px #0008}
 .pitch.mini .slot{width:10px}
@@ -546,7 +547,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   <section id="s-draft" class="screen">
     <div id="orderWrap"></div>
     <div id="draftMain" hidden>
-      <div class="status"><h1 style="margin:0">Snake draft</h1><span class="muted">Runde <b id="rnd">1</b> af 11</span></div>
+      <div class="status"><h1 style="margin:0">Snake draft</h1><span class="muted">Round <b id="rnd">1</b> of 11</span></div>
       <p class="sub" id="turnTxt"></p>
       <div id="adminForce"></div>
       <p class="ordline" id="ordLine"></p>
@@ -554,7 +555,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="counts" id="counts"></div>
 
       <div class="card" style="margin-top:10px;padding:10px">
-        <div class="reel" aria-label="Klubvalg"><div id="strip"></div><div class="pay"></div></div>
+        <div class="reel" aria-label="Club pick"><div id="strip"></div><div class="pay"></div></div>
         <button class="btn p wide" id="spinBtn" style="margin-top:10px">Spin the wheel</button>
       </div>
 
@@ -563,40 +564,40 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="seg" id="sqTabs" style="margin-top:12px"></div>
       <div class="card" style="margin-top:12px"><div class="pitch" id="dpitch" style="max-width:100%;aspect-ratio:5/6;margin:0 auto"></div><p class="miss" id="missing"></p><div id="penNote"></div></div>
       <div id="doneBox"></div>
-      <button class="linkbtn" id="draftLeave">Forlad spillet</button>
+      <button class="linkbtn" id="draftLeave">Leave game</button>
 
-      <h2 class="feedh">Seneste valg</h2>
+      <h2 class="feedh">Latest picks</h2>
       <div class="card feedc"><div class="feed" id="feed"></div></div>
     </div>
   </section>
 
   <!-- KAMP -->
   <section id="s-match" class="screen">
-    <div class="status" style="justify-content:flex-start;gap:10px"><h1 style="margin:0">Runde <span id="rndNo">12</span></h1><span class="muted">af 38</span></div>
+    <div class="status" style="justify-content:flex-start;gap:10px"><h1 style="margin:0">Round <span id="rndNo">12</span></h1><span class="muted">of 38</span></div>
 
     <div class="card" style="margin-top:12px">
       <div class="sb">
-        <div class="tm"><span id="myC"></span><span class="myname">Mit hold</span><div class="frm" id="myF"></div></div>
+        <div class="tm"><span id="myC"></span><span class="myname">My team</span><div class="frm" id="myF"></div></div>
         <div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div>
         <div class="tm"><span id="oppC"></span><span id="oppName">Chelsea</span><div class="frm" id="oppF"></div></div>
       </div>
-      <div class="clock"><span id="clk">Anspark</span></div>
+      <div class="clock"><span id="clk">Kick-off</span></div>
       <div class="bar"><i id="prog"></i></div>
     </div>
 
-    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Kampfakta</button><button data-mt="others">Andre resultater</button><button data-mt="squad">Dit hold</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
+    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Match facts</button><button data-mt="others">Other results</button><button data-mt="squad">Your team</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
 
     <div class="mctl" style="display:flex;gap:8px;margin-top:10px">
       <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Replay</button>
       <button class="btn" id="spdBtn" style="min-width:56px">1x</button>
-      <button class="btn skipb" id="skipBtn" style="flex:2;white-space:nowrap">🏁 Spring til resultat</button>
+      <button class="btn skipb" id="skipBtn" style="flex:2;white-space:nowrap">🏁 Skip to result</button>
     </div>
 
     <div class="card" style="margin-top:10px;padding:10px 14px">
-      <div class="muted" id="nextOpp" style="margin-bottom:6px">Næste: runde 13 af 38 · Sara United (ude)</div>
+      <div class="muted" id="nextOpp" style="margin-bottom:6px">Next match</div>
       <div class="ready" id="ready"></div>
-      <button class="btn p wide" id="readyBtn" style="margin-top:8px" disabled>Næste kamp</button>
-      <button class="btn wide" id="forceBtn" style="margin-top:8px" hidden>Tving næste runde (admin)</button>
+      <button class="btn p wide" id="readyBtn" style="margin-top:8px" disabled>Next match</button>
+      <button class="btn wide" id="forceBtn" style="margin-top:8px" hidden>Force next round (admin)</button>
     </div>
 
 
@@ -604,8 +605,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 
   <!-- TABEL -->
   <section id="s-table" class="screen">
-    <h1>Tabel</h1>
-    <p class="sub" id="tblSub">Efter 11 af 38 runder.</p>
+    <h1>Table</h1>
+    <p class="sub" id="tblSub">After 11 of 38 rounds.</p>
     <div class="card" style="margin-top:10px;padding:6px 12px"><div id="tbl"></div></div>
     <div class="legend" id="legend"></div>
   </section>
@@ -613,14 +614,14 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   <!-- STATS -->
   <section id="s-stats" class="screen">
     <h1>Stats</h1>
-    <p class="sub">Kun spillere på jeres hold.</p>
+    <p class="sub">Only players on your teams.</p>
     <div class="seg" id="seg"></div>
     <div class="card"><div id="slist"></div></div>
   </section>
 
   <!-- HIGHSCORE -->
   <section id="s-hof" class="screen">
-    <button class="btn" id="hofBack" hidden style="margin-bottom:10px">← Tilbage</button>
+    <button class="btn" id="hofBack" hidden style="margin-bottom:10px">← Back</button>
     <h1>Hall of Fame 🏆</h1>
     <div class="seg" id="hseg"></div>
     <div id="hbody"></div>
@@ -631,16 +632,16 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 
 <div class="toast" id="toast" hidden></div>
 <div class="conn" id="conn" hidden></div>
-<div class="modal" id="testBox" hidden><div class="card"><h3>Start testspil?</h3><p class="note" style="margin:0">Springer alt over og starter et solospil med tilfældigt hold og tilfældige spillere.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Hurtigt spil</button><button class="linkbtn" data-tm="no">Annuller</button></div></div></div>
-<div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Forlad ligaen?</h3><p class="note" style="margin:0" id="leaveP">Er du sikker på, at du vil forlade den nuværende liga? Hvis du ikke er færdig med at kigge, så bliv her.</p><div class="row2"><button class="btn" id="leaveYes">Forlad</button><button class="btn p go" id="leaveNo">Bliv her</button></div></div></div>
+<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
+<div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Leave the league?</h3><p class="note" style="margin:0" id="leaveP">Are you sure you want to leave the current league? If you're not done looking around, stay here.</p><div class="row2"><button class="btn" id="leaveYes">Leave</button><button class="btn p go" id="leaveNo">Stay here</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
 
 <nav class="nav" id="navwrap" hidden><div class="navin" id="nav">
   <button data-s="draft" class="on">Draft</button>
-  <button data-s="match">Kamp</button>
-  <button data-s="table">Tabel</button>
+  <button data-s="match">Match</button>
+  <button data-s="table">Table</button>
   <button data-s="stats">Stats</button>
-  <button id="navHome" hidden>Forside</button>
+  <button id="navHome" hidden>Home</button>
 </div></nav>
 
 <script>
@@ -692,7 +693,7 @@ LEAGUE.forEach(function(c){
 });
 var FRIENDS={};
 var FTEAM={};
-var CNAME={"#6b8f6e":"Grøn","#3a6fd8":"Blå","#c29a3d":"Guld","#c4688b":"Rosa","#8c6bc4":"Lilla","#cf4a4a":"Rød","#e6ebf5":"Hvid","#1b2540":"Mørkeblå","#e08a2e":"Orange","#e3c93a":"Gul","#2fa7a0":"Turkis","#7bc043":"Lysegrøn","#7a1f35":"Bordeaux","#6ab7e6":"Himmelblå","#8a93a6":"Grå","#111418":"Sort","#6b4226":"Brun","#0f5b46":"Skovgrøn"};
+var CNAME={"#6b8f6e":"Green","#3a6fd8":"Blue","#c29a3d":"Gold","#c4688b":"Pink","#8c6bc4":"Purple","#cf4a4a":"Red","#e6ebf5":"White","#1b2540":"Navy","#e08a2e":"Orange","#e3c93a":"Yellow","#2fa7a0":"Turquoise","#7bc043":"Light green","#7a1f35":"Burgundy","#6ab7e6":"Sky blue","#8a93a6":"Grey","#111418":"Black","#6b4226":"Brown","#0f5b46":"Forest green"};
 var SWATCH=["#111418","#1b2540","#3a6fd8","#6ab7e6","#0f5b46","#6b8f6e","#2fa7a0","#7bc043","#8a93a6","#7a1f35","#cf4a4a","#c4688b","#8c6bc4","#6b4226","#e08a2e","#c29a3d","#e3c93a","#e6ebf5"];
 var NL=LEAGUE.length;
 var LNAME={pl:"Premier League",ll:"La Liga",sa:"Serie A"};
@@ -701,6 +702,7 @@ var HOFTAB="pl";
 var S,P,F,G,role="admin",simT=[],draftT=[],timer=null,readyTimers=[],readySt,statTab="goals",tIv=null;
 
 function $(id){return document.getElementById(id)}
+function ordinal(n){var v=n%100,x=["th","st","nd","rd"];return n+(x[(v-20)%10]||x[v]||x[0])}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function logo(px){
   return '<svg width="'+px+'" height="'+px+'" viewBox="0 0 48 48" aria-hidden="true">'+
@@ -734,7 +736,7 @@ function setMe(){
   r.setProperty("--me-dot","linear-gradient(135deg,"+S.color+" 50%,"+S.color2+" 50%)");
 }
 function ids(){return Object.keys(P).filter(function(k){return P[k].joined})}
-function teamName(k){return k==="me"?(S.team.trim()||"Mit hold"):FTEAM[k]}
+function teamName(k){return k==="me"?(S.team.trim()||"My team"):FTEAM[k]}
 
 /* ---------- topbar ---------- */
 
@@ -747,10 +749,10 @@ function progHtml(){
   if(i<0)return "";
   var h='<div class="prog">';
   for(var k=0;k<post.length;k++)h+='<i class="'+(k<=i?"d":"")+'"></i>';
-  return h+'</div><div class="stepno">Trin '+(i+1)+' af '+post.length+'</div>';
+  return h+'</div><div class="stepno">Step '+(i+1)+' of '+post.length+'</div>';
 }
 function navBtns(nextLabel,nextDis,noBack){
-  return '<div class="nav2"'+(noBack?' style="grid-template-columns:1fr"':'')+'>'+(noBack?'':'<button class="btn" data-act="back">Tilbage</button>')+'<button class="btn p go" data-act="next"'+(nextDis?" disabled":"")+'>'+nextLabel+'</button></div>';
+  return '<div class="nav2"'+(noBack?' style="grid-template-columns:1fr"':'')+'>'+(noBack?'':'<button class="btn" data-act="back">Back</button>')+'<button class="btn p go" data-act="next"'+(nextDis?" disabled":"")+'>'+nextLabel+'</button></div>';
 }
 function renderFlow(){
   if(G.started)return;
@@ -760,22 +762,22 @@ function renderFlow(){
   if((stepsFor()[F.step]==="lobby"||stepsFor()[F.step]==="wait")&&!NET.game){$("flow").innerHTML="";return}
   var st=stepsFor()[F.step],h=progHtml();
   if(st==="join"){
-    h='<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div></div><div class="joinbox"><label class="field" style="margin-top:0"><span>Spilkode</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
-      (F.joinErr?'<p class="err">Den kode findes ikke. Tjek den og prøv igen.</p>':'')+
-      navBtns("Deltag i spillet",String(F.joinInput).trim().length<6)+'</div>';
+    h='<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div></div><div class="joinbox"><label class="field" style="margin-top:0"><span>Game code</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
+      (F.joinErr?'<p class="err">That code doesn\'t exist. Check it and try again.</p>':'')+
+      navBtns("Join the game",String(F.joinInput).trim().length<6)+'</div>';
   }else if(st==="hold"){
     var ct=F.ctab==="s"?"s":"p";
-    h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"Mit hold")+'</span></div>'+
-      ('<label class="field"><span>Dit navn</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="Fx Emil" autocomplete="off"></label>')+
-      '<div class="tagrow"><label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="Fx Dream Team" autocomplete="off"></label><label class="field tagf"><span>Forkortelse</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"Mit hold"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
-      '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primær farve</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Sekundær farve</button></div>'+
-      '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primær":"Sekundær")+' farve: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
+    h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"My team")+'</span></div>'+
+      ('<label class="field"><span>Your name</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="E.g. Emil" autocomplete="off"></label>')+
+      '<div class="tagrow"><label class="field"><span>Team name</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="E.g. Dream Team" autocomplete="off"></label><label class="field tagf"><span>Abbreviation</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"My team"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
+      '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primary colour</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Secondary colour</button></div>'+
+      '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primary":"Secondary")+' colour: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
       '<div class="field"><span>Crest</span><div class="crests">'+crestBtns()+'</div></div>'+
-      navBtns("Fortsæt til formation",!holdOk(),true)+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
+      navBtns("Continue to formation",!holdOk(),true)+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="leavesetup">Leave game</button>'):'');
   }else if(st==="form"){
-    h+='<h1>Vælg formation</h1><p class="sub">Den kan ikke ændres, når spillet er startet.</p><div class="fchips">'+
+    h+='<h1>Choose formation</h1><p class="sub">It can\'t be changed once the game has started.</p><div class="fchips">'+
       FORM_ORDER.map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+flabel(f)+'</button>'}).join("")+'</div>'+
-      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("Jeg er klar til draft")+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
+      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("I'm ready for the draft")+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="leavesetup">Leave game</button>'):'');
   }else {
     h+=lobbyLive();
   }
@@ -784,7 +786,7 @@ function renderFlow(){
   document.querySelectorAll("[data-mini]").forEach(function(el){renderPitch(el,el.dataset.mini,null,true)});
 }
 function rosterRow(k,team,who,ready,icon,extra){
-  return '<div class="rr">'+icon+'<div class="n">'+esc(team)+'<small>'+esc(who)+'</small></div><span class="s'+(ready?" ok":"")+'">'+(ready?"Klar":"Gør klar")+'</span>'+(extra||"")+'</div>';
+  return '<div class="rr">'+icon+'<div class="n">'+esc(team)+'<small>'+esc(who)+'</small></div><span class="s'+(ready?" ok":"")+'">'+(ready?"Ready":"Get ready")+'</span>'+(extra||"")+'</div>';
 }
 $("flow").addEventListener("click",function(e){
   var t=e.target;
@@ -801,8 +803,8 @@ $("flow").addEventListener("click",function(e){
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(liveAct(a,b,st))return;
   if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderFlow()}
-  else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Hop ind i mit DraftSpin-spil med koden "+F.code;try{if(navigator.share)navigator.share({title:"DraftSpin FC",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation kopieret")},function(){})}catch(x){}}
-  else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
+  else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Join my DraftSpin game with the code "+F.code;try{if(navigator.share)navigator.share({title:"DraftSpin FC",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation copied")},function(){})}catch(x){}}
+  else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
   else if(a==="back"){if(F.step>0)F.step--;else{if(NET.gid&&role==="admin"){liveLeave();return}role=null;F.joinInput="";F.joinErr=false}renderFlow()}
   else if(a==="next"){F.step++;renderFlow()}
 });
@@ -817,11 +819,11 @@ $("flow").addEventListener("input",function(e){
   }
   if(e.target.id==="tname"){
     S.team=e.target.value;
-    var nx=$("flow").querySelector("[data-act=next]");if(nx)nx.disabled=!holdOk();var tt=$("ttag");if(tt)tt.placeholder=initials(S.team||"Mit hold");
-    var kn=$("flow").querySelector(".kitname");if(kn)kn.textContent=S.team.trim()||"Mit hold";
+    var nx=$("flow").querySelector("[data-act=next]");if(nx)nx.disabled=!holdOk();var tt=$("ttag");if(tt)tt.placeholder=initials(S.team||"My team");
+    var kn=$("flow").querySelector(".kitname");if(kn)kn.textContent=S.team.trim()||"My team";
     var kc=$("flow").querySelector(".kitc");if(kc)kc.innerHTML=hcrest("me",52);
     var cs=$("flow").querySelector(".crests");if(cs)cs.innerHTML=crestBtns();
-    document.querySelectorAll(".myname").forEach(function(x){x.textContent=S.team.trim()||"Mit hold"});
+    document.querySelectorAll(".myname").forEach(function(x){x.textContent=S.team.trim()||"My team"});
   }
 });
 function goStart(){
@@ -873,9 +875,9 @@ function renderPitch(el,form,squad,mini,hl,alt){
 function showOrder(){
   S.phase="order";
   ;
-  var n=S.order.length,h='<h1>Draft-rækkefølge</h1><p class="sub">Snake draft. Rækkefølgen trækkes tilfældigt og er den samme for alle.</p><div class="card order">';
+  var n=S.order.length,h='<h1>Draft order</h1><p class="sub">Snake draft. The order is drawn at random and is the same for everyone.</p><div class="card order">';
   for(var i=0;i<n;i++)h+='<div class="orow" id="or'+i+'"><span class="onum">'+(i+1)+'</span><span class="onm" id="on'+i+'">...</span></div>';
-  h+='</div><button class="btn p wide" id="startDraft" style="margin-top:18px" disabled>Start draften</button>';
+  h+='</div><button class="btn p wide" id="startDraft" style="margin-top:18px" disabled>Start the draft</button>';
   $("orderWrap").innerHTML=h;$("draftMain").hidden=true;
   var names=ids().map(teamName),t0=Date.now();
   var fast=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -936,12 +938,12 @@ function missingTxt(){
   var cnt={};
   flat().forEach(function(pos,k){if(!S.squad[k])cnt[pos]=(cnt[pos]||0)+1});
   var parts=POSORD.filter(function(p){return cnt[p]}).map(function(p){return (cnt[p]>1?cnt[p]+" ":"")+POSC[p]});
-  return parts.length?parts.join(", "):"ingenting";
+  return parts.length?parts.join(", "):"nothing";
 }
 function status(p){
-  if(S.taken[p[0]])return {ok:false,why:"Taget af "+S.taken[p[0]]};
+  if(S.taken[p[0]])return {ok:false,why:"Taken by "+S.taken[p[0]]};
   var sl=slotFor(p[1],p);
-  if(!sl)return {ok:false,why:"Position fyldt"};
+  if(!sl)return {ok:false,why:"Position filled"};
   return {ok:true,pen:sl.pen};
 }
 function myTurn(){return S.phase==="draft"&&S.pickIdx<S.seq.length&&S.seq[S.pickIdx]==="me"}
@@ -950,7 +952,7 @@ function renderCounts(){
   var cur=S.phase==="draft"&&S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null,h="";
   if(S.order&&S.order.length>1){
     S.order.forEach(function(k,i){
-      var me=k==="me",c=me?filled():(S.counts[k]||0),nm=me?"Dig":(teamName(k)||"");
+      var me=k==="me",c=me?filled():(S.counts[k]||0),nm=me?"You":(teamName(k)||"");
       var cr=me?ucrest(S.crest||0,S.color,S.color2,mytag(),32):(FCR[k]?ucrest(FCR[k][0],FCR[k][1],FCR[k][2],FCR[k][3]||initials(nm),32):"");
       h+='<div class="bdg'+(k===cur?" now":"")+'" title="'+esc(nm)+'"><span class="bn">'+(i+1)+'</span><span class="bdgc">'+cr+'</span><span class="bnm">'+esc(nm)+'</span><span class="bct">'+c+'/11</span></div>';
     });
@@ -959,29 +961,29 @@ function renderCounts(){
   $("counts").className="counts";
   ids().forEach(function(k){
     var c=k==="me"?filled():S.counts[k];
-    h+='<span class="'+(k===cur?"now":"")+'"><i class="dotc" style="background:'+(k==="me"?"var(--me-dot)":FRIENDS[k])+'"></i>'+(k==="me"?"Dig":(esc(teamName(k))))+' <span class="mono">'+c+'/11</span></span>';
+    h+='<span class="'+(k===cur?"now":"")+'"><i class="dotc" style="background:'+(k==="me"?"var(--me-dot)":FRIENDS[k])+'"></i>'+(k==="me"?"You":(esc(teamName(k))))+' <span class="mono">'+c+'/11</span></span>';
   });
   $("counts").innerHTML=h;
 }
 function renderFeed(){
   $("feed").innerHTML=S.feed.length?S.feed.slice(0,6).map(function(f){
-    return '<div><span><b style="font-weight:500">'+esc(f.who)+'</b> valgte '+esc(f.name)+'</span><small>'+POSC[f.pos]+', '+f.club+'</small></div>';
-  }).join(""):'<div class="muted">Ingen valg endnu.</div>';
+    return '<div><span><b style="font-weight:500">'+esc(f.who)+'</b> picked '+esc(f.name)+'</span><small>'+POSC[f.pos]+', '+f.club+'</small></div>';
+  }).join(""):'<div class="muted">No picks yet.</div>';
 }
 function renderClub(){
   var el=$("clubpanel");
   if(!S.club){el.innerHTML="";return}
   var c=CLUBS[S.club],tabs=["ALL","GK","DEF","MID","ATT"];
-  if(S.spinning){el.innerHTML='<div class="card fade" style="margin-top:22px;text-align:center"><b>Spinner igen…</b></div>';return}
-  if(!myTurn()){var cu=S.seq[S.pickIdx];el.innerHTML='<div class="card fade" style="margin-top:22px"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">'+esc(cu?teamName(cu):"")+' vælger en spiller</span></div></div></div>';return}
+  if(S.spinning){el.innerHTML='<div class="card fade" style="margin-top:22px;text-align:center"><b>Spinning again…</b></div>';return}
+  if(!myTurn()){var cu=S.seq[S.pickIdx];el.innerHTML='<div class="card fade" style="margin-top:22px"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">'+esc(cu?teamName(cu):"")+' is picking a player</span></div></div></div>';return}
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0],rsp="";
   var rleft=me0&&NET.game?(NET.game.respins||0)-(me0.respins_used||0):0;
   if(rleft>0&&!S.spinning)rsp='<button class="rspbtn" data-respin="1" aria-label="Respin, '+rleft+' tilbage"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg><b>'+rleft+'</b></button>';
-  var h='<h2>Vælg en spiller</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">Hele truppen, '+c.p.length+' spillere</span></div>'+rsp+'</div>';
-  h+='<p class="miss">Mangler: <b>'+missingTxt()+'</b></p>';
-  h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"Alle":t)+'</button>'}).join("")+'</div>';
-  h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Søg spiller" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">Skjul fyldte</button></div>';
-  h+='<p class="note" style="margin:6px 0 0">Tryk på en spiller, og vælg derefter hans plads på banen.</p><div id="clist"></div><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Vælg for mig</button></div>';
+  var h='<h2>Pick a player</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">Full squad, '+c.p.length+' players</span></div>'+rsp+'</div>';
+  h+='<p class="miss">Missing: <b>'+missingTxt()+'</b></p>';
+  h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"All":t)+'</button>'}).join("")+'</div>';
+  h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Search player" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">Hide filled</button></div>';
+  h+='<p class="note" style="margin:6px 0 0">Tap a player, then choose his spot on the pitch.</p><div id="clist"></div><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Pick for me</button></div>';
   el.innerHTML=h;renderList();
 }
 function autoPick(){
@@ -994,7 +996,7 @@ function autoPick(){
     if(n.length)nat.push([p,n]);else if(q.length)pen.push([p,q]);
   });
   var pool=nat.length?nat:pen;
-  if(!pool.length){toast("Ingen spillere passer på en ledig plads.",2400);return}
+  if(!pool.length){toast("No players fit an open spot.",2400);return}
   var x=pool[Math.floor(Math.random()*pool.length)],k=x[1][Math.floor(Math.random()*x[1].length)];
   livePick(x[0][0],k);
 }
@@ -1005,10 +1007,10 @@ function renderList(){
     .sort(function(a,b){return POSORD.indexOf(a[1])-POSORD.indexOf(b[1])});
   list.forEach(function(p){
     var st=status(p);
-    if(S.hideFilled&&!st.ok&&st.why==="Position fyldt")return;
+    if(S.hideFilled&&!st.ok&&st.why==="Position filled")return;
     h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?((NET.game&&NET.game.show_ratings?'<span class="mono muted">'+p[5]+'</span>':'<span></span>')):'<span class="rp">'+st.why+'</span>')+'</div>';
   });
-  $("clist").innerHTML=h||'<p class="note">Ingen spillere matcher.</p>';
+  $("clist").innerHTML=h||'<p class="note">No players match.</p>';
 }
 function renderDraft(){
   var done=S.phase==="draft"&&S.pickIdx>=S.seq.length&&S.seq.length>0;
@@ -1020,12 +1022,12 @@ function renderDraft(){
   $("missing").textContent=(S.view==="me"||!S.fsq[S.view])?"":"Formation "+S.fsq[S.view].form;
   $("penNote").innerHTML="";
   renderCounts();renderFeed();renderClub();
-  $("ordLine").textContent=(S.order.length>1)?"":S.order.length?"Rækkefølge: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
+  $("ordLine").textContent=(S.order.length>1)?"":S.order.length?"Order: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
   var cur=S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null;
   $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club&&!NET.pending);
-  $("spinBtn").textContent=done?"Draften er færdig":(!myTurn()?"Venter på "+(cur?teamName(cur):""):(S.club?"Vælg en spiller herunder":"Spin the wheel"));
-  $("turnTxt").textContent=done?"Din trup er klar.":(myTurn()?(S.club?"Klubben er valgt. Vælg frit blandt spillerne.":"Din tur. Spin for at få en klub."):(cur?teamName(cur)+" er i gang.":""));
-  $("doneBox").innerHTML=done?('<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen startes...</p>'):"";
+  $("spinBtn").textContent=done?"The draft is finished":(!myTurn()?"Waiting for "+(cur?teamName(cur):""):(S.club?"Pick a player below":"Spin the wheel"));
+  $("turnTxt").textContent=done?"Your squad is ready.":(myTurn()?(S.club?"The club is chosen. Pick freely from the players.":"Your turn. Spin to get a club."):(cur?teamName(cur)+" is up.":""));
+  $("doneBox").innerHTML=done?('<p class="note fade" style="margin-top:16px">The draft is finished. The season is starting...</p>'):"";
   if(G.started)$("navwrap").hidden=(true);
 }
 function spin(){
@@ -1046,7 +1048,7 @@ function renderSheet(){
   if(!S.sel||!S.club){sh.hidden=true;app.classList.remove("sheeted");return}
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===S.sel})[0];
   sh.hidden=false;app.classList.add("sheeted");
-  sh.innerHTML='<div class="sheetin"><div class="hd"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1],p)+'</span><button class="x" data-cancel="1">Vælg en anden</button></div><div class="pitch" id="spitch"></div><p class="hint">Tryk på en plads på banen</p></div>';
+  sh.innerHTML='<div class="sheetin"><div class="hd"><b>'+esc(p[0])+'</b><span class="muted">'+posTxt(p[1],p)+'</span><button class="x" data-cancel="1">Choose another</button></div><div class="pitch" id="spitch"></div><p class="hint">Tap a spot on the pitch</p></div>';
   renderPitch($("spitch"),S.form,S.squad,false,eligible(p[1],p),slotsIn(S.form,S.squad,p[1],p).alt);
 }
 $("sheet").addEventListener("click",function(e){
@@ -1066,7 +1068,7 @@ function autoPick(){
 }
 function renderSqTabs(){
   var ks=["me"].concat(ids().filter(function(k){return k!=="me"}));
-  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+'">'+(k==="me"?"Dig":(esc(teamName(k))))+' '+n+'/11</button>'}).join("");
+  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+'">'+(k==="me"?"You":(esc(teamName(k))))+' '+n+'/11</button>'}).join("");
 }
 $("sqTabs").addEventListener("click",function(e){var b=e.target.closest("[data-v]");if(b){S.view=b.dataset.v;renderDraft()}});
 
@@ -1077,9 +1079,9 @@ function script(){
 function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
 function evRow(e){
   var cls="ev "+(e.t==="sys"?"sys":(e.t==="goal"?"goal ":"")+e.s);
-  var ic=e.t==="goal"?'<i class="ic g">⚽</i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?(e.a==="2. gult"?'<i class="ic y2"><i class="a"></i><i class="b"></i><i class="c"></i></i>':'<i class="ic r"></i>'):(e.t==="pm"?'<i class="ic g">❌</i>':'<i class="ic w"></i>')));
-  var head=e.t==="goal"?(e.ai?esc(e.x)+" scorer":esc(e.x))+'':(e.t==="y"?"Gult kort":(e.t==="r"?"Rødt kort":(e.t==="pm"?"Brændt straffe":esc(e.x))));
-  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?(e.lab||"Slut"):clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a&&e.t!=="pm"&&e.a!=="2. gult"?(e.t==="goal"&&/^Assist/.test(e.a)?'<small class="asl">'+esc(e.a)+' 👏</small>':(e.t==="goal"&&e.pen?'<small class="asl">🥅 '+esc(e.a)+'</small>':'<small>'+esc(e.a)+'</small>')):'')+((e.t==="y"||e.t==="r"||e.t==="pm")?'<small class="tg" style="margin-left:6px">'+(e.ai?esc(NET.oppName):esc(e.x))+'</small>':(e.t!=="sys"&&e.s!=="me"&&!(e.ai&&e.t==="goal")?'<small class="tg" style="margin-left:6px">'+esc(NET.oppName)+'</small>':''))+'</div></div>';
+  var ic=e.t==="goal"?'<i class="ic g">⚽</i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?(e.a==="2nd yellow"?'<i class="ic y2"><i class="a"></i><i class="b"></i><i class="c"></i></i>':'<i class="ic r"></i>'):(e.t==="pm"?'<i class="ic g">❌</i>':'<i class="ic w"></i>')));
+  var head=e.t==="goal"?(e.ai?esc(e.x)+" scorer":esc(e.x))+'':(e.t==="y"?"Yellow card":(e.t==="r"?"Red card":(e.t==="pm"?"Missed penalty":esc(e.x))));
+  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?(e.lab||"FT"):clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a&&e.t!=="pm"&&e.a!=="2nd yellow"?(e.t==="goal"&&/^Assist/.test(e.a)?'<small class="asl">'+esc(e.a)+' 👏</small>':(e.t==="goal"&&e.pen?'<small class="asl">🥅 '+esc(e.a)+'</small>':'<small>'+esc(e.a)+'</small>')):'')+((e.t==="y"||e.t==="r"||e.t==="pm")?'<small class="tg" style="margin-left:6px">'+(e.ai?esc(NET.oppName):esc(e.x))+'</small>':(e.t!=="sys"&&e.s!=="me"&&!(e.ai&&e.t==="goal")?'<small class="tg" style="margin-left:6px">'+esc(NET.oppName)+'</small>':''))+'</div></div>';
 }
 function showOthers(done){
   liveOthers(done);return
@@ -1087,7 +1089,7 @@ function showOthers(done){
 function renderReady(){
   liveReady();return
 }
-(function(){var rb=$("readyBtn"),f=function(){rb.classList.toggle("go",rb.textContent==="Næste kamp")};new MutationObserver(f).observe(rb,{childList:true,characterData:true,subtree:true});f()})();
+(function(){var rb=$("readyBtn"),f=function(){rb.classList.toggle("go",rb.textContent==="Next match")};new MutationObserver(f).observe(rb,{childList:true,characterData:true,subtree:true});f()})();
 $("readyBtn").addEventListener("click",function(){
   liveReadyPress();return
 });
@@ -1105,8 +1107,8 @@ function renderGate(){
   var n=NET.players.length,k=NET.players.filter(function(p){return p.start_ready}).length,me=NET.players.filter(function(p){return p.user_id===NET.uid})[0],done=!!(me&&me.start_ready);
   gateBlocks().forEach(function(x){if(x)x.hidden=true});
   var box=$("gateBox");
-  if(!box){box=document.createElement("div");box.id="gateBox";box.className="card gatebox";var sb=document.querySelector("#s-match .sb").closest(".card");sb.insertAdjacentElement("afterend",box);box.innerHTML='<p class="note">Når alle har trykket Klar, starter første kamp.</p><button class="btn p wide" id="gateBtn"></button>'}
-  var b=$("gateBtn");b.textContent="Klar "+k+"/"+n;b.disabled=done;S.gate=true;
+  if(!box){box=document.createElement("div");box.id="gateBox";box.className="card gatebox";var sb=document.querySelector("#s-match .sb").closest(".card");sb.insertAdjacentElement("afterend",box);box.innerHTML='<p class="note">When everyone has pressed Ready, the first match starts.</p><button class="btn p wide" id="gateBtn"></button>'}
+  var b=$("gateBtn");b.textContent="Ready "+k+"/"+n;b.disabled=done;S.gate=true;
 }
 function hideGate(){S.gate=false;var box=$("gateBox");if(box)box.remove();gateBlocks().forEach(function(x){if(x)x.hidden=false})}
 document.addEventListener("click",async function(e){
@@ -1117,11 +1119,11 @@ document.addEventListener("click",async function(e){
 });
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
-  if(gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").textContent="Anspark";$("prog").style.width="0";renderGate();return}
+  if(gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").textContent="Kick-off";$("prog").style.width="0";renderGate();return}
   if(S.gate)hideGate();
   readySt={me:false};renderReady();
   liveMatchHeader();
-  $("readyBtn").disabled=true;$("readyBtn").textContent="Næste kamp";
+  $("readyBtn").disabled=true;$("readyBtn").textContent="Next match";
   var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false;
   $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
   $("playBtn").disabled=true;$("skipBtn").disabled=false;showOthers(false);
@@ -1132,7 +1134,7 @@ function startMatch(){
       if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop")}
       tl.unshift(evRow(e));$("tl").innerHTML=tl.join("");
     }
-    $("clk").textContent=m<MIN?clockTxt(Math.max(m,1)):"Slut";
+    $("clk").textContent=m<MIN?clockTxt(Math.max(m,1)):"FT";
     $("prog").style.width=(m/MIN*100)+"%";
     if(m>=MIN&&shown>=sc.length)finishMatch();
   }
@@ -1176,7 +1178,7 @@ function crest(code,px){
 /* egne våbenskjolde (5 stilarter) til spillernes hold */
 var MARK='<svg class="pm" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#ffffff3d" stroke-width="1.2"><rect x="0" y="0" width="100" height="100"/><line x1="0" y1="50" x2="100" y2="50"/><rect x="22" y="0" width="56" height="15"/><rect x="37" y="0" width="26" height="6"/><rect x="22" y="85" width="56" height="15"/><rect x="37" y="94" width="26" height="6"/><rect x="43" y="-2.4" width="14" height="2.4"/><rect x="43" y="100" width="14" height="2.4"/></g></svg><div class="cc"></div>';
 var CPID=0;
-function mytag(){return S.tag&&S.tag.length>1?S.tag:initials(S.team||"Mit hold")}
+function mytag(){return S.tag&&S.tag.length>1?S.tag:initials(S.team||"My team")}
 function holdOk(){return !!S.team.trim()&&(S.tag||"").length!==1&&!(S.pname.trim().length<2)}
 function utag(uid,name){var p=NET.players&&NET.players.filter(function(x){return x.user_id===uid})[0];return p&&p.crest_tag?p.crest_tag:initials(name)}
 function initials(n){var w=String(n).trim().split(/\s+/).filter(Boolean);var r=w.length>1?w.map(function(x){return x[0]}).join(""):String(n).trim().slice(0,2);return r.slice(0,3).toUpperCase()}
@@ -1247,14 +1249,14 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Create game</button><button class="btn wide" data-act="joinpick">Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
 /* Version: 2.MINOR.PATCH. MINOR = ny funktion eller samlet batch af ændringer, PATCH = rettelser. Det store tal skiftes kun efter aftale med Rasmus. */
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 var NEWV="",VEROK=false;
-function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Hent nyeste opdatering</button>':(VEROK?'<span class="verok">Du er på nyeste version</span>':''))+'</div>'}
+function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Get the latest update</button>':(VEROK?'<span class="verok">You\'re on the latest version</span>':''))+'</div>'}
 /* opdatering: hent altid friskt (omgår cache), og tjek ved start og når appen vækkes, om der er en nyere version */
 function hardReload(){try{location.replace(location.pathname+"?u="+Date.now())}catch(e){location.reload()}}
 function showUpdate(v){NEWV=v;if(!role&&!G.started)renderFlow()}
@@ -1279,22 +1281,22 @@ function renderEnd(){
 var leaveAct=null;
 function askClose(){
   leaveAct=liveAbort;
-  $("leaveH").textContent="Luk sessionen?";
-  $("leaveP").textContent="Spillet lukkes for alle, og du kommer tilbage til forsiden.";
-  $("leaveYes").textContent="Luk session";$("leaveBox").hidden=false;
+  $("leaveH").textContent="Close the session?";
+  $("leaveP").textContent="The game closes for everyone, and you go back to the home screen.";
+  $("leaveYes").textContent="Close session";$("leaveBox").hidden=false;
 }
 function askLeave(ns){
   leaveAct=null;
   var g=NET.game;
   if(g&&g.status!=="done"&&!ns){
     var solo=g.max_players===1;
-    $("leaveH").textContent=solo?"Afbryd spillet?":"Forlad spillet?";
-    $("leaveP").textContent=solo?"Du forlader sæsonen, og den kan ikke genoptages. Den gemmes ikke i Hall of Fame.":"Du forlader spillet. De andre kan spille videre uden dig, og du kan komme tilbage med spilkoden "+g.code+".";
-    $("leaveYes").textContent="Forlad";$("leaveBox").hidden=false;return;
+    $("leaveH").textContent=solo?"Abandon the game?":"Leave the game?";
+    $("leaveP").textContent=solo?"You're leaving the season and it can't be resumed. It won't be saved to the Hall of Fame.":"You're leaving the game. The others can keep playing without you, and you can come back with the game code "+g.code+".";
+    $("leaveYes").textContent="Leave";$("leaveBox").hidden=false;return;
   }
-  $("leaveH").textContent=ns?"Starte en ny sæson?":"Forlad ligaen?";
-  $("leaveP").textContent="Er du sikker på, at du vil forlade den nuværende liga"+(ns?" og starte forfra?":"?")+" Hvis du ikke er færdig med at kigge, så bliv her.";
-  $("leaveYes").textContent=ns?"Ny sæson":"Forlad";$("leaveBox").hidden=false;
+  $("leaveH").textContent=ns?"Start a new season?":"Leave the league?";
+  $("leaveP").textContent="Are you sure you want to leave the current league"+(ns?" and start over?":"?")+" If you're not done looking around, stay here.";
+  $("leaveYes").textContent=ns?"New season":"Leave";$("leaveBox").hidden=false;
 }
 $("navHome").addEventListener("click",function(){askLeave(false)});
 $("draftLeave").addEventListener("click",function(){askLeave(false)});
@@ -1310,7 +1312,7 @@ $("endbody").addEventListener("click",function(e){
   if(a==="hof"){HOFBACK="end";go("hof")}
   else if(a==="home"){askLeave(false)}
   else if(a==="newseason"){askLeave(true);}
-  else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"Mit hold")+" sluttede som nr. "+(i+1)+" med "+rw[i].p+" point."})():(S.team.trim()||"Mit hold")+" blev mester med 94 point.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent="Kopiér resultat"},1500)}
+  else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"My team")+" finished "+ordinal(i+1)+" with "+rw[i].p+" points."})():(S.team.trim()||"My team")+" finished the season.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent="Copy result"},1500)}
 });
 
 /* ---------- forbindelse væk og admin ude ---------- */
@@ -1380,8 +1382,8 @@ var liveBusy=false;
 var connFail=0;
 function liveConn(ok){
   var c=$("conn");if(!c)return;
-  if(ok){if(connFail>=2){c.className="conn ok";c.textContent="Forbindelsen er tilbage";setTimeout(function(){if(connFail===0)c.hidden=true},2000)}connFail=0}
-  else{connFail++;if(connFail>=2){c.className="conn";c.hidden=false;c.innerHTML='Forbindelsen er væk. Dine valg er gemt, og vi prøver igen<i></i><i></i><i></i>'}}
+  if(ok){if(connFail>=2){c.className="conn ok";c.textContent="Connection restored";setTimeout(function(){if(connFail===0)c.hidden=true},2000)}connFail=0}
+  else{connFail++;if(connFail>=2){c.className="conn";c.hidden=false;c.innerHTML='Connection lost. Your picks are saved and we\'ll keep trying<i></i><i></i><i></i>'}}
 }
 async function liveChanged(){
   if(!NET.gid||NET.pending)return;
@@ -1405,9 +1407,9 @@ function liveLeave(msg){
 }
 function liveApply(){
   var g=NET.game;
-  if(!g){liveLeave("Spillet findes ikke længere.");return}
-  if(g.status==="closed"){liveLeave("Spillet er lukket, fordi ingen var til stede.");return}
-  if(!NET.players.some(function(p){return p.user_id===NET.uid})){liveLeave("Du er ikke med i spillet længere.");return}
+  if(!g){liveLeave("The game no longer exists.");return}
+  if(g.status==="closed"){liveLeave("The game was closed because nobody was present.");return}
+  if(!NET.players.some(function(p){return p.user_id===NET.uid})){liveLeave("You're no longer in the game.");return}
   if(g.next_game_id&&g.status==="done"){liveGoNext(g.next_game_id);return}
   role=g.admin_id===NET.uid?"admin":"player";
   F.code=g.code;F.max=g.max_players;F.timer=g.timer_seconds;F.showR=g.show_ratings;
@@ -1442,7 +1444,7 @@ async function liveJoin(){
   try{
     await NET.ready;
     var r0=await NET.sb.rpc("join_game",{p_code:String(F.joinInput).toUpperCase().trim()});
-    if(r0.error){if(/findes ikke/.test(r0.error.message)){F.joinErr=true;renderFlow();return}throw r0.error}
+    if(r0.error){if(/doesn't exist/.test(r0.error.message)){F.joinErr=true;renderFlow();return}throw r0.error}
     NET.gid=r0.data;F.joinErr=false;
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
     await liveLoad();liveSub();liveEnter();
@@ -1451,7 +1453,7 @@ async function liveJoin(){
 async function liveTeamDone(){
   if(NET.teamBusy)return;NET.teamBusy=true;
   var btn=document.querySelector('#flow [data-act="next"]');
-  if(btn){btn.disabled=true;btn.textContent="Gemmer…"}
+  if(btn){btn.disabled=true;btn.textContent="Saving…"}
   try{
     var r0=await NET.sb.rpc("update_team",{p_game:NET.gid,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:(S.crest||0)+1,p_formation:S.form,p_display:S.pname.trim(),p_tag:S.tag.length>1?S.tag:null});
     if(r0.error)throw r0.error;
@@ -1464,7 +1466,7 @@ async function liveTeamDone(){
 /* ny rækkefølge: lobby først (regler, deltagere), derefter åbner admin holdopsætningen for alle */
 async function liveCreateLobby(btn){
   if(NET.creating)return;NET.creating=true;
-  var old=btn&&btn.textContent;if(btn){btn.disabled=true;btn.textContent="Opretter…"}
+  var old=btn&&btn.textContent;if(btn){btn.disabled=true;btn.textContent="Creating…"}
   try{
     await NET.ready;
     var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:F.pace||"full"});
@@ -1505,7 +1507,7 @@ async function liveSetting(args){
   NET.pending=true;liveApply();
   var r0;try{r0=await Promise.race([NET.sb.rpc("update_game_settings",args),new Promise(function(res){setTimeout(function(){res({error:{message:"timeout"}})},15000)})])}catch(e){r0={error:e}}
   NET.pending=false;
-  if(r0.error){for(var k in keep)g[k]=keep[k];toast("Ups, der skete en fejl, prøv igen!",4200)}
+  if(r0.error){for(var k in keep)g[k]=keep[k];toast("Oops, something went wrong, please try again!",4200)}
   await liveChanged();
 }
 function liveAct(a,b,st){
@@ -1536,61 +1538,61 @@ function liveAct(a,b,st){
 function lobbyLive(){
   var g=NET.game,pl=NET.players,n=pl.length,adm=NET.uid===g.admin_id,me=pl.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var solo=g.max_players===1,setup=!!g.setup,full=n>=g.max_players;
-  var h=setup?'<h1 style="margin-top:2px">Du er klar</h1>':'';
-  var kick=function(p){return adm&&p.user_id!==NET.uid?'<button class="btn" data-act="kick" data-k="'+p.user_id+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Fjern</button>':""};
+  var h=setup?'<h1 style="margin-top:2px">You\'re ready</h1>':'';
+  var kick=function(p){return adm&&p.user_id!==NET.uid?'<button class="btn" data-act="kick" data-k="'+p.user_id+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Remove</button>':""};
   if(!setup){
-    if(!solo)h+='<div class="codeline"><span class="muted">Spilkode</span><button data-act="copycode">'+esc(g.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Del invitation</button></div>';
+    if(!solo)h+='<div class="codeline"><span class="muted">Game code</span><button data-act="copycode">'+esc(g.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Share invitation</button></div>';
     var segb=function(act,key,cur,opts,dis,cls){return opts.map(function(o){return '<button class="btn'+(cur===o[0]?" sel":"")+(cls?" "+cls:"")+'" data-act="'+act+'"'+(key?' data-k="'+key+'"':'')+' data-v="'+o[0]+'"'+(dis&&dis(o[0])?" disabled":"")+' style="padding:8px 11px">'+o[1]+'</button>'}).join("")};
     var row=function(label,inner){return '<div class="field lrow"><span>'+label+'</span><div class="sws">'+inner+'</div></div>'};
-    h+='<div class="card" style="margin-top:10px;padding:6px 14px 12px"><b style="font-size:15px">Spilregler</b>';
+    h+='<div class="card" style="margin-top:10px;padding:6px 14px 12px"><b style="font-size:15px">Game rules</b>';
     if(adm){
-      h+=row("Spillere",segb("setmax",null,g.max_players,[1,2,3,4,5,6].map(function(x){return [x,x]}),function(v){return v<n},"num"));
-      h+=row("Tid pr. valg",segb("lset","timer",g.timer_seconds,[[0,"Fra"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]));
-      h+=row("Tempo",segb("lset","pace",g.pace,[["full","Classic"],["quick","Hurtigt spil"]]));
-      h+=row("Ratings",segb("lset","show",g.show_ratings,[[false,"Skjulte"],[true,"Vis"]]));
+      h+=row("Players",segb("setmax",null,g.max_players,[1,2,3,4,5,6].map(function(x){return [x,x]}),function(v){return v<n},"num"));
+      h+=row("Time per pick",segb("lset","timer",g.timer_seconds,[[0,"Off"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]));
+      h+=row("Pace",segb("lset","pace",g.pace,[["full","Classic"],["quick","Quick game"]]));
+      h+=row("Ratings",segb("lset","show",g.show_ratings,[[false,"Hidden"],[true,"Show"]]));
       h+=row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
     }else{
-      h+='<p class="note" style="margin-top:6px">Spillere: '+g.max_players+' · Tid pr. valg: '+(g.timer_seconds?g.timer_seconds+" s":"fra")+' · Tempo: '+(g.pace==="quick"?"hurtigt spil":"classic")+' · Ratings: '+(g.show_ratings?"vises":"skjulte")+' · Respins: '+g.respins+'</p>';
+      h+='<p class="note" style="margin-top:6px">Players: '+g.max_players+' · Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Pace: '+(g.pace==="quick"?"quick game":"classic")+' · Ratings: '+(g.show_ratings?"shown":"hidden")+' · Respins: '+g.respins+'</p>';
     }
     h+='</div>';
     if(!solo){
-      h+='<h2 style="margin-top:12px;margin-bottom:6px;font-size:15px">Deltagere</h2><div class="card" style="padding:2px 14px"><div class="roster">';
+      h+='<h2 style="margin-top:12px;margin-bottom:6px;font-size:15px">Participants</h2><div class="card" style="padding:2px 14px"><div class="roster">';
       pl.forEach(function(p,pi){
-        var nm=p.display_name||("Spiller "+(pi+1));
-        h+='<div class="rr cp"><span class="av">'+(pi+1)+'</span><div class="n">'+esc(nm)+(p.user_id===NET.uid?" (dig)":"")+'<small>'+(p.user_id===g.admin_id?"Admin":"Med i spillet")+'</small></div>'+kick(p)+'</div>';
+        var nm=p.display_name||("Player "+(pi+1));
+        h+='<div class="rr cp"><span class="av">'+(pi+1)+'</span><div class="n">'+esc(nm)+(p.user_id===NET.uid?" (you)":"")+'<small>'+(p.user_id===g.admin_id?"Admin":"In the game")+'</small></div>'+kick(p)+'</div>';
       });
-      if(!full)h+='<div class="wait">Venter på flere, op til '+g.max_players+'.</div>';
+      if(!full)h+='<div class="wait">Waiting for more players, up to '+g.max_players+'.</div>';
       h+='</div></div>';
     }
     if(adm){
-      h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(full?"":" disabled")+'>Start spillet</button>';
-      h+='<p class="note">'+(!full?"Spillet kan starte, når alle pladser er fyldt. Mangler "+(g.max_players-n)+" "+(g.max_players-n===1?"spiller":"spillere")+".":(solo?"":"Alle er med. Når du starter, vælger alle navn, hold og formation samtidig."))+'</p>';
+      h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(full?"":" disabled")+'>Start game</button>';
+      h+='<p class="note">'+(!full?"The game can start once every seat is filled. "+(g.max_players-n)+" "+(g.max_players-n===1?"player":"players")+" missing.":(solo?"":"Everyone's in. When you start, everyone picks a name, team and formation at the same time."))+'</p>';
     }else{
-      h+='<p class="note">'+(!full?"Venter på flere spillere ("+n+" af "+g.max_players+").":"Venter på, at admin starter spillet.")+'</p>';
+      h+='<p class="note">'+(!full?"Waiting for more players ("+n+" of "+g.max_players+").":"Waiting for the admin to start the game.")+'</p>';
     }
-    h+=adm?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="back">Forlad spillet</button>';
+    h+=adm?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="back">Leave game</button>';
     return h;
   }
   /* holdopsætning er åbnet, og du er klar: vent på de andre */
   h+='<div class="card" style="margin-top:10px;padding:2px 14px"><div class="roster">';
   pl.forEach(function(p){
     var icon=p.team_name?ucrest((p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",p.crest_tag||initials(p.team_name),30):'<span class="av">?</span>';
-    h+=rosterRow(p.user_id,p.team_name||"Laver sit hold",(p.display_name||"Spiller")+(p.user_id===NET.uid?" (dig)":"")+(p.user_id===g.admin_id?", admin":""),p.ready,icon,kick(p));
+    h+=rosterRow(p.user_id,p.team_name||"Setting up their team",(p.display_name||"Player")+(p.user_id===NET.uid?" (you)":"")+(p.user_id===g.admin_id?", admin":""),p.ready,icon,kick(p));
   });
   h+='</div></div>';
-  var wait=pl.filter(function(p){return !p.ready}).map(function(p){return p.display_name||"en spiller"});
-  h+='<p class="note">'+(wait.length?"Venter på "+wait.map(function(x){return esc(x)}).join(", ")+".":"Alle er klar. Draften starter...")+'</p>';
-  h+='<button class="linkbtn" data-act="unready">Tilbage</button>';
+  var wait=pl.filter(function(p){return !p.ready}).map(function(p){return p.display_name||"a player"});
+  h+='<p class="note">'+(wait.length?"Waiting for "+wait.map(function(x){return esc(x)}).join(", ")+".":"Everyone is ready. The draft is starting...")+'</p>';
+  h+='<button class="linkbtn" data-act="unready">Back</button>';
   return h;
 }
 /* ---------- live: sæson ---------- */
 NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;NET.round=0;NET.shownRound=0;NET.myMatch=null;NET.oppName="";NET.advAt=0;
 var SHORTN={};Object.keys(NAMECODE).forEach(function(n){SHORTN[NAMECODE[n]]=n});
 function dropped(t){var p=t&&t.kind==="human"?NET.players.filter(function(x){return x.user_id===t.user_id})[0]:null;return !!(p&&(p.missed_rounds||0)>=8)}
-function lname(k){var t=NET.season&&NET.season.teams[k];if(!t)return"?";return t.kind==="ai"?(SHORTN[t.club]||t.name):t.name+(dropped(t)?" (udgået)":"")}
+function lname(k){var t=NET.season&&NET.season.teams[k];if(!t)return"?";return t.kind==="ai"?(SHORTN[t.club]||t.name):t.name+(dropped(t)?" (dropped out)":"")}
 function lcrest(k,px){var t=NET.season&&NET.season.teams[k];if(!t)return"";return t.kind==="ai"?crest(t.club,px):ucrest((t.crest||1)-1,t.color1||"#3b4a6b",t.color2||"#e6ebf5",utag(t.user_id,t.name),px)}
 function lhuman(k){var t=NET.season&&NET.season.teams[k];return !!t&&t.kind==="human"}
-function pname(pid){var x=NET.byId[pid];return x?x.p[0]:"Ukendt"}
+function pname(pid){var x=NET.byId[pid];return x?x.p[0]:"Unknown"}
 async function fetchAll(table){
   var rows=[];
   for(var from=0;;from+=1000){
@@ -1630,19 +1632,19 @@ async function liveSeasonApply(){
     await NET.pl;
     var g=NET.game,key=g.status+"|"+g.current_round,msg=function(t){var d=$("doneBox");if(d)d.innerHTML='<p class="note fade" style="margin-top:16px">'+t+'</p>'};
     if(g.current_round<1){
-      if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/ikke|Draften/.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
-      liveSimWaiting(g.pace==="quick"?"Draften er færdig. Sæsonen simuleres...":"Draften er færdig. Sæsonen startes...");return;
+      if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/n't|not|draft/i.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
+      liveSimWaiting(g.pace==="quick"?"The draft is finished. The season is being simulated...":"The draft is finished. The season is starting...");return;
     }
     var quick=g.pace==="quick";
     if(quick&&g.status!=="done"){
-      if(g.current_round<QUICK_FIRST){liveSimWaiting("Draften er færdig. Sæsonen simuleres...");return}
+      if(g.current_round<QUICK_FIRST){liveSimWaiting("The draft is finished. The season is being simulated...");return}
       // første halvdel er klar: resten simuleres i baggrunden (prøver igen, hvis den ikke er rykket på 20 s)
       if(Date.now()-(NET.finAt||0)>20000){NET.finAt=Date.now();callEngine("finish").then(function(){liveChanged()}).catch(function(){})}
     }
     if(quick)key=g.status+"|q";
     if(!NET.season||NET.seasonKey!==key){
       var ok=await liveSeasonLoad();
-      if(!ok){liveSimWaiting("Draften er færdig. Sæsonen startes...");return}
+      if(!ok){liveSimWaiting("The draft is finished. The season is starting...");return}
       NET.seasonKey=key;
     }
     if(!NET.seasonOn){NET.seasonOn=true;liveSeasonStart();return}
@@ -1655,7 +1657,7 @@ function simKey(){return "dsfc-sim-"+NET.gid}
 function liveSimWaiting(txt){
   if(NET.simWait===txt)return;NET.simWait=txt;
   $("navwrap").hidden=true;go("sim");
-  $("simbody").innerHTML='<div class="simwait">'+waitRing()+'<h2>'+txt+'</h2><p class="note">Det tager et øjeblik.</p></div>';
+  $("simbody").innerHTML='<div class="simwait">'+waitRing()+'<h2>'+txt+'</h2><p class="note">This will take a moment.</p></div>';
 }
 /* ring af de deltagende holds crests, mens sæsonen gøres klar */
 function waitRing(){
@@ -1703,20 +1705,20 @@ function liveSimRender(ph){
   var mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
   var side=function(k){return '<div class="simt">'+lcrest(k,40)+'<span>'+esc(lname(k))+'</span><div class="frm">'+formOf(k,r)+'</div></div>'};
   var h='<div class="simtop"><div class="card simcard simlive"><div class="simm">'+side(m.home_key)+'<div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div>'+side(m.away_key)+'</div></div>'+
-    '<div class="card siminfo"><div class="sirow"><b>Runde '+r+' af 38</b><span class="muted">'+(up<1?"Første kamp er i gang":"Din plads: "+(mi+1)+" · "+me.p+" point · "+me.w+"W "+me.d+"D "+me.l+"L")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
-    '<div class="tr h sm"><span>#</span><span>Hold</span><span class="num">P</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
+    '<div class="card siminfo"><div class="sirow"><b>Round '+r+' of 38</b><span class="muted">'+(up<1?"First match in progress":"Your place: "+(mi+1)+" · "+me.p+" points · "+me.w+"W "+me.d+"D "+me.l+"L")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
+    '<div class="tr h sm"><span>#</span><span>Team</span><span class="num">P</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
   rows.forEach(function(x,i){
     var mine=x.k===NET.uid,fr=lhuman(x.k)&&!mine,d=prev[x.k]!==undefined?prev[x.k]-i:0;
     var ar=d>0?'<i class="ar up"></i>':(d<0?'<i class="ar dn"></i>':'');
     h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+(x.w+x.d+x.l)+'</span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
   });
-  h+='</div></div><div class="simlist"><div class="simlh"><b>Dine kampe</b><span><button class="linkbtn" data-act="simleave">Forlad</button><button class="linkbtn" data-act="simskip"'+(simReady()?'':' disabled')+'>Spring til slut</button></span></div>';
+  h+='</div></div><div class="simlist"><div class="simlh"><b>Your matches</b><span><button class="linkbtn" data-act="simleave">Leave</button><button class="linkbtn" data-act="simskip"'+(simReady()?'':' disabled')+'>Skip to end</button></span></div>';
   for(var i=up;i>=1;i--){
     var mm=liveMyMatch(i);if(!mm)continue;
     var home=mm.home_key===NET.uid,mg=home?mm.home_goals:mm.away_goals,og=home?mm.away_goals:mm.home_goals;
     h+='<div class="srow '+(mg>og?"w":(mg<og?"l":"d"))+(B&&i===up?" in":"")+'"><span class="srn">'+i+'</span><span class="sh">'+lhname(mm.home_key,false)+'</span><b class="ss">'+mm.home_goals+' – '+mm.away_goals+'</b><span class="sa">'+lhname(mm.away_key,true)+'</span></div>';
   }
-  if(up<1)h+='<div class="note" style="padding:8px 0">Dine resultater dukker op her.</div>';
+  if(up<1)h+='<div class="note" style="padding:8px 0">Your results will appear here.</div>';
   h+='</div>';
   $("simbody").innerHTML=h;
 }
@@ -1724,14 +1726,14 @@ function liveSimDone(){
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
   var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
   var row=function(ic,t,d,cls,id){return '<div class="sumrow'+(cls?" "+cls:"")+'"'+(id?' id="'+id+'"':'')+'><span class="si">'+ic+'</span><div><b>'+t+'</b>'+(d?'<small>'+d+'</small>':'')+'</div></div>'};
-  var eu=mi<4?["🌟","Champions League","Du kvalificerede dig til Champions League."]:(mi<6?["⭐","Europa League","Du kvalificerede dig til Europa League."]:(mi===6?["✨","Conference League","Du kvalificerede dig til Conference League."]:null));
-  var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>Sæsonen er slut</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist" id="sumlist">'+
-    (mi===0?row("🏆","Du blev mester! 🏆","","sumwin"):"")+
-    (mi>=17?row("⬇️","Du rykkede ned","","sumdown"):"")+
-    row("📊","Placering",(mi+1)+". plads · "+me.p+" point")+
-    row("⚽","Resultater",me.w+" sejre · "+me.d+" uafgjorte · "+me.l+" nederlag<br>målforskel "+(me.gf-me.ga>0?"+":"")+(me.gf-me.ga))+
+  var eu=mi<4?["🌟","Champions League","You qualified for the Champions League."]:(mi<6?["⭐","Europa League","You qualified for the Europa League."]:(mi===6?["✨","Conference League","You qualified for the Conference League."]:null));
+  var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>The season is over</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist" id="sumlist">'+
+    (mi===0?row("🏆","You're the champions! 🏆","","sumwin"):"")+
+    (mi>=17?row("⬇️","You were relegated","","sumdown"):"")+
+    row("📊","Position",ordinal(mi+1)+" place · "+me.p+" points")+
+    row("⚽","Results",me.w+" wins · "+me.d+" draws · "+me.l+" losses<br>goal difference "+(me.gf-me.ga>0?"+":"")+(me.gf-me.ga))+
     (eu?row(eu[0],eu[1],eu[2]):"")+
-    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">Videre</button>';
+    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">Continue</button>';
   $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
   sumRecords();
 }
@@ -1749,18 +1751,18 @@ async function sumRecords(){
     var catT=function(title,fn,asc,ok){
       var l=T.filter(function(x){return ok(x)}).sort(function(a,b){return asc?fn(a)-fn(b):fn(b)-fn(a)});
       l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+":",lname(NET.uid)+" ("+fn(x)+")"])})};
-    catP("Flest mål i en sæson","goals",0);catP("Flest assists i en sæson","assists",0);catP("Flest clean sheets i en sæson","clean_sheets",0);
-    catP("Flest mål i en kamp","best_match_goals",1);catP("Flest røde kort i en sæson","reds",0);catP("Flest gule kort i en sæson","yellows",0);
-    catT("Flest point i en sæson",function(x){return x.points},false,function(){return true});
-    catT("Bedste målforskel",function(x){return x.gf-x.ga},false,function(){return true});
-    catT("Færreste mål imod",function(x){return x.ga},true,function(){return true});
-    catT("Længste streak",function(x){return x.win_streak},false,function(x){return x.win_streak>0});
-    catT("Største sejr",function(x){return x.big_win_margin},false,function(x){return x.big_win_margin>0});
+    catP("Most goals in a season","goals",0);catP("Most assists in a season","assists",0);catP("Most clean sheets in a season","clean_sheets",0);
+    catP("Most goals in a match","best_match_goals",1);catP("Most red cards in a season","reds",0);catP("Most yellow cards in a season","yellows",0);
+    catT("Most points in a season",function(x){return x.points},false,function(){return true});
+    catT("Best goal difference",function(x){return x.gf-x.ga},false,function(){return true});
+    catT("Fewest goals conceded",function(x){return x.ga},true,function(){return true});
+    catT("Longest winning streak",function(x){return x.win_streak},false,function(x){return x.win_streak>0});
+    catT("Biggest win",function(x){return x.big_win_margin},false,function(x){return x.big_win_margin>0});
     if(!out.length)return;
     out.sort(function(a,b){return a[0]-b[0]});
     var emo=function(o){var t=o[1];return o[0]===0?(/røde/.test(t)?"🔴":(/gule/.test(t)?"🟡":(/streak/.test(t)?"🔥":medal[0]))):medal[o[0]]};
     var el=document.createElement("div");el.className="sumrow";
-    el.innerHTML='<span class="si">'+emo(out[0])+'</span><div><b>'+(out[0][0]===0?"Ny rekord!":"Hall of Fame")+'</b><small>'+out.slice(0,4).map(function(o){return '<span class="recl">'+emo(o)+" "+esc(o[1])+"<br><b>"+esc(o[2])+"</b></span>"}).join("")+(out.length>4?'<span class="recl">og '+(out.length-4)+" mere</span>":"")+'</small></div>';
+    el.innerHTML='<span class="si">'+emo(out[0])+'</span><div><b>'+(out[0][0]===0?"New record!":"Hall of Fame")+'</b><small>'+out.slice(0,4).map(function(o){return '<span class="recl">'+emo(o)+" "+esc(o[1])+"<br><b>"+esc(o[2])+"</b></span>"}).join("")+(out.length>4?'<span class="recl">and '+(out.length-4)+" more</span>":"")+'</small></div>';
     box.appendChild(el);
   }catch(e){}
 }
@@ -1810,17 +1812,17 @@ function liveScriptFor(m){
   var side=m.home_key===NET.uid?"h":"a",out=[],oppK=side==="h"?m.away_key:m.home_key,aiOpp=!lhuman(oppK),oppN=lname(oppK);
   NET.season.events.filter(function(e){return e.match_id===m.id}).sort(function(a,b){return a.minute-b.minute||a.id-b.id}).forEach(function(e){
     var sd=e.team===side?"me":"opp",ai=sd==="opp"&&aiOpp,x=ai?oppN:pname(e.player_id);
-    if(e.type==="goal")out.push({m:e.minute,t:"goal",s:sd,x:x,ai:ai?1:0,a:e.pen?"Straffespark":((e.assist_id&&!ai)?"Assist: "+pname(e.assist_id):""),pen:e.pen?1:0});
+    if(e.type==="goal")out.push({m:e.minute,t:"goal",s:sd,x:x,ai:ai?1:0,a:e.pen?"Penalty":((e.assist_id&&!ai)?"Assist: "+pname(e.assist_id):""),pen:e.pen?1:0});
     else if(e.type==="yellow")out.push({m:e.minute,t:"y",s:sd,x:x,ai:ai?1:0});
     else if(e.type==="red")out.push({m:e.minute,t:"r",s:sd,x:x,ai:ai?1:0});
-    else if(e.type==="second_yellow")out.push({m:e.minute,t:"r",s:sd,x:x,ai:ai?1:0,a:"2. gult"});
+    else if(e.type==="second_yellow")out.push({m:e.minute,t:"r",s:sd,x:x,ai:ai?1:0,a:"2nd yellow"});
     else if(e.type==="pen_miss"){
       var gkAi=sd==="me"&&aiOpp;
-      out.push({m:e.minute,t:"pm",s:sd,x:x,ai:ai?1:0,a:e.assist_id?(gkAi?"Straffen blev reddet":"Straffen blev reddet af "+pname(e.assist_id)):"Straffen gik forbi"});
+      out.push({m:e.minute,t:"pm",s:sd,x:x,ai:ai?1:0,a:e.assist_id?(gkAi?"The penalty was saved":"The penalty was saved by "+pname(e.assist_id)):"The penalty went wide"});
     }
   });
   var lastM=out.reduce(function(a,e){return e.t==="sys"?a:Math.max(a,e.m)},0);
-  out.push({m:45,t:"sys",x:"Pause"});out.push({m:94,t:"sys",x:"Slutfløjt",lab:clockTxt(Math.max(90,lastM))});
+  out.push({m:45,t:"sys",x:"Half-time"});out.push({m:94,t:"sys",x:"Full time",lab:clockTxt(Math.max(90,lastM))});
   out.sort(function(a,b){return a.m-b.m||(a.t==="sys"?-1:1)});
   return out;
 }
@@ -1838,11 +1840,11 @@ function liveMatchHeader(){
 }
 function liveNextText(){
   var g=NET.game,r=NET.round;
-  if(r>=38)return "Det var sæsonens sidste runde.";
+  if(r>=38)return "That was the last round of the season.";
   var m=NET.season.matches.filter(function(x){return x.round===r+1&&(x.home_key===NET.uid||x.away_key===NET.uid)})[0];
   if(!m)return "";var home=m.home_key===NET.uid;
   var ok=home?m.away_key:m.home_key;
-  return '<span>Næste: runde '+(r+1)+' af 38 ·</span><span class="nxo">'+lcrest(ok,20)+'<span>'+esc(lname(ok))+' ('+(home?"H":"U")+')</span></span>';
+  return '<span>Next: round '+(r+1)+' of 38 ·</span><span class="nxo">'+lcrest(ok,20)+'<span>'+esc(lname(ok))+' ('+(home?"H":"A")+')</span></span>';
 }
 function lhname(k,right){
   var ic=lcrest(k,20),nm='<span class="t">'+esc(lname(k))+'</span>';
@@ -1856,7 +1858,7 @@ function liveOthers(mode){
     var mi=m.home_key===NET.uid||m.away_key===NET.uid,show=mode===true||(mode==="mine"&&mi);
     return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(show?m.home_goals+" – "+m.away_goals:'<span class="livetag"><i></i>LIVE</span>')+'</span>'+lhname(m.away_key,true)+'</div>';
   }).join("");
-  if(mode==="mine")h+='<p class="note" style="margin:8px 0 4px;text-align:center">De andre resultater vises, når alle er færdige med kampen.</p>';
+  if(mode==="mine")h+='<p class="note" style="margin:8px 0 4px;text-align:center">The other results are shown when everyone has finished the match.</p>';
   $("others").innerHTML=h;
 }
 /* resultater fra runden vises først, når alle menneskespillere er færdige med deres kamp */
@@ -1871,13 +1873,13 @@ function liveReady(){
   var g=NET.game;if(!g)return;
   $("ready").hidden=NET.players.length<2;
   $("ready").innerHTML=NET.players.map(function(p){
-    var me=p.user_id===NET.uid,ok=p.ready_round>=g.current_round,away=!ok&&lAway(p),nm=me?"Dig":(p.team_name||"Spiller");
-    return '<span class="'+(ok?"ok":"")+'">'+(me?'':'<i class="dotc" style="background:'+(p.color1||"#8c97b5")+'"></i>')+esc(nm)+(ok?", klar":(away?", væk (springes over)":""))+'</span>';
+    var me=p.user_id===NET.uid,ok=p.ready_round>=g.current_round,away=!ok&&lAway(p),nm=me?"You":(p.team_name||"Player");
+    return '<span class="'+(ok?"ok":"")+'">'+(me?'':'<i class="dotc" style="background:'+(p.color1||"#8c97b5")+'"></i>')+esc(nm)+(ok?", ready":(away?", away (skipped)":""))+'</span>';
   }).join("");
 }
 function liveFinishMatch(){
   var g=NET.game,r=NET.round;
-  $("prog").style.width="100%";$("clk").textContent="Slut";
+  $("prog").style.width="100%";$("clk").textContent="FT";
   NET.finishedRound=r;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me0)me0.done_round=Math.max(me0.done_round||0,r);
   NET.sb.rpc("match_done",{p_game:NET.gid,p_round:r}).then(function(){liveChanged()},function(){});
@@ -1885,8 +1887,8 @@ function liveFinishMatch(){
   $("playBtn").disabled=false;$("skipBtn").disabled=true;
   var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var rb=$("readyBtn");
-  if(r>=38){rb.textContent="Slut sæson";rb.disabled=false;rb.dataset.end="1"}
-  else{rb.dataset.end="";rb.textContent=me.ready_round>=r?"Venter på de andre":"Næste kamp";rb.disabled=me.ready_round>=r}
+  if(r>=38){rb.textContent="End season";rb.disabled=false;rb.dataset.end="1"}
+  else{rb.dataset.end="";rb.textContent=me.ready_round>=r?"Waiting for the others":"Next match";rb.disabled=me.ready_round>=r}
   $("forceBtn").hidden=!(g.admin_id===NET.uid&&g.status==="season"&&r<38&&NET.players.length>1);
   liveReady();
   var up=document.getElementById("s-table").classList.contains("on");if(up)renderTableLive();
@@ -1894,15 +1896,15 @@ function liveFinishMatch(){
 async function liveReadyPress(){
   var rb=$("readyBtn"),g=NET.game;
   if(rb.dataset.end==="1"){go("end");return}
-  rb.disabled=true;rb.textContent="Venter på de andre";
+  rb.disabled=true;rb.textContent="Waiting for the others";
   try{
     var r0=await NET.sb.rpc("ready_round",{p_game:NET.gid,p_round:NET.round});if(r0.error)throw r0.error;
     await liveChanged();
     callEngine("advance").catch(function(){}).then(function(){liveChanged()});
-  }catch(e){netErr(e);rb.disabled=false;rb.textContent="Næste kamp"}
+  }catch(e){netErr(e);rb.disabled=false;rb.textContent="Next match"}
 }
 async function liveForce(){
-  try{await callEngine("advance",{force:true});toast("Runden er tvunget videre.",2600);liveChanged()}catch(e){netErr(e)}
+  try{await callEngine("advance",{force:true});toast("The round has been forced ahead.",2600);liveChanged()}catch(e){netErr(e)}
 }
 /* europæiske pladser: kun baggrundsfarve (1-4 Champions League, 5-6 Europa League, 7 Conference League) */
 function zone(i){return i<4?" z zcl":(i<6?" z zel":(i===6?" z zec":(i>=17?" z zrd":"")))}
@@ -1921,11 +1923,11 @@ function renderTableLive(){
   if(!NET.season)return;
   var up=NET.shownRound,rows=standingsLive(up),prev={};
   if(up>1)standingsLive(up-1).forEach(function(r1,i){prev[r1.k]=i});
-  $("tblSub").textContent=up<1?"Ingen kampe er spillet endnu.":"Efter "+up+" af 38 runder.";
-  var h='<div class="tr h"><span>#</span><span>Hold</span><span class="num">P</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
+  $("tblSub").textContent=up<1?"No matches have been played yet.":"After "+up+" of 38 rounds.";
+  var h='<div class="tr h"><span>#</span><span>Team</span><span class="num">P</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
   rows.forEach(function(r1,i){
     var me=r1.k===NET.uid,fr=lhuman(r1.k)&&!me,d=prev[r1.k]!==undefined?prev[r1.k]-i:0;
-    var ar=d>0?'<i class="ar up" title="Op '+d+'"></i>':(d<0?'<i class="ar dn" title="Ned '+(-d)+'"></i>':'');
+    var ar=d>0?'<i class="ar up" title="Up '+d+'"></i>':(d<0?'<i class="ar dn" title="Down '+(-d)+'"></i>':'');
     h+='<div class="tr'+(me?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(r1.k,20)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+(r1.w+r1.d+r1.l)+'</span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>';
   });
   $("tbl").innerHTML=h;
@@ -1950,26 +1952,26 @@ function liveStatMaps(){
   });
   return {owner:owner,g:g,a:a,y:y,rd:rd,cs:cs};
 }
-var STATLIVE={goals:["Mål","mål"],assists:["Assists","assists"],cards:["Kort",""],cs:["Clean sheets",""]};
+var STATLIVE={goals:["Goals","goals"],assists:["Assists","assists"],cards:["Cards",""],cs:["Clean sheets",""]};
 function statsParts(attr){
   var st=liveStatMaps(),tabs=["goals","assists","cards","cs","squad"];
   if(tabs.indexOf(statTab)<0)statTab="goals";
-  var seg=tabs.map(function(k){return '<button '+attr+'="'+k+'" class="'+(k===statTab?"on":"")+'">'+(k==="squad"?"Din trup":STATLIVE[k][0])+'</button>'}).join("");
+  var seg=tabs.map(function(k){return '<button '+attr+'="'+k+'" class="'+(k===statTab?"on":"")+'">'+(k==="squad"?"Your squad":STATLIVE[k][0])+'</button>'}).join("");
   var h="",top=function(map,val){return Object.keys(map).map(function(pid){return [+pid,map[pid]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,10)};
   var row=function(i,pid,v){var k=st.owner[pid];return '<div class="sr"><span class="rk">'+(i+1)+'</span><div>'+esc(pname(pid))+'<small>'+lcrest(k,18)+esc(lname(k))+'</small></div><span class="v">'+v+'</span></div>'};
   if(statTab==="squad"){
     (NET.season.lineups[NET.uid]||[]).forEach(function(pid){
       var p=NET.byId[pid].p,isg=p[1]==="GK";
-      h+='<div class="sr"><span class="rk">'+POSC[p[1]]+'</span><div>'+esc(p[0])+'<small>'+(isg?(st.cs[pid]||0)+" clean sheets":(st.g[pid]||0)+" mål, "+(st.a[pid]||0)+" assists")+'</small></div><span class="v">'+(st.y[pid]||0)+'<small>gule</small>'+(st.rd[pid]?' '+st.rd[pid]+'<small>rødt</small>':'')+'</span></div>';
+      h+='<div class="sr"><span class="rk">'+POSC[p[1]]+'</span><div>'+esc(p[0])+'<small>'+(isg?(st.cs[pid]||0)+" clean sheets":(st.g[pid]||0)+" goals, "+(st.a[pid]||0)+" assists")+'</small></div><span class="v">'+(st.y[pid]||0)+'<small>yellow</small>'+(st.rd[pid]?' '+st.rd[pid]+'<small>red</small>':'')+'</span></div>';
     });
   }else if(statTab==="cards"){
     var ids={};Object.keys(st.y).concat(Object.keys(st.rd)).forEach(function(p){ids[p]=(st.y[p]||0)+3*(st.rd[p]||0)});
-    top(ids).forEach(function(x,i){h+=row(i,x[0],(st.y[x[0]]||0)+'<small>gule</small> '+(st.rd[x[0]]||0)+'<small>rødt</small>')});
+    top(ids).forEach(function(x,i){h+=row(i,x[0],(st.y[x[0]]||0)+'<small>yellow</small> '+(st.rd[x[0]]||0)+'<small>red</small>')});
   }else{
     var map=statTab==="goals"?st.g:(statTab==="assists"?st.a:st.cs),u=STATLIVE[statTab][1];
     top(map).forEach(function(x,i){h+=row(i,x[0],x[1]+(u?'<small>'+u+'</small>':""))});
   }
-  return {seg:seg,list:h||'<p class="note">Ingen endnu.</p>'};
+  return {seg:seg,list:h||'<p class="note">None yet.</p>'};
 }
 function renderStatsLive(){
   if(!NET.season)return;
@@ -1977,15 +1979,15 @@ function renderStatsLive(){
 }
 function renderEndLive(){
   HOFC=null;
-  if(!NET.season){$("endbody").innerHTML='<h1>Sæsonen er ikke slut</h1>';return}
+  if(!NET.season){$("endbody").innerHTML='<h1>The season isn\'t over</h1>';return}
   var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
   var T34=TROPHY.replace('width="54" height="54"','width="26" height="26"');
   var tab=S.endTab||"stil";if(tab==="pris"&&0)tab="stil";
-  var h='<div class="card champ sm" style="margin-top:0"><div class="lblm">'+T34+'<span>Mestre</span>'+T34+'</div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b><p class="note champs">'+champ.p+' points<br>'+champ.w+'W '+champ.d+'D '+champ.l+'L</p></div>';
+  var h='<div class="card champ sm" style="margin-top:0"><div class="lblm">'+T34+'<span>Champions</span>'+T34+'</div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b><p class="note champs">'+champ.p+' points<br>'+champ.w+'W '+champ.d+'D '+champ.l+'L</p></div>';
   var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
   if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
-    h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Bedst blandt jer</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (dig)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">nr. '+(bt.i+1)+', '+bt.r.p+' point</span></div></div>'}
-  h+='<div class="etabs">'+[["stil","Slutstilling"],["pris","Awards"],["stats","Stats"],["kampe","Kampe fra sæsonen"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
+    h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Best among you</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (you)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">'+ordinal(bt.i+1)+', '+bt.r.p+' points</span></div></div>'}
+  h+='<div class="etabs">'+[["stil","Final table"],["pris","Awards"],["stats","Stats"],["kampe","Matches from the season"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
   var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":(lhuman(k)?" fr":""))+'"><span class="hk">'+(i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
   if(tab==="stil"){
     var full=!!S.endFull,list;
@@ -1994,11 +1996,11 @@ function renderEndLive(){
       var rest=rows.map(function(r1,i){return {r:r1,i:i}}).slice(5).filter(function(x){return lhuman(x.r.k)});
       list=rows.slice(0,5).map(function(r1,i){return er(i,r1.k,r1.p)}).join("")+rest.map(function(x){return '<div style="text-align:center;color:var(--mut);padding:0">⋯</div>'+er(x.i,x.r.k,x.r.p)}).join("");
     }
-    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+list+'<button class="linkbtn" data-endfull="1" style="margin:6px auto 4px">'+(full?"Skjul tabellen ⌃":"Vis hele tabellen ⌄")+'</button></div>';
+    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+list+'<button class="linkbtn" data-endfull="1" style="margin:6px auto 4px">'+(full?"Hide table ⌃":"Show full table ⌄")+'</button></div>';
   }else if(tab==="pris"){
     var best=function(map){var b=null;Object.keys(map).forEach(function(p){if(!b||map[p]>map[b])b=p});return b};
-    var aw=[["Topscorer",best(st.g),st.g,"mål","⚽"],["Flest assists",best(st.a),st.a,"assists","🎯"],["Bedste målmand",best(st.cs),st.cs,"clean sheets","🧤"]].filter(function(a){return a[1]});
-    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+(aw.length?aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+a[4]+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[2][a[1]]+' '+a[3]+'</span></div>'}).join(""):'<p class="note">Ingen awards denne sæson.</p>')+'</div>';
+    var aw=[["Top scorer",best(st.g),st.g,"goals","⚽"],["Most assists",best(st.a),st.a,"assists","🎯"],["Best goalkeeper",best(st.cs),st.cs,"clean sheets","🧤"]].filter(function(a){return a[1]});
+    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+(aw.length?aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+a[4]+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[2][a[1]]+' '+a[3]+'</span></div>'}).join(""):'<p class="note">No awards this season.</p>')+'</div>';
   }else if(tab==="stats"){
     var sp=statsParts("data-stt");
     h+='<div class="seg" style="margin-top:10px">'+sp.seg+'</div><div class="card" style="margin-top:10px"><div>'+sp.list+'</div></div>';
@@ -2007,10 +2009,10 @@ function renderEndLive(){
     h+='<div class="card" style="margin-top:10px;padding:2px 14px;max-height:330px;overflow-y:auto">'+mine.map(function(m){
       var home=m.home_key===NET.uid,gf=home?m.home_goals:m.away_goals,ga=home?m.away_goals:m.home_goals,opp=home?m.away_key:m.home_key;
       var res=gf>ga?"W":(gf===ga?"D":"L"),col=gf>ga?"var(--acc)":(gf===ga?"var(--mut)":"var(--red)");
-      return '<div class="endrow" style="padding:6px 0"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"H":"U")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
+      return '<div class="endrow" style="padding:6px 0"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"H":"A")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
     }).join("")+'</div>';
   }
-  h+='<div class="nav2 endbtns"><button class="btn p go" data-end="newseason">Ny sæson</button><button class="btn" data-end="hof">Hall of Fame</button><button class="btn" data-end="home">Forside</button></div>';
+  h+='<div class="nav2 endbtns"><button class="btn p go" data-end="newseason">New season</button><button class="btn" data-end="hof">Hall of Fame</button><button class="btn" data-end="home">Home</button></div>';
   $("endbody").innerHTML=h;
 }
 
@@ -2021,21 +2023,21 @@ async function liveGoNext(id){
   NET.gid=id;liveResetGame();
   G.started=false;S.matchSeen=false;
   try{localStorage.setItem("dsfc-gid",id)}catch(x){}
-  toast("Ny sæson starter. Draften går i gang.",3200);
+  toast("A new season is starting. The draft begins.",3200);
   try{await liveLoad();liveSub();liveEnter()}catch(e){netErr(e)}
 }
 var HOFC=null;
 function medal(i,em){return i<3?'<span class="md">'+(i===0&&em?em:['🏆','🥈','🥉'][i])+'</span>':i+1}
 async function renderHofLive(){
   HOFTAB="pl";$("hseg").hidden=true;
-  if(!(HOFC&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Henter rekorder...</p>';
+  if(!(HOFC&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
   var pr,tr;
   if(HOFC&&Date.now()-HOFC.at<60000){pr=HOFC.pr;tr=HOFC.tr}
   else{pr=await NET.sb.from("hof_players").select("*").eq("league","PL");tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");if(!pr.error&&!tr.error)HOFC={at:Date.now(),pr:pr,tr:tr}}
-  if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Kunne ikke hente rekorderne.</p>';return}
+  if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
   var P=pr.data||[],T=tr.data||[];
-  if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:10px"><b>Ingen færdige sæsoner endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når en sæson er slut.</p></div>';return}
-  var se=function(x){return [x.season_no>1?"sæson "+x.season_no:"",x.players?x.players+(x.players===1?" spiller":" spillere"):""].filter(Boolean).join(", ")};
+  if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:10px"><b>No finished seasons yet</b><p class="note" style="margin-top:4px">Records appear when a season is over.</p></div>';return}
+  var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
   var opp=function(t){if(!t)return false;var m=String(t).replace(/,?\s*runde\s*\d+\s*$/i,'').trim();return m||false};
@@ -2044,24 +2046,24 @@ async function renderHofLive(){
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
   var topU=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return top(Object.keys(b).map(function(k){return b[k]}),key)};
   var C=[];
-  var cat=function(title,rows){C.push([title,'<div class="card hcat" style="margin-top:10px"><h3>'+title+'</h3>'+(rows||'<p class="note">Ingen endnu.</p>')+'</div>']);return ""};
+  var cat=function(title,rows){C.push([title,'<div class="card hcat" style="margin-top:10px"><h3>'+title+'</h3>'+(rows||'<p class="note">None yet.</p>')+'</div>']);return ""};
   var h='';
-  h+=cat("Flest mål i en sæson",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}).join(""));
-  h+=cat("Flest assists i en sæson",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}).join(""));
-  h+=cat("Flest clean sheets i en sæson",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}).join(""));
-  h+=cat("Flest point i en sæson",top(T,"points").map(function(x,i){return tRow(i,x,x.points,x.w+" sejre, "+x.d+" uafgjorte, "+x.l+" nederlag")}).join(""));
-  h+=cat("Flest mål i en kamp",topU(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,opp(x.best_match_text))}).join(""));
+  h+=cat("Most goals in a season",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}).join(""));
+  h+=cat("Most assists in a season",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}).join(""));
+  h+=cat("Most clean sheets in a season",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}).join(""));
+  h+=cat("Most points in a season",top(T,"points").map(function(x,i){return tRow(i,x,x.points,x.w+" wins, "+x.d+" draws, "+x.l+" losses")}).join(""));
+  h+=cat("Most goals in a match",topU(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,opp(x.best_match_text))}).join(""));
   var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
-  h+=cat("Bedste målforskel",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,x.gf+" for, "+x.ga+" imod")}).join(""));
-  h+=cat("Færreste mål imod",top(T,"ga",true).map(function(x,i){return tRow(i,x,x.ga,x.gf+" scoret")}).join(""));
-  h+=cat("Længste streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,"sejre i træk","🔥")}).join(""));
-  h+=cat("Største sejr",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}).join(""));
-  h+=cat("Flest røde kort i en sæson",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}).join(""));
-  h+=cat("Flest gule kort i en sæson",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}).join(""));
+  h+=cat("Best goal difference",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,x.gf+" for, "+x.ga+" against")}).join(""));
+  h+=cat("Fewest goals conceded",top(T,"ga",true).map(function(x,i){return tRow(i,x,x.ga,x.gf+" scoret")}).join(""));
+  h+=cat("Longest winning streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,"wins in a row","🔥")}).join(""));
+  h+=cat("Biggest win",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}).join(""));
+  h+=cat("Most red cards in a season",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}).join(""));
+  h+=cat("Most yellow cards in a season",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}).join(""));
   var by={};T.filter(function(x){return x.champion}).forEach(function(x){var k=x.user_id||x.team_name;by[k]=by[k]||Object.assign({},x,{n:0});by[k].n++;by[k].team_name=x.team_name});
   var champs=Object.keys(by).map(function(k){return by[k]});
-  h+=cat("Flest mesterskaber",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" sæson":" sæsoner"))}).join(""));
-  var SH={"Flest mål i en sæson":"Mål","Flest assists i en sæson":"Assists","Flest clean sheets i en sæson":"Clean sheets","Flest point i en sæson":"Point","Flest mål i en kamp":"Mål i kamp","Bedste målforskel":"Målforskel","Færreste mål imod":"Mål imod","Længste streak":"Streak","Største sejr":"Største sejr","Flest røde kort i en sæson":"Røde kort","Flest gule kort i en sæson":"Gule kort","Flest mesterskaber":"Mesterskaber"};
+  h+=cat("Most titles",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"))}).join(""));
+  var SH={"Most goals in a season":"Goals","Most assists in a season":"Assists","Most clean sheets in a season":"Clean sheets","Most points in a season":"Points","Most goals in a match":"Goals in match","Best goal difference":"Goal difference","Fewest goals conceded":"Goals conceded","Longest winning streak":"Streak","Biggest win":"Biggest win","Most red cards in a season":"Red cards","Most yellow cards in a season":"Yellow cards","Most titles":"Titles"};
   var ci=C.map(function(c){return c[0]}).indexOf(HOFCAT);if(ci<0)ci=0;HOFCAT=C[ci][0];
   $("hbody").innerHTML='<div class="seg hcats">'+C.map(function(c){return '<button data-hc="'+esc(c[0])+'" class="'+(c[0]===HOFCAT?"on":"")+'">'+(SH[c[0]]||c[0])+'</button>'}).join("")+'</div>'+C[ci][1];
 }
@@ -2100,7 +2102,7 @@ function liveDraftSync(){
   var g=NET.game,pl=NET.players;
   var me=pl.filter(function(p){return p.user_id===NET.uid})[0];
   P={me:{joined:true,ready:true}};FRIENDS={};FTEAM={};FCR={};
-  pl.forEach(function(p){var k=keyOf(p.user_id);if(k==="me")return;P[k]={joined:true,ready:true};FRIENDS[k]=p.color1||"#8c97b5";FTEAM[k]=p.team_name||"Spiller";FCR[k]=[(p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",p.crest_tag||""]});
+  pl.forEach(function(p){var k=keyOf(p.user_id);if(k==="me")return;P[k]={joined:true,ready:true};FRIENDS[k]=p.color1||"#8c97b5";FTEAM[k]=p.team_name||"Player";FCR[k]=[(p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",p.crest_tag||""]});
   S.tag=me.crest_tag||"";S.team=me.team_name||S.team;S.color=me.color1||S.color;S.color2=me.color2||S.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe();
   S.order=(g.draft_order||[]).map(keyOf);
   var n=S.order.length;S.seq=[];
@@ -2115,8 +2117,8 @@ function liveDraftSync(){
     var slotPos=FORMS[owner.formation].reduce(function(a,r2){return a.concat(r2)},[])[pk.slot-1];
     var e={name:info.p[0],sn:info.p[6]||"",pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos,info.p[4])===1};
     if(k==="me")S.squad[pk.slot-1]=e;else if(S.fsq[k])S.fsq[k].squad[pk.slot-1]=e;
-    S.counts[k]=(S.counts[k]||0)+1;S.taken[info.p[0]]=k==="me"?(S.team.trim()||"Mit hold"):(FTEAM[k]||"Spiller");
-    feed.push({who:k==="me"?"Du":(FTEAM[k]||"Spiller"),name:info.p[0],pos:info.p[1],club:info.club});
+    S.counts[k]=(S.counts[k]||0)+1;S.taken[info.p[0]]=k==="me"?(S.team.trim()||"My team"):(FTEAM[k]||"Player");
+    feed.push({who:k==="me"?"You":(FTEAM[k]||"Player"),name:info.p[0],pos:info.p[1],club:info.club});
   });
   S.feed=feed.reverse();
   var mine=S.seq[S.pickIdx]==="me",cc=g.current_club;
@@ -2142,13 +2144,13 @@ function liveDraftRender(){
   if(dsig===NET.dsig&&$("clubpanel").children.length+($("dpitch").children.length)>0){liveTimerTick();return}
   NET.dsig=dsig;
   $("draftMain").classList.toggle("solo",NET.players.length<2);
-  if(cur==="me"&&NET.lastPick!==S.pickIdx&&!S.club&&!S.spinning){toast("Din tur. Spin the wheel.",2200)}
+  if(cur==="me"&&NET.lastPick!==S.pickIdx&&!S.club&&!S.spinning){toast("Your turn. Spin the wheel.",2200)}
   if(NET.lastPick!==S.pickIdx){S.view=cur&&(cur==="me"||S.fsq[cur])?cur:"me"}
   NET.lastPick=S.pickIdx;
   renderDraft();renderSheet();
   var af=$("adminForce");
   if(af){
-    if(g.admin_id===NET.uid&&g.status==="draft"&&cur&&cur!=="me")af.innerHTML='<button class="btn" data-force="1" style="padding:6px 12px;font-size:13px;min-height:0;margin-bottom:8px">Vælg automatisk for '+esc(teamName(cur))+'</button>';
+    if(g.admin_id===NET.uid&&g.status==="draft"&&cur&&cur!=="me")af.innerHTML='<button class="btn" data-force="1" style="padding:6px 12px;font-size:13px;min-height:0;margin-bottom:8px">Auto-pick for '+esc(teamName(cur))+'</button>';
     else af.innerHTML="";
   }
   liveTimerTick();
@@ -2156,7 +2158,7 @@ function liveDraftRender(){
 var forceArm=0;
 $("adminForce").addEventListener("click",function(e){
   var b=e.target.closest("[data-force]");if(!b)return;
-  if(Date.now()-forceArm>3500){forceArm=Date.now();b.textContent="Tryk igen for at bekræfte";return}
+  if(Date.now()-forceArm>3500){forceArm=Date.now();b.textContent="Tap again to confirm";return}
   forceArm=0;b.disabled=true;
   NET.sb.rpc("claim_timeout",{p_game:NET.gid,p_force:true}).then(function(r0){if(r0.error)netErr(r0.error);liveChanged()});
 });
@@ -2164,7 +2166,7 @@ function liveTimerTick(){
   var g=NET.game,t=$("timerLine");if(!t)return;
   if(!g||g.status!=="draft"||!g.turn_deadline||S.phase!=="draft"){t.textContent="";t.className="timer";return}
   var left=Math.ceil((Date.parse(g.turn_deadline)-Date.now())/1000),cur=S.seq[S.pickIdx];
-  t.textContent=(cur==="me"?"Tid tilbage: ":"Tid tilbage for "+teamName(cur)+": ")+Math.max(left,0)+" s";
+  t.textContent=(cur==="me"?"Time left: ":"Time left for "+teamName(cur)+": ")+Math.max(left,0)+" s";
   t.className="timer"+(left<=10?" low":"");
   if(left<=-1&&Date.now()-NET.claimAt>2500){
     NET.claimAt=Date.now();
@@ -2188,7 +2190,7 @@ async function liveSpin(){
 async function liveRespin(){
   if(!myTurn()||S.spinning||!S.club)return;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(!me0||(NET.game.respins||0)-(me0.respins_used||0)<=0)return;
-  S.spinning=true;S.sel=null;renderDraft();renderSheet();toast("Spinner igen…",1600);
+  S.spinning=true;S.sel=null;renderDraft();renderSheet();toast("Spinning again…",1600);
   window.scrollTo({top:0,behavior:"smooth"});
   var r0;try{r0=await NET.sb.rpc("respin",{p_game:NET.gid})}catch(e){r0={error:e}}
   if(r0.error){S.spinning=false;renderDraft();netErr(r0.error);await liveChanged();return}
@@ -2207,14 +2209,14 @@ async function livePick(name,i){
   NET.pending=true;
   /* optimistisk: spilleren står på banen med det samme, serveren bekræfter i baggrunden */
   S.squad[i]={name:p[0],sn:p[6]||"",pos:p[1],club:club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2],sv:1};
-  S.taken[p[0]]=S.team.trim()||"Mit hold";S.counts.me=(S.counts.me||0)+1;
-  S.feed.unshift({who:"Du",name:p[0],pos:p[1],club:club});
+  S.taken[p[0]]=S.team.trim()||"My team";S.counts.me=(S.counts.me||0)+1;
+  S.feed.unshift({who:"You",name:p[0],pos:p[1],club:club});
   S.sel=null;S.club=null;S.view="me";
   renderDraft();renderSheet();
   window.scrollTo({top:0,behavior:"smooth"});
   var r0;try{r0=await NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1})}catch(e){r0={error:e}}
   NET.pending=false;
-  if(r0.error)toast("Ups, der skete en fejl, prøv igen!",4200);
+  if(r0.error)toast("Oops, something went wrong, please try again!",4200);
   await liveChanged();
 }
 /* web push: besked når det er din tur (virker på iPhone, når spillet ligger på hjemmeskærmen) */
@@ -2232,14 +2234,14 @@ function pushState(){
 function homeBanner(){
   if(pushStandalone()||!(navigator.maxTouchPoints>0)||Math.min(screen.width,screen.height)>820)return "";
   try{var t=+localStorage.getItem("dsfc-homehide")||0;if(Date.now()-t<7*864e5)return ""}catch(e){}
-  var how=pushIOS()?'Tryk på <b>Del</b>-ikonet (firkant med pil) og vælg <b>Føj til hjemmeskærm</b>.':'Tryk på menuen (<b>⋮</b>) og vælg <b>Føj til startskærm</b> eller <b>Installer app</b>.';
-  return '<div class="hbanner"><details><summary>Læg spillet på din hjemmeskærm</summary><p class="note">'+how+' Så åbner det som en rigtig app, din plads i spillet er langt sikrere mod at blive ryddet af telefonen, og du kan få besked, når det er din tur.</p></details><button class="hbx" data-act="homehide" aria-label="Skjul i 7 dage">✕</button></div>';
+  var how=pushIOS()?'Tap <b>Share</b>icon (square with arrow) and choose <b>Add to Home Screen</b>.':'Tap the menu (<b>⋮</b>) and choose <b>Add to Home screen</b> or <b>Install app</b>.';
+  return '<div class="hbanner"><details><summary>Add the game to your home screen</summary><p class="note">'+how+' That way it opens like a real app, your place in the game is far safer from being cleared by the phone, and you can get notified when it\'s your turn.</p></details><button class="hbx" data-act="homehide" aria-label="Hide for 7 days">✕</button></div>';
 }
 function pushLine(){
   var s=pushState(),st='';
   if(s==="home")return "";
-  if(s==="denied")return '<p class="note" style="margin-top:14px;text-align:center">Beskeder er slået fra i telefonens indstillinger.</p>';
-  if(s==="off")return '<button class="linkbtn" data-act="pushtoggle" '+st+'>Få besked, når det er din tur</button>';
+  if(s==="denied")return '<p class="note" style="margin-top:14px;text-align:center">Notifications are turned off in your phone\'s settings.</p>';
+  if(s==="off")return '<button class="linkbtn" data-act="pushtoggle" '+st+'>Get notified when it\'s your turn</button>';
   if(s==="on")return "";
   return "";
 }
@@ -2265,15 +2267,15 @@ async function pushToggle(){
     if(sub){
       var ep=sub.endpoint;await sub.unsubscribe();PUSH.on=false;
       try{await NET.sb.rpc("drop_push_sub",{p_endpoint:ep})}catch(e){}
-      toast("Beskeder slået fra");
+      toast("Notifications turned off");
     }else{
       var perm=await Notification.requestPermission();
-      if(perm!=="granted"){toast("Du sagde nej til beskeder");PUSH.busy=false;renderFlow();return}
+      if(perm!=="granted"){toast("You declined notifications");PUSH.busy=false;renderFlow();return}
       sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID_PUB)});
       await pushSave(sub);PUSH.on=true;
-      toast("Du får besked, når det er din tur");
+      toast("You'll be notified when it's your turn");
     }
-  }catch(e){toast("Kunne ikke slå beskeder til")}
+  }catch(e){toast("Couldn't turn on notifications")}
   PUSH.busy=false;if(!role&&!G.started)renderFlow();
 }
 async function liveBoot(){
@@ -2281,7 +2283,7 @@ async function liveBoot(){
   var pre=(new URLSearchParams(location.search).get("code")||"").length===6;
   if(!pre)goStart();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
   try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}
-  try{await liveInit()}catch(e){toast("Kunne ikke logge ind. Tjek forbindelsen og prøv igen.",6000);return}
+  try{await liveInit()}catch(e){toast("Couldn't sign in. Check your connection and try again.",6000);return}
   pushInit();
   livePlayers();
   var gid=null;try{gid=localStorage.getItem("dsfc-gid")}catch(x){}
@@ -2315,7 +2317,7 @@ function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET
   var rnd=function(a){return a[Math.floor(Math.random()*a.length)]};
   async function startTestGame(mode){
     if(NET.creating)return;NET.creating=true;
-    toast("Starter testspil…",90000);
+    toast("Starting test game…",90000);
     try{
       await NET.ready;
       var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode});
@@ -2323,7 +2325,7 @@ function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET
       NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode;
       try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
       var nm=S.pname.trim().length>=2?S.pname.trim():"Tester";
-      S.pname=nm;S.team="Testhold "+(10+Math.floor(Math.random()*90));S.tag="";S.form=rnd(FORM_ORDER);
+      S.pname=nm;S.team="Test team "+(10+Math.floor(Math.random()*90));S.tag="";S.form=rnd(FORM_ORDER);
       S.color=rnd(SWATCH);S.color2=rnd(SWATCH.filter(function(c){return c!==S.color}));S.crest=Math.floor(Math.random()*12);
       var g=NET.gid,call=async function(fn,a){var r=await NET.sb.rpc(fn,a);if(r.error)throw r.error;return r.data};
       await call("open_setup",{p_game:g});
@@ -2342,10 +2344,10 @@ function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET
           sl.forEach(function(sp,k){if(usedS[k+1])return;var v=fit(a[1],sp,a[4]);if(v===2)ns.push(k);else if(v===1)ps.push(k)});
           if(ns.length)nat.push([a,ns]);else if(ps.length)pen.push([a,ps]);
         });
-        var pool=nat.length?nat:pen;if(!pool.length)throw new Error("Ingen spiller passer");
+        var pool=nat.length?nat:pen;if(!pool.length)throw new Error("No player fits");
         var x=rnd(pool);await call("pick_player",{p_game:g,p_player:x[0][3],p_slot:rnd(x[1])+1});
       }
-      await liveLoad();liveEnter();toast("Testspil klar",1600);
+      await liveLoad();liveEnter();toast("Test game ready",1600);
     }catch(e){netErr(e);try{liveLeave()}catch(x){}}
     finally{NET.creating=false}
   }
