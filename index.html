@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.14.3">
+<meta name="app-version" content="2.14.4">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1852,8 +1852,15 @@ async function liveChanged(){
   try{await liveLoad();liveConn(true);liveApply()}catch(e){liveConn(false)}finally{liveBusy=false;if(liveAgain){liveAgain=false;liveChanged()}}
 }
 var liveAgain=false;
+/* nulstil al tilstand fra et spil, så næste spil i samme sidesession starter rent */
+function liveResetGame(){
+  try{simClear()}catch(e){}
+  NET.game=null;NET.players=[];NET.picks=[];NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;
+  NET.sim=null;NET.simWait=null;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
+  NET.dsig=null;NET.pending=false;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
+}
 function liveLeave(msg){
-  liveUnsub();clearInterval(NET.tt);NET.gid=null;NET.game=null;NET.players=[];NET.picks=[];NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;G.started=false;
+  liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame();G.started=false;
   try{localStorage.removeItem("dsfc-gid")}catch(x){}
   if(msg)toast(msg,4200);
   $("toStart").click();
@@ -2473,7 +2480,7 @@ async function liveNewSeason(b){
 async function liveGoNext(id){
   if(NET.gid===id)return;
   liveUnsub();clearInterval(NET.tt);
-  NET.gid=id;NET.game=null;NET.players=[];NET.picks=[];NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
+  NET.gid=id;liveResetGame();
   G.started=false;S.matchSeen=false;
   try{localStorage.setItem("dsfc-gid",id)}catch(x){}
   toast("Ny sæson starter. Draften går i gang.",3200);
