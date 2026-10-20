@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.24.3">
+<meta name="app-version" content="2.24.4">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -32,7 +32,7 @@
 .siminfo{margin:8px 0 0;padding:8px 12px 6px}
 .sirow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
 .siminfo .simbar{margin:6px 0 6px;height:4px}
-.tr.sm{padding:0;font-size:12.5px;line-height:20px;grid-template-columns:28px 1fr 20px 20px 20px 20px 32px 28px}
+.tr.sm{padding:0;font-size:12.5px;line-height:20px;grid-template-columns:34px 1fr 20px 20px 20px 20px 32px 28px}
 .tr.sm .rk{font-size:12px}
 .simlist{flex:1;min-height:0;overflow-y:auto;margin-top:8px;-webkit-overflow-scrolling:touch}
 .simlh{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;padding:2px 2px 4px;position:sticky;top:0;background:var(--bg)}
@@ -368,6 +368,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .res .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .res .hu{color:var(--acc-lt);font-weight:500}
 .tr .rk{display:flex;align-items:center;gap:5px;font-family:var(--mono);color:var(--mut);font-size:14px}
+.arw{display:inline-flex;align-items:center;justify-content:center;width:8px;flex:none}
 .ar{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent}
 .ar.up{border-bottom:6px solid #4fae6a}
 .ar.dn{border-top:6px solid var(--red)}
@@ -386,7 +387,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .ready span.ok{color:var(--text)}
 
 /* tabel og stats */
-.tr{display:grid;grid-template-columns:30px 1fr 20px 20px 20px 20px 30px 26px;gap:3px;align-items:center;padding:2px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.tr{display:grid;grid-template-columns:38px 1fr 20px 20px 20px 20px 30px 26px;gap:3px;align-items:center;padding:2px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .tr.h{font-size:13px;color:var(--mut)}
 .tr .num{font-family:var(--mono);text-align:right;color:var(--mut)}
 .tr .pts{font-family:var(--mono);text-align:right;font-weight:500}
@@ -1733,7 +1734,7 @@ function liveSimRender(ph){
   rows.forEach(function(x,i){
     var mine=x.k===NET.uid,fr=lhuman(x.k)&&!mine,d=prev[x.k]!==undefined?prev[x.k]-i:0;
     var ar=d>0?'<i class="ar up"></i>':(d<0?'<i class="ar dn"></i>':'');
-    h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+(x.w+x.d+x.l)+'</span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
+    h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk"><span class="arw">'+ar+'</span>'+(i+1)+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+(x.w+x.d+x.l)+'</span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
   });
   h+='</div></div><div class="simlist"><div class="simlh"><b>Your matches</b><span><button class="linkbtn" data-act="simleave">Leave</button><button class="linkbtn" data-act="simskip"'+(simReady()?'':' disabled')+'>Skip to end</button></span></div>';
   for(var i=up;i>=1;i--){
@@ -1952,7 +1953,7 @@ function renderTableLive(){
   rows.forEach(function(r1,i){
     var me=r1.k===NET.uid,fr=lhuman(r1.k)&&!me,d=prev[r1.k]!==undefined?prev[r1.k]-i:0;
     var ar=d>0?'<i class="ar up" title="Up '+d+'"></i>':(d<0?'<i class="ar dn" title="Down '+(-d)+'"></i>':'');
-    h+='<div class="tr'+(me?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(r1.k,20)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+(r1.w+r1.d+r1.l)+'</span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>';
+    h+='<div class="tr'+(me?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk"><span class="arw">'+ar+'</span>'+(i+1)+'</span><span class="nm">'+lcrest(r1.k,20)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+(r1.w+r1.d+r1.l)+'</span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>';
   });
   $("tbl").innerHTML=h;
   var lg='';
