@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="3.0.0">
+<meta name="app-version" content="3.0.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -816,7 +816,7 @@ function renderFlow(){
     var ct=F.ctab==="s"?"s":"p";
     h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"My team")+'</span></div>'+
       ('<label class="field"><span>Your name</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="E.g. Emil" autocomplete="off"></label>')+
-      '<div class="tagrow"><label class="field"><span>Team name</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="E.g. Dream Team" autocomplete="off"></label><label class="field tagf"><span>Abbreviation</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"My team"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
+      '<div class="tagrow"><label class="field"><span>Team name</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="E.g. Dream Team" autocomplete="off"></label><label class="field tagf"><span>Abbreviation</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"My team"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+((S.tag||"").length===1?'<p class="note" style="margin:-4px 0 8px">The abbreviation needs 2 or 3 characters.</p>':"")+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primary colour</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Secondary colour</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primary":"Secondary")+' colour: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
       '<div class="field"><span>Crest</span><div class="crests">'+crestBtns()+'</div></div>'+
@@ -851,8 +851,13 @@ $("flow").addEventListener("click",function(e){
     try{
       Promise.all([
         navigator.serviceWorker?navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()}).catch(function(){}):0,
-        fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).catch(function(){})
-      ]).then(function(){setTimeout(fin,400)},function(){fin()});
+        fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).catch(function(){return ""})
+      ]).then(function(rs){
+        var m=String(rs[1]||"").match(/name="app-version" content="([^"]+)"/);
+        if(m&&m[1]===APP_VERSION){b.textContent="You're on the latest version";toast("You're up to date.",2200);return}
+        if(!m){b.textContent="You're on the latest version";toast("Couldn't check, try again with a better connection.",3200);return}
+        setTimeout(fin,400);
+      },function(){fin()});
     }catch(x){fin()}
     return}
   if(a==="leavesetup"){askLeave(false);leaveAct=liveAbort;return}
@@ -1035,27 +1040,13 @@ function renderClub(){
   if(!myTurn()){var cu=S.seq[S.pickIdx];el.innerHTML='<div class="card fade" style="margin-top:22px"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">'+esc(cu?teamName(cu):"")+' is picking a player</span></div></div></div>';return}
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0],rsp="";
   var rleft=me0&&NET.game?(NET.game.respins||0)-(me0.respins_used||0):0;
-  if(rleft>0&&!S.spinning)rsp='<button class="rspbtn" data-respin="1" aria-label="Respin, '+rleft+' tilbage"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg><b>'+rleft+'</b> Respin</button>';
+  if(rleft>0&&!S.spinning)rsp='<button class="rspbtn" data-respin="1" aria-label="Respin, '+rleft+' left"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg><b>'+rleft+'</b> Respin</button>';
   var h='<h2>Pick a player</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b></div>'+rsp+'</div>';
   h+='<p class="miss">Missing: <b>'+missingTxt()+'</b></p>';
   h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"All":t)+'</button>'}).join("")+'</div>';
   h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Search player" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">'+(S.hideFilled?"Show filled":"Hide filled")+'</button></div>';
   h+='<p class="note" style="margin:6px 0 0">Tap a player, then choose his spot on the pitch.</p><div id="clist"></div><p class="avail" id="avail"></p><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Pick for me</button></div>';
   el.innerHTML=h;renderList();
-}
-function autoPick(){
-  if(!S.club||!myTurn()||NET.pending)return;
-  var c=CLUBS[S.club],f=flat(),nat=[],pen=[];
-  c.p.forEach(function(p){
-    if(S.taken[p[0]])return;
-    var n=[],q=[];
-    f.forEach(function(sp,k){if(S.squad[k])return;var v=fit(p[1],sp,p[4]);if(v===2)n.push(k);else if(v===1)q.push(k)});
-    if(n.length)nat.push([p,n]);else if(q.length)pen.push([p,q]);
-  });
-  var pool=nat.length?nat:pen;
-  if(!pool.length){toast("No players fit an open spot.",2400);return}
-  var x=pool[Math.floor(Math.random()*pool.length)],k=x[1][Math.floor(Math.random()*x[1].length)];
-  livePick(x[0][0],k);
 }
 function renderList(){
   if(!S.club||!CLUBS[S.club])return;
@@ -1065,7 +1056,7 @@ function renderList(){
   list.forEach(function(p){
     var st=status(p);
     if(S.hideFilled&&!st.ok&&st.why==="Position filled")return;
-    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?'<span></span>':'<span class="rp">'+st.why+'</span>')+'</div>';
+    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?'<span></span>':'<span class="rp">'+esc(st.why)+'</span>')+'</div>';
   });
   $("clist").innerHTML=h||'<p class="note">No players match.</p>';
   var av=c.p.filter(function(p){return status(p).ok}).length;
@@ -1119,7 +1110,7 @@ function lockPick(name,i){
   livePick(name,i);return
 }
 function autoPick(){
-  if(!S.club||!myTurn())return;
+  if(!S.club||!myTurn()||NET.pending)return;
   var opts=CLUBS[S.club].p.filter(function(p){return status(p).ok});
   if(!opts.length)return;
   var p=opts[Math.floor(Math.random()*opts.length)];
@@ -1157,7 +1148,7 @@ function finishMatch(){
   liveFinishMatch();return
 }
 var SPEED=1;
-$("spdBtn").addEventListener("click",function(){var SP=[0.5,1,2,3];SPEED=SP[(SP.indexOf(SPEED)+1)%SP.length];$("spdBtn").textContent=(SPEED===0.5?"0,5":SPEED)+"x"});
+$("spdBtn").addEventListener("click",function(){var SP=[0.5,1,2,3];SPEED=SP[(SP.indexOf(SPEED)+1)%SP.length];$("spdBtn").textContent=(SPEED===0.5?"0.5":SPEED)+"x"});
 $("forceBtn").addEventListener("click",function(){liveForce();return});
 /* classic: første kamp venter på, at alle har trykket Klar */
 function gateOn(){var g=NET.game;return !!(g&&g.status==="season"&&g.current_round===1&&g.pace!=="quick"&&NET.players.length&&!NET.players.every(function(p){return p.start_ready||lAway(p)}))}
@@ -1429,14 +1420,23 @@ function liveUnsub(){if(NET.ch){NET.sb.removeChannel(NET.ch);NET.ch=null}clearIn
 function liveSub(){
   liveUnsub();var gid=NET.gid;
   NET.ch=NET.sb.channel("g-"+gid)
-    .on("postgres_changes",{event:"*",schema:"public",table:"games",filter:"id=eq."+gid},liveChanged)
-    .on("postgres_changes",{event:"*",schema:"public",table:"game_players",filter:"game_id=eq."+gid},liveChanged)
-    .on("postgres_changes",{event:"*",schema:"public",table:"draft_picks",filter:"game_id=eq."+gid},liveChanged)
+    .on("postgres_changes",{event:"*",schema:"public",table:"games",filter:"id=eq."+gid},liveChangedSoon)
+    .on("postgres_changes",{event:"*",schema:"public",table:"game_players",filter:"game_id=eq."+gid},function(pl){if(!heartbeatOnly(pl))liveChangedSoon()})
+    .on("postgres_changes",{event:"*",schema:"public",table:"draft_picks",filter:"game_id=eq."+gid},liveChangedSoon)
     .subscribe();
   NET.poll=setInterval(liveChanged,4000);
   NET.hb=setInterval(function(){if(!document.hidden&&NET.gid)NET.sb.rpc("touch_game",{p_game:gid}).then(function(){},function(){})},30000);
   NET.sb.rpc("touch_game",{p_game:gid}).then(function(){},function(){});
 }
+/* hjerteslag (kun last_seen_at ændret) skal ikke få alle til at indlæse spillet igen */
+function heartbeatOnly(pl){
+  if(pl.eventType!=="UPDATE"||!pl.new)return false;
+  var r=NET.players.filter(function(p){return p.user_id===pl.new.user_id})[0];if(!r)return false;
+  for(var k in pl.new){if(k!=="last_seen_at"&&JSON.stringify(pl.new[k])!==JSON.stringify(r[k]))return false}
+  r.last_seen_at=pl.new.last_seen_at;return true;
+}
+var soonT=0;
+function liveChangedSoon(){clearTimeout(soonT);soonT=setTimeout(liveChanged,300)}
 var liveBusy=false;
 var connFail=0;
 function liveConn(ok){
@@ -1457,6 +1457,8 @@ function liveResetGame(){
   NET.game=null;NET.players=[];NET.picks=[];NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;
   NET.sim=null;NET.simWait=null;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
   NET.dsig=null;NET.pending=false;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
+  S.spinning=false;S.pre=false;S.gate=false;S.endTab=null;S.endFull=false;S.spinAt=0;
+  NET.finishedRound=0;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
 }
 function liveLeave(msg){
   liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame();G.started=false;
@@ -1499,15 +1501,17 @@ async function liveJoin(){
     await liveLoad();liveSub();liveEnter();
   }catch(e){netErr(e)}
 }
+/* et kald, der hænger (fx når telefonen lægger appen i baggrunden), må aldrig låse skærmen: giv op efter 15 s */
+function tmo(p){return Promise.race([p,new Promise(function(res,rej){setTimeout(function(){rej(new Error("timeout"))},15000)})])}
 async function liveTeamDone(){
   if(NET.teamBusy)return;NET.teamBusy=true;
   var btn=document.querySelector('#flow [data-act="next"]');
   if(btn){btn.disabled=true;btn.textContent="Saving…"}
   try{
-    var r0=await NET.sb.rpc("update_team",{p_game:NET.gid,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:(S.crest||0)+1,p_formation:S.form,p_display:S.pname.trim(),p_tag:S.tag.length>1?S.tag:null});
+    var r0=await tmo(NET.sb.rpc("update_team",{p_game:NET.gid,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:(S.crest||0)+1,p_formation:S.form,p_display:S.pname.trim(),p_tag:S.tag.length>1?S.tag:null}));
     if(r0.error)throw r0.error;
-    r0=await NET.sb.rpc("set_ready",{p_game:NET.gid,p_ready:true});if(r0.error)throw r0.error;
-    await liveLoad();if(!NET.ch)liveSub();
+    r0=await tmo(NET.sb.rpc("set_ready",{p_game:NET.gid,p_ready:true}));if(r0.error)throw r0.error;
+    await tmo(liveLoad());if(!NET.ch)liveSub();
     liveApply();
   }catch(e){netErr(e);renderFlow()}
   finally{NET.teamBusy=false}
@@ -1542,8 +1546,11 @@ function liveSyncStep(){
   else if(me.ready)want="wait";
   else want=(cur==="form"?"form":"hold");
   var ae=document.activeElement,typing=ae&&ae.closest&&ae.closest("#flow")&&/^(INPUT|TEXTAREA)$/.test(ae.tagName);
-  if(cur!==want){F.step=steps.indexOf(want);renderFlow();return}
-  if((cur==="lobby"||cur==="wait")&&!typing)renderFlow();
+  if(cur!==want){F.step=steps.indexOf(want);NET.lsig=null;renderFlow();return}
+  if((cur==="lobby"||cur==="wait")&&!typing){
+    var sig=JSON.stringify([g.max_players,g.timer_seconds,g.show_ratings,g.pace,g.respins,g.setup,NET.players.map(function(p){return [p.user_id,p.display_name,p.team_name,p.ready,p.formation,p.color1,p.crest,p.crest_tag]})]);
+    if(sig!==NET.lsig){NET.lsig=sig;renderFlow()}
+  }
 }
 async function liveCall(fn,args){
   try{var r0=await NET.sb.rpc(fn,args);if(r0.error)throw r0.error;await liveLoad();liveApply()}catch(e){netErr(e)}
@@ -1553,7 +1560,7 @@ async function liveSetting(args){
   var g=NET.game;if(!g||NET.pending)return;
   var keep={max_players:g.max_players,timer_seconds:g.timer_seconds,show_ratings:g.show_ratings,pace:g.pace,respins:g.respins};
   g.max_players=args.p_max;g.timer_seconds=args.p_timer;g.show_ratings=args.p_show;g.pace=args.p_pace||g.pace;g.respins=args.p_respins;
-  NET.pending=true;liveApply();
+  NET.pending=true;NET.pendAt=Date.now();liveApply();
   var r0;try{r0=await Promise.race([NET.sb.rpc("update_game_settings",args),new Promise(function(res){setTimeout(function(){res({error:{message:"timeout"}})},15000)})])}catch(e){r0={error:e}}
   NET.pending=false;
   if(r0.error){for(var k in keep)g[k]=keep[k];toast("Oops, something went wrong, please try again!",4200)}
@@ -1689,8 +1696,8 @@ async function liveSeasonApply(){
       NET.seasonKey=key;
     }
     if(!NET.seasonOn){NET.seasonOn=true;liveSeasonStart();return}
-    liveSeasonRender();
-  }catch(e){}finally{NET.seasonBusy=false}
+    liveSeasonRender();NET.seasonErr=0;
+  }catch(e){NET.seasonErr=(NET.seasonErr||0)+1;if(NET.seasonErr===3)toast("Couldn't load the season. Check your connection, we'll keep trying.",5000)}finally{NET.seasonBusy=false}
 }
 
 /* ---------- hurtigt spil: kampene afspilles én ad gangen (kun resultat) ---------- */
@@ -1753,7 +1760,7 @@ function liveSimRender(ph){
     var ar=d>0?'<i class="ar up"></i>':(d<0?'<i class="ar dn"></i>':'');
     h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk"><span class="arw">'+ar+'</span>'+(i+1)+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+(x.w+x.d+x.l)+'</span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
   });
-  h+='</div></div><div class="simlist"><div class="simlh"><b>Your matches</b><span><button class="linkbtn" data-act="simleave">Leave</button><button class="linkbtn" data-act="simskip"'+(simReady()?'':' disabled')+'>Skip to end</button></span></div>';
+  h+='</div></div><div class="simlist"><div class="simlh"><b>Your matches</b><span><button class="linkbtn" data-act="simleave">Leave</button><button class="linkbtn" data-act="simskip"'+(simReady()?'':' disabled title="Available when the whole season has been simulated"')+'>Skip to end</button></span></div>';
   for(var i=up;i>=1;i--){
     var mm=liveMyMatch(i);if(!mm)continue;
     var home=mm.home_key===NET.uid,mg=home?mm.home_goals:mm.away_goals,og=home?mm.away_goals:mm.home_goals;
@@ -1781,7 +1788,7 @@ function liveSimDone(){
 async function sumRecords(){
   var gid=NET.gid;
   try{
-    var pr=await NET.sb.from("hof_players").select("*").eq("league","PL"),tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");
+    var pr=await NET.sb.rpc("hof_players_top"),tr=await NET.sb.rpc("hof_teams_top");
     var box=document.getElementById("sumlist");if(!box||NET.gid!==gid||pr.error||tr.error)return;
     var P=pr.data||[],T=tr.data||[],out=[],medal=["🏆","🥈","🥉"];
     var mineP=function(x){return x.game_id===gid&&x.user_id===NET.uid};
@@ -1846,6 +1853,10 @@ function liveSeasonRender(){
   if(g.current_round!==NET.round){NET.round=g.current_round;S.matchSeen=false;
     if(document.getElementById("s-match").classList.contains("on")){S.matchSeen=true;startMatch()}}
   else{liveReady();liveReveal();var on=function(id){return document.getElementById(id).classList.contains("on")};if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive()}
+  // runde 38 er spillet, men sæsonen er ikke afsluttet (fx fejlede en gemning): bed serveren gøre den færdig
+  if(g.status==="season"&&g.current_round>=38&&Date.now()-NET.advAt>20000){
+    NET.advAt=Date.now();callEngine("advance").then(function(){liveChanged()}).catch(function(){});return;
+  }
   // alle er klar: den der ser det først, beder serveren spille næste runde
   if(g.status==="season"&&g.current_round>=1&&NET.players.every(function(p){return p.ready_round>=g.current_round||lAway(p)})&&Date.now()-NET.advAt>3000){
     NET.advAt=Date.now();callEngine("advance").then(function(){liveChanged()}).catch(function(){});
@@ -2079,13 +2090,12 @@ var CATI=Object.assign({"Champions":'<img src="badges/pl-trophy.png" alt="" widt
 function medal(i,em){if(em==="cup"&&i<3)return '<span class="md cup">'+CUP+'</span>';return i<3?'<span class="md">'+(i===0&&em?em:['🏆','🥈','🥉'][i])+'</span>':i+1}
 async function renderHofLive(){
   HOFTAB="pl";$("hseg").hidden=true;
-  if(!(HOFC&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
-  var pr,tr;
-  if(HOFC&&Date.now()-HOFC.at<60000){pr=HOFC.pr;tr=HOFC.tr}
-  else{pr=await NET.sb.from("hof_players").select("*").eq("league","PL");tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");if(!pr.error&&!tr.error)HOFC={at:Date.now(),pr:pr,tr:tr}}
+  if(!(HOFC&&HOFC.k===String(HOFRESP)&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
+  var pr,tr,hk=String(HOFRESP);
+  if(HOFC&&HOFC.k===hk&&Date.now()-HOFC.at<60000){pr=HOFC.pr;tr=HOFC.tr}
+  else{var rp=HOFRESP==="all"?null:HOFRESP;pr=await NET.sb.rpc("hof_players_top",{p_resp:rp});tr=await NET.sb.rpc("hof_teams_top",{p_resp:rp});if(!pr.error&&!tr.error)HOFC={at:Date.now(),k:hk,pr:pr,tr:tr}}
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
   var P=pr.data||[],T=tr.data||[];
-  if(HOFRESP!=="all"){P=P.filter(function(x){return x.respins===HOFRESP});T=T.filter(function(x){return x.respins===HOFRESP})}
   var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
@@ -2231,7 +2241,8 @@ function liveDraftStart(){
 }
 function liveDraftRender(){
   var g=NET.game,cur=S.seq[S.pickIdx];
-  var dsig=JSON.stringify([S.pickIdx,S.club,(NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{}).respins_used,S.view,S.sel,S.form,S.phase,S.spinning,S.counts,Object.keys(S.taken).length,S.feed.length,S.squad.map(function(x){return x?x.name:0}),S.filter,S.q,S.hideFilled,g.status,(S.seq||[]).length,S.order.length]);
+  var awayCur=!!(cur&&cur!=="me"&&NET.players.some(function(p){return keyOf(p.user_id)===cur&&Date.now()-Date.parse(p.last_seen_at)>120000}));
+  var dsig=JSON.stringify([awayCur,S.pickIdx,S.club,(NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{}).respins_used,S.view,S.sel,S.form,S.phase,S.spinning,S.counts,Object.keys(S.taken).length,S.feed.length,S.squad.map(function(x){return x?x.name:0}),S.filter,S.q,S.hideFilled,g.status,(S.seq||[]).length,S.order.length]);
   if(dsig===NET.dsig&&$("clubpanel").children.length+($("dpitch").children.length)>0){liveTimerTick();return}
   NET.dsig=dsig;
   $("draftMain").classList.toggle("solo",NET.players.length<2);
@@ -2241,7 +2252,7 @@ function liveDraftRender(){
   renderDraft();renderSheet();
   var af=$("adminForce");
   if(af){
-    if(g.admin_id===NET.uid&&g.status==="draft"&&cur&&cur!=="me")af.innerHTML='<button class="btn" data-force="1" style="padding:6px 12px;font-size:13px;min-height:0;margin-bottom:8px">Auto-pick for '+esc(teamName(cur))+'</button>';
+    if(g.admin_id===NET.uid&&g.status==="draft"&&cur&&cur!=="me"&&awayCur)af.innerHTML='<button class="btn" data-force="1" style="padding:6px 12px;font-size:13px;min-height:0;margin-bottom:8px">'+esc(teamName(cur))+' is away. Auto-pick</button>';
     else af.innerHTML="";
   }
   liveTimerTick();
@@ -2251,7 +2262,7 @@ $("adminForce").addEventListener("click",function(e){
   var b=e.target.closest("[data-force]");if(!b)return;
   if(Date.now()-forceArm>3500){forceArm=Date.now();b.textContent="Tap again to confirm";return}
   forceArm=0;b.disabled=true;
-  NET.sb.rpc("claim_timeout",{p_game:NET.gid,p_force:true}).then(function(r0){if(r0.error)netErr(r0.error);liveChanged()});
+  NET.sb.rpc("claim_timeout",{p_game:NET.gid,p_force:true}).then(function(r0){if(r0.error)netErr(r0.error);else if(r0.data===false)toast("That player is back.",2400);liveChanged()});
 });
 function liveTimerTick(){
   var g=NET.game,t=$("timerLine");if(!t)return;
@@ -2267,8 +2278,9 @@ function liveTimerTick(){
 async function liveSpin(){
   if(!myTurn()||S.spinning||S.club||NET.pending)return;
   S.spinning=true;renderDraft();preSpin();
-  var r0=await NET.sb.rpc("spin",{p_game:NET.gid});
-  if(r0.error){S.spinning=false;S.pre=false;setStrip(S.k,false);renderDraft();netErr(r0.error);return}
+  S.spinAt=Date.now();
+  var r0;try{r0=await tmo(NET.sb.rpc("spin",{p_game:NET.gid}))}catch(e){r0={error:e}}
+  if(r0.error){S.spinning=false;S.pre=false;setStrip(S.k,false);renderDraft();netErr(r0.error);liveChanged();return}
   var code=r0.data;
   reelTo(code,function(){
     S.spinning=false;S.club=code;S.filter="ALL";S.q="";S.sel=null;
@@ -2283,7 +2295,8 @@ async function liveRespin(){
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(!me0||(NET.game.respins||0)-(me0.respins_used||0)<=0)return;
   S.spinning=true;S.sel=null;renderDraft();renderSheet();toast("Spinning again…",1600);
   window.scrollTo({top:0,behavior:"smooth"});
-  var r0;try{r0=await NET.sb.rpc("respin",{p_game:NET.gid})}catch(e){r0={error:e}}
+  S.spinAt=Date.now();
+  var r0;try{r0=await tmo(NET.sb.rpc("respin",{p_game:NET.gid}))}catch(e){r0={error:e}}
   if(r0.error){S.spinning=false;renderDraft();netErr(r0.error);await liveChanged();return}
   me0.respins_used=(me0.respins_used||0)+1;S.club=null;
   var fin=function(){
@@ -2297,7 +2310,7 @@ async function livePick(name,i){
   if(NET.pending||!myTurn())return;
   var a=NET.byName[name];if(!a)return;
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0],club=S.club;
-  NET.pending=true;
+  NET.pending=true;NET.pendAt=Date.now();
   /* optimistisk: spilleren står på banen med det samme, serveren bekræfter i baggrunden */
   S.squad[i]={name:p[0],sn:p[6]||"",pos:p[1],club:club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2],sv:1};
   S.taken[p[0]]=S.team.trim()||"My team";S.counts.me=(S.counts.me||0)+1;
@@ -2305,7 +2318,7 @@ async function livePick(name,i){
   S.sel=null;S.club=null;S.view="me";
   renderDraft();renderSheet();
   window.scrollTo({top:0,behavior:"smooth"});
-  var r0;try{r0=await NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1})}catch(e){r0={error:e}}
+  var r0;try{r0=await tmo(NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1}))}catch(e){r0={error:e}}
   NET.pending=false;
   if(r0.error)toast("Oops, something went wrong, please try again!",4200);
   await liveChanged();
@@ -2391,7 +2404,12 @@ async function liveBoot(){
     NET.gid=null;try{localStorage.removeItem("dsfc-gid")}catch(x){}
   }
 }
-function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET.draftOn)keepAwake()}}
+function liveWake(){if(NET.gid&&!document.hidden){
+  var now=Date.now();
+  if(NET.pending&&now-(NET.pendAt||0)>16000)NET.pending=false;
+  if(S.spinning&&now-(S.spinAt||0)>16000){S.spinning=false;S.pre=false;if(S.phase==="draft")renderDraft()}
+  if(NET.teamBusy&&now-(NET.pendAt||now)>16000)NET.teamBusy=false;
+  liveSub();liveChanged();if(NET.draftOn)keepAwake()}}
 /* skjult testspil: tryk 5 gange hurtigt på logoet på startskærmen */
 (function(){
   var taps=[];

@@ -33,7 +33,9 @@ function networkFirst(req) {
       function fallback() {
         c.match(key).then(function (hit) { if (!done) { done = true; resolve(hit || Response.error()); } });
       }
-      var timer = setTimeout(function () { if (!done) fallback(); }, 3000);
+      // en bevidst opdatering (?u=) må vente længere på nettet, ellers får brugeren den gamle side igen
+      var wait = new URL(req.url).searchParams.has("u") ? 10000 : 3000;
+      var timer = setTimeout(function () { if (!done) fallback(); }, wait);
       fetch(req).then(function (r) {
         clearTimeout(timer);
         if (r && r.ok) { c.put(key, r.clone()); }
@@ -66,14 +68,22 @@ self.addEventListener("fetch", function (e) {
 self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data.json(); } catch (x) {}
-  // Ingen notifikation mens appen er åben og synlig: spilleren ser selv, at det er hans tur.
+  // WebKit tilbagekalder abonnementet, hvis en push ikke viser en notifikation. Derfor vises den altid; er appen synlig, er den lydløs og lukkes igen med det samme.
+  // (Serveren sender ikke push til en spiller, der har appen åben, så det er kun et sikkerhedsnet.)
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (cs) {
-    if (cs.some(function (c) { return c.visibilityState === "visible"; })) return;
+    var visible = cs.some(function (c) { return c.visibilityState === "visible"; });
+    var tag = d.tag || "draftspin";
     return self.registration.showNotification(d.title || "PL Draft", {
       body: d.body || "",
-      tag: d.tag || "draftspin",
+      tag: tag,
       icon: "icons/icon-192.png",
-      renotify: true
+      renotify: !visible,
+      silent: visible
+    }).then(function () {
+      if (!visible) return;
+      return new Promise(function (r) { setTimeout(r, 1500); }).then(function () {
+        return self.registration.getNotifications({ tag: tag }).then(function (ns) { ns.forEach(function (n) { n.close(); }); });
+      });
     });
   }));
 });

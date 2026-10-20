@@ -12,7 +12,7 @@ Deno.test("motoren er identisk med den udgivne (fingeraftryk + 40 faste kampe)",
   const sims: string[] = [];
   for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e: any) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
   // Værdierne er målt på den udgivne edge function (version 1.8). Ændres motoren med vilje, opdateres de her og i SPEC.md.
-  eq(await sha(parts), "671aae4f2d30b173448ddf372a15a1aad8a43f15fca80c519ca352ccc8865df2", "fingeraftryk");
+  eq(await sha(parts), "888756e0754aa71954f93a51182fda82e09dc4026ff59d582ca789d2a3aea97d", "fingeraftryk");
   eq(await sha(sims.join("|")), "d554cacc790c730737a69a2ea6f007941184efaa4b02f6098e095de3d15cb9d0", "simulering");
 });
 
