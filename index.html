@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.15.0">
+<meta name="app-version" content="2.15.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1977,6 +1977,17 @@ function liveSyncStep(){
 async function liveCall(fn,args){
   try{var r0=await NET.sb.rpc(fn,args);if(r0.error)throw r0.error;await liveLoad();liveApply()}catch(e){netErr(e)}
 }
+/* spilregler: knappen virker med det samme (optimistisk); serveren bekræfter i baggrunden */
+async function liveSetting(args){
+  var g=NET.game;if(!g||NET.pending)return;
+  var keep={max_players:g.max_players,timer_seconds:g.timer_seconds,show_ratings:g.show_ratings,pace:g.pace,respins:g.respins};
+  g.max_players=args.p_max;g.timer_seconds=args.p_timer;g.show_ratings=args.p_show;g.pace=args.p_pace||g.pace;g.respins=args.p_respins;
+  NET.pending=true;liveApply();
+  var r0;try{r0=await Promise.race([NET.sb.rpc("update_game_settings",args),new Promise(function(res){setTimeout(function(){res({error:{message:"timeout"}})},15000)})])}catch(e){r0={error:e}}
+  NET.pending=false;
+  if(r0.error){for(var k in keep)g[k]=keep[k];toast("Ups, der skete en fejl, prøv igen!",4200)}
+  await liveChanged();
+}
 function liveAct(a,b,st){
   if(a==="create"){liveCreateLobby(b);return true}
   if(a==="next"){
@@ -1993,12 +2004,12 @@ function liveAct(a,b,st){
   if(a==="kick"){liveCall("kick_player",{p_game:NET.gid,p_user:b.dataset.k});return true}
   if(a==="maxdec"||a==="maxinc"){
     var g=NET.game,m=Math.max(Math.max(1,NET.players.length),Math.min(6,g.max_players+(a==="maxinc"?1:-1)));
-    liveCall("update_game_settings",{p_game:NET.gid,p_max:m,p_timer:g.timer_seconds,p_show:g.show_ratings,p_respins:g.respins});return true;
+    liveSetting({p_game:NET.gid,p_max:m,p_timer:g.timer_seconds,p_show:g.show_ratings,p_pace:g.pace,p_respins:g.respins});return true;
   }
-  if(a==="setmax"){var g3=NET.game,m3=Math.max(NET.players.length,+b.dataset.v);liveCall("update_game_settings",{p_game:NET.gid,p_max:m3,p_timer:g3.timer_seconds,p_show:g3.show_ratings,p_pace:g3.pace,p_respins:g3.respins});return true}
+  if(a==="setmax"){var g3=NET.game,m3=Math.max(NET.players.length,+b.dataset.v);liveSetting({p_game:NET.gid,p_max:m3,p_timer:g3.timer_seconds,p_show:g3.show_ratings,p_pace:g3.pace,p_respins:g3.respins});return true}
   if(a==="lset"){
     var g2=NET.game,v=b.dataset.v;
-    liveCall("update_game_settings",{p_game:NET.gid,p_max:g2.max_players,p_timer:b.dataset.k==="timer"?+v:g2.timer_seconds,p_show:b.dataset.k==="show"?v==="true":g2.show_ratings,p_pace:b.dataset.k==="pace"?v:g2.pace,p_respins:b.dataset.k==="respins"?+v:g2.respins});return true;
+    liveSetting({p_game:NET.gid,p_max:g2.max_players,p_timer:b.dataset.k==="timer"?+v:g2.timer_seconds,p_show:b.dataset.k==="show"?v==="true":g2.show_ratings,p_pace:b.dataset.k==="pace"?v:g2.pace,p_respins:b.dataset.k==="respins"?+v:g2.respins});return true;
   }
   return false;
 }
