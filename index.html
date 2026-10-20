@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.20.4">
+<meta name="app-version" content="2.20.6">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -451,7 +451,17 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .hexp{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:6px;padding:9px 0 2px;background:none;border:0;border-top:1px solid var(--line);color:var(--mut);font:500 13px var(--sans,inherit);cursor:pointer}
 .hexp::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
 .hexp.on::after{transform:rotate(225deg) translateY(-2px)}
-.hmore[hidden]{display:none}
+.hmore[hidden],.cblk[hidden]{display:none}
+#s-hof h1{color:#f0d68a}
+#s-hof .hcat{border:1.5px solid #e4c47a99;background:linear-gradient(180deg,#e4c47a14,transparent 38%),var(--surf);box-shadow:0 0 0 3px #e4c47a14,0 12px 30px -16px #e4c47a88}
+#s-hof .hcat:first-of-type{border-color:#e4c47a;box-shadow:0 0 0 3px #e4c47a22,0 14px 34px -14px #e4c47acc}
+.crow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.crow:last-of-type{border:0}
+.crow .cn{flex:1;min-width:0;font-weight:500}
+.crow small{color:var(--mut);font-size:13px}
+.crow.ph{opacity:.45}
+.crow.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
+.hexp.more::after{display:none}
 .hcat h3{font-size:17px;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:9px}
 .hcat h3 .ci{display:inline-flex;align-items:center;justify-content:center;min-width:24px;font-size:19px;line-height:1;color:#e4c47a}
 .hcat h3 .ci img{display:block;height:34px;width:auto}
@@ -2064,14 +2074,23 @@ async function renderHofLive(){
   h+=cat("Biggest win",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}));
   h+=cat("Most red cards",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}));
   h+=cat("Most yellow cards",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}));
-  var by={};T.filter(function(x){return x.champion}).forEach(function(x){var k=x.user_id||x.team_name;by[k]=by[k]||Object.assign({},x,{n:0});by[k].n++;by[k].team_name=x.team_name});
-  var champs=Object.keys(by).map(function(k){return by[k]});
-  h+=cat("Champions",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"))}));
+  var W=T.filter(function(x){return x.champion}).sort(function(x,y){return new Date(x.created_at)-new Date(y.created_at)});
+  var cr=function(x){var d=x.created_at?new Date(x.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):"";return '<div class="crow'+isMine(x)+'">'+tcrest(x.team_name,22)+'<span class="cn">'+esc(x.team_name)+'</span><small>'+esc(d)+'</small></div>'};
+  var cb='';
+  if(!W.length)cb='<div class="crow ph"><span class="cn">Waiting for the first champion</span></div>';
+  else{
+    cb=cr(W[0]);
+    var rest=W.slice(1),blocks=Math.ceil(rest.length/5);
+    for(var q=0;q<blocks;q++)cb+='<div class="cblk"'+(q<HOFCH?'':' hidden')+'>'+rest.slice(q*5,q*5+5).map(cr).join("")+'</div>';
+    if(blocks>HOFCH)cb+='<button class="hexp more" data-cm="1">Show more champions</button>';
+  }
+  C.push(["Champions",'<div class="card hcat"><h3><span class="ci">'+CATI["Champions"]+'</span>Champions</h3>'+cb+'</div>']);
   var ORD=["Champions","Most goals","Most assists","Most clean sheets","Most yellow cards","Most red cards","Most goals in a match","Longest winning streak","Most points in a season","Most team goals in a season","Fewest goals conceded","Best goal difference","Biggest win"];
   C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
   $("hbody").innerHTML=C.map(function(c){return c[1]}).join("");
 }
-var HOFOPEN={};
+var HOFOPEN={},HOFCH=0;
+$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-cm]");if(!b)return;var k=b.parentNode.querySelector(".cblk[hidden]");if(k){k.hidden=false;HOFCH++}if(!b.parentNode.querySelector(".cblk[hidden]"))b.remove()});
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-hx]");if(!b)return;var m=b.previousElementSibling,o=m.hidden;m.hidden=!o;HOFOPEN[b.dataset.hx]=o;b.classList.toggle("on",o);b.textContent=o?"Hide":"Show top "+b.dataset.n});
 $("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))goStart()});
 
