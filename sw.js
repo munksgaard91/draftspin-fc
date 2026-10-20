@@ -1,5 +1,5 @@
 // Service worker: viser besked, når det er din tur i draften, og gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v3";
+var CACHE = "dsfc-shell-v4";
 var SCOPE = self.registration.scope;
 var LIB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
 var BADGES = "ARS AVL BOU BRE BHA CHE COV CRY EVE FUL HUL IPS LEE LIV MCI MUN NEW NFO SUN TOT".split(" ");
@@ -66,11 +66,15 @@ self.addEventListener("fetch", function (e) {
 self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data.json(); } catch (x) {}
-  e.waitUntil(self.registration.showNotification(d.title || "PL Draft", {
-    body: d.body || "",
-    tag: d.tag || "draftspin",
-    icon: "icons/icon-192.png",
-    renotify: true
+  // Ingen notifikation mens appen er åben og synlig: spilleren ser selv, at det er hans tur.
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (cs) {
+    if (cs.some(function (c) { return c.visibilityState === "visible"; })) return;
+    return self.registration.showNotification(d.title || "PL Draft", {
+      body: d.body || "",
+      tag: d.tag || "draftspin",
+      icon: "icons/icon-192.png",
+      renotify: true
+    });
   }));
 });
 self.addEventListener("notificationclick", function (e) {
