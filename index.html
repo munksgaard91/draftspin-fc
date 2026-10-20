@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.18.1">
+<meta name="app-version" content="2.18.2">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -477,7 +477,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .codeline button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:500 15px var(--mono);letter-spacing:.1em;color:var(--text);cursor:pointer}
 .startwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:calc(100vh - 220px);min-height:calc(100svh - 220px);padding-top:6vh}
 .startlogo{width:132px;height:132px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:6px}
-.wm3{font-size:38px;font-weight:600;letter-spacing:-.015em;line-height:1}
+.wm3{font-size:32px;font-weight:600;letter-spacing:-.015em;line-height:1}
 .wm3 span{font-weight:300;color:var(--acc)}
 .rspbtn{margin:0 0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--acc);background:transparent;color:var(--acc);font:inherit;font-size:15px;cursor:pointer;flex:none}.rspbtn b{font-weight:700}.rspbtn:active{opacity:.6}
 .linkbtn.rsp{margin:0 0 0 auto;padding:6px 2px;font-size:13px;text-align:right;max-width:120px;line-height:1.25}
@@ -1255,7 +1255,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">PL <span>Draft</span></div><div class="startbtns"><button class="btn p wide" data-act="create">🚀 New Season</button><button class="btn p wide" data-act="multi">👥 Multiplayer</button><button class="btn wide" data-act="joinpick">🔑 Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide" data-act="create">🚀 New Season</button><button class="btn p wide" data-act="multi">👥 Multiplayer</button><button class="btn wide" data-act="joinpick">🔑 Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
