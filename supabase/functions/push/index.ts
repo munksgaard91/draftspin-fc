@@ -10,7 +10,7 @@ const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE
 async function send(cfg, user_id, title, body, tag) {
   webpush.setVapidDetails(cfg.subject, cfg.vapid_public, cfg.vapid_private);
   const subs = (await admin.from("push_subs").select("id,endpoint,p256dh,auth").eq("user_id", user_id)).data || [];
-  const payload = JSON.stringify({ title: title || "DraftSpin FC", body: body || "", tag: tag || "draftspin" });
+  const payload = JSON.stringify({ title: title || "PL Draft", body: body || "", tag: tag || "draftspin" });
   const gone = [], codes = [];
   await Promise.all(subs.map(async (s) => {
     try {

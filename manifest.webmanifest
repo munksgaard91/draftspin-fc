@@ -1,7 +1,7 @@
 {
- "name": "DraftSpin FC",
+ "name": "PL Draft",
   "lang": "en",
- "short_name": "DraftSpin FC",
+ "short_name": "PL Draft",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",

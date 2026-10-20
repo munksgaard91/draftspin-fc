@@ -66,7 +66,7 @@ self.addEventListener("fetch", function (e) {
 self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data.json(); } catch (x) {}
-  e.waitUntil(self.registration.showNotification(d.title || "DraftSpin FC", {
+  e.waitUntil(self.registration.showNotification(d.title || "PL Draft", {
     body: d.body || "",
     tag: d.tag || "draftspin",
     icon: "icons/icon-192.png",

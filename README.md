@@ -1,4 +1,4 @@
-# DraftSpin FC
+# PL Draft
 
 Privat online draftspil til iPhone. **New Season** (solo mod 19 AI-klubber) og **Multiplayer** (2-10 venner, lobbyen åbner med kode, og antallet fastlægges, når admin trykker Start): snak-draft med klubhjul, sæson på 38 runder mod venner og AI-klubber, Hall of Fame.
 

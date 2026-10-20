@@ -1,12 +1,12 @@
 <html lang="en">
 <meta charset="utf-8">
-<title>DraftSpin FC</title>
+<title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.17.2">
+<meta name="app-version" content="2.18.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="DraftSpin FC">
+<meta name="apple-mobile-web-app-title" content="PL Draft">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="manifest" href="manifest.webmanifest">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -808,7 +808,7 @@ $("flow").addEventListener("click",function(e){
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(liveAct(a,b,st))return;
   if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderFlow()}
-  else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Join my DraftSpin game with the code "+F.code;try{if(navigator.share)navigator.share({title:"DraftSpin FC",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation copied")},function(){})}catch(x){}}
+  else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Join my PL Draft game with the code "+F.code;try{if(navigator.share)navigator.share({title:"PL Draft",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation copied")},function(){})}catch(x){}}
   else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
   else if(a==="back"){if(F.step>0)F.step--;else{if(NET.gid&&role==="admin"){liveLeave();return}role=null;F.joinInput="";F.joinErr=false}renderFlow()}
   else if(a==="next"){F.step++;renderFlow()}
@@ -1254,7 +1254,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide" data-act="create">🚀 New Season</button><button class="btn p wide" data-act="multi">👥 Multiplayer</button><button class="btn wide" data-act="joinpick">🔑 Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">PL <span>Draft</span></div><div class="startbtns"><button class="btn p wide" data-act="create">🚀 New Season</button><button class="btn p wide" data-act="multi">👥 Multiplayer</button><button class="btn wide" data-act="joinpick">🔑 Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
@@ -1317,7 +1317,7 @@ $("endbody").addEventListener("click",function(e){
   if(a==="hof"){HOFBACK="end";go("hof")}
   else if(a==="home"){askLeave(false)}
   else if(a==="newseason"){askLeave(true);}
-  else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"My team")+" finished "+ordinal(i+1)+" with "+rw[i].p+" points."})():(S.team.trim()||"My team")+" finished the season.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent="Copy result"},1500)}
+  else if(a==="copy"){var t="PL Draft, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"My team")+" finished "+ordinal(i+1)+" with "+rw[i].p+" points."})():(S.team.trim()||"My team")+" finished the season.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent="Copy result"},1500)}
 });
 
 /* ---------- forbindelse væk og admin ude ---------- */
