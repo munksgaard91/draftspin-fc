@@ -8,3 +8,7 @@ Privat online draftspil til iPhone. **New Season** (solo mod 19 AI-klubber) og *
 - `scripts/`: lokale scripts til at bygge og uploade data
 
 Projektet er kun til privat brug blandt venner og er ikke tilknyttet nogen klub, liga eller spiludgiver.
+
+## Tests
+
+Kør alle automatiske tests med `./tests/run.sh` (kræver `deno`). De tjekker, at kampmotoren stadig er identisk med den udgivne, at programmet og formationerne er korrekte, at kamphændelser stemmer med resultatet, at tallene er realistiske, at `index.html` kan parses, at filer og ikoner findes, og at migrationerne er i orden. Ændres motoren med vilje, opdateres fingeraftrykket i `tests/engine_test.ts` og i `engine/SPEC.md`.
