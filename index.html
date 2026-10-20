@@ -2028,7 +2028,6 @@ function renderEndLive(){
   HOFC=null;
   if(!NET.season){$("endbody").innerHTML='<h1>The season isn\'t over</h1>';return}
   var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
-  var T34=TROPHY.replace('width="54" height="54"','width="26" height="26"');
   var tab=S.endTab||"stil";if(tab==="pris"&&0)tab="stil";
   var h='<div class="card champ sm" style="margin-top:0"><div class="lblm"><img class="lblion" src="'+PLLOGO+'" alt=""><span>Premier League<br>Champions</span></div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b></div>';
   var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
