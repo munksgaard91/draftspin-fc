@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.20.9">
+<meta name="app-version" content="2.21.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -457,6 +457,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .crow .cn{flex:1;min-width:0;font-weight:500}
 .crow small{color:var(--mut);font-size:13px}
 .crow.ph{opacity:.45}
+.crow.tap{cursor:pointer}
+.crow .chev{width:7px;height:7px;border-right:2px solid var(--mut);border-top:2px solid var(--mut);transform:rotate(45deg);margin-left:2px;flex:none}
 .crow.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
 .hexp.more::after{display:none}
 .hcat h3{font-size:17px;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:9px}
@@ -656,6 +658,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 <div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
 <div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Leave the league?</h3><p class="note" style="margin:0" id="leaveP">Are you sure you want to leave the current league? If you're not done looking around, stay here.</p><div class="row2"><button class="btn" id="leaveYes">Leave</button><button class="btn p go" id="leaveNo">Stay here</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
+<div class="sheet" id="hsheet" hidden></div>
 
 <nav class="nav" id="navwrap" hidden><div class="navin" id="nav">
   <button data-s="draft" class="on">Draft</button>
@@ -2072,7 +2075,8 @@ async function renderHofLive(){
   h+=cat("Most red cards",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}));
   h+=cat("Most yellow cards",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}));
   var W=T.filter(function(x){return x.champion}).sort(function(x,y){return new Date(x.created_at)-new Date(y.created_at)});
-  var cr=function(x){var d=x.created_at?new Date(x.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):"";return '<div class="crow'+isMine(x)+'">'+tcrest(x.team_name,22)+'<span class="cn">'+esc(x.team_name)+'</span><small>'+esc(d)+'</small></div>'};
+  HOFW={};W.forEach(function(x){HOFW[x.id]=x});
+  var cr=function(x){var d=x.created_at?new Date(x.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):"";var lu=x.lineup&&x.formation&&FORMS[x.formation];return '<div class="crow'+isMine(x)+(lu?' tap':'')+'"'+(lu?' data-ch="'+x.id+'" role="button" tabindex="0"':'')+'>'+tcrest(x.team_name,22)+'<span class="cn">'+esc(x.team_name)+'</span><small>'+esc(d)+'</small>'+(lu?'<i class="chev"></i>':'')+'</div>'};
   var cb='';
   if(!W.length)cb='<div class="crow ph"><span class="cn">Waiting for the first champion</span></div>';
   else{
@@ -2086,7 +2090,17 @@ async function renderHofLive(){
   C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
   $("hbody").innerHTML=C.map(function(c){return c[1]}).join("");
 }
-var HOFOPEN={},HOFCH=0;
+var HOFOPEN={},HOFCH=0,HOFW={};
+function hofTeam(id){
+  var x=HOFW[id];if(!x||!x.lineup)return;
+  var el=$("hsheet");
+  el.innerHTML='<div class="sheetin"><div class="hd"><b>'+esc(x.team_name)+'</b><span class="muted">'+esc(x.formation)+(x.season?', '+esc(x.season):'')+(x.owner?', '+esc(x.owner):'')+'</span><button class="x" data-cancel="1">Close</button></div><div class="pitch" id="hpitch"></div></div>';
+  el.hidden=false;
+  renderPitch($("hpitch"),x.formation,x.lineup.map(function(p){return p?{name:p.n,sn:p.s}:null}));
+}
+$("hsheet").addEventListener("click",function(e){if(e.target.closest("[data-cancel]")||e.target===$("hsheet"))$("hsheet").hidden=true});
+$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-ch]");if(b)hofTeam(b.dataset.ch)});
+$("hbody").addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var b=e.target.closest("[data-ch]");if(b){e.preventDefault();hofTeam(b.dataset.ch)}});
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-cm]");if(!b)return;var k=b.parentNode.querySelector(".cblk[hidden]");if(k){k.hidden=false;HOFCH++}if(!b.parentNode.querySelector(".cblk[hidden]"))b.remove()});
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-hx]");if(!b)return;var m=b.previousElementSibling,o=m.hidden;m.hidden=!o;HOFOPEN[b.dataset.hx]=o;b.classList.toggle("on",o);b.textContent=o?"Hide":"Show top "+b.dataset.n});
 $("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))goStart()});

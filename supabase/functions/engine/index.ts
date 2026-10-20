@@ -179,6 +179,14 @@ async function finalizeSeason(gameId) {
   const humans = st.filter((x) => x.kind === "human" && ((gps.find((g) => g.user_id === x.user_id) || {}).missed_rounds || 0) < MAX_MISSED);
   const owner = (uid) => (gps.find((g) => g.user_id === uid) || {}).display_name || null;
   const season = String(game.season).replace(/^(\d{4})\/\d{2}(\d{2})$/, "$1/$2");
+  // mesterholdets opstilling gemmes med rekorden, så Hall of Fame kan vise holdet
+  const champ = humans.find((h) => pos[h.team_key] === 1);
+  let champLineup = null;
+  if (champ) {
+    const slots = lu.filter((l) => l.team_key === champ.team_key).sort((a, b) => a.slot - b.slot);
+    const pl = chk(await admin.from("players").select("id,name,short_name").in("id", slots.map((l) => l.player_id)));
+    champLineup = slots.map((l) => { const p = pl.find((x) => x.id === l.player_id); return p ? { n: p.name, s: p.short_name || "" } : null; });
+  }
   const teamRows = humans.map((h) => {
     const mine = matches.filter((m) => m.played && (m.home_key === h.team_key || m.away_key === h.team_key)).sort((a, b) => a.round - b.round);
     let streak = 0, best = 0, bigM = 0, bigScore = null, bigText = null;
@@ -188,7 +196,7 @@ async function finalizeSeason(gameId) {
       else streak = 0;
     }
     const s = t[h.team_key];
-    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: humans.length, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1 };
+    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: humans.length, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, formation: champ && champ.team_key === h.team_key ? h.formation : null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
   });
   const own = {};
   lu.forEach((l) => { const tm = humans.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });
