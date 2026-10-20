@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.20.0">
+<meta name="app-version" content="2.20.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2044,22 +2044,23 @@ async function renderHofLive(){
     var open=HOFOPEN[title]?1:0;
     C.push([title,'<div class="card hcat"><h3>'+title+'</h3>'+rows[0]+(rows.length>1?'<div class="hmore"'+(open?'':' hidden')+'>'+rows.slice(1).join("")+'</div><button class="hexp'+(open?' on':'')+'" data-hx="'+esc(title)+'" data-n="'+rows.length+'">'+(open?'Hide':'Show top '+rows.length)+'</button>':'')+'</div>']);return ""};
   var h='';
-  h+=cat("Most goals in a season",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}));
-  h+=cat("Most assists in a season",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}));
-  h+=cat("Most clean sheets in a season",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}));
+  h+=cat("Most goals",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}));
+  h+=cat("Most assists",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}));
+  h+=cat("Most clean sheets",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}));
   h+=cat("Most points in a season",top(T,"points").map(function(x,i){return tRow(i,x,x.points,x.w+" wins, "+x.d+" draws, "+x.l+" losses")}));
   h+=cat("Most goals in a match",topU(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,opp(x.best_match_text))}));
   var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
+  h+=cat("Most team goals in a season",top(T,"gf").map(function(x,i){return tRow(i,x,x.gf,x.ga+" against")}));
   h+=cat("Best goal difference",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,x.gf+" for, "+x.ga+" against")}));
   h+=cat("Fewest goals conceded",top(T,"ga",true).map(function(x,i){return tRow(i,x,x.ga,x.gf+" scoret")}));
   h+=cat("Longest winning streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,"wins in a row","🔥")}));
   h+=cat("Biggest win",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}));
-  h+=cat("Most red cards in a season",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}));
-  h+=cat("Most yellow cards in a season",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}));
+  h+=cat("Most red cards",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}));
+  h+=cat("Most yellow cards",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}));
   var by={};T.filter(function(x){return x.champion}).forEach(function(x){var k=x.user_id||x.team_name;by[k]=by[k]||Object.assign({},x,{n:0});by[k].n++;by[k].team_name=x.team_name});
   var champs=Object.keys(by).map(function(k){return by[k]});
-  h+=cat("Most titles",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"))}));
-  var ORD=["Most titles","Most points in a season","Most goals in a season","Best goal difference","Biggest win","Longest winning streak","Fewest goals conceded","Most assists in a season","Most clean sheets in a season","Most goals in a match","Most yellow cards in a season","Most red cards in a season"];
+  h+=cat("Champions",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"))}));
+  var ORD=["Champions","Most goals","Most assists","Most clean sheets","Most yellow cards","Most red cards","Most goals in a match","Longest winning streak","Most points in a season","Most team goals in a season","Fewest goals conceded","Best goal difference","Biggest win"];
   C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
   $("hbody").innerHTML=C.map(function(c){return c[1]}).join("");
 }
