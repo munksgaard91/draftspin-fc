@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.22.4">
+<meta name="app-version" content="2.24.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -65,6 +65,8 @@
 .sumrow:last-child{border:0}
 .sumrow .si{font-size:22px;line-height:1.2;width:28px;text-align:center;flex:none}
 .sumrow b{display:block;font-weight:600}
+.sumrow .si .sileague{display:block;height:30px;width:auto;max-width:38px;object-fit:contain;margin:0 auto}
+.sumrow .si .silion{display:block;width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);margin:0 auto}
 .recl{display:block;margin-top:6px}.recl:first-child{margin-top:2px}.sumrow .recl b{display:inline;font-weight:600;color:var(--text)}
 .sumrow small{display:block;color:var(--mut);font-size:13.5px;line-height:1.45;margin-top:1px}
 .etabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
@@ -72,6 +74,8 @@
 .etabs button.on{color:var(--text);border-color:var(--acc);background:var(--surf2)}
 .champs{margin-top:4px;line-height:1.5}
 .endbtns{margin-top:12px;gap:8px}.endbtns .btn{flex:1;padding-inline:6px;white-space:nowrap}.endbtns .btn.p{flex:1.15}
+.recbtn{display:block;margin:6px 0 0;padding:0;font-size:13px;text-align:left}
+.recmore{display:block}.recmore .recl:first-child{margin-top:6px}.recmore[hidden]{display:none}
 .sumwin b{color:#ecc977;font-size:19px;text-shadow:0 0 14px #e0b85a88;animation:sumglow 1.8s ease-in-out infinite}
 .sumwin .si{animation:sumbounce 1.2s ease-in-out infinite}
 .sumdown b{color:var(--red);font-size:19px;animation:sumglow 1.8s ease-in-out infinite}
@@ -547,6 +551,10 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .champ .lblm{display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
 .champ .lblm span{position:relative;top:-5px;background:linear-gradient(100deg,#b8913a 10%,#fff3c4 40%,#e4c47a 55%,#b8913a 90%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3.2s ease-in-out infinite}
 @keyframes shine{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.champ .lblm .lblion{width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);flex:none}
+.champ.sm .lblm{gap:10px;font-size:13px;letter-spacing:.1em}
+.endrow .hk .hktr{display:block;height:22px;width:auto;margin:0 auto}
+.btn.gold{border-color:#e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-weight:600;box-shadow:0 0 18px -8px #e0b85a99}
 .champ .lblm svg{filter:drop-shadow(0 0 8px #e4c47a99)}
 .endrow{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .endrow:last-child{border:0}
@@ -1340,7 +1348,7 @@ $("endbody").addEventListener("click",function(e){
   if(e.target.closest("[data-endfull]")){S.endFull=!S.endFull;renderEnd();return}
   var b=e.target.closest("[data-end]");if(!b)return;var a=b.dataset.end;
   if(a==="hof"){HOFBACK="end";go("hof")}
-  else if(a==="home"){askLeave(false)}
+  else if(a==="home"){liveLeave()}
   else if(a==="newseason"){askLeave(true);}
   else if(a==="copy"){var t="PL Draft, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"My team")+" finished "+ordinal(i+1)+" with "+rw[i].p+" points."})():(S.team.trim()||"My team")+" finished the season.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent="Copy result"},1500)}
 });
@@ -1739,12 +1747,12 @@ function liveSimDone(){
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
   var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
   var row=function(ic,t,d,cls,id){return '<div class="sumrow'+(cls?" "+cls:"")+'"'+(id?' id="'+id+'"':'')+'><span class="si">'+ic+'</span><div><b>'+t+'</b>'+(d?'<small>'+d+'</small>':'')+'</div></div>'};
-  var eu=mi<4?["🌟","Champions League","You qualified for the Champions League."]:(mi<6?["⭐","Europa League","You qualified for the Europa League."]:(mi===6?["✨","Conference League","You qualified for the Conference League."]:null));
+  var eu=mi<4?['<img class="sileague" src="badges/eu-cl.png" alt="">',"Champions League","You qualified for the Champions League."]:(mi<6?['<img class="sileague" src="badges/eu-el.png" alt="">',"Europa League","You qualified for the Europa League."]:(mi===6?['<img class="sileague" src="badges/eu-ecl.png" alt="">',"Conference League","You qualified for the Conference League."]:null));
   var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>The season is over</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist" id="sumlist">'+
-    (mi===0?row("🏆","You're the champions! 🏆","","sumwin"):"")+
-    (mi>=17?row("⬇️","You were relegated","","sumdown"):"")+
-    row("📊","Position",ordinal(mi+1)+" place · "+me.p+" points")+
-    row("⚽","Results",me.w+" wins · "+me.d+" draws · "+me.l+" losses<br>goal difference "+(me.gf-me.ga>0?"+":"")+(me.gf-me.ga))+
+    (mi===0?row('<img class="silion" src="'+PLLOGO+'" alt="">',"You\'re the champions!","","sumwin"):"")+
+    (mi>=17?row('<img class="sileague" src="badges/efl-champ.png" alt="">',"Relegated to Championship","","sumdown"):"")+
+    row("📊","Position",ordinal(mi+1)+" place")+
+    row("⚽","Results",me.p+" points<br>"+me.w+"W "+me.d+"D "+me.l+"L")+
     (eu?row(eu[0],eu[1],eu[2]):"")+
     '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">Continue</button>';
   $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
@@ -1773,15 +1781,16 @@ async function sumRecords(){
     catT("Biggest win",function(x){return x.big_win_margin},false,function(x){return x.big_win_margin>0});
     if(!out.length)return;
     out.sort(function(a,b){return a[0]-b[0]});
-    var emo=function(o){var t=o[1];return o[0]===0?(/røde/.test(t)?"🔴":(/gule/.test(t)?"🟡":(/streak/.test(t)?"🔥":medal[0]))):medal[o[0]]};
+    var ent=function(o){return '<span class="recl">'+esc(o[1])+"<br><b>"+esc(o[2])+"</b></span>"};
     var el=document.createElement("div");el.className="sumrow";
-    el.innerHTML='<span class="si">'+emo(out[0])+'</span><div><b>'+(out[0][0]===0?"New record!":"Hall of Fame")+'</b><small>'+out.slice(0,4).map(function(o){return '<span class="recl">'+emo(o)+" "+esc(o[1])+"<br><b>"+esc(o[2])+"</b></span>"}).join("")+(out.length>4?'<span class="recl">and '+(out.length-4)+" more</span>":"")+'</small></div>';
+    el.innerHTML='<span class="si">🏆</span><div><b>New Hall of Fame entry!</b><small>'+out.slice(0,4).map(ent).join("")+(out.length>4?'<span class="recmore" hidden>'+out.slice(4).map(ent).join("")+'</span><button class="linkbtn recbtn" data-act="recmore">and '+(out.length-4)+' more</button>':"")+'</small></div>';
     box.appendChild(el);
   }catch(e){}
 }
 $("simbody").addEventListener("click",function(e){
   var b=e.target.closest("[data-act]");if(!b)return;
   if(b.dataset.act==="simleave"){askLeave(false);return}
+  if(b.dataset.act==="recmore"){var m=b.parentNode.querySelector(".recmore");if(m)m.hidden=false;b.remove();return}
   if(b.dataset.act==="simskip"){if(!b.disabled&&simReady())liveSimDone()}
   else if(b.dataset.act==="simend"){
     try{localStorage.setItem(simKey(),"1")}catch(x){}
@@ -1996,12 +2005,12 @@ function renderEndLive(){
   var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
   var T34=TROPHY.replace('width="54" height="54"','width="26" height="26"');
   var tab=S.endTab||"stil";if(tab==="pris"&&0)tab="stil";
-  var h='<div class="card champ sm" style="margin-top:0"><div class="lblm">'+T34+'<span>Champions</span>'+T34+'</div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b><p class="note champs">'+champ.p+' points<br>'+champ.w+'W '+champ.d+'D '+champ.l+'L</p></div>';
+  var h='<div class="card champ sm" style="margin-top:0"><div class="lblm"><img class="lblion" src="'+PLLOGO+'" alt=""><span>Premier League Champions</span></div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b><p class="note champs">'+champ.p+' points<br>'+champ.w+'W '+champ.d+'D '+champ.l+'L</p></div>';
   var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
   if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
     h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Best among you</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (you)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">'+ordinal(bt.i+1)+', '+bt.r.p+' points</span></div></div>'}
-  h+='<div class="etabs">'+[["stil","Final table"],["pris","Awards"],["stats","Stats"],["kampe","Matches from the season"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
-  var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":(lhuman(k)?" fr":""))+'"><span class="hk">'+(i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
+  h+='<div class="etabs">'+[["stil","Final table"],["pris","Awards"],["stats","Stats"],["kampe","Matches"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
+  var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":(lhuman(k)?" fr":""))+'"><span class="hk">'+(i===0?'<img class="hktr" src="badges/pl-trophy.png" alt="1">':i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
   if(tab==="stil"){
     var full=!!S.endFull,list;
     if(full)list=rows.map(function(r1,i){return er(i,r1.k,r1.p)}).join("");
@@ -2025,7 +2034,7 @@ function renderEndLive(){
       return '<div class="endrow" style="padding:6px 0"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"H":"A")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
     }).join("")+'</div>';
   }
-  h+='<div class="nav2 endbtns"><button class="btn p go" data-end="newseason">New season</button><button class="btn" data-end="hof">Hall of Fame</button><button class="btn" data-end="home">Home</button></div>';
+  h+='<div class="nav2 endbtns"><button class="btn" data-end="home">Home</button><button class="btn gold" data-end="hof">Hall of Fame</button></div>';
   $("endbody").innerHTML=h;
 }
 
