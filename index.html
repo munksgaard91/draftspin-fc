@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.14.2">
+<meta name="app-version" content="2.14.3">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -247,6 +247,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .pitch.wide{aspect-ratio:5/6}
 .slot{position:absolute;transform:translate(-50%,-50%);width:56px;text-align:center;z-index:1}
 .slot .dot{width:30px;height:30px;border-radius:50%;margin:0 auto;border:1.5px dashed #ffffff66;display:grid;place-items:center;font:500 10px var(--mono);color:#ffffffb3}
+.slot.sv .nm{opacity:.7}
+.slot.sv::after{content:"Gemmer…";display:block;font-size:9px;color:#ffffffb3;margin-top:1px}
 .slot.f .dot{background:var(--me);border:2.5px solid var(--me2);color:var(--me2)}
 .slot .nm{font-size:10.5px;margin-top:2px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;text-shadow:0 1px 2px #0008}
 .pitch.mini .slot{width:10px}
@@ -1010,7 +1012,7 @@ function renderPitch(el,form,squad,mini,hl,alt){
       else if(c===2)left=PAIR[pos][k-1];
       else left=28+(k-1)*22;
       var top=PY[pos];
-      html+='<div class="slot'+(p?" f":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
+      html+='<div class="slot'+(p?" f":"")+(p&&p.sv?" sv":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
   });
@@ -1174,7 +1176,7 @@ function renderDraft(){
   renderCounts();renderFeed();renderClub();
   $("ordLine").textContent=(LIVE&&S.order.length>1)?"":S.order.length?"Rækkefølge: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
   var cur=S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null;
-  $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club);
+  $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club&&!NET.pending);
   $("spinBtn").textContent=done?"Draften er færdig":(!myTurn()?"Venter på "+(cur?teamName(cur):""):(S.club?"Vælg en spiller herunder":"Spin the wheel"));
   $("turnTxt").textContent=done?"Din trup er klar.":(myTurn()?(S.club?"Klubben er valgt. Vælg frit blandt spillerne.":"Din tur. Spin for at få en klub."):(cur?teamName(cur)+" er i gang.":""));
   $("doneBox").innerHTML=done?(LIVE?'<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen startes...</p>':'<button class="btn p wide fade" id="toMatch" style="margin-top:16px">Til første kamp</button>'):"";
@@ -1844,7 +1846,7 @@ function liveConn(ok){
   else{connFail++;if(connFail>=2){c.className="conn";c.hidden=false;c.innerHTML='Forbindelsen er væk. Dine valg er gemt, og vi prøver igen<i></i><i></i><i></i>'}}
 }
 async function liveChanged(){
-  if(!NET.gid)return;
+  if(!NET.gid||NET.pending)return;
   if(liveBusy){liveAgain=true;return}
   liveBusy=true;
   try{await liveLoad();liveConn(true);liveApply()}catch(e){liveConn(false)}finally{liveBusy=false;if(liveAgain){liveAgain=false;liveChanged()}}
@@ -2625,7 +2627,7 @@ function liveTimerTick(){
   }
 }
 async function liveSpin(){
-  if(!myTurn()||S.spinning||S.club)return;
+  if(!myTurn()||S.spinning||S.club||NET.pending)return;
   S.spinning=true;renderDraft();
   var r0=await NET.sb.rpc("spin",{p_game:NET.gid});
   if(r0.error){S.spinning=false;renderDraft();netErr(r0.error);return}
@@ -2656,14 +2658,19 @@ async function liveRespin(){
 async function livePick(name,i){
   if(NET.pending||!myTurn())return;
   var a=NET.byName[name];if(!a)return;
+  var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0],club=S.club;
   NET.pending=true;
-  S.sel=null;renderSheet();
-  var r0=await NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1});
-  NET.pending=false;
-  if(r0.error){netErr(r0.error);await liveChanged();return}
-  S.club=null;
-  await liveChanged();
+  /* optimistisk: spilleren står på banen med det samme, serveren bekræfter i baggrunden */
+  S.squad[i]={name:p[0],sn:p[6]||"",pos:p[1],club:club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2],sv:1};
+  S.taken[p[0]]=S.team.trim()||"Mit hold";S.counts.me=(S.counts.me||0)+1;
+  S.feed.unshift({who:"Du",name:p[0],pos:p[1],club:club});
+  S.sel=null;S.club=null;S.view="me";
+  renderDraft();renderSheet();
   window.scrollTo({top:0,behavior:"smooth"});
+  var r0;try{r0=await NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1})}catch(e){r0={error:e}}
+  NET.pending=false;
+  if(r0.error)toast("Ups, der skete en fejl, prøv igen!",4200);
+  await liveChanged();
 }
 /* web push: besked når det er din tur (virker på iPhone, når spillet ligger på hjemmeskærmen) */
 var VAPID_PUB="BAZ4yNE3dz6tU3yFhCqy35P_8VWggB4NNWWkipghXkcfkq2YRIbL3AoCwwkoSqrOTeiN0o3mI86fcy7U9MN7Xdc";
