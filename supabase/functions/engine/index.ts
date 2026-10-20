@@ -7,6 +7,8 @@ const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
 const json = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { ...CORS, "Content-Type": "application/json" } });
 class Fejl extends Error {}
+// hurtigt spil: første halvdel (19 runder) simuleres før klienten starter afspilningen, resten kører bagefter ("finish")
+const QUICK_FIRST = 19;
 const chk = (r) => { if (r.error) throw new Error(r.error.message); return r.data; };
 
 async function loadPlayers() {
@@ -238,7 +240,7 @@ Deno.serve(async (req) => {
       const r = await initSeason(game);
       if (!r.already) {
         game = await getGame(game_id);
-        await runTo(game, game.pace === "quick" ? 38 : 1);
+        await runTo(game, game.pace === "quick" ? QUICK_FIRST : 1);
       }
     } else if (action === "advance") {
       if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");
@@ -250,6 +252,11 @@ Deno.serve(async (req) => {
       const absent = gps.filter((g) => g.ready_round < game.current_round && Date.now() - Date.parse(g.last_seen_at) > 90000).map((g) => g.user_id);
       if (absent.length) chk(await admin.rpc("bump_missed", { p_game: game_id, p_round: game.current_round, p_users: absent }));
       await runTo(game, game.current_round + 1);
+    } else if (action === "finish") {
+      // alle i spillet må bede om resten af et hurtigt spil; kørslen er idempotent (runden flyttes kun af én ad gangen)
+      if (game.pace !== "quick") throw new Fejl("Kun hurtigt spil");
+      if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");
+      await runTo(game, 38);
     } else if (action === "quick") {
       if (!isAdmin) throw new Fejl("Kun admin kan køre hurtigt spil");
       if (game.status !== "season") throw new Fejl("Sæsonen er ikke i gang");

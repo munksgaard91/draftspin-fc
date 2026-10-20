@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.14.4">
+<meta name="app-version" content="2.15.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -247,6 +247,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .pitch.wide{aspect-ratio:5/6}
 .slot{position:absolute;transform:translate(-50%,-50%);width:56px;text-align:center;z-index:1}
 .slot .dot{width:30px;height:30px;border-radius:50%;margin:0 auto;border:1.5px dashed #ffffff66;display:grid;place-items:center;font:500 10px var(--mono);color:#ffffffb3}
+.linkbtn:disabled{opacity:.35;pointer-events:none}
 .slot.sv .nm{opacity:.7}
 .slot.sv::after{content:"Gemmer…";display:block;font-size:9px;color:#ffffffb3;margin-top:1px}
 .slot.f .dot{background:var(--me);border:2.5px solid var(--me2);color:var(--me2)}
@@ -1787,6 +1788,7 @@ function toast(t,ms){var e=$("toast");e.textContent=t;e.hidden=false;clearTimeou
 
 /* ---------- live: Supabase ---------- */
 var SB_URL="https://apagcfedizgjnnuefzfo.supabase.co",SB_KEY="sb_publishable_WhuPfaDfcTcZJhWwAcgvhg_YyhNG4lf";
+var QUICK_FIRST=19;
 var NET={sb:null,uid:null,gid:null,game:null,players:[],ch:null,hb:null,poll:null,ready:null,draftShown:false};
 function netErr(e){toast((e&&e.message)||String(e),4200)}
 /* lokalt lager: sidste kendte tilstand, så appen kan vise den med det samme uden forbindelse */
@@ -2100,7 +2102,13 @@ async function liveSeasonApply(){
       if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/ikke|Draften/.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
       liveSimWaiting(g.pace==="quick"?"Draften er færdig. Sæsonen simuleres...":"Draften er færdig. Sæsonen startes...");return;
     }
-    if(g.pace==="quick"&&g.status!=="done"){liveSimWaiting("Draften er færdig. Sæsonen simuleres...");return}
+    var quick=g.pace==="quick";
+    if(quick&&g.status!=="done"){
+      if(g.current_round<QUICK_FIRST){liveSimWaiting("Draften er færdig. Sæsonen simuleres...");return}
+      // første halvdel er klar: resten simuleres i baggrunden (prøver igen, hvis den ikke er rykket på 20 s)
+      if(Date.now()-(NET.finAt||0)>20000){NET.finAt=Date.now();callEngine("finish").then(function(){liveChanged()}).catch(function(){})}
+    }
+    if(quick)key=g.status+"|q";
     if(!NET.season||NET.seasonKey!==key){
       var ok=await liveSeasonLoad();
       if(!ok){liveSimWaiting("Draften er færdig. Sæsonen startes...");return}
@@ -2138,9 +2146,14 @@ function liveSimStart(){
   $("navwrap").hidden=true;go("sim");liveSimStep();
 }
 function simClear(){clearTimeout(NET.simT);(NET.simG||[]).forEach(clearTimeout);NET.simG=[]}
+/* højeste spillede runde i de hentede data (hurtigt spil henter sæsonen i to dele) */
+function simAvail(){var a=0;NET.season.matches.forEach(function(m){if(m.played&&m.round>a)a=m.round});return a}
+function simReady(){return !!NET.game&&NET.game.status==="done"&&!!NET.season&&simAvail()>=38}
+function liveSimUnlock(){var sk=document.querySelector('[data-act="simskip"]');if(sk&&simReady())sk.disabled=false}
 function liveSimStep(){
   var s=NET.sim;if(!s||s.end)return;
   if(s.r>=38){liveSimDone();return}
+  if(s.r+1>simAvail()){NET.simT=setTimeout(liveSimStep,600);return} // resten af sæsonen er ikke klar endnu
   s.r++;NET.shownRound=s.r;liveSimRender("A");
   var m=liveMyMatch(s.r);NET.simG=[];
   if(m){
@@ -2166,7 +2179,7 @@ function liveSimRender(ph){
     var ar=d>0?'<i class="ar up"></i>':(d<0?'<i class="ar dn"></i>':'');
     h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+(x.w+x.d+x.l)+'</span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
   });
-  h+='</div></div><div class="simlist"><div class="simlh"><b>Dine kampe</b><span><button class="linkbtn" data-act="simleave">Forlad</button><button class="linkbtn" data-act="simskip">Spring til slut</button></span></div>';
+  h+='</div></div><div class="simlist"><div class="simlh"><b>Dine kampe</b><span><button class="linkbtn" data-act="simleave">Forlad</button><button class="linkbtn" data-act="simskip"'+(simReady()?'':' disabled')+'>Spring til slut</button></span></div>';
   for(var i=up;i>=1;i--){
     var mm=liveMyMatch(i);if(!mm)continue;
     var home=mm.home_key===NET.uid,mg=home?mm.home_goals:mm.away_goals,og=home?mm.away_goals:mm.home_goals;
@@ -2223,7 +2236,7 @@ async function sumRecords(){
 $("simbody").addEventListener("click",function(e){
   var b=e.target.closest("[data-act]");if(!b)return;
   if(b.dataset.act==="simleave"){askLeave(false);return}
-  if(b.dataset.act==="simskip")liveSimDone();
+  if(b.dataset.act==="simskip"){if(!b.disabled&&simReady())liveSimDone()}
   else if(b.dataset.act==="simend"){
     try{localStorage.setItem(simKey(),"1")}catch(x){}
     NET.sim=null;$("navwrap").hidden=false;go("end");
@@ -2236,13 +2249,14 @@ function liveSeasonStart(){
   var d=document.querySelector('#nav [data-s="draft"]');if(d)d.hidden=true;
   NET.round=g.current_round;NET.shownRound=(g.status==="done"&&g.pace==="quick")?38:Math.max(0,g.current_round-1);
   S.matchSeen=false;clearInterval(NET.tt);
-  if(g.status==="done"&&g.pace==="quick"){
-    var seen=false;try{seen=localStorage.getItem(simKey())==="1"}catch(x){}
+  if(g.pace==="quick"){
+    var seen=false;try{seen=g.status==="done"&&localStorage.getItem(simKey())==="1"}catch(x){}
     if(seen){$("navwrap").hidden=false;go("end")}else liveSimStart();
   }else go("match");
 }
 function liveSeasonRender(){
   var g=NET.game;
+  if(g.pace==="quick"){liveSimUnlock();return}
   if(S.gate){
     if(gateOn()){renderGate();return}
     hideGate();
