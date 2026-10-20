@@ -469,14 +469,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .joinbox{max-width:340px;margin:34px auto 0}
 .codeline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:14px}
 .codeline button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:500 15px var(--mono);letter-spacing:.1em;color:var(--text);cursor:pointer}
-.protofoot{margin-top:40px;text-align:center;display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:center;align-items:center;font-size:12.5px;color:var(--mut);opacity:.7}
-.protofoot button{appearance:none;background:none;border:0;color:var(--mut);font-size:12.5px;opacity:.6;cursor:pointer;padding:6px}
 .startwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:calc(100vh - 220px);min-height:calc(100svh - 220px);padding-top:6vh}
 .wm3{font-size:38px;font-weight:600;letter-spacing:-.015em;line-height:1}
 .wm3 span{font-weight:300;color:var(--acc)}
-.lgrow{display:flex;gap:14px;justify-content:center;margin-top:34px}
-.lgrow .lg{opacity:.5}
-.lgrow .lg:first-child{opacity:1}
 .rspbtn{margin:0 0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--acc);background:transparent;color:var(--acc);font:inherit;font-size:15px;cursor:pointer;flex:none}.rspbtn b{font-weight:700}.rspbtn:active{opacity:.6}
 .linkbtn.rsp{margin:0 0 0 auto;padding:6px 2px;font-size:13px;text-align:right;max-width:120px;line-height:1.25}
 .namerow{display:flex;align-items:center;gap:10px;margin-top:10px}.namerow .inp{flex:1;min-width:0;padding:9px 12px}
@@ -535,11 +530,6 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .endrow.me{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
 .newrec{display:flex;gap:12px;align-items:flex-start;padding:10px 0}
 .newrec .st{font:500 12px var(--mono);background:#e4c47a22;color:#e4c47a;border-radius:6px;padding:3px 8px;white-space:nowrap}
-.phone{width:min(100%,300px);margin:20px auto 0;border-radius:36px;padding:34px 18px 22px;background:linear-gradient(180deg,#25304b,#141b2d);border:1px solid #3b4a6b}
-.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 10px}
-.papp{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:#cfd6e6}
-.pph{width:52px;height:52px;border-radius:12px;background:#ffffff14}
-.sizes{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-top:14px}
 .fade{animation:fd .4s ease both}
 @keyframes fd{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.fade{animation:none}}
@@ -637,14 +627,10 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   </section>
   <section id="s-sim" class="screen"><div id="simbody"></div></section>
   <section id="s-end" class="screen"><div id="endbody"></div><div id="restartBox" hidden></div></section>
-  <section id="s-icon" class="screen"><div id="iconbody"></div></section>
-  <div class="protofoot"><span>Prototype:</span><button id="toStart">startskærm</button><button data-pv="end">sæsonslut</button><button data-pv="conn">forbindelse væk</button><button data-pv="away">admin ude</button><button data-pv="closed">lobby lukket</button><button data-pv="icon">app-ikon</button></div>
 </div>
 
 <div class="toast" id="toast" hidden></div>
 <div class="conn" id="conn" hidden></div>
-<div class="modal" id="away" hidden></div>
-<div class="modal" id="auth" hidden></div>
 <div class="modal" id="testBox" hidden><div class="card"><h3>Start testspil?</h3><p class="note" style="margin:0">Springer alt over og starter et solospil med tilfældigt hold og tilfældige spillere.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Hurtigt spil</button><button class="linkbtn" data-tm="no">Annuller</button></div></div></div>
 <div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Forlad ligaen?</h3><p class="note" style="margin:0" id="leaveP">Er du sikker på, at du vil forlade den nuværende liga? Hvis du ikke er færdig med at kigge, så bliv her.</p><div class="row2"><button class="btn" id="leaveYes">Forlad</button><button class="btn p go" id="leaveNo">Bliv her</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
@@ -661,7 +647,6 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 (function(){
 "use strict";
 var POSC={GK:"GK",RB:"RB",CB:"CB",LB:"LB",LWB:"LWB",RWB:"RWB",DM:"CDM",CM:"CM",AM:"CAM",LM:"LM",RM:"RM",LW:"LW",RW:"RW",ST:"ST"};
-var POSN={GK:"Goalkeeper",RB:"Right back",CB:"Centre back",LB:"Left back",LWB:"Left wing back",RWB:"Right wing back",DM:"Defensive midfielder",CM:"Central midfielder",AM:"Attacking midfielder",LM:"Left midfielder",RM:"Right midfielder",LW:"Left winger",RW:"Right winger",ST:"Striker"};
 var POSORD=["GK","RWB","RB","CB","LB","LWB","DM","CM","AM","RW","LW","ST"];
 var GROUPS={GK:["GK"],DEF:["RB","CB","LB","RWB","LWB"],MID:["DM","CM","AM"],ATT:["LW","RW","ST"]};
 var FORMS={
@@ -701,43 +686,19 @@ var FORM_ORDER=["5-4-1","4-5-1 (F)","4-4-2","4-4-1-1","4-3-3 (F)","4-3-3 (D)","4
 var LEAGUE=[["ARS","Arsenal"],["AVL","Aston Villa"],["BOU","Bournemouth"],["BRE","Brentford"],["BHA","Brighton"],["CHE","Chelsea"],["COV","Coventry City"],["CRY","Crystal Palace"],["EVE","Everton"],["FUL","Fulham"],["HUL","Hull City"],["IPS","Ipswich Town"],["LEE","Leeds United"],["LIV","Liverpool"],["MCI","Manchester City"],["MUN","Manchester United"],["NEW","Newcastle United"],["NFO","Nottingham Forest"],["SUN","Sunderland"],["TOT","Tottenham Hotspur"]];
 var REMOVED=["Hull City","Ipswich Town","Coventry City","Sunderland","Leeds United","Nottingham Forest"];
 /* Trupper og numre: premierleague.com, "squad numbers for 2026/27". Siden har ingen positioner, så de er mine gæt til test. */
-var SQ={
-ARS:"1 David Raya GK;2 William Saliba CB;3 Cristhian Mosquera CB;4 Ben White RB;5 Piero Hincapié LB;6 Gabriel Magalhães CB;7 Bukayo Saka RW;8 Martin Ødegaard AM;10 Eberechi Eze AM;12 Jurriën Timber RB;13 Kepa Arrizabalaga GK;14 Viktor Gyökeres ST;15 Ezri Konsa CB;17 Christos Tzolis LW;20 Noni Madueke RW;23 Mikel Merino CM;29 Kai Havertz ST;30 Illan Meslier GK;33 Riccardo Calafiori LB;36 Martín Zubimendi DM;39 Bruno Guimarães CM;41 Declan Rice CM;49 Myles Lewis-Skelly LB;56 Max Dowman AM",
-AVL:"1 Zion Suzuki GK;2 Matty Cash RB;3 Victor Lindelof CB;4 Taylor Harwood-Bellis CB;5 Tyrone Mings CB;6 Ross Barkley CM;7 John McGinn CM;8 Boubacar Kamara DM;10 Emiliano Buendia AM;11 Nicolas Jackson ST;13 Matteo Ruggeri LB;14 Pau Torres CB;17 Alejandro Garnacho LW;18 Tammy Abraham ST;19 Ibrahim Mbaye RW;22 Ian Maatsen LB;24 Amadou Onana DM;26 Lamare Bogarde CM;27 Leon Goretzka CM;29 Aaron Wan-Bissaka RB;35 Joao Gomes DM;39 Brian Madjo ST;40 Marco Bizot GK;44 Johan Manzambi CM;47 Alysson RW;48 Modou Keba Cisse CB;53 George Hemmings GK",
-BOU:"1 Djordje Petrovic GK;2 Julian Araujo RB;3 Adrien Truffert LB;4 Lewis Cook CM;5 James Hill CB;6 Julio Soler LB;7 David Brooks RW;8 Alex Scott CM;9 Evanilson ST;10 Ryan Christie AM;11 Ben Gannon-Doak RW;12 Tyler Adams DM;14 Antonio Silva CB;15 Adam Smith RB;16 Marcus Tavernier AM;17 Fraser Forster GK;18 Bafode Diakite CB;19 Justin Kluivert AM;20 Michele Di Gregorio GK;21 Amine Adli LW;22 Junior Kroupi ST;24 Juanlu Sanchez RB;27 Alex Toth CM;28 Max Aarons RB;29 Daniel Jebbison ST;30 Alvaro Rodriguez ST;37 Rayan LW;44 Veljko Milosavljevic CM;47 Ben Winterburn CM",
-BRE:"1 Caoimhin Kelleher GK;2 Aaron Hickey RB;3 Rico Henry LB;4 Sepp van den Berg CB;6 Yehor Yarmoliuk CM;7 Kevin Schade RW;8 Mathias Jensen CM;9 Igor Thiago ST;10 Josh Dasilva CM;11 Dango Ouattara RW;12 Hakon Valdimarsson GK;13 Callum Wilson ST;14 Fabio Carvalho AM;17 Antoni Milambo CM;18 Mamadou Sangare DM;19 Jaidon Anthony LW;20 Kristoffer Ajer CB;22 Nathan Collins CB;23 Keane Lewis-Potter LW;24 Mikkel Damsgaard AM;25 El Hadji Malick Diouf LB;27 Vitaly Janelt CM;31 Ellery Balcombe GK;33 Michael Kayode RB;36 Kim Ji-Soo CB;39 Gustavo Nunes RW;44 Jannik Schuster CB;48 Benjamin Fredrick CM",
-BHA:"1 Bart Verbruggen GK;3 Jaouen Hadjam LB;4 Pascal Struijk CB;5 Lewis Dunk CB;7 Kaoru Mitoma LW;8 Jack Hinshelwood CM;9 Stefanos Tzimas ST;10 Georginio Rutter AM;11 Yankuba Minteh RW;12 Promise David ST;13 Pascal Gross CM;14 Chema Andres CB;15 Ibrahim Osman LW;19 Charalampos Kostoulas ST;20 Costinha LW;21 Olivier Boscagli CB;23 Jason Steele GK;24 Ferdi Kadioglu LB;25 Diego Gomez CM;26 Yasin Ayari CM;27 Mats Wieffer DM;28 Evan Ferguson ST;29 Maxim De Cuyper LB;30 Michael Svoboda CB;33 Matt O'Riley CM;35 Malick Yalcouye LW;36 Zadok Yohanna CM;38 Tom McGill GK;39 Femi Azeez LW;44 Luka Vuskovic CB;49 Nehemiah Oriola CB",
-CHE:"1 Emiliano Martínez GK;2 Marco Palestra RB;3 Wesley Fofana CB;4 Valentín Barco CM;5 Maxence Lacroix CB;6 Levi Colwill CB;7 Pedro Neto LW;9 João Pedro ST;10 Cole Palmer AM;11 Jamie Gittens LW;14 Jordan Henderson CM;17 Morgan Rogers AM;18 Danny Welbeck ST;21 Jorrel Hato LB;22 Emmanuel Emegha ST;23 Geovany Quenda RW;24 Reece James RB;25 Moisés Caicedo DM;27 Malo Gusto RB;28 Teddy Sharman-Lowe GK;29 Pep Chavarría LB;30 Aarón Anselmino CB;32 Mahdi Nicoll-Jazuli CM;34 Josh Acheampong CB;39 Mike Penders GK;41 Estêvão RW;44 Gabriel Slonina GK;45 Roméo Lavia DM",
-COV:"2 Ethan Pinnock CB;3 Jay Dasilva LB;4 Bobby Thomas CB;5 Jack Rudoni AM;6 Matt Grimes CM;7 Tatsuhiro Sakamoto LW;8 Caleb Yirenkyi CM;9 Ellis Simms ST;10 Ephron Mason-Clark RW;11 Haji Wright ST;12 Stephen Mfuni CB;13 Ben Wilson GK;14 Taiwo Awoniyi ST;16 Frank Onyeka DM;18 Loum Tchaouna RW;19 Carl Rushworth GK;20 Kaine Kesler-Hayden RB;21 Jake Bidwell LB;22 Joel Latibeaudiere CB;23 Brandon Thomas-Asante ST;24 Aurele Amenda CB;25 Dan Bentley GK;26 Luke Woolfenden CB;27 Milan van Ewijk RB;28 Josh Eccles CM;29 Victor Torp CM;34 Yann Gboho LW;38 Gustavo Hamer AM;49 Sidiki Cherif ST",
-CRY:"1 Dean Henderson GK;3 Tyrick Mitchell LB;4 Chadi Riad CB;5 Axel Disasi CB;6 Jaydee Canvot CB;7 Ismaila Sarr RW;8 Jefferson Lerma DM;9 Eddie Nketiah ST;10 Yeremy Pino LW;11 Dwight McNeil LW;12 Zavier Gozo RW;14 Jean-Philippe Mateta ST;17 Takehiro Tomiyasu RB;18 Daichi Kamada AM;19 Will Hughes CM;20 Adam Wharton CM;21 Honest Ahanor LB;22 Jorgen Strand Larsen ST;23 Quinten Timber CM;24 Dario Osorio LW;25 Anan Khalaili RB;26 Chris Richards CB;28 Cheick Doucoure DM;29 Evann Guessand ST;30 Oscar Mingueza RB;31 Remi Matthews GK;33 Ben Chilwell LB;44 Walter Benitez GK",
-EVE:"1 Jordan Pickford GK;2 Ainsley Maitland-Niles RB;4 Jarrad Branthwaite CB;5 Michael Keane CB;6 James Tarkowski CB;8 Kiernan Dewsbury-Hall CM;10 Jack Grealish AM;11 Thierno Barry ST;12 Mark Travers GK;15 Jake O'Brien CB;16 Vitalii Mykolenko LB;19 Tyrique George LW;20 Tyler Dibling RW;22 Brennan Johnson RW;23 Christian Norgaard DM;24 Charly Alcaraz CM;30 Hayden Hackney CM;31 Tom King GK;34 Merlin Rohl CM;37 James Garner DM;45 Harrison Armstrong CM",
-FUL:"1 Bernd Leno GK;2 Kenny Tete RB;3 Calvin Bassey LB;4 Jorge Cuenca CB;5 Joachim Andersen CB;6 Harrison Reed DM;7 Gonzalo Garcia ST;8 Cesar Palacios CM;9 Rodrigo Muniz ST;10 Tom Cairney CM;11 Kevin RW;14 Oscar Bobb RW;15 Hugo Larsson CM;16 Sander Berge DM;17 Alex Iwobi AM;18 Jonah Kusi-Asare ST;19 Shea Charles DM;20 Manuel Angel LW;21 Timothy Castagne RB;22 David Affengruber CB;23 Benjamin Lecomte GK;24 Josh King LW;30 Ryan Sessegnon LW;32 Emile Smith Rowe AM;33 Antonee Robinson LB;35 Macaulay Zepa CM;44 Luc De Fougerolles CB",
-HUL:"1 Jack Butland GK;2 Lewie Coyle RB;3 Ryan Giles LB;4 Charlie Hughes CB;5 Hidemasa Morita DM;6 Semi Ajayi CB;7 Sorba Thomas LW;8 Eliot Matazo CM;9 Oliver McBurnie ST;10 Mohamed Belloumi AM;11 Joe Gelhardt ST;12 Dillon Phillips GK;14 Jens Hjerto-Dahl ST;15 John Egan CB;17 Paddy McNair CM;18 Brooke Norton-Cuffy RB;19 Konstantinos Tzolakis GK;21 Elliot Stroud CM;22 Lucas Herrington CB;23 Matt Targett LB;25 Matt Crooks CM;27 Regan Slater DM;28 Ilyas Ansah RW;29 Lucas Gourna-Douath DM;32 Nobel Mendy CB;33 Abdulkadir Omur AM;42 Tim Iroegbunam DM;50 Mohamed-Ali Cho RW",
-IPS:"1 Alex Palmer GK;2 Darnell Furlong RB;3 Leif Davis LB;4 Cedric Kipre CB;5 Azor Matusiwa DM;6 Issa Diop CB;7 Abdul Fatawu RW;8 Sindre Egeli CM;9 Zian Flemming ST;10 Julio Enciso AM;11 Jaden Philogene LW;12 Florentino DM;14 Jack Taylor CM;19 Emersonn LW;20 Kasey McAteer LW;23 Sasa Lukic CM;24 Jacob Greaves CB;25 Exequiel Palacios CM;26 Dara O'Shea CB;27 David Button GK;28 Christian Walton GK;29 Chuba Akpom ST;32 Marcelino Nunez DM;33 Anis Mehmeti LW;37 Kjell Scherpen GK;38 Daizen Maeda LW;42 Abdoul Ouattara RB;47 Jack Clarke LW",
-LEE:"1 James Trafford GK;2 Jayden Bogle RB;3 Gabriel Gudmundsson LB;4 Ethan Ampadu DM;5 Tarik Muharemovic CB;6 Joe Rodon CB;7 Daniel James RW;8 Sean Longstaff CM;9 Dominic Calvert-Lewin ST;10 Harry Wilson RW;11 Brenden Aaronson AM;14 Lukas Nmecha ST;15 Jaka Bijol CB;16 Michael Zetterer GK;18 Anton Stach DM;19 Noah Okafor LW;22 Ao Tanaka CM;23 Jean-Matteo Bahoya LW;24 James Justin RB;26 Melvin Bard LB;30 Nico Elvedi CB;44 Ilia Gruev DM;50 Alfie Cresswell LB;65 Jayden Lienou CB",
-LIV:"1 Alisson Becker GK;2 Joe Gomez CB;3 Wataru Endo DM;4 Virgil van Dijk CB;5 Jérémy Jacquet CB;6 Milos Kerkez LB;7 Florian Wirtz AM;8 Dominik Szoboszlai CM;9 Alexander Isak ST;10 Alexis Mac Allister CM;12 Conor Bradley RB;14 Federico Chiesa RW;15 Giovanni Leoni CB;18 Cody Gakpo LW;21 Kostas Tsimikas LB;22 Hugo Ekitike ST;23 Víctor Muñoz RW;25 Giorgi Mamardashvili GK;28 Freddie Woodman GK;29 Bradley Barcola LW;30 Jeremie Frimpong RB;33 Ronald Araújo CB;38 Ryan Gravenberch DM;42 Trey Nyoni CM;44 Luke Chambers LB;53 James McConnell CM;56 Vítězslav Jaroš GK;67 Lewis Koumas LW;73 Rio Ngumoha LW;76 Jayden Danns ST;95 Harvey Davies GK",
-MCI:"1 Gianluigi Donnarumma GK;3 Rúben Dias CB;5 Elliot Anderson CM;6 Marc Guéhi CB;7 Iliman Ndiaye RW;8 Mateo Kovačić CM;9 Erling Haaland ST;10 Rayan Cherki AM;11 Jérémy Doku LW;13 Marcus Bettinelli GK;17 Enzo Fernández CM;21 Rayan Aït-Nouri LB;22 Vitor Reis CB;24 Joško Gvardiol CB;27 Matheus Nunes RB;28 Gerónimo Rulli GK;32 Ayyoub Bouaddi DM;33 Nico O'Reilly LB;37 Allan ST;42 Antoine Semenyo RW;45 Abdukodir Khusanov CB;47 Phil Foden AM;56 Ryan McAidoo ST;61 Kaden Braithwaite CB;82 Rico Lewis RB",
-MUN:"1 Senne Lammens GK;2 Diogo Dalot RB;3 Noussair Mazraoui RB;4 Matthijs de Ligt CB;5 Harry Maguire CB;6 Lisandro Martinez CB;7 Mason Mount AM;8 Bruno Fernandes AM;9 Marcus Rashford LW;10 Matheus Cunha AM;11 Joshua Zirkzee ST;12 Karl Darlow GK;13 Patrick Dorgu LB;15 Leny Yoro CB;16 Amad Diallo RW;17 Andrey Santos DM;18 Youri Tielemans CM;19 Bryan Mbeumo RW;20 Carlos Baleba DM;22 Tom Heaton GK;23 Luke Shaw LB;25 Manuel Ugarte DM;26 Ayden Heaven CB;30 Benjamin Sesko ST;31 Shea Lacey AM;37 Kobbie Mainoo CM;38 Jack Fletcher DM;39 Tyler Fletcher CB;41 Harry Amass LB",
-NEW:"1 Nick Pope GK;2 Tino Livramento RB;3 Lewis Hall LB;4 Sven Botman CB;5 Fabian Schar CB;6 Nico Gonzalez CM;7 Joelinton CM;8 Aladji Bamba CM;9 Yoane Wissa ST;10 William Osula ST;11 Harvey Barnes LW;12 Malick Thiaw CB;14 Sean Steur CB;17 Bazoumana Toure RW;19 Anthony Elanga RW;20 Matias Fernandez-Pardo LW;21 Lukas Hornicek GK;23 Jacob Murphy RW;24 Ewen Jaouen CM;28 Joe Willock CM;33 Dan Burn CB;37 Amar Dedic RB;41 Jacob Ramsey CM;67 Lewis Miley CM",
-NFO:"2 Ousmane Diomande CB;3 Neco Williams RB;5 Murillo CB;6 Ibrahim Sangare DM;7 Callum Hudson-Odoi LW;8 Nicolas Dominguez CM;9 Chris Wood ST;10 Morgan Gibbs-White AM;11 Igor Jesus ST;12 John Victor GK;14 Dan Ndoye RW;15 Arnaud Kalimuendo ST;19 Liam Delap ST;21 Xaver Schlager DM;22 Ryan Yates DM;23 Jair Cunha CB;24 James McAtee AM;25 Luca Netz LB;26 Matz Sels GK;27 Daniel Munoz RB;31 Nikola Milenkovic CB;33 Steven Benda GK;34 Ola Aina RB;37 Nicolo Savona LB",
-SUN:"4 Kevin Danso CB;5 Dan Ballard CB;6 Dayann Methalie CB;7 Chemsdine Talbi RW;8 Alan Browne CM;9 Brian Brobbey ST;10 Nilson Angulo LW;11 Chris Rigg AM;12 Thomas Meunier RB;13 Luke O'Nien RB;14 Romaine Mundle RW;15 Omar Alderete CB;17 Reinildo Mandava LB;18 Wilson Isidor ST;19 Habib Diarra CM;20 Nordi Mukiele RB;21 Simon Moore GK;22 Robin Roefs GK;27 Noah Sadiki DM;28 Enzo Le Fee CM;29 Jules Ahoka CM;31 Melker Ellborg GK;32 Trai Hume RB;34 Granit Xhaka DM;37 Jocelin Ta Bi RW;39 Malick Fofana LW",
-TOT:"3 Andy Robertson LB;4 Tosin Adarabioyo CB;5 Marcos Senesi CB;6 Jan Paul van Hecke CB;7 Xavi Simons AM;8 Conor Gallagher CM;10 James Maddison AM;11 Mathys Tel ST;13 Destiny Udogie LB;14 Archie Gray DM;15 Lucas Bergvall CM;16 Sandro Tonali DM;17 Savio RW;18 Mateus Fernandes CM;19 Dominic Solanke ST;20 Mohammed Kudus RW;21 Dejan Kulusevski RW;22 Omar Marmoush ST;23 Pedro Porro RB;27 Mykhailo Mudryk LW;28 Wilson Odobert LW;30 Rodrigo Bentancur DM;31 Antonin Kinsky GK;33 Ben Davies CB;37 Micky van de Ven CB;39 Martin Dubravka GK;40 Brandon Austin GK;68 Luca Williams-Barnett LB"
-};
 var CLUBS={};
 LEAGUE.forEach(function(c){
-  CLUBS[c[0]]={n:c[1],p:SQ[c[0]].split(";").map(function(e){var m=/^(\d+) (.+) ([A-Z]{2})$/.exec(e);return [m[2],m[3],+m[1]]})};
+  CLUBS[c[0]]={n:c[1],p:[]};
 });
-var FRIENDS={Sara:"var(--c-sara)",Jonas:"var(--c-jonas)",Marie:"var(--c-marie)"};
-var FTEAM={Sara:"Sara United",Jonas:"Jonas Rovers",Marie:"Marie Athletic"};
-var FR_NAMES=["Sara United","Jonas Rovers","Marie Athletic"];
+var FRIENDS={};
+var FTEAM={};
 var CNAME={"#6b8f6e":"Grøn","#3a6fd8":"Blå","#c29a3d":"Guld","#c4688b":"Rosa","#8c6bc4":"Lilla","#cf4a4a":"Rød","#e6ebf5":"Hvid","#1b2540":"Mørkeblå","#e08a2e":"Orange","#e3c93a":"Gul","#2fa7a0":"Turkis","#7bc043":"Lysegrøn","#7a1f35":"Bordeaux","#6ab7e6":"Himmelblå","#8a93a6":"Grå","#111418":"Sort","#6b4226":"Brun","#0f5b46":"Skovgrøn"};
 var SWATCH=["#111418","#1b2540","#3a6fd8","#6ab7e6","#0f5b46","#6b8f6e","#2fa7a0","#7bc043","#8a93a6","#7a1f35","#cf4a4a","#c4688b","#8c6bc4","#6b4226","#e08a2e","#c29a3d","#e3c93a","#e6ebf5"];
-var DEFAULT_SQUAD=[["Alisson Becker","GK"],["Ben White","RB"],["William Saliba","CB"],["Virgil van Dijk","CB"],["Riccardo Calafiori","LB"],["Ryan Gravenberch","DM"],["Declan Rice","CM"],["Alexis Mac Allister","CM"],["Cody Gakpo","LW"],["Noni Madueke","RW"],["Alexander Isak","ST"]];
-var MAXP=6,NL=LEAGUE.length;
-var LIVE=!!(window.supabase&&window.supabase.createClient);
+var NL=LEAGUE.length;
 var LNAME={pl:"Premier League",ll:"La Liga",sa:"Serie A"};
 
-var S,P,F,G,role="admin",simT=[],draftT=[],timer=null,readyTimers=[],readySt,statTab="goals",SAVED=null,tIv=null;
+var HOFTAB="pl";
+var S,P,F,G,role="admin",simT=[],draftT=[],timer=null,readyTimers=[],readySt,statTab="goals",tIv=null;
 
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -751,20 +712,18 @@ function logo(px){
    '<path d="M37 24H43V11" style="stroke:var(--text);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round"/>'+
    '<circle cx="43" cy="8.5" r="3.4" style="fill:var(--acc)"/></svg>';
 }
-function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function lastName(n){var w=n.split(" ");if(w.length>2&&w[w.length-2]===w[w.length-2].toLowerCase())return w.slice(-2).join(" ");return w[w.length-1]}
 
 function fresh(){
   simT.forEach(clearTimeout);simT=[];draftT.forEach(clearTimeout);draftT=[];clearInterval(tIv);tIv=null;
   clearInterval(timer);timer=null;readyTimers.forEach(clearTimeout);readyTimers=[];
-  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:LIVE?"":"Mit hold",color:"#6b8f6e",color2:"#e6ebf5",form:"4-3-3 (D)",squad:new Array(11).fill(null),
-     taken:{},feed:[],counts:{Sara:0,Jonas:0,Marie:0},tag:"",k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
+  S={pname:(function(){try{return localStorage.getItem("dsfc-name")||""}catch(e){return ""}})(),team:"",color:"#6b8f6e",color2:"#e6ebf5",form:"4-3-3 (D)",squad:new Array(11).fill(null),
+     taken:{},feed:[],counts:{},tag:"",k:2*NL,spinning:false,club:null,filter:"ALL",sel:null,hideFilled:false,q:"",view:"me",fsq:{},tleft:0,auto:false,confirmRestart:false,crest:0,
      phase:"order",order:[],seq:[],pickIdx:0,matchSeen:false};
-  P={me:{joined:true,ready:false},Sara:{joined:false,ready:false},Jonas:{joined:false,ready:false},Marie:{joined:false,ready:false}};
-  F={step:0,simStarted:false,liga:"pl",season:"2026/2027",showR:false,pace:"full",mode:"season",max:6,timer:role==="player"?60:0,auth:{email:"",sent:false,ok:false},code:"",joinInput:"",joinErr:false};
-  var sa=loadAuth();if(sa&&sa.ok)F.auth={email:sa.email,sent:true,ok:true};
+  P={me:{joined:true,ready:false}};
+  F={step:0,simStarted:false,liga:"pl",season:"2026/2027",showR:false,pace:"full",mode:"season",max:6,timer:role==="player"?60:0,code:"",joinInput:"",joinErr:false};
   G={started:false};
-  readySt={me:false,Sara:false,Jonas:false,Marie:false};
+  readySt={me:false};
   setMe();
 }
 function flat(){return FORMS[S.form].reduce(function(a,r){return a.concat(r)},[])}
@@ -775,47 +734,20 @@ function setMe(){
   r.setProperty("--me-dot","linear-gradient(135deg,"+S.color+" 50%,"+S.color2+" 50%)");
 }
 function ids(){return Object.keys(P).filter(function(k){return P[k].joined})}
-function nJoined(){return ids().length}
-function nReady(){return ids().filter(function(k){return P[k].ready}).length}
-function allReady(){return nJoined()>=1&&nReady()===nJoined()}
 function teamName(k){return k==="me"?(S.team.trim()||"Mit hold"):FTEAM[k]}
 
 /* ---------- topbar ---------- */
-function renderTop(){}
 
 /* ---------- simulering af venner ---------- */
-function later(ms,fn){simT.push(setTimeout(fn,ms))}
-function startSim(){
-  if(F.simStarted)return;F.simStarted=true;
-  function join(k,t,r){later(t,function(){if(P[k].kicked)return;P[k].joined=true;renderTop();renderFlow()});later(r,function(){if(P[k].kicked)return;P[k].ready=true;renderTop();renderFlow();maybeAutoStart()})}
-  if(role==="admin"){join("Sara",1500,6000);join("Jonas",3500,9500);join("Marie",6000,12500)}
-  else{
-    P.Sara.joined=true;P.Sara.ready=true;P.Jonas.joined=true;P.Jonas.ready=true;renderTop();
-    join("Marie",3500,8000);
-  }
-}
-function maybeAutoStart(){
-  if(role==="player"&&allReady()&&F.step===stepsFor().length-1&&P.me.ready&&!G.started){
-    later(2500,function(){if(allReady()&&!G.started)startGame()});
-  }
-}
-function startGame(){
-  G.started=true;simT.forEach(clearTimeout);simT=[];keepAwake();$("sbg").hidden=true;
-  $("app").classList.remove("pre");$("navwrap").hidden=true;
-  renderTop();showOrder();go("draft");
-}
 
 /* ---------- flow ---------- */
-function stepsFor(){if(LIVE)return role==="admin"?["lobby","hold","form","wait"]:["join","lobby","hold","form","wait"];return role==="admin"?["hold","form","lobby"]:["join","hold","form","lobby"]}
+function stepsFor(){return role==="admin"?["lobby","hold","form","wait"]:["join","lobby","hold","form","wait"];}
 function progHtml(){
-  var post=LIVE?["hold","form"]:["hold","form","lobby"],i=post.indexOf(stepsFor()[F.step]);
+  var post=["hold","form"],i=post.indexOf(stepsFor()[F.step]);
   if(i<0)return "";
   var h='<div class="prog">';
   for(var k=0;k<post.length;k++)h+='<i class="'+(k<=i?"d":"")+'"></i>';
   return h+'</div><div class="stepno">Trin '+(i+1)+' af '+post.length+'</div>';
-}
-function opt(id,val,on,title,desc,dis,icon){
-  return '<button class="opt'+(on?" on":"")+'" data-opt="'+id+'" data-val="'+val+'"'+(dis?" disabled":"")+'><span class="l">'+(icon||"")+'<span><b>'+title+'</b><small>'+desc+'</small></span></span><span class="rd"></span></button>';
 }
 function navBtns(nextLabel,nextDis,noBack){
   return '<div class="nav2"'+(noBack?' style="grid-template-columns:1fr"':'')+'>'+(noBack?'':'<button class="btn" data-act="back">Tilbage</button>')+'<button class="btn p go" data-act="next"'+(nextDis?" disabled":"")+'>'+nextLabel+'</button></div>';
@@ -825,82 +757,27 @@ function renderFlow(){
   document.documentElement.setAttribute("data-league",(!role||!F.liga)?"":F.liga);
   $("sbg").hidden=!(!role||stepsFor()[F.step]==="join");
   if(!role){$("flow").innerHTML=startHtml();return}
-  if(LIVE&&(stepsFor()[F.step]==="lobby"||stepsFor()[F.step]==="wait")&&!NET.game){$("flow").innerHTML="";return}
-  var st=stepsFor()[F.step],h=(F.step===0&&st!=="hold"&&!LIVE?'<div class="hero">'+logo(46)+'<div class="wm2">DraftSpin <span>FC</span></div></div>':"")+progHtml();
-  if(st==="login"){
-    var au=F.auth;
-    h+='<h1>Log ind</h1><p class="sub">'+(au.sent?'Vi har sendt en kode til '+esc(au.email)+'.':'Du får en kode på mail. Ingen adgangskode.')+'</p>';
-    if(!au.sent){
-      h+='<label class="field"><span>E-mail</span><input class="inp" id="loginEmail" type="email" inputmode="email" autocomplete="email" placeholder="navn@mail.dk" value="'+esc(au.email)+'"></label><div class="nav2"><button class="btn p go" data-act="sendcode"'+(/.+@.+\..+/.test(au.email)?"":" disabled")+'>Send kode</button></div>';
-    }else{
-      h+='<label class="field"><span>Kode på 6 cifre</span><input class="inp" id="loginCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="font-family:var(--mono);letter-spacing:.3em;font-size:20px"></label><p class="note">Prototype: skriv en vilkårlig kode på 6 cifre.</p><div class="nav2"><button class="btn" data-act="newcode">Ny e-mail</button><button class="btn p go" data-act="verify" disabled>Log ind</button></div>';
-    }
-  }else if(st==="liga"){
-    h+='<h1>Vælg liga</h1><p class="sub">Alle spillere i spillet bruger den samme liga.</p><div class="opts">'+
-      opt("liga","pl",F.liga==="pl","Premier League","England",false,lbadge("pl",40))+'</div>'+navBtns("Fortsæt til sæson",!F.liga);
-  }else if(st==="saeson"){
-    h+='<h1>Vælg sæson</h1><div class="opts">'+opt("season","2026/2027",F.season==="2026/2027","2026/2027","Aktuelle trupper og klubber",false,lbadge(F.liga,40))+'</div>'+navBtns("Fortsæt til spiltype",!F.season);
-  }else if(st==="spil"){
-    var sb=F.sub||0,CB='appearance:none;text-align:left;background:var(--surf);border:1.5px solid transparent;border-radius:12px;padding:16px 18px;cursor:pointer;display:flex;flex-direction:column;gap:2px;color:var(--text);font:inherit;width:100%;';
-    var on=function(v){return v?'background:var(--surf2);border-color:var(--text);':''};
-    var big=function(attr,val,sel,t1,t2){return '<button style="'+CB+on(sel)+'" '+attr+'="'+val+'"><b style="font-weight:600;font-size:17px">'+t1+'</b>'+(t2?'<span style="font-size:14px;color:var(--mut)">'+t2+'</span>':'')+'</button>'};
-    var dots='<div class="prog" style="margin-top:6px">'+[0,1,2,3].map(function(k){return '<i class="'+(k<=sb?"d":"")+'"></i>'}).join("")+'</div>';
-    h+='<h1>Opret spil</h1>'+dots;
-    if(sb===0){
-      h+='<h2 style="margin-top:18px">Hvor mange spillere?</h2><p class="sub">Dig og dine venner. Vælg 1 for at spille alene mod computeren.</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px">'+
-        [1,2,3,4,5,6].map(function(n){return '<button style="'+CB+on(F.max===n)+'align-items:center;justify-content:center;padding:22px 0" data-max="'+n+'"><b style="font-size:26px;font-weight:600">'+n+'</b></button>'}).join("")+'</div>';
-    }else if(sb===1){
-      h+='<h2 style="margin-top:18px">Hvor hurtigt skal sæsonen spilles?</h2><div class="opts" style="margin-top:18px">'+big("data-pace","full",F.pace==="full","Classic","Alle 38 runder, én kamp ad gangen")+big("data-pace","quick",F.pace==="quick","Hurtigt spil","Kampene spilles af hurtigt, kun resultater")+'</div>';
-    }else if(sb===2){
-      h+='<h2 style="margin-top:18px">Skal spillernes ratings vises?</h2><div class="opts" style="margin-top:18px">'+big("data-showr","false",F.showR===false,"Skjulte","Svært: du skal bruge dit eget fodboldsyn")+big("data-showr","true",F.showR===true,"Vis","Du kan se hver spillers rating")+'</div>';
-    }else{
-      h+='<h2 style="margin-top:18px">Tidsgrænse pr. valg?</h2><p class="sub">Løber tiden ud, vælges der automatisk for dig.</p><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px">'+
-        [0,30,60,90].map(function(n){return '<button style="'+CB+on(F.timer===n)+'align-items:center;justify-content:center;padding:20px 0" data-timer="'+n+'"><b style="font-size:20px;font-weight:600">'+(n?n+' sekunder':'Ingen')+'</b></button>'}).join("")+'</div>';
-    }
-    h+='<div class="nav2"><button class="btn" data-act="back">Tilbage</button>'+(sb===3?'<button class="btn p go" data-act="next">Opret spillet</button>':'<span></span>')+'</div>';
-  }else if(st==="join"){
+  if((stepsFor()[F.step]==="lobby"||stepsFor()[F.step]==="wait")&&!NET.game){$("flow").innerHTML="";return}
+  var st=stepsFor()[F.step],h=progHtml();
+  if(st==="join"){
     h='<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div></div><div class="joinbox"><label class="field" style="margin-top:0"><span>Spilkode</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
-      (F.joinErr?'<p class="err">Den kode findes ikke. Tjek den og prøv igen.</p>':'<p class="note">Prototype: skriv BRY4K2.</p>')+
+      (F.joinErr?'<p class="err">Den kode findes ikke. Tjek den og prøv igen.</p>':'')+
       navBtns("Deltag i spillet",String(F.joinInput).trim().length<6)+'</div>';
-  }else if(st==="kode"){
-    h+='<h1>Spillet er oprettet</h1>'+
-      '<div class="card codecard"><div class="muted" style="font-size:14px">Spilkode</div><div class="bigcode">'+esc(F.code)+'</div><button class="btn" data-act="copycode">Kopiér kode</button></div>'+
-      '<p class="note">Du er admin. Du starter spillet, når alle er klar.</p>'+navBtns("Fortsæt til dit hold");
   }else if(st==="hold"){
     var ct=F.ctab==="s"?"s":"p";
     h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"Mit hold")+'</span></div>'+
-      (LIVE?'<label class="field"><span>Dit navn</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="Fx Emil" autocomplete="off"></label>':'')+
+      ('<label class="field"><span>Dit navn</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="Fx Emil" autocomplete="off"></label>')+
       '<div class="tagrow"><label class="field"><span>Holdnavn</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="Fx Dream Team" autocomplete="off"></label><label class="field tagf"><span>Forkortelse</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"Mit hold"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primær farve</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Sekundær farve</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primær":"Sekundær")+' farve: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
       '<div class="field"><span>Crest</span><div class="crests">'+crestBtns()+'</div></div>'+
-      navBtns("Fortsæt til formation",!holdOk(),LIVE)+(LIVE&&NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
+      navBtns("Fortsæt til formation",!holdOk(),true)+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
   }else if(st==="form"){
     h+='<h1>Vælg formation</h1><p class="sub">Den kan ikke ændres, når spillet er startet.</p><div class="fchips">'+
       FORM_ORDER.map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+flabel(f)+'</button>'}).join("")+'</div>'+
-      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("Jeg er klar til draft")+(LIVE&&NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
-  }else if(LIVE){
+      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("Jeg er klar til draft")+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Luk session</button>':'<button class="linkbtn" data-act="leavesetup">Forlad spillet</button>'):'');
+  }else {
     h+=lobbyLive();
-  }else{
-    var n=nJoined(),adm=role==="admin",rem=REMOVED.slice(0,Math.max(0,n));
-    h+='<h1>'+(P.me.ready?"Du er klar":"Lobby")+'</h1>';
-    h+='<div class="codeline"><span class="muted">Spilkode</span><button data-act="copycode">'+esc(F.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Del invitation</button><span class="muted">'+nJoined()+' af '+F.max+' '+(nJoined()===1?"deltager":"deltagere")+'</span></div>';
-    h+='<div class="kit" style="margin-top:6px">'+lbadge(F.liga,34)+'<span>'+LNAME[F.liga]+' '+F.season+'</span></div><p class="note">Tidsgrænse pr. valg: '+(F.timer?F.timer+' s':'fra')+' · Ratings: '+(F.showR?'vises':'skjulte')+'</p>';
-    h+='<h2 style="margin-top:28px">Deltagere</h2><div class="card"><div class="roster">';
-    h+=rosterRow("me",S.team,"Dig"+(adm?", admin":""),P.me.ready,hcrest("me",30));
-    Object.keys(FRIENDS).forEach(function(k){if(P[k].joined)h+=rosterRow(k,FTEAM[k],k+(role==="player"&&k==="Sara"?", admin":""),P[k].ready,hcrest(k,30),adm?'<button class="btn" data-act="kick" data-k="'+k+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Fjern</button>':"")});
-    if(n<F.max)h+='<div class="wait">Venter på flere, op til '+F.max+'.</div>';
-    h+='</div></div>';
-    if(adm)h+='<div class="stepper"><span class="muted">Antal spillere</span><button class="btn" data-act="maxdec">−</button><b>'+F.max+'</b><button class="btn" data-act="maxinc">+</button></div>';
-    h+='<p class="removed">'+n+' '+(n===1?'spiller':'spillere')+' og '+(20-n)+' AI-klubber i ligaen.'+(rem.length?' <span class="muted">Erstatter: '+rem.map(esc).join(', ')+'.</span>':'')+'</p>';
-    var wait=ids().filter(function(k){return !P[k].ready}).map(function(k){return k==="me"?"dig":k});
-    if(adm){
-      h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(allReady()?"":" disabled")+'>Start spillet</button>';
-      h+='<p class="note">'+(allReady()?"Alle er klar.":"Venter på "+wait.map(function(x){return esc(x)}).join(", ")+".")+'</p>';
-    }else{
-      h+='<p class="note">'+(allReady()?"Alle er klar. Sara starter spillet.":"Venter på "+wait.map(function(x){return esc(x)}).join(", ")+".")+'</p>';
-    }
-    h+='<div class="nav2"><button class="btn" data-act="'+(P.me.ready?"unready":"back")+'">'+(P.me.ready?"Jeg er ikke klar endnu":"Tilbage")+'</button></div>';
   }
   $("flow").innerHTML=h;
   var fp=$("fprev");if(fp)renderPitch(fp,S.form,null,false);
@@ -911,12 +788,6 @@ function rosterRow(k,team,who,ready,icon,extra){
 }
 $("flow").addEventListener("click",function(e){
   var t=e.target;
-  var au=t.closest("[data-auth]");if(au){if(au.dataset.auth==="open")openAuth();else{F.auth.ok=false;F.auth.sent=false;clearAuth();renderFlow()}return}
-  var o=t.closest("[data-opt]");if(o){if(o.dataset.opt==="liga")F.liga=o.dataset.val;if(o.dataset.opt==="season")F.season=o.dataset.val;if(o.dataset.opt==="mode")F.mode=o.dataset.val;renderFlow();return}
-  var m=t.closest("[data-max]");if(m){F.max=+m.dataset.max;if(stepsFor()[F.step]==="spil")F.sub=1;renderTop();renderFlow();return}
-  var pc=t.closest("[data-pace]");if(pc){F.pace=pc.dataset.pace;if(stepsFor()[F.step]==="spil")F.sub=2;renderFlow();return}
-  var sr=t.closest("[data-showr]");if(sr){F.showR=sr.dataset.showr==="true";if(stepsFor()[F.step]==="spil")F.sub=3;renderFlow();return}
-  var tm=t.closest("[data-timer]");if(tm){F.timer=+tm.dataset.timer;renderFlow();return}
   var ctb=t.closest("[data-ctab]");if(ctb){F.ctab=ctb.dataset.ctab;renderFlow();return}
   var cb=t.closest("[data-crest]");if(cb){S.crest=+cb.dataset.crest;renderFlow();return}
   var c=t.closest(".sw");if(c){if(c.dataset.c2)S.color2=c.dataset.c2;else S.color=c.dataset.c;setMe();renderFlow();return}
@@ -928,36 +799,15 @@ $("flow").addEventListener("click",function(e){
   if(a==="leavesetup"){askLeave(false);leaveAct=liveAbort;return}
   if(a==="pushtoggle"){pushToggle();return}
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
-  if(LIVE&&liveAct(a,b,st))return;
-  if(a==="create"){role="admin";F.timer=0;F.max=1;F.step=0;F.sub=0;renderTop();renderFlow()}
-  else if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderTop();renderFlow()}
+  if(liveAct(a,b,st))return;
+  if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderFlow()}
   else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Hop ind i mit DraftSpin-spil med koden "+F.code;try{if(navigator.share)navigator.share({title:"DraftSpin FC",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation kopieret")},function(){})}catch(x){}}
   else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
-  else if(a==="back"){if(st==="spil"&&(F.sub||0)>0){F.sub--;renderFlow();return}if(F.step>0)F.step--;else{if(LIVE&&NET.gid&&role==="admin"){liveLeave();return}role=null;F.liga="";F.joinInput="";F.joinErr=false}renderFlow()}
-  else if(a==="next"){
-    if(st==="spil"){F.code="BRY4K2";startSim();renderTop()}
-    if(st==="join"){
-      if(String(F.joinInput).toUpperCase().trim()!=="BRY4K2"){F.joinErr=true;renderFlow();return}
-      F.joinErr=false;F.code="BRY4K2";F.liga="pl";F.season="2026/2027";startSim();renderTop();
-    }
-    if(st==="form"){P.me.ready=true;renderTop();F.step++;renderFlow();maybeAutoStart();return}
-    F.step++;renderFlow();renderTop();
-  }
-  else if(a==="unready"){P.me.ready=false;F.step=stepsFor().length-2;renderTop();renderFlow()}
-  else if(a==="start"&&allReady())startGame();
-  else if(a==="sendcode"){F.auth.sent=true;renderFlow()}
-  else if(a==="newcode"){F.auth.sent=false;renderFlow()}
-  else if(a==="verify"){F.auth.ok=true;F.step++;renderFlow()}
-  else if(a==="kick"){var kk=b.dataset.k;P[kk].joined=false;P[kk].ready=false;P[kk].kicked=true;renderTop();renderFlow()}
-  else if(a==="maxdec"){F.max=Math.max(2,nJoined(),F.max-1);renderTop();renderFlow()}
-  else if(a==="maxinc"){F.max=Math.min(MAXP,F.max+1);renderTop();renderFlow()}
-  else if(a==="resume")resumeGame();
-  else if(a==="discard"){try{localStorage.removeItem("dsfc")}catch(x){}SAVED=null;renderFlow()}
+  else if(a==="back"){if(F.step>0)F.step--;else{if(NET.gid&&role==="admin"){liveLeave();return}role=null;F.joinInput="";F.joinErr=false}renderFlow()}
+  else if(a==="next"){F.step++;renderFlow()}
 });
 $("flow").addEventListener("input",function(e){
   if(e.target.id==="joinCode"){e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);F.joinInput=e.target.value;F.joinErr=false;var nb=$("flow").querySelector("[data-act=next]");if(nb)nb.disabled=e.target.value.trim().length<6;var er=$("flow").querySelector(".err");if(er)er.remove();if(e.target.value.length===6&&nb)setTimeout(function(){if(!nb.disabled&&$("joinCode")&&$("joinCode").value.length===6)nb.click()},180)}
-  if(e.target.id==="loginEmail"){F.auth.email=e.target.value.trim();var sb=$("flow").querySelector("[data-act=sendcode]");if(sb)sb.disabled=!/.+@.+\..+/.test(F.auth.email)}
-  if(e.target.id==="loginCode"){var vb=$("flow").querySelector("[data-act=verify]");if(vb)vb.disabled=!/^\d{6}$/.test(e.target.value)}
   if(e.target.id==="pname"){S.pname=e.target.value;try{localStorage.setItem("dsfc-name",S.pname.trim())}catch(x){}var nbp=$("flow").querySelector("[data-act=next]");if(nbp)nbp.disabled=!holdOk()}
   if(e.target.id==="ttag"){
     S.tag=e.target.value.toUpperCase().replace(/[^A-ZÆØÅ0-9]/g,"").slice(0,3);e.target.value=S.tag;
@@ -974,10 +824,10 @@ $("flow").addEventListener("input",function(e){
     document.querySelectorAll(".myname").forEach(function(x){x.textContent=S.team.trim()||"Mit hold"});
   }
 });
-$("toStart").addEventListener("click",function(){
+function goStart(){
   role=null;fresh();$("app").classList.add("pre");$("navwrap").hidden=true;
-  go("flow");renderTop();renderFlow();$("orderWrap").innerHTML="";$("draftMain").hidden=true;buildReel();renderDraft();renderSheet();
-});
+  go("flow");renderFlow();$("orderWrap").innerHTML="";$("draftMain").hidden=true;buildReel();renderDraft();renderSheet();
+}
 
 /* ---------- nav ---------- */
 var HOFBACK=null;
@@ -991,8 +841,7 @@ function go(s){
   if(s==="stats")renderStats();
   if(s==="hof"){renderHof();$("hofBack").hidden=!HOFBACK}else HOFBACK=null;
   if(s==="end"){$("navwrap").hidden=true;renderEnd()}
-  if(s==="icon")renderIcon();
-  var nh=$("navHome");if(nh)nh.hidden=!(LIVE&&NET.game);
+  var nh=$("navHome");if(nh)nh.hidden=!(NET.game);
 }
 $("nav").addEventListener("click",function(e){var b=e.target.closest("button");if(b&&b.dataset.s)go(b.dataset.s)});
 
@@ -1023,7 +872,7 @@ function renderPitch(el,form,squad,mini,hl,alt){
 /* ---------- træk af rækkefølge ---------- */
 function showOrder(){
   S.phase="order";
-  if(!LIVE){S.order=shuffle(ids());S.fsq={};ids().forEach(function(k){if(k!=="me")S.fsq[k]={form:pickForm(),squad:new Array(11).fill(null)}})}
+  ;
   var n=S.order.length,h='<h1>Draft-rækkefølge</h1><p class="sub">Snake draft. Rækkefølgen trækkes tilfældigt og er den samme for alle.</p><div class="card order">';
   for(var i=0;i<n;i++)h+='<div class="orow" id="or'+i+'"><span class="onum">'+(i+1)+'</span><span class="onm" id="on'+i+'">...</span></div>';
   h+='</div><button class="btn p wide" id="startDraft" style="margin-top:18px" disabled>Start draften</button>';
@@ -1043,17 +892,13 @@ function showOrder(){
 }
 $("orderWrap").addEventListener("click",function(e){
   if(e.target.id!=="startDraft")return;
-  if(LIVE){S.phase="draft";$("orderWrap").innerHTML="";$("draftMain").hidden=false;liveDraftRender();return}
-  S.phase="draft";S.seq=[];
-  for(var r=0;r<11;r++){var o=r%2?S.order.slice().reverse():S.order;S.seq=S.seq.concat(o)}
-  S.pickIdx=0;$("orderWrap").innerHTML="";$("draftMain").hidden=false;
-  advance();
+  S.phase="draft";$("orderWrap").innerHTML="";$("draftMain").hidden=false;liveDraftRender();return
 });
 
 /* ---------- draft ---------- */
 var REEL=LEAGUE.slice(),REELSEED="",LOCSEED=String(Math.random());
 function reelOrder(own){
-  var seed=(typeof LIVE!=="undefined"&&LIVE&&NET.gid)?String(NET.gid):LOCSEED;
+  var seed=NET.gid?String(NET.gid):LOCSEED;
   if(seed===REELSEED)return;REELSEED=seed;
   var x=2166136261;for(var i=0;i<seed.length;i++){x^=seed.charCodeAt(i);x=Math.imul(x,16777619)>>>0}
   var rnd=function(){x=(Math.imul(x,1664525)+1013904223)>>>0;return x/4294967296};
@@ -1103,7 +948,7 @@ function myTurn(){return S.phase==="draft"&&S.pickIdx<S.seq.length&&S.seq[S.pick
 var FCR={};
 function renderCounts(){
   var cur=S.phase==="draft"&&S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null,h="";
-  if(LIVE&&S.order&&S.order.length>1){
+  if(S.order&&S.order.length>1){
     S.order.forEach(function(k,i){
       var me=k==="me",c=me?filled():(S.counts[k]||0),nm=me?"Dig":(teamName(k)||"");
       var cr=me?ucrest(S.crest||0,S.color,S.color2,mytag(),32):(FCR[k]?ucrest(FCR[k][0],FCR[k][1],FCR[k][2],FCR[k][3]||initials(nm),32):"");
@@ -1114,7 +959,7 @@ function renderCounts(){
   $("counts").className="counts";
   ids().forEach(function(k){
     var c=k==="me"?filled():S.counts[k];
-    h+='<span class="'+(k===cur?"now":"")+'"><i class="dotc" style="background:'+(k==="me"?"var(--me-dot)":FRIENDS[k])+'"></i>'+(k==="me"?"Dig":(LIVE?esc(teamName(k)):k))+' <span class="mono">'+c+'/11</span></span>';
+    h+='<span class="'+(k===cur?"now":"")+'"><i class="dotc" style="background:'+(k==="me"?"var(--me-dot)":FRIENDS[k])+'"></i>'+(k==="me"?"Dig":(esc(teamName(k))))+' <span class="mono">'+c+'/11</span></span>';
   });
   $("counts").innerHTML=h;
 }
@@ -1127,9 +972,9 @@ function renderClub(){
   var el=$("clubpanel");
   if(!S.club){el.innerHTML="";return}
   var c=CLUBS[S.club],tabs=["ALL","GK","DEF","MID","ATT"];
-  if(LIVE&&S.spinning){el.innerHTML='<div class="card fade" style="margin-top:22px;text-align:center"><b>Spinner igen…</b></div>';return}
-  if(LIVE&&!myTurn()){var cu=S.seq[S.pickIdx];el.innerHTML='<div class="card fade" style="margin-top:22px"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">'+esc(cu?teamName(cu):"")+' vælger en spiller</span></div></div></div>';return}
-  var me0=LIVE&&NET.players.filter(function(p){return p.user_id===NET.uid})[0],rsp="";
+  if(S.spinning){el.innerHTML='<div class="card fade" style="margin-top:22px;text-align:center"><b>Spinner igen…</b></div>';return}
+  if(!myTurn()){var cu=S.seq[S.pickIdx];el.innerHTML='<div class="card fade" style="margin-top:22px"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">'+esc(cu?teamName(cu):"")+' vælger en spiller</span></div></div></div>';return}
+  var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0],rsp="";
   var rleft=me0&&NET.game?(NET.game.respins||0)-(me0.respins_used||0):0;
   if(rleft>0&&!S.spinning)rsp='<button class="rspbtn" data-respin="1" aria-label="Respin, '+rleft+' tilbage"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-13.7 5.6"/><path d="M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg><b>'+rleft+'</b></button>';
   var h='<h2>Vælg en spiller</h2><div class="card fade"><div class="club-h">'+crest(S.club,46)+'<div><b>'+c.n+'</b><span class="muted" style="font-size:14px">Hele truppen, '+c.p.length+' spillere</span></div>'+rsp+'</div>';
@@ -1161,7 +1006,7 @@ function renderList(){
   list.forEach(function(p){
     var st=status(p);
     if(S.hideFilled&&!st.ok&&st.why==="Position fyldt")return;
-    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?((LIVE&&NET.game&&NET.game.show_ratings?'<span class="mono muted">'+p[5]+'</span>':'<span></span>')):'<span class="rp">'+st.why+'</span>')+'</div>';
+    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?((NET.game&&NET.game.show_ratings?'<span class="mono muted">'+p[5]+'</span>':'<span></span>')):'<span class="rp">'+st.why+'</span>')+'</div>';
   });
   $("clist").innerHTML=h||'<p class="note">Ingen spillere matcher.</p>';
 }
@@ -1175,53 +1020,16 @@ function renderDraft(){
   $("missing").textContent=(S.view==="me"||!S.fsq[S.view])?"":"Formation "+S.fsq[S.view].form;
   $("penNote").innerHTML="";
   renderCounts();renderFeed();renderClub();
-  $("ordLine").textContent=(LIVE&&S.order.length>1)?"":S.order.length?"Rækkefølge: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
+  $("ordLine").textContent=(S.order.length>1)?"":S.order.length?"Rækkefølge: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
   var cur=S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null;
   $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club&&!NET.pending);
   $("spinBtn").textContent=done?"Draften er færdig":(!myTurn()?"Venter på "+(cur?teamName(cur):""):(S.club?"Vælg en spiller herunder":"Spin the wheel"));
   $("turnTxt").textContent=done?"Din trup er klar.":(myTurn()?(S.club?"Klubben er valgt. Vælg frit blandt spillerne.":"Din tur. Spin for at få en klub."):(cur?teamName(cur)+" er i gang.":""));
-  $("doneBox").innerHTML=done?(LIVE?'<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen startes...</p>':'<button class="btn p wide fade" id="toMatch" style="margin-top:16px">Til første kamp</button>'):"";
-  if($("toMatch"))$("toMatch").onclick=function(){go("match")};
-  if(G.started)$("navwrap").hidden=(LIVE||!done);
-}
-function advance(){
-  renderDraft();saveGame();
-  if(S.pickIdx>=S.seq.length)return;
-  var who=S.seq[S.pickIdx];
-  if(who==="me"){S.view="me";renderDraft();toast("Din tur. Spin the wheel.",2200);startTurnTimer();return}
-  draftT.push(setTimeout(function(){friendPick(who);S.pickIdx++;advance()},1700));
-}
-function pickForm(){var k=FORM_ORDER;return k[Math.floor(Math.random()*k.length)]}
-function friendPick(k){
-  var fs=S.fsq[k];if(!fs)return;
-  var pool=[];
-  Object.keys(CLUBS).forEach(function(c){CLUBS[c].p.forEach(function(p){
-    if(S.taken[p[0]])return;
-    var r=slotsIn(fs.form,fs.squad,p[1]);
-    if(r.ex.length)pool.push([p,c,r.ex[0]]);
-  })});
-  if(!pool.length)return;
-  var x=pool[Math.floor(Math.random()*pool.length)];
-  fs.squad[x[2]]={name:x[0][0],pos:x[0][1],club:x[1],num:x[0][2]};
-  S.taken[x[0][0]]=k;S.counts[k]++;S.feed.unshift({who:k,name:x[0][0],pos:x[0][1],club:x[1]});
+  $("doneBox").innerHTML=done?('<p class="note fade" style="margin-top:16px">Draften er færdig. Sæsonen startes...</p>'):"";
+  if(G.started)$("navwrap").hidden=(true);
 }
 function spin(){
-  if(LIVE){liveSpin();return}
-  if(!myTurn()||S.spinning||S.club)return;
-  S.spinning=true;renderDraft();
-  var all=Object.keys(CLUBS),codes=all.filter(function(c){return CLUBS[c].p.some(function(p){return status(p).ok})});if(!codes.length)codes=all;var code=codes[Math.floor(Math.random()*codes.length)];
-  var t=(reelOrder(),REEL.findIndex(function(c){return c[0]===code})),k1=S.k+NL*5+((((t-S.k)%NL)+NL)%NL);
-  S.k=k1;setStrip(k1,true);
-  var fast=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  draftT.push(setTimeout(function(){
-    S.k=2*NL+t;setStrip(S.k,false);
-    S.spinning=false;S.club=code;S.filter="ALL";S.q="";S.sel=null;
-    var any=CLUBS[code].p.some(function(p){return status(p).ok});
-    renderDraft();
-    if(!fast){var cp=$("clubpanel");if(cp)setTimeout(function(){cp.scrollIntoView({behavior:"smooth",block:"start"})},200)}
-    if(any&&S.auto){autoPick();return}
-    
-  },fast?50:3900));
+  liveSpin();return
 }
 $("spinBtn").addEventListener("click",spin);
 $("clubpanel").addEventListener("click",function(e){
@@ -1247,14 +1055,7 @@ $("sheet").addEventListener("click",function(e){
   lockPick(S.sel,+sl.dataset.i);
 });
 function lockPick(name,i){
-  if(LIVE){livePick(name,i);return}
-  var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0];
-  S.squad[i]={name:p[0],sn:p[6]||"",pos:p[1],club:S.club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2]};
-  S.taken[p[0]]="Mit hold";
-  S.feed.unshift({who:"Du",name:p[0],pos:p[1],club:S.club});
-  S.sel=null;S.club=null;S.auto=false;clearTurnTimer();S.pickIdx++;
-  renderSheet();advance();
-  window.scrollTo({top:0,behavior:"smooth"});
+  livePick(name,i);return
 }
 function autoPick(){
   if(!S.club||!myTurn())return;
@@ -1263,98 +1064,42 @@ function autoPick(){
   var p=opts[Math.floor(Math.random()*opts.length)];
   lockPick(p[0],eligible(p[1])[0]);
 }
-function clearTurnTimer(){clearInterval(tIv);tIv=null;var t=$("timerLine");if(t){t.textContent="";t.className="timer"}}
-function drawTimer(){var t=$("timerLine");t.textContent="Tid tilbage: "+S.tleft+" s";t.className="timer"+(S.tleft<=10?" low":"")}
-function startTurnTimer(){
-  clearTurnTimer();
-  if(!F.timer||!myTurn())return;
-  S.tleft=F.timer;drawTimer();
-  tIv=setInterval(function(){S.tleft--;drawTimer();if(S.tleft<=0){clearTurnTimer();timeUp()}},1000);
-}
-function timeUp(){
-  S.auto=true;
-  if(S.club){autoPick();return}
-  if(!S.spinning)spin();
-}
 function renderSqTabs(){
   var ks=["me"].concat(ids().filter(function(k){return k!=="me"}));
-  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+'">'+(k==="me"?"Dig":(LIVE?esc(teamName(k)):k))+' '+n+'/11</button>'}).join("");
+  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+'">'+(k==="me"?"Dig":(esc(teamName(k))))+' '+n+'/11</button>'}).join("");
 }
 $("sqTabs").addEventListener("click",function(e){var b=e.target.closest("[data-v]");if(b){S.view=b.dataset.v;renderDraft()}});
 
 /* ---------- kamp ---------- */
-var OTH=[["Sara United","Jonas Rovers",1,1],["Marie Athletic","Arsenal",0,2],["Man City","Liverpool",2,2],["Tottenham","Man Utd",3,1],["Newcastle","Aston Villa",1,0],["Brighton","Leeds",2,1],["Brentford","Fulham",0,0],["Crystal Palace","Everton",1,0],["Bournemouth","Nottm Forest",2,3]];
-function squadNow(){
-  if(filled()===11)return S.squad.map(function(p){return {name:p.name,pos:p.pos}});
-  return DEFAULT_SQUAD.map(function(p){return {name:p[0],pos:p[1]}});
-}
 function script(){
-  if(LIVE)return liveScript();
-  var sq=squadNow();
-  function by(arr){return sq.filter(function(p){return arr.indexOf(p.pos)>-1})}
-  var att=by(["ST","LW","RW","AM"]),cre=by(["AM","CM","LW","RW","DM"]),cbs=by(["CB"]),dm=by(["DM","CM"]),gks=by(["GK"]);
-  function at(a,i){return a.length?a[i%a.length].name:"Ukendt"}
-  return [
-   {m:14,t:"goal",s:"me",x:at(att,0),a:"Assist: "+at(cre,0)},
-   {m:29,t:"y",s:"opp",x:"Moisés Caicedo"},
-   {m:38,t:"goal",s:"opp",x:"Cole Palmer",a:"Assist: Morgan Rogers"},
-   {m:45,t:"sys",x:"Pause"},
-   {m:52,t:"y",s:"me",x:at(dm,0)},
-   {m:63,t:"goal",s:"me",x:at(att,1),a:"Straffespark",pen:1},
-   {m:71,t:"pm",s:"opp",x:"Cole Palmer",a:"Straffen blev reddet af "+at(gks,0)},
-   {m:77,t:"r",s:"me",x:at(cbs,1)},
-   {m:86,t:"goal",s:"opp",x:"João Pedro",a:"Assist: Estêvão"},
-   {m:93,t:"goal",s:"me",x:at(att,2),a:"Assist: "+at(cre,2)},
-   {m:94,t:"sys",x:"Slutfløjt"}
-  ];
+  return liveScript();
 }
 function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
 function evRow(e){
   var cls="ev "+(e.t==="sys"?"sys":(e.t==="goal"?"goal ":"")+e.s);
   var ic=e.t==="goal"?'<i class="ic g">⚽</i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?(e.a==="2. gult"?'<i class="ic y2"><i class="a"></i><i class="b"></i><i class="c"></i></i>':'<i class="ic r"></i>'):(e.t==="pm"?'<i class="ic g">❌</i>':'<i class="ic w"></i>')));
   var head=e.t==="goal"?(e.ai?esc(e.x)+" scorer":esc(e.x))+'':(e.t==="y"?"Gult kort":(e.t==="r"?"Rødt kort":(e.t==="pm"?"Brændt straffe":esc(e.x))));
-  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?(e.lab||"Slut"):clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a&&e.t!=="pm"&&e.a!=="2. gult"?(e.t==="goal"&&/^Assist/.test(e.a)?'<small class="asl">'+esc(e.a)+' 👏</small>':(e.t==="goal"&&e.pen?'<small class="asl">🥅 '+esc(e.a)+'</small>':'<small>'+esc(e.a)+'</small>')):'')+((e.t==="y"||e.t==="r"||e.t==="pm")?'<small class="tg" style="margin-left:6px">'+(e.ai?esc(LIVE?NET.oppName:"Chelsea"):esc(e.x))+'</small>':(e.t!=="sys"&&e.s!=="me"&&!(e.ai&&e.t==="goal")?'<small class="tg" style="margin-left:6px">'+esc(LIVE?NET.oppName:"Chelsea")+'</small>':''))+'</div></div>';
-}
-function hname(n,right){
-  var k=n==="me"?"me":NAME_H[n],txt=n==="me"?(S.team.trim()||"Mit hold"):n;
-  var ic=k?hcrest(k,20):(NAMECODE[n]?crest(NAMECODE[n],20):"");
-  var nmH='<span class="t">'+esc(txt)+'</span>';
-  return '<span class="'+(k?"hu":"")+'">'+(right?ic+nmH:nmH+ic)+'</span>';
+  return '<div class="'+cls+' fade"><span class="m">'+(e.t==="sys"&&e.m===94?(e.lab||"Slut"):clockTxt(e.m))+'</span>'+ic+'<div><b>'+head+'</b>'+(e.a&&e.t!=="pm"&&e.a!=="2. gult"?(e.t==="goal"&&/^Assist/.test(e.a)?'<small class="asl">'+esc(e.a)+' 👏</small>':(e.t==="goal"&&e.pen?'<small class="asl">🥅 '+esc(e.a)+'</small>':'<small>'+esc(e.a)+'</small>')):'')+((e.t==="y"||e.t==="r"||e.t==="pm")?'<small class="tg" style="margin-left:6px">'+(e.ai?esc(NET.oppName):esc(e.x))+'</small>':(e.t!=="sys"&&e.s!=="me"&&!(e.ai&&e.t==="goal")?'<small class="tg" style="margin-left:6px">'+esc(NET.oppName)+'</small>':''))+'</div></div>';
 }
 function showOthers(done){
-  if(LIVE){liveOthers(done);return}
-  var rows=[["me","Chelsea",done?+$("sh").textContent:null,done?+$("sa").textContent:null]].concat(OTH);
-  $("others").innerHTML=rows.map(function(r){
-    var left=hname(r[0],false),right=hname(r[1],true).replace('<span class="">','<span>');
-    return '<div class="res">'+left+'<span class="r">'+(done&&r[2]!==null?r[2]+" – "+r[3]:"–")+'</span>'+right+'</div>';
-  }).join("");
+  liveOthers(done);return
 }
 function renderReady(){
-  if(LIVE){liveReady();return}
-  var names=[["Dig",readySt.me],["Sara",readySt.Sara],["Jonas",readySt.Jonas],["Marie",readySt.Marie]];
-  $("ready").innerHTML=names.map(function(n){return '<span class="'+(n[1]?"ok":"")+'"><i class="dotc" style="background:'+(n[0]==="Dig"?"var(--me-dot)":FRIENDS[n[0]])+'"></i>'+n[0]+(n[1]?", klar":"")+'</span>'}).join("");
+  liveReady();return
 }
 (function(){var rb=$("readyBtn"),f=function(){rb.classList.toggle("go",rb.textContent==="Næste kamp")};new MutationObserver(f).observe(rb,{childList:true,characterData:true,subtree:true});f()})();
 $("readyBtn").addEventListener("click",function(){
-  if(LIVE){liveReadyPress();return}
-  readySt.me=true;$("readyBtn").disabled=true;$("readyBtn").textContent="Venter på de andre";renderReady();
+  liveReadyPress();return
 });
 function finishMatch(){
   clearInterval(timer);timer=null;
-  if(LIVE){liveFinishMatch();return}
-  $("prog").style.width="100%";$("clk").textContent="Slut";
-  showOthers(true);
-  $("playBtn").disabled=false;$("skipBtn").disabled=true;
-  $("readyBtn").disabled=readySt.me;$("forceBtn").hidden=(typeof role==="undefined"||role!=="admin");
-  [["Sara",1400],["Jonas",2600],["Marie",3800]].forEach(function(a){
-    readyTimers.push(setTimeout(function(){readySt[a[0]]=true;renderReady()},a[1]));
-  });
+  liveFinishMatch();return
 }
 var SPEED=1;
 $("spdBtn").addEventListener("click",function(){var SP=[0.5,1,2,3];SPEED=SP[(SP.indexOf(SPEED)+1)%SP.length];$("spdBtn").textContent=(SPEED===0.5?"0,5":SPEED)+"x"});
-$("forceBtn").addEventListener("click",function(){if(LIVE){liveForce();return}readyTimers.forEach(clearTimeout);readyTimers=[];for(var k in readySt)readySt[k]=true;renderReady();toast("Runden tvunget videre. Fraværende spillere sat til klar.",3200)});
+$("forceBtn").addEventListener("click",function(){liveForce();return});
 /* classic: første kamp venter på, at alle har trykket Klar */
-function gateOn(){var g=NET.game;return !!(LIVE&&g&&g.status==="season"&&g.current_round===1&&g.pace!=="quick"&&NET.players.length&&!NET.players.every(function(p){return p.start_ready||lAway(p)}))}
+function gateOn(){var g=NET.game;return !!(g&&g.status==="season"&&g.current_round===1&&g.pace!=="quick"&&NET.players.length&&!NET.players.every(function(p){return p.start_ready||lAway(p)}))}
 function gateBlocks(){return [$("mseg").closest(".card"),document.querySelector("#s-match .mctl"),$("nextOpp").closest(".card")]}
 function renderGate(){
   var n=NET.players.length,k=NET.players.filter(function(p){return p.start_ready}).length,me=NET.players.filter(function(p){return p.user_id===NET.uid})[0],done=!!(me&&me.start_ready);
@@ -1372,10 +1117,10 @@ document.addEventListener("click",async function(e){
 });
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
-  if(LIVE&&gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").textContent="Anspark";$("prog").style.width="0";renderGate();return}
+  if(gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").textContent="Anspark";$("prog").style.width="0";renderGate();return}
   if(S.gate)hideGate();
-  readySt={me:false,Sara:false,Jonas:false,Marie:false};renderReady();
-  if(LIVE)liveMatchHeader();
+  readySt={me:false};renderReady();
+  liveMatchHeader();
   $("readyBtn").disabled=true;$("readyBtn").textContent="Næste kamp";
   var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false;
   $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
@@ -1396,7 +1141,7 @@ function startMatch(){
 }
 function renderMySquad(){
   var form,sq;
-  if(LIVE&&NET.season&&NET.season.teams[NET.uid]){
+  if(NET.season&&NET.season.teams[NET.uid]){
     form=NET.season.teams[NET.uid].formation;
     sq=(NET.season.lineups[NET.uid]||[]).map(function(pid){var i=NET.byId[pid];return i?{name:i.p[0],sn:i.p[6]||"",pos:i.p[1]}:null});
   }else{form=S.form;sq=S.squad}
@@ -1407,84 +1152,32 @@ $("mseg").addEventListener("click",function(e){var b=e.target.closest("[data-mt]
 $("playBtn").addEventListener("click",function(){startMatch()});
 
 /* ---------- tabel ---------- */
-var TBL=[["Arsenal",8,2,1,22,8],["Man City",7,2,2,24,11],["Liverpool",7,2,2,21,12],["me",7,1,3,20,13],["Chelsea",6,3,2,19,12],["Sara United",6,2,3,18,14],["Newcastle",5,4,2,15,11],["Tottenham",5,3,3,17,14],["Aston Villa",5,3,3,14,12],["Jonas Rovers",5,2,4,16,15],["Brighton",4,4,3,15,14],["Man Utd",4,3,4,14,16],["Marie Athletic",4,2,5,13,16],["Crystal Palace",3,5,3,11,11],["Fulham",3,4,4,12,15],["Leeds",3,3,5,11,17],["Brentford",3,2,6,12,18],["Everton",2,4,5,9,15],["Bournemouth",2,3,6,10,19],["Nottm Forest",1,3,7,8,20]];
-var PREVORD=["Man City","Arsenal","Liverpool","Chelsea","me","Sara United","Tottenham","Newcastle","Aston Villa","Brighton","Jonas Rovers","Man Utd","Crystal Palace","Marie Athletic","Fulham","Brentford","Leeds","Everton","Bournemouth","Nottm Forest"];
 function renderTable(){
-  if(LIVE){renderTableLive();return}
-  var rows=TBL.map(function(r){return {n:r[0],w:r[1],d:r[2],l:r[3],gd:r[4]-r[5],gf:r[4],p:r[1]*3+r[2]}});
-  rows.sort(function(a,b){return b.p-a.p||b.gd-a.gd||b.gf-a.gf});
-  var h='<div class="tr h"><span>#</span><span>Hold</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
-  rows.forEach(function(r,i){
-    var me=r.n==="me",fr=FR_NAMES.indexOf(r.n)>-1,prev=PREVORD.indexOf(r.n),d=prev>-1?prev-i:0;
-    var ar=d>0?'<i class="ar up" title="Op '+d+'"></i>':(d<0?'<i class="ar dn" title="Ned '+(-d)+'"></i>':'');
-    var ic=NAMECODE[r.n]?crest(NAMECODE[r.n],20):(me?hcrest("me",20):hcrest(NAME_H[r.n],20));
-    h+='<div class="tr'+(me?" mine":"")+(fr?" friend":"")+'"><span class="rk">'+(i+1)+ar+'</span><span class="nm">'+ic+'<span>'+esc(me?(S.team.trim()||"Mit hold"):r.n)+'</span></span><span class="num">'+r.w+'</span><span class="num">'+r.d+'</span><span class="num">'+r.l+'</span><span class="num">'+(r.gd>0?"+":"")+r.gd+'</span><span class="pts">'+r.p+'</span></div>';
-  });
-  $("tbl").innerHTML=h;
+  renderTableLive();return
 }
 
 /* ---------- stats ---------- */
-var ST={
- goals:{t:"Mål",u:"mål",rows:[["Erling Haaland","Sara United",11],["Hugo Ekitike","Jonas Rovers",9],["Alexander Isak","me",8],["Bukayo Saka","Marie Athletic",6],["Antoine Semenyo","Sara United",5],["Cole Palmer","Jonas Rovers",5],["Florian Wirtz","Marie Athletic",4]]},
- assists:{t:"Assists",u:"assists",rows:[["Alexis Mac Allister","me",7],["Rayan Cherki","Sara United",6],["Cole Palmer","Jonas Rovers",6],["Bukayo Saka","Marie Athletic",5],["Florian Wirtz","Marie Athletic",5],["Ryan Gravenberch","me",3]]},
- cards:{t:"Kort",u:"",rows:[["Moisés Caicedo","Jonas Rovers",[5,0]],["Declan Rice","me",[4,1]],["Joško Gvardiol","Sara United",[3,1]],["Marc Guéhi","Marie Athletic",[3,0]],["Alexis Mac Allister","me",[2,0]]]},
- cs:{t:"Clean sheets",u:"",rows:[["Alisson Becker","me",4],["Gianluigi Donnarumma","Sara United",4],["Emiliano Martínez","Jonas Rovers",3],["David Raya","Marie Athletic",3]]}
-};
-function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
-function squadStats(){
-  return squadNow().map(function(p){
-    var h=hash(p.name),g=p.pos==="ST"?4+h%6:(p.pos==="GK"?0:h%4),a=p.pos==="GK"?0:(h>>3)%5;
-    return {name:p.name,pos:p.pos,g:g,a:a,y:(h>>5)%4,r:(h>>7)%9===0?1:0,cs:p.pos==="GK"?3+h%3:0};
-  });
-}
 function renderStats(){
-  if(LIVE){renderStatsLive();return}
-  var tabs=Object.keys(ST).concat(["squad"]);
-  $("seg").innerHTML=tabs.map(function(k){return '<button data-t="'+k+'" class="'+(k===statTab?"on":"")+'">'+(k==="squad"?"Din trup":ST[k].t)+'</button>'}).join("");
-  var h="";
-  if(statTab==="squad"){
-    squadStats().forEach(function(p){
-      h+='<div class="sr"><span class="rk">'+POSC[p.pos]+'</span><div>'+esc(p.name)+'<small>'+(p.pos==="GK"?p.cs+" clean sheets":p.g+" mål, "+p.a+" assists")+'</small></div><span class="v">'+p.y+'<small>gule</small>'+(p.r?' '+p.r+'<small>rødt</small>':'')+'</span></div>';
-    });
-  }else{
-    ST[statTab].rows.forEach(function(r,i){
-      var own=r[1]==="me"?(S.team.trim()||"Mit hold"):r[1],isF=FR_NAMES.indexOf(r[1])>-1;
-      var hk=r[1]==="me"?"me":NAME_H[r[1]];
-      var v=Array.isArray(r[2])?r[2][0]+'<small>gule</small> '+r[2][1]+'<small>rødt</small>':r[2]+'<small>'+ST[statTab].u+'</small>';
-      h+='<div class="sr"><span class="rk">'+(i+1)+'</span><div>'+esc(r[0])+'<small>'+hcrest(hk,18)+esc(own)+'</small></div><span class="v">'+v+'</span></div>';
-    });
-  }
-  $("slist").innerHTML=h;
-  renderRestart();
+  renderStatsLive();return
 }
 $("seg").addEventListener("click",function(e){var b=e.target.closest("button");if(b){statTab=b.dataset.t;renderStats()}});
 
 /* klublogoer (monogrammer i klubfarver, indtil rigtige logoer er på plads) og liga-badges */
 var CCOL={ARS:["#db0007","#ffffff"],AVL:["#670e36","#95bfe5"],BOU:["#da291c","#111111"],BRE:["#e30613","#ffffff"],BHA:["#0057b8","#ffffff"],CHE:["#034694","#ffffff"],COV:["#59b4e0","#10224a"],CRY:["#1b458f","#e8223a"],EVE:["#003399","#ffffff"],FUL:["#f4f4f4","#111111"],HUL:["#f5a12d","#111111"],IPS:["#0044aa","#ffffff"],LEE:["#f4f4f4","#1d428a"],LIV:["#c8102e","#ffffff"],MCI:["#6cabdd","#1c2c5b"],MUN:["#da291c","#fbe122"],NEW:["#1a1a1a","#ffffff"],NFO:["#dd0000","#ffffff"],SUN:["#eb172b","#ffffff"],TOT:["#f4f4f4","#132257"]};
 var NAMECODE={"Arsenal":"ARS","Aston Villa":"AVL","Bournemouth":"BOU","Brentford":"BRE","Brighton":"BHA","Chelsea":"CHE","Crystal Palace":"CRY","Everton":"EVE","Fulham":"FUL","Leeds":"LEE","Liverpool":"LIV","Man City":"MCI","Man Utd":"MUN","Newcastle":"NEW","Nottm Forest":"NFO","Tottenham":"TOT"};
-var LB={pl:["PL","#3d195b","#ffffff"],ll:["LL","#d9262c","#ffffff"],sa:["SA","#0e5a9c","#ffffff"],lg:["L","#c29a3d","#0c1220"]};
 /* officielle klublogoer (premierleague.com) og ligalogo, indlejret til privat brug */
 var BADGE={ARS:"badges/ARS.png",AVL:"badges/AVL.png",BOU:"badges/BOU.png",BRE:"badges/BRE.png",BHA:"badges/BHA.png",CHE:"badges/CHE.png",COV:"badges/COV.png",CRY:"badges/CRY.png",EVE:"badges/EVE.png",FUL:"badges/FUL.png",HUL:"badges/HUL.png",IPS:"badges/IPS.png",LEE:"badges/LEE.png",LIV:"badges/LIV.png",MCI:"badges/MCI.png",MUN:"badges/MUN.png",NEW:"badges/NEW.png",NFO:"badges/NFO.png",SUN:"badges/SUN.png",TOT:"badges/TOT.png"};
 var PLLOGO="badges/pl-logo.svg";
-var LLLOGO="data:image/svg+xml;base64,PHN2ZyBkYXRhLW5hbWU9IkNhcGEgMiIgdmlld0JveD0iMCAwIDQwMCAxMTMuNTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE3Ny4wOSA3MC40NXYxMi4zSDE0OC43bC01LjY4LTYuNDFjLS45NS0xLjA1LTEuNDctMi41Mi0xLjQ3LTMuODlWMjEuNjZoMTIuNzJ2NDguNzloMjIuODJabTk2Ljg0IDB2MTIuM2gtMjguMzlsLTUuNjgtNi40MWMtLjk1LTEuMDUtMS40Ny0yLjUyLTEuNDctMy44OVYyMS42NmgxMi43MnY0OC43OWgyMi44MlptNy4xNS00OC43OWgxMi43MnY2MS4wOWgtMTIuNzJ6bS01OS4zIDE3LjU2LTMuMzctMTMuMjVjLS42My0yLjUyLTIuOTQtNC4zMS01LjU3LTQuMzFoLTE0LjgybC00LjUyIDE3LjU2LTkuNTcgMzcuNTRjLS4yMS44NC0uMzIgMS42OC0uMzIgMi41MnYzLjQ3aDExLjM2bDIuNDItOS4yNSAxOC45My05LjA0IDQuNzMgMTguMjloMTAuNjJ2LTUuNTdsLTkuODgtMzcuOTZabS0yMS4zNCAyMi40IDUuNzgtMjIuNSAxLjc5LTYuOTQgMS43OSA2Ljk0IDUuNzggMjIuNWgtMTUuMTRabTE4OS43OC0yMi40LTMuMzYtMTMuMjVjLS42My0yLjUyLTIuOTQtNC4zMS01LjU3LTQuMzFoLTE0LjgzbC00LjUyIDE3LjU2LTkuNjcgMzcuNTRjLS4yMS44NC0uMzIgMS42OC0uMzIgMi41MnYzLjQ3aDExLjM2bDIuNDItOS4yNSAxOC45My05LjA0IDQuNzMgMTguMjloMTAuNjJ2LTUuNTdsLTkuNzgtMzcuOTZabS0yMS40NSAyMi40IDUuNzgtMjIuNSAxLjc5LTYuOTQgMS43OSA2Ljk0IDUuNzggMjIuNWgtMTUuMTRabS0yMC45Mi0uOTV2My4wNWMwIDEwLjgzLTguNzMgMTkuNTYtMTkuNTYgMTkuNTZoLTUuODljLTIuNDIgMC00LjczLS40Mi02LjgzLTEuMjYtNy40Ni0yLjczLTEyLjcyLTkuOTktMTIuNzItMTguMjl2LTIyLjRjMC0uNzQgMC0xLjQ3LjExLTIuMS44NC03LjQ3IDUuNzgtMTMuNjcgMTIuNjItMTYuMTkgMi4xLS44NCA0LjQyLTEuMjYgNi44My0xLjI2aDUuODljMTAuMDkgMCAxOC40IDcuNjggMTkuNDUgMTcuNDVoLTEyLjQxdi0xLjQ3YzAtMi40Mi0xLjg5LTQuMzEtNC4zMS00LjMxaC0xMS4xNGMtMi40MiAwLTQuMzEgMS44OS00LjMxIDQuMzF2MjkuMzNjMCAyLjQyIDEuODkgNC4zMSA0LjMxIDQuMzFoMTEuMTRjMi40MiAwIDQuMzEtMS44OSA0LjMxLTQuMzFWNTkuMmgtMTAuNzNWNDcuMTFoMTQuNzJsLjIxLjIxIDUuMzYgNS43OGMxLjkgMiAyLjk1IDQuNzMgMi45NSA3LjU3Wm0tMzIyLjgtNi4yaDI1LjM0TDExLjggNzQuMDNsLS4zMS0uNTMtOC40MS0xMS4xNWMtNC01LjI2LTQuMS0xMi41MS0uMzItMTcuODhMMzQuNTIgMGgyOS4zM2wtMzguOCA1NC40N1ptMzIuOTEgMzYuMTdoMjkuNjVMNDIuNCAxMTMuNTZsLS4yMS0uMzItOS45OS0xMy4xNGMtNC01LjE1LTQuMS0xMi4zLS4zMi0xNy42Nkw4OS4zIDBoMzEuODZMNTcuOTcgOTAuNjRaIiBzdHlsZT0iZmlsbDojZmY0YjQ0IiBkYXRhLW5hbWU9IkNhcGEgMSIvPjwvc3ZnPg==";
-var SALOGO="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgaW5rc2NhcGU6dmVyc2lvbj0iMS4wICg0MDM1YTRmLCAyMDIwLTA1LTAxKSIKICAgaGVpZ2h0PSI0NDguMzk5OTkiCiAgIHdpZHRoPSIyNjAuOTkyMjIiCiAgIHNvZGlwb2RpOmRvY25hbWU9IlNlcmllIEEgbG9nbyAyMDIyLnN2ZyIKICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKICAgdmlld0JveD0iMCAwIDI2MC45OTIyMyA0NDguNCIKICAgeT0iMHB4IgogICB4PSIwcHgiCiAgIGlkPSJMaXZlbGxvXzEiCiAgIHZlcnNpb249IjEuMCI+PG1ldGFkYXRhCiAgIGlkPSJtZXRhZGF0YTkyMiI+PHJkZjpSREY+PGNjOldvcmsKICAgICAgIHJkZjphYm91dD0iIj48ZGM6Zm9ybWF0PmltYWdlL3N2Zyt4bWw8L2RjOmZvcm1hdD48ZGM6dHlwZQogICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPjxkYzp0aXRsZT48L2RjOnRpdGxlPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48ZGVmcwogICBpZD0iZGVmczkyMCI+CgkKCQoJCgkKPC9kZWZzPjxzb2RpcG9kaTpuYW1lZHZpZXcKICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0iTGl2ZWxsb18xIgogICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIgogICBpbmtzY2FwZTp3aW5kb3cteT0iMjUiCiAgIGlua3NjYXBlOndpbmRvdy14PSIwIgogICBpbmtzY2FwZTpjeT0iMjc3LjA4NjE5IgogICBpbmtzY2FwZTpjeD0iLTU0LjQ5NDgwNyIKICAgaW5rc2NhcGU6em9vbT0iMC44OTAzNTgyOSIKICAgZml0LW1hcmdpbi1ib3R0b209IjAiCiAgIGZpdC1tYXJnaW4tcmlnaHQ9IjAiCiAgIGZpdC1tYXJnaW4tbGVmdD0iMCIKICAgZml0LW1hcmdpbi10b3A9IjAiCiAgIGlua3NjYXBlOmd1aWRlLWJib3g9InRydWUiCiAgIHNob3dndWlkZXM9InRydWUiCiAgIGlua3NjYXBlOnBhZ2VjaGVja2VyYm9hcmQ9InRydWUiCiAgIHNob3dncmlkPSJmYWxzZSIKICAgaWQ9Im5hbWVkdmlldzkxOCIKICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iNzkzIgogICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE0NDAiCiAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiCiAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwIgogICBndWlkZXRvbGVyYW5jZT0iMTAiCiAgIGdyaWR0b2xlcmFuY2U9IjEwIgogICBvYmplY3R0b2xlcmFuY2U9IjEwIgogICBib3JkZXJvcGFjaXR5PSIxIgogICBib3JkZXJjb2xvcj0iIzY2NjY2NiIKICAgcGFnZWNvbG9yPSIjZmZmZmZmIiAvPgo8c3R5bGUKICAgaWQ9InN0eWxlODMzIgogICB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9Cgkuc3Qxe2ZpbGw6IzAwMzJBMDt9Cgkuc3Qye2ZpbGw6I0M4MTAyRTt9Cgkuc3Qze2ZpbGw6IzAwQjc0Rjt9Cgkuc3Q0e2ZpbGw6I0U0MDAyQjt9Cgkuc3Q1e2ZpbGw6IzFBMTY1OTt9Cgkuc3Q2e2ZpbGw6dXJsKCNTVkdJRF8xXyk7fQoJLnN0N3tmaWxsOnVybCgjU1ZHSURfMl8pO30KPC9zdHlsZT4KPHJlY3QKICAgc3R5bGU9InN0cm9rZS13aWR0aDowLjk3MTY4OCIKICAgeD0iMCIKICAgaWQ9InJlY3Q4MzUiCiAgIGhlaWdodD0iMzYxLjgwMzkyIgogICB3aWR0aD0iMjYwLjk5MjIyIgogICBjbGFzcz0ic3QwIgogICB5PSIwIiAvPgoKPHJlY3QKICAgc3R5bGU9InN0cm9rZS13aWR0aDowLjkyNjE2MSIKICAgaWQ9InJlY3Q4MzciCiAgIGhlaWdodD0iODYuNTk2MDY5IgogICB3aWR0aD0iMjYwLjk5MjIyIgogICBjbGFzcz0ic3QxIgogICB5PSIzNjEuODAzOTIiCiAgIHg9IjAiIC8+PGcKICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIwLjg1MjAyOCwtMC4xMTk3NTUwOSkiCiAgIGlkPSJnMTA2NiI+PGcKICAgICBpZD0iZzk1NCIKICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjkyNjE2MTE2LDAsMCwwLjkyNjE2MTE2LDIwLjgwNzc4NCwzMy4xMDkzMzUpIj48cGF0aAogICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIKICAgICAgIGNsYXNzPSJzdDIiCiAgICAgICBkPSJtIDIyOC45LDM5Ny4xIGMgLTAuMSwwLjEgLTAuMSwwLjIgLTAuMiwwLjQgLTIuMSw1LjQgLTQuMywxMC44IC02LjQsMTYuMiAtMC43LDEuNiAtMS4zLDMuMiAtMS45LDQuOCAtMC4zLDAuOCAtMC44LDEuMyAtMS42LDEuMyAtMi44LDAgLTUuNiwwIC04LjMsMCAtMC45LDAgLTEuNCwtMC41IC0xLjgsLTEuNCAtMi42LC02LjEgLTUuMiwtMTIuMiAtNy44LC0xOC4zIC0wLjQsLTAuOSAtMC43LC0xLjkgLTEuMiwtMi45IDAsMC4yIDAsMC41IDAsMC43IDAsOS42IDAsMTkuMSAwLDI4LjcgMCwxLjIgLTAuMiwxLjUgLTEuNCwxLjYgLTIuNCwwLjEgLTQuNywwLjEgLTcuMSwwLjIgLTAuOCwwIC0xLjcsMCAtMi41LC0wLjEgLTEuMSwtMC4xIC0xLjMsLTAuMyAtMS4zLC0xLjQgMCwtMTYuNyAwLC0zMy4zIDAsLTUwIDAsLTEgMC4yLC0xLjMgMS4zLC0xLjQgMC43LC0wLjEgMS40LC0wLjEgMi4xLC0wLjEgMi42LDAgNS4yLDAgNy44LDAgMC45LDAgMS43LDAuMiAyLjYsMC40IDAuNCwwLjEgMC45LDAuNiAxLjEsMSAyLjcsNi40IDUuNSwxMi45IDguMiwxOS40IDEuNiwzLjggMyw3LjcgNC41LDExLjUgMCwwIDAuMSwtMC4yIDAuMSwtMC4zIDIsLTUuMiA0LjEsLTEwLjUgNi4yLC0xNS43IDIsLTQuOSA0LjEsLTkuOCA2LjEsLTE0LjcgMC40LC0wLjkgMSwtMS40IDEuOSwtMS41IDEuNCwtMC4xIDIuNywtMC4xIDQuMSwtMC4xIDEuOCwwIDMuNSwwIDUuMywwIDAuNywwIDEuMywwLjIgMiwwLjMgMC42LDAuMSAwLjgsMC41IDAuOCwxLjEgMCwxLjggMCwzLjYgMCw1LjMgMCwxNC45IDAsMjkuOCAwLDQ0LjcgMCwxLjEgLTAuMiwxLjUgLTEuMywxLjUgLTIuMywwLjEgLTQuNiwwLjEgLTcsMC4yIC0wLjksMCAtMS44LDAgLTIuNywtMC4xIC0xLC0wLjEgLTEuMiwtMC40IC0xLjIsLTEuNCAwLC05LjcgMCwtMTkuMyAwLC0yOSAwLC0wLjIgMCwtMC40IDAsLTAuNyAtMC40LC0wLjIgLTAuNCwtMC4yIC0wLjQsLTAuMiB6IgogICAgICAgaWQ9InBhdGg4MzkiIC8+PHBhdGgKICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiCiAgICAgICBjbGFzcz0ic3QzIgogICAgICAgZD0ibSAxMzEuNiwzODYuNiBjIC0yLjEsMCAtNC4xLDAgLTYuMSwwIC0yLDAgLTMuOSwwIC01LjksMCAtMC44LDAgLTEuMSwtMC4yIC0xLjIsLTEgLTAuMSwtMC41IC0wLjEsLTEuMSAtMC4xLC0xLjYgMCwtMi4yIDAsLTQuNCAwLC02LjYgMCwtMC40IDAuMSwtMC44IDAuMSwtMS4zIDAuMSwtMC44IDAuMywtMSAxLjEsLTEgNy43LDAgMTUuMywwIDIzLDAgNC41LDAgOC45LDAgMTMuNCwwIDAuOCwwIDEuMSwwLjIgMS4xLDEgMC4xLDAuOCAwLjEsMS43IDAuMSwyLjUgMCwyLjIgMCw0LjQgLTAuMSw2LjYgMCwxLjEgLTAuNCwxLjMgLTEuNCwxLjMgLTMuNywwIC03LjMsMCAtMTEsMCAtMC4yLDAgLTAuNSwwIC0wLjcsMCAwLDAuMyAwLDAuNSAwLDAuNyAwLDEzLjEgMCwyNi4yIDAsMzkuMiAwLDEuMiAtMC4yLDEuNSAtMS40LDEuNiAtMi4zLDAuMSAtNC43LDAuMSAtNywwLjIgLTAuOSwwIC0xLjgsLTAuMSAtMi43LC0wLjIgLTAuOCwtMC4xIC0xLC0wLjQgLTEsLTEuMiAwLC0xMy4yIDAsLTI2LjMgMCwtMzkuNSAtMC4yLC0wLjIgLTAuMiwtMC40IC0wLjIsLTAuNyB6IgogICAgICAgaWQ9InBhdGg4NDEiIC8+PHBhdGgKICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiCiAgICAgICBjbGFzcz0ic3QwIgogICAgICAgZD0ibSAxNjUuMiw0MDEuNyBjIDAsLTguMyAwLC0xNi42IDAsLTI1IDAsLTEuMSAwLjIsLTEuMyAxLjMsLTEuNSAxLC0wLjEgMiwtMC4yIDMsLTAuMSAyLjEsMCA0LjIsMC4xIDYuMywwLjEgMC4zLDAgMC41LDAuMSAwLjgsMC4yIDAuNiwwLjIgMC45LDAuNSAwLjksMS4yIDAsMy4yIDAsNi41IDAsOS43IDAsMTMuNCAwLDI2LjkgMCw0MC4zIDAsMS4yIC0wLjIsMS41IC0xLjMsMS42IC0yLjQsMC4xIC00LjcsMC4xIC03LjEsMC4yIC0wLjksMCAtMS44LDAgLTIuNywtMC4xIC0wLjksLTAuMSAtMS4xLC0wLjQgLTEuMSwtMS4zIC0wLjEsLTguNiAtMC4xLC0xNyAtMC4xLC0yNS4zIHoiCiAgICAgICBpZD0icGF0aDg0MyIgLz48L2c+PGcKICAgICBpZD0iZzg1NSIKICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjkyNjE2MTE2LDAsMCwwLjkyNjE2MTE2LDIwLjgwNzc4NCwzMy4xMDkzMzUpIj4KCQk8cGF0aAogICBpZD0icGF0aDg0NSIKICAgZD0ibSA3Mi4zLDM3NS4xIGMgOS42LDAgMTkuMSwwIDI4LjcsMCAxLjYsMCAzLjEsMS40IDMuMSwzIDAsMS45IDAsMy44IDAsNS43IDAsMS4zIC0xLjIsMi42IC0yLjUsMi43IC0wLjcsMC4xIC0xLjUsMC4xIC0yLjIsMC4xIC0xOC40LDAgLTM2LjgsMCAtNTUuMiwwIC0xLjQsMCAtMi42LC0wLjQgLTMuMiwtMS43IC0wLjIsLTAuNCAtMC4zLC0wLjkgLTAuMywtMS4zIDAsLTEuOCAwLC0zLjcgMCwtNS41IDAsLTEuNiAxLjMsLTIuOSAyLjksLTIuOSA5LjUsLTAuMSAxOS4xLC0wLjEgMjguNywtMC4xIHoiCiAgIGNsYXNzPSJzdDQiIC8+CgkJPHBhdGgKICAgaWQ9InBhdGg4NDciCiAgIGQ9Im0gNzguNiwzOTYgYyAwLjIsMCAwLjQsMCAwLjYsMCA3LjIsMCAxNC40LDAgMjEuNiwwIDEuNiwwIDIuNywwLjggMy4xLDIuMiAwLjEsMC4zIDAuMSwwLjYgMC4xLDAuOSAwLDEuOCAwLDMuNiAwLDUuNCAwLDEuNSAtMS4zLDIuOCAtMi44LDIuOCAtNy40LDAgLTE0LjksMCAtMjIuMywwIC0wLjEsMCAtMC4yLDAgLTAuNCwwIDAuMSwtMy43IDAuMSwtNy41IDAuMSwtMTEuMyB6IgogICBjbGFzcz0ic3Q0IiAvPgoJCTxwYXRoCiAgIGlkPSJwYXRoODQ5IgogICBkPSJtIDc4LjYsNDI4LjIgYyAwLC0zLjggMCwtNy41IDAsLTExLjMgMC4yLDAgMC40LDAgMC42LDAgNy4yLDAgMTQuMywwIDIxLjUsMCAxLjcsMCAyLjcsMC43IDMuMiwyLjIgMC4xLDAuMyAwLjEsMC42IDAuMSwwLjkgMCwxLjggMCwzLjcgMCw1LjUgMCwxLjQgLTEuNCwyLjcgLTIuNywyLjcgLTcuNCwwIC0xNC45LDAgLTIyLjMsMCAtMC4xLDAgLTAuMiwwIC0wLjQsMCB6IgogICBjbGFzcz0ic3Q0IiAvPgoJCTxwYXRoCiAgIGlkPSJwYXRoODUxIgogICBkPSJtIDY2LDQxNi45IGMgMCwzLjggMCw3LjUgMCwxMS4zIC0wLjIsMCAtMC41LDAgLTAuNywwIC03LjMsMCAtMTQuNSwwIC0yMS44LDAgLTEuNywwIC0zLC0xLjMgLTMsLTMgMCwtMS44IDAsLTMuNiAwLC01LjUgMCwtMS41IDEuMywtMi45IDIuOCwtMi45IDcuNCwwIDE0LjgsMCAyMi4xLDAgMC4yLDAuMSAwLjQsMC4xIDAuNiwwLjEgeiIKICAgY2xhc3M9InN0NCIgLz4KCQk8cGF0aAogICBpZD0icGF0aDg1MyIKICAgZD0ibSA2NS45LDQwNy4zIGMgLTAuMywwIC0wLjUsMCAtMC44LDAgLTcuMiwwIC0xNC4zLDAgLTIxLjUsMCAtMS43LDAgLTMuMywtMS40IC0zLjIsLTMuMiAwLjEsLTEuOCAwLC0zLjUgMCwtNS4zIDAsLTEuNSAxLjMsLTIuOSAyLjgsLTIuOSA3LjQsMCAxNC45LDAgMjIuMywwIDAuMSwwIDAuMiwwIDAuMywwIDAuMSwzLjkgMC4xLDcuNiAwLjEsMTEuNCB6IgogICBjbGFzcz0ic3Q0IiAvPgoJPC9nPjwvZz4KPGcKICAgdHJhbnNmb3JtPSJtYXRyaXgoMC45MjYxNjExNiwwLDAsMC45MjYxNjExNiwwLjg0MTM3ODg3LDAuNDI1NDQ4NjYpIgogICBpZD0iZzg3MSI+Cgk8cGF0aAogICBpZD0icGF0aDg1OSIKICAgZD0ibSAzOSwzMjkuOCBjIC0wLjIsLTAuMiAtMC40LC0wLjcgLTAuMSwtMSBsIDQuNiwtNS4zIGMgMC4yLC0wLjMgMC42LC0wLjMgMC45LC0wLjEgMi43LDIuMiA2LjQsNC4yIDEwLjgsNC4yIDQuMywwIDYuNywtMiA2LjcsLTQuOSAwLC0yLjQgLTEuNSwtMy45IC02LjQsLTQuNiBsIC0yLjIsLTAuMyBjIC04LjQsLTEuMiAtMTMsLTUuMSAtMTMsLTEyLjMgMCwtNy42IDUuNywtMTIuNiAxNC42LC0xMi42IDUuNCwwIDEwLjUsMS42IDE0LDQuMyAwLjQsMC4yIDAuNCwwLjUgMC4xLDAuOSBsIC0zLjcsNS41IGMgLTAuMiwwLjMgLTAuNSwwLjQgLTAuOCwwLjIgLTMuMSwtMi4xIC02LjIsLTMuMSAtOS42LC0zLjEgLTMuNiwwIC01LjUsMS45IC01LjUsNC41IDAsMi40IDEuNywzLjkgNi40LDQuNSBMIDU4LDMxMCBjIDguNSwxLjIgMTMsNSAxMywxMi41IDAsNy40IC01LjUsMTMgLTE2LjIsMTMgLTYuNCwtMC4xIC0xMi42LC0yLjYgLTE1LjgsLTUuNyB6IgogICBjbGFzcz0ic3Q1IiAvPgoJPHBhdGgKICAgaWQ9InBhdGg4NjEiCiAgIGQ9Im0gNzUuOCwyOTQuMiBjIDAsLTAuNCAwLjIsLTAuNiAwLjYsLTAuNiBoIDI2LjQgYyAwLjQsMCAwLjYsMC4yIDAuNiwwLjYgdiA2LjUgYyAwLDAuNCAtMC4yLDAuNiAtMC42LDAuNiBIIDg1IGMgLTAuMiwwIC0wLjQsMC4xIC0wLjQsMC40IHYgOC4yIGMgMCwwLjIgMC4xLDAuNCAwLjQsMC40IGggMTQuOCBjIDAuNCwwIDAuNiwwLjIgMC42LDAuNiB2IDYuNCBjIDAsMC40IC0wLjIsMC42IC0wLjYsMC42IEggODUgYyAtMC4yLDAgLTAuNCwwLjEgLTAuNCwwLjQgdiA4LjUgYyAwLDAuMiAwLjEsMC40IDAuNCwwLjQgaCAxNy43IGMgMC40LDAgMC42LDAuMiAwLjYsMC42IHYgNi41IGMgMCwwLjQgLTAuMiwwLjYgLTAuNiwwLjYgSCA3Ni40IGMgLTAuNCwwIC0wLjYsLTAuMiAtMC42LC0wLjYgeiIKICAgY2xhc3M9InN0NSIgLz4KCTxwYXRoCiAgIGlkPSJwYXRoODYzIgogICBkPSJtIDEzMS41LDMzNC43IGMgLTAuNSwwIC0wLjcsLTAuMiAtMC45LC0wLjYgTCAxMjMuNSwzMTkgSCAxMTggYyAtMC4yLDAgLTAuNCwwLjEgLTAuNCwwLjQgdiAxNC43IGMgMCwwLjQgLTAuMiwwLjYgLTAuNiwwLjYgaCAtNy43IGMgLTAuNCwwIC0wLjYsLTAuMiAtMC42LC0wLjYgdiAtNDAgYyAwLC0wLjQgMC4yLC0wLjYgMC42LC0wLjYgaCAxNi40IGMgOC40LDAgMTQsNS4zIDE0LDEyLjggMCw1LjMgLTIuOCw5LjQgLTcuMywxMS40IGwgOC4xLDE2LjIgYyAwLjIsMC40IDAsMC43IC0wLjQsMC43IGggLTguNiB6IG0gLTAuNiwtMjguMyBjIDAsLTMuMSAtMi4yLC01LjEgLTUuNiwtNS4xIEggMTE4IGMgLTAuMiwwIC0wLjQsMC4xIC0wLjQsMC40IHYgOS41IGMgMCwwLjIgMC4xLDAuNCAwLjQsMC40IGggNy4zIGMgMy40LC0wLjEgNS42LC0yLjEgNS42LC01LjIgeiIKICAgY2xhc3M9InN0NSIgLz4KCTxwYXRoCiAgIGlkPSJwYXRoODY1IgogICBkPSJtIDE0NS4zLDI5NC4yIGMgMCwtMC40IDAuMiwtMC42IDAuNiwtMC42IGggNy43IGMgMC40LDAgMC42LDAuMiAwLjYsMC42IHYgNDAgYyAwLDAuNCAtMC4yLDAuNiAtMC42LDAuNiBIIDE0NiBjIC0wLjQsMCAtMC42LC0wLjIgLTAuNiwtMC42IHYgLTQwIHoiCiAgIGNsYXNzPSJzdDUiIC8+Cgk8cGF0aAogICBpZD0icGF0aDg2NyIKICAgZD0ibSAxNjAuOSwyOTQuMiBjIDAsLTAuNCAwLjIsLTAuNiAwLjYsLTAuNiBoIDI2LjQgYyAwLjQsMCAwLjYsMC4yIDAuNiwwLjYgdiA2LjUgYyAwLDAuNCAtMC4yLDAuNiAtMC42LDAuNiBoIC0xNy43IGMgLTAuMiwwIC0wLjQsMC4xIC0wLjQsMC40IHYgOC4yIGMgMCwwLjIgMC4xLDAuNCAwLjQsMC40IEggMTg1IGMgMC40LDAgMC42LDAuMiAwLjYsMC42IHYgNi40IGMgMCwwLjQgLTAuMiwwLjYgLTAuNiwwLjYgaCAtMTQuOCBjIC0wLjIsMCAtMC40LDAuMSAtMC40LDAuNCB2IDguNSBjIDAsMC4yIDAuMSwwLjQgMC40LDAuNCBoIDE3LjcgYyAwLjQsMCAwLjYsMC4yIDAuNiwwLjYgdiA2LjUgYyAwLDAuNCAtMC4yLDAuNiAtMC42LDAuNiBoIC0yNi40IGMgLTAuNCwwIC0wLjYsLTAuMiAtMC42LC0wLjYgeiIKICAgY2xhc3M9InN0NSIgLz4KCTxwYXRoCiAgIGlkPSJwYXRoODY5IgogICBkPSJtIDIxOC4xLDI5NC4yIGMgMC4xLC0wLjQgMC40LC0wLjYgMC44LC0wLjYgaCA3LjYgYyAwLjQsMCAwLjcsMC4yIDAuOCwwLjYgbCAxMy45LDQwIGMgMC4xLDAuNCAwLDAuNiAtMC40LDAuNiBoIC03LjkgYyAtMC40LDAgLTAuNywtMC4yIC0wLjgsLTAuNiBsIC0yLjQsLTcuMiBoIC0xNC40IGwgLTIuMyw3LjIgYyAtMC4xLDAuNCAtMC40LDAuNiAtMC44LDAuNiBoIC03LjkgYyAtMC40LDAgLTAuNSwtMC4yIC0wLjQsLTAuNiB6IG0gOS4yLDI1LjIgLTQuNywtMTQuNCBoIC0wLjIgbCAtNC43LDE0LjQgeiIKICAgY2xhc3M9InN0NSIgLz4KPC9nPgo8ZwogICB0cmFuc2Zvcm09Im1hdHJpeCgwLjkyNjE2MTE2LDAsMCwwLjkyNjE2MTE2LDAuMDQ2MzA5ODcsMS4xMDkzMjgzKSIKICAgaWQ9Imc5MTUiPgoJPGcKICAgaWQ9Imc4OTgiPgoJCTxnCiAgIGlkPSJnODk2Ij4KCQkJPGcKICAgaWQ9Imc4OTQiPgoJCQkJPHBvbHlnb24KICAgaWQ9InBvbHlnb244NzMiCiAgIHBvaW50cz0iNDAuNSwyMDkuMiAxMDEuOSwyMDkuMiAxNDAuOCwyNzIuOCAiCiAgIGNsYXNzPSJzdDUiIC8+CgkJCQk8cG9seWdvbgogICBpZD0icG9seWdvbjg3NSIKICAgcG9pbnRzPSIyNDEuMiwyMDkuMiAxNzkuNywyMDkuMiAxNDAuOCwyNzIuOCAiCiAgIGNsYXNzPSJzdDUiIC8+CgkJCQk8cG9seWdvbgogICBpZD0icG9seWdvbjg3NyIKICAgcG9pbnRzPSIxMDEuOSwyMDkuMiAxNDAuOCwyMDkuMiAxNzkuNywyMDkuMiAxNDAuOCwxMDYuNSAiCiAgIGNsYXNzPSJzdDUiIC8+CgkJCQk8bGluZWFyR3JhZGllbnQKICAgeTI9IjI0MC45NTk3OSIKICAgeDI9IjE3OS43MDI1IgogICB5MT0iMjQwLjk1OTc5IgogICB4MT0iMTAxLjk0MDMiCiAgIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIgogICBpZD0iU1ZHSURfMV8iPgoJCQkJCTxzdG9wCiAgIGlkPSJzdG9wODc5IgogICBzdHlsZT0ic3RvcC1jb2xvcjojMzFFQ0ZGIgogICBvZmZzZXQ9IjAiIC8+CgkJCQkJPHN0b3AKICAgaWQ9InN0b3A4ODEiCiAgIHN0eWxlPSJzdG9wLWNvbG9yOiMyREUyRkYiCiAgIG9mZnNldD0iNC45MzcwOTllLTAyIiAvPgoJCQkJCTxzdG9wCiAgIGlkPSJzdG9wODgzIgogICBzdHlsZT0ic3RvcC1jb2xvcjojMUJCMkZGIgogICBvZmZzZXQ9IjAuMjk2NCIgLz4KCQkJCQk8c3RvcAogICBpZD0ic3RvcDg4NSIKICAgc3R5bGU9InN0b3AtY29sb3I6IzBFOTBGRiIKICAgb2Zmc2V0PSIwLjUxNDciIC8+CgkJCQkJPHN0b3AKICAgaWQ9InN0b3A4ODciCiAgIHN0eWxlPSJzdG9wLWNvbG9yOiMwNjdCRkYiCiAgIG9mZnNldD0iMC42OTQiIC8+CgkJCQkJPHN0b3AKICAgaWQ9InN0b3A4ODkiCiAgIHN0eWxlPSJzdG9wLWNvbG9yOiMwMzczRkYiCiAgIG9mZnNldD0iMC44MTE4IiAvPgoJCQkJPC9saW5lYXJHcmFkaWVudD4KCQkJCTxwb2x5Z29uCiAgIHN0eWxlPSJmaWxsOnVybCgjU1ZHSURfMV8pIgogICBpZD0icG9seWdvbjg5MiIKICAgcG9pbnRzPSIxNDAuOCwyNzIuOCAxNzkuNywyMDkuMiAxMDEuOSwyMDkuMiAiCiAgIGNsYXNzPSJzdDYiIC8+CgkJCTwvZz4KCQk8L2c+Cgk8L2c+Cgk8bGluZWFyR3JhZGllbnQKICAgeTI9IjI0MS40MjM3MSIKICAgeDI9IjEyOS4xMTQxMSIKICAgeTE9IjUwLjkyMzMwMiIKICAgeDE9IjE5OC40NTA2MSIKICAgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiCiAgIGlkPSJTVkdJRF8yXyI+CgkJPHN0b3AKICAgaWQ9InN0b3A5MDAiCiAgIHN0eWxlPSJzdG9wLWNvbG9yOiMzMUVDRkYiCiAgIG9mZnNldD0iMCIgLz4KCQk8c3RvcAogICBpZD0ic3RvcDkwMiIKICAgc3R5bGU9InN0b3AtY29sb3I6IzJERTJGRiIKICAgb2Zmc2V0PSI0Ljg4MjczN2UtMDIiIC8+CgkJPHN0b3AKICAgaWQ9InN0b3A5MDQiCiAgIHN0eWxlPSJzdG9wLWNvbG9yOiMxQkIyRkYiCiAgIG9mZnNldD0iMC4yOTMyIiAvPgoJCTxzdG9wCiAgIGlkPSJzdG9wOTA2IgogICBzdHlsZT0ic3RvcC1jb2xvcjojMEU5MEZGIgogICBvZmZzZXQ9IjAuNTA5MSIgLz4KCQk8c3RvcAogICBpZD0ic3RvcDkwOCIKICAgc3R5bGU9InN0b3AtY29sb3I6IzA2N0JGRiIKICAgb2Zmc2V0PSIwLjY4NjMiIC8+CgkJPHN0b3AKICAgaWQ9InN0b3A5MTAiCiAgIHN0eWxlPSJzdG9wLWNvbG9yOiMwMzczRkYiCiAgIG9mZnNldD0iMC44MDI4IiAvPgoJPC9saW5lYXJHcmFkaWVudD4KCTxwYXRoCiAgIHN0eWxlPSJmaWxsOnVybCgjU1ZHSURfMl8pIgogICBpZD0icGF0aDkxMyIKICAgZD0ibSAxNDAuOCwxMDYuNSAxNi44LDQ0LjMgSCAxMzYuNCBMIDEyMiwxODkgaCA1MC4xIGwgNy42LDIwLjIgaCA2MS41IEwgMTY4LjUsNDAgYyAtMTguNSwwIC0zNi45LDAgLTU1LjQsMCBMIDQwLjUsMjA5LjIgSCAxMDIgWiIKICAgY2xhc3M9InN0NyIgLz4KPC9nPgo8ZwogICB0cmFuc2Zvcm09Im1hdHJpeCgwLjk0ODcxNzkxLDAsMCwwLjkzMzMzMzMzLC0zMy41NTQ1OCwyMS44NzU3MjcpIgogICBpZD0iZzEwMzUiPjxyZWN0CiAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiMwMGEzNDY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjAuMTM3NjE5O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtwYWludC1vcmRlcjpzdHJva2UgZmlsbCBtYXJrZXJzIgogICAgIGlkPSJyZWN0MTAwOSIKICAgICB3aWR0aD0iNjUiCiAgICAgaGVpZ2h0PSIxNSIKICAgICB4PSI3NS40MTgyOTciCiAgICAgeT0iMzI5LjE1MjIyIiAvPjxyZWN0CiAgICAgeT0iMzI5LjE1MjIyIgogICAgIHg9IjE0MC40MTgzIgogICAgIGhlaWdodD0iMTUiCiAgICAgd2lkdGg9IjY1IgogICAgIGlkPSJyZWN0MTAwOS01IgogICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojZTJlMmUyO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjEzNzYxOTtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQ7cGFpbnQtb3JkZXI6c3Ryb2tlIGZpbGwgbWFya2VycyIgLz48cmVjdAogICAgIHk9IjMyOS4xNTIyMiIKICAgICB4PSIyMDUuNDE4MyIKICAgICBoZWlnaHQ9IjE1IgogICAgIHdpZHRoPSI2NSIKICAgICBpZD0icmVjdDEwMDktNTUiCiAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNkYjA1MmI7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjAuMTM3NjE5O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtwYWludC1vcmRlcjpzdHJva2UgZmlsbCBtYXJrZXJzIiAvPjwvZz48L3N2Zz4K";
 function crest(code,px){
   if(BADGE[code])return '<span class="cr"><i class="bdc bd-'+code+'" style="width:'+px+'px;height:'+px+'px"></i></span>';
   var c=CCOL[code]||["#3b4a6b","#e6ebf5"];
   return '<span class="cr"><svg width="'+px+'" height="'+Math.round(px*1.12)+'" viewBox="0 0 40 45" aria-hidden="true"><path d="M3 3h34v20c0 10-8 16-17 19C11 39 3 33 3 23z" style="fill:'+c[0]+';stroke:'+c[1]+';stroke-opacity:.55;stroke-width:1.5"/><text x="20" y="26" text-anchor="middle" style="font:700 12px Outfit,sans-serif;fill:'+c[1]+'">'+code+'</text></svg></span>';
 }
-function lbadge(k,px){
-  var L={pl:[PLLOGO,"#ffffff"],ll:[LLLOGO,"#101828"],sa:[SALOGO,"#ffffff"]}[k];
-  if(L)return '<span class="lg" style="width:'+px+'px;height:'+px+'px;background:'+L[1]+'"><img src="'+L[0]+'" alt="" style="max-width:'+(k==="pl"?"78%":"84%")+';max-height:'+(k==="pl"?"78%":"84%")+'"></span>';
-  return "";
-}
 /* egne våbenskjolde (5 stilarter) til spillernes hold */
 var MARK='<svg class="pm" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#ffffff3d" stroke-width="1.2"><rect x="0" y="0" width="100" height="100"/><line x1="0" y1="50" x2="100" y2="50"/><rect x="22" y="0" width="56" height="15"/><rect x="37" y="0" width="26" height="6"/><rect x="22" y="85" width="56" height="15"/><rect x="37" y="94" width="26" height="6"/><rect x="43" y="-2.4" width="14" height="2.4"/><rect x="43" y="100" width="14" height="2.4"/></g></svg><div class="cc"></div>';
-var HC={Sara:[1,"#3a6fd8","#e6ebf5"],Jonas:[2,"#c29a3d","#1b2540"],Marie:[3,"#c4688b","#e6ebf5"]};
-var NAME_H={"Sara United":"Sara","Jonas Rovers":"Jonas","Marie Athletic":"Marie"};
 var CPID=0;
 function mytag(){return S.tag&&S.tag.length>1?S.tag:initials(S.team||"Mit hold")}
-function holdOk(){return !!S.team.trim()&&(S.tag||"").length!==1&&!(LIVE&&S.pname.trim().length<2)}
+function holdOk(){return !!S.team.trim()&&(S.tag||"").length!==1&&!(S.pname.trim().length<2)}
 function utag(uid,name){var p=NET.players&&NET.players.filter(function(x){return x.user_id===uid})[0];return p&&p.crest_tag?p.crest_tag:initials(name)}
 function initials(n){var w=String(n).trim().split(/\s+/).filter(Boolean);var r=w.length>1?w.map(function(x){return x[0]}).join(""):String(n).trim().slice(0,2);return r.slice(0,3).toUpperCase()}
 function star(cx,cy,r){var p=[];for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1))}return p.join(" ")}
@@ -1519,51 +1212,11 @@ function ucrest(k,c1,c2,t,px){
   }
   return '<span class="cr"><svg width="'+px+'" height="'+px+'" viewBox="0 0 100 100" aria-hidden="true">'+g+'</svg></span>';
 }
-function hcrest(k,px){
-  if(k==="me")return ucrest(S.crest||0,S.color,S.color2,mytag(),px);
-  var h=HC[k];return ucrest(h[0],h[1],h[2],initials(FTEAM[k]),px);
-}
+function hcrest(k,px){return ucrest(S.crest||0,S.color,S.color2,mytag(),px)}
 function crestBtns(){
   return [0,1,2,3,4,5,6,7,8,9,10,11].map(function(i){return '<button class="cbtn'+(i===(S.crest||0)?" on":"")+'" data-crest="'+i+'" aria-label="Crest '+(i+1)+'">'+ucrest(i,S.color,S.color2,mytag(),38)+'</button>'}).join("");
 }
 function nm(n){return NAMECODE[n]?crest(NAMECODE[n],16)+n:n}
-
-/* gem og fortsæt (i den rigtige version ligger det i databasen) */
-function loadSaved(){try{var r=localStorage.getItem("dsfc");return r?JSON.parse(r):null}catch(e){return null}}
-function saveGame(){try{if(G.started&&S.phase==="draft")localStorage.setItem("dsfc",JSON.stringify({S:S,P:P,F:F,role:role}))}catch(e){}}
-function resumeGame(){
-  var d=SAVED;if(!d)return;keepAwake();$("sbg").hidden=true;
-  role=d.role;S=d.S;P=d.P;F=d.F;G={started:true};S.spinning=false;S.sel=null;
-  document.querySelectorAll(".proto button").forEach(function(x){x.classList.toggle("on",x.dataset.role===role)});
-  setMe();document.documentElement.setAttribute("data-league",F.liga);$("app").classList.remove("pre");$("navwrap").hidden=false;
-  $("orderWrap").innerHTML="";$("draftMain").hidden=false;buildReel();renderTop();
-  go("draft");advance();
-}
-
-/* start forfra med samme gruppe (admin) */
-function renderRestart(){
-  var b=$("restartBox");
-  if(role!=="admin"){b.innerHTML='<p class="note">Kun admin kan starte en ny sæson.</p>';return}
-  b.innerHTML=S.confirmRestart?'<div class="card"><b>Start forfra?</b><p class="note" style="margin-top:4px">Draft og sæson nulstilles. Gruppen og holdene beholdes.</p><div class="nav2"><button class="btn" data-act="rs-no">Behold sæsonen</button><button class="btn p" data-act="rs-yes">Ja, nulstil alt</button></div></div>':'<button class="btn wide" data-act="rs-ask">Ny sæson med samme gruppe</button>';
-}
-$("restartBox").addEventListener("click",function(e){
-  var b=e.target.closest("[data-act]");if(!b)return;
-  if(b.dataset.act==="rs-ask"){S.confirmRestart=true;renderRestart()}
-  else if(b.dataset.act==="rs-no"){S.confirmRestart=false;renderRestart()}
-  else if(b.dataset.act==="rs-yes")restartGame();
-});
-function restartGame(){
-  var keep={team:S.team,color:S.color,color2:S.color2,form:S.form},fk={max:F.max,timer:F.timer,liga:F.liga,season:F.season,code:F.code},joined=ids();
-  try{localStorage.removeItem("dsfc")}catch(x){}
-  fresh();
-  S.team=keep.team;S.color=keep.color;S.color2=keep.color2;S.form=keep.form;F.max=fk.max;F.timer=fk.timer;F.liga=fk.liga;F.season=fk.season;F.code=fk.code;
-  joined.forEach(function(k){P[k].joined=true});
-  F.simStarted=true;F.step=stepsFor().length-2;
-  ["Sara","Jonas","Marie"].forEach(function(k,i){if(P[k].joined)later(2500+i*1800,function(){P[k].ready=true;renderTop();renderFlow()})});
-  setMe();$("app").classList.add("pre");$("navwrap").hidden=true;$("sheet").hidden=true;
-  $("orderWrap").innerHTML="";$("draftMain").hidden=true;buildReel();
-  go("flow");renderTop();renderFlow();renderDraft();renderTable();showOthers(false);renderReady();
-}
 
 /* skærmen forbliver tændt, vibration ved mål, ingen lyd */
 var WL=null;
@@ -1571,63 +1224,18 @@ function keepAwake(){try{if(navigator.wakeLock&&navigator.wakeLock.request)navig
 function buzz(){try{if(navigator.vibrate)navigator.vibrate([140,70,140])}catch(e){}}
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&G&&G.started)keepAwake()});
 
-/* Hall of Fame: bedste resultater på tværs af alle spil (eksempeldata) */
-var HOFTAB="pl";
-var HOF={
- pl:{cats:[
-  {g:"Sæsonrekorder",t:"Flest mål i en sæson",rows:[["Erling Haaland","Sara United","Sara","2026/27",31],["Alexander Isak","me","Dig","2026/27",28],["Hugo Ekitike","Jonas Rovers","Jonas","2026/27",26],["Viktor Gyökeres","Nørrebro FC","Anders","2026/27",24],["Bukayo Saka","Marie Athletic","Marie","2026/27",23]]},
-  {t:"Flest assists i en sæson",rows:[["Alexis Mac Allister","me","Dig","2026/27",19],["Rayan Cherki","Sara United","Sara","2026/27",17],["Cole Palmer","Jonas Rovers","Jonas","2026/27",16],["Florian Wirtz","Marie Athletic","Marie","2026/27",15],["Bruno Fernandes","Nørrebro FC","Anders","2026/27",14]]},
-  {t:"Flest clean sheets i en sæson",rows:[["Alisson Becker","me","Dig","2026/27",21],["David Raya","Marie Athletic","Marie","2026/27",19],["Gianluigi Donnarumma","Sara United","Sara","2026/27",18],["Emiliano Martínez","Jonas Rovers","Jonas","2026/27",16],["Jordan Pickford","Nørrebro FC","Anders","2026/27",15]]},
-  {t:"Flest point i en sæson",team:1,rows:[["me","me","Dig","29 sejre, 7 uafgjorte, 2 nederlag",94],["Sara United","Sara United","Sara","28 sejre, 7 uafgjorte, 3 nederlag",91],["Nørrebro FC","Nørrebro FC","Anders","27 sejre, 7 uafgjorte, 4 nederlag",88],["Jonas Rovers","Jonas Rovers","Jonas","25 sejre, 10 uafgjorte, 3 nederlag",85],["Marie Athletic","Marie Athletic","Marie","24 sejre, 10 uafgjorte, 4 nederlag",82]]},
-  {g:"Flere priser",t:"Flest mål i en kamp",rows:[["Erling Haaland","Sara United","Sara","6 mod Everton, runde 14",6],["Alexander Isak","me","Dig","5 mod Leeds, runde 22",5],["Hugo Ekitike","Jonas Rovers","Jonas","5 mod Brentford, runde 9",5]]},
-  {t:"Bedste målforskel",team:1,rows:[["me","me","Dig","2026/27",71],["Sara United","Sara United","Sara","2026/27",66],["Nørrebro FC","Nørrebro FC","Anders","2026/27",58]]},
-  {t:"Færreste mål imod",team:1,rows:[["Marie Athletic","Marie Athletic","Marie","2026/27",14],["me","me","Dig","2026/27",16],["Sara United","Sara United","Sara","2026/27",19]]},
-  {t:"Længste sejrsrække",team:1,rows:[["Sara United","Sara United","Sara","2026/27",17],["me","me","Dig","2026/27",14],["Nørrebro FC","Nørrebro FC","Anders","2026/27",11]]},
-  {t:"Største sejr",team:1,rows:[["me","me","Dig","mod Leeds, runde 22","9–0"],["Sara United","Sara United","Sara","mod Everton, runde 14","8–0"],["Jonas Rovers","Jonas Rovers","Jonas","mod Brentford, runde 9","7–1"]]},
-  {t:"Flest røde kort i en sæson",rows:[["Moisés Caicedo","Jonas Rovers","Jonas","2026/27",4],["Declan Rice","me","Dig","2026/27",3],["Joško Gvardiol","Sara United","Sara","2026/27",3]]},
-  {t:"Flest mesterskaber",team:1,rows:[["me","me","Dig","3 sæsoner",3],["Sara United","Sara United","Sara","2 sæsoner",2],["Jonas Rovers","Jonas Rovers","Jonas","1 sæson",1]]}
- ]},
- cl:{note:"Cuppen har ingen point. Her tæller sejre og titler i stedet.",cats:[
-  {g:"Cuprekorder",t:"Flest mål i en cup",rows:[["Erling Haaland","Sara United","Sara","2026/27",14],["Alexander Isak","me","Dig","2026/27",11],["Hugo Ekitike","Jonas Rovers","Jonas","2026/27",9]]},
-  {t:"Flest assists i en cup",rows:[["Alexis Mac Allister","me","Dig","2026/27",9],["Rayan Cherki","Sara United","Sara","2026/27",8],["Cole Palmer","Jonas Rovers","Jonas","2026/27",7]]},
-  {t:"Flest clean sheets i en cup",rows:[["Alisson Becker","me","Dig","2026/27",4],["David Raya","Marie Athletic","Marie","2026/27",3],["Gianluigi Donnarumma","Sara United","Sara","2026/27",3]]},
-  {t:"Flest mål i en kamp",rows:[["Erling Haaland","Sara United","Sara","5 i anden runde mod Qarabağ",5],["Alexander Isak","me","Dig","4 i første runde mod Slovan Bratislava",4]]},
-  {t:"Største sejr",team:1,rows:[["Sara United","Sara United","Sara","mod Qarabağ, anden runde","7–0"],["me","me","Dig","mod Slovan Bratislava, første runde","6–0"]]},
-  {t:"Flest cuptitler",team:1,rows:[["me","me","Dig","2 cups",2],["Sara United","Sara United","Sara","1 cup",1]]}
- ]}
-};
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
 function tcrest(n,px){
   if(NAMECODE[n])return crest(NAMECODE[n],px);
   if(n==="me")return hcrest("me",px);
-  if(NAME_H[n])return hcrest(NAME_H[n],px);
   var h=hash(n),pal=[["#8c2f39","#f1e3c6"],["#1f5f8b","#f2f2f2"],["#2f7d4f","#f5d547"],["#5b3a8c","#eadfff"],["#c8651b","#1c1c1c"],["#1d6f6a","#f0f0f0"]];
   var p=pal[(h>>>3)%6];return ucrest(h%5,p[0],p[1],initials(n),px);
 }
 function renderHof(){
-  if(LIVE){renderHofLive();return}
-  HOFTAB="pl";$("hseg").hidden=true;
-  var d=HOF[HOFTAB];
-  if(!d){$("hbody").innerHTML='<div class="card" style="margin-top:22px"><b>Ingen spil endnu</b><p class="note" style="margin-top:4px">Rekorderne kommer, når ligaen er med i spillet.</p></div>';return}
-  var h=d.note?'<p class="note" style="margin-top:14px">'+d.note+'</p>':"",grp="";
-  d.cats.forEach(function(c){
-    if(c.g&&c.g!==grp){grp=c.g;h+='<h2>'+c.g+'</h2>'}
-    var rows=c.rows.map(function(r,i){
-      var who=r[2],mine=(c.team?r[0]:r[1])==="me";
-      var tn=function(n){return n==="me"?(S.team.trim()||"Mit hold"):n};
-      var main=c.team?'<div class="hmn">'+tcrest(r[0],22)+'<span>'+esc(tn(r[0]))+'</span></div><small>'+esc(who)+', '+esc(r[3])+'</small>'
-                      :'<div class="hmn">'+esc(r[0])+'</div><small>'+tcrest(r[1],18)+esc(tn(r[1]))+' ('+esc(who)+'), '+esc(r[3])+'</small>';
-      return '<div class="hrow r'+(i+1)+(mine?" mine":"")+'"><span class="hk">'+medal(i)+'</span><div class="hm">'+main+'</div><span class="hv">'+r[4]+'</span></div>';
-    }).join("");
-    h+='<div class="card hcat"><h3>'+c.t+'</h3>'+rows+'</div>';
-  });
-  $("hbody").innerHTML=h;
+  renderHofLive();return
 }
 $("hseg").addEventListener("click",function(e){var b=e.target.closest("[data-h]");if(b){HOFTAB=b.dataset.h;renderHof()}});
 
-/* login huskes på enheden */
-function loadAuth(){try{var r=localStorage.getItem("dsfc-auth");return r?JSON.parse(r):null}catch(e){return null}}
-function saveAuth(){try{localStorage.setItem("dsfc-auth",JSON.stringify({email:F.auth.email,ok:true}))}catch(e){}}
-function clearAuth(){try{localStorage.removeItem("dsfc-auth")}catch(e){}}
 /* startskærm */
 function bgInner(){
   var codes=Object.keys(BADGE),n=codes.length,cols="",dur=[72,90,66,100,80];
@@ -1639,8 +1247,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(LIVE?pushLine():'')+'</div></div>'+(LIVE?'<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>':'')+(LIVE?homeBanner():'')+
-    (SAVED&&!G.started?'<div class="card" style="margin-top:34px"><b>Fortsæt dit spil</b><p class="note" style="margin-top:6px">Spilkode BRY4K2.<br>Dit spil er gemt, så du kan gå tilbage, hvor du slap.</p><div class="nav2"><button class="btn" data-act="discard">Slet og start forfra</button><button class="btn p go" data-act="resume">Fortsæt spillet</button></div></div>':"");
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Opret spil</button><button class="btn wide" data-act="joinpick">Deltag i spil</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
@@ -1661,52 +1268,13 @@ function checkVersion(){
 }
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")checkVersion()});
 setTimeout(checkVersion,2500);
-function openAuth(){$("auth").hidden=false;renderAuth();var i=$("authEmail")||$("authCode");if(i)setTimeout(function(){try{i.focus()}catch(x){}},50)}
-function closeAuth(){$("auth").hidden=true;renderFlow()}
-function renderAuth(){
-  var a=F.auth,h='<div class="card">';
-  if(a.ok){
-    h+='<h3>Du er logget ind</h3><p class="note" style="margin:0">Din historik og dine rekorder gemmes nu på '+esc(a.email||"din konto")+'.</p><div class="row2"><button class="btn p wide" data-auth="done">Færdig</button></div>';
-  }else if(!a.sent){
-    h+='<h3>Gem din historik</h3><p class="note" style="margin:0">Log ind eller opret dig med din e-mail. Du får en kode på mail, så du slipper for adgangskode.</p><label class="field"><span>E-mail</span><input class="inp" id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="navn@mail.dk" value="'+esc(a.email)+'"></label><div class="row2"><button class="btn" data-auth="close">Ikke nu</button><button class="btn p go" data-auth="send"'+(/.+@.+\..+/.test(a.email)?"":" disabled")+'>Send kode</button></div>';
-  }else{
-    h+='<h3>Skriv koden</h3><p class="note" style="margin:0">Vi har sendt en kode på 6 cifre til '+esc(a.email)+'.</p><label class="field"><span>Kode</span><input class="inp" id="authCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="font-family:var(--mono);letter-spacing:.3em;font-size:20px"></label><p class="note">Prototype: skriv en vilkårlig kode på 6 cifre.</p><div class="row2"><button class="btn" data-auth="new">Ny e-mail</button><button class="btn p go" data-auth="verify" disabled>Log ind</button></div>';
-  }
-  $("auth").innerHTML=h+'</div>';
-}
-$("auth").addEventListener("click",function(e){
-  var b=e.target.closest("[data-auth]");
-  if(!b){if(e.target===$("auth"))closeAuth();return}
-  var a=b.dataset.auth;
-  if(a==="send"){F.auth.sent=true;renderAuth();var c=$("authCode");if(c)c.focus()}
-  else if(a==="new"){F.auth.sent=false;renderAuth()}
-  else if(a==="verify"){F.auth.ok=true;saveAuth();renderAuth()}
-  else if(a==="close"||a==="done")closeAuth();
-});
-$("auth").addEventListener("input",function(e){
-  if(e.target.id==="authEmail"){F.auth.email=e.target.value.trim();var sb=$("auth").querySelector("[data-auth=send]");if(sb)sb.disabled=!/.+@.+\..+/.test(F.auth.email)}
-  if(e.target.id==="authCode"){var vb=$("auth").querySelector("[data-auth=verify]");if(vb)vb.disabled=!/^\d{6}$/.test(e.target.value)}
-});
-
 (function(){try{var st=document.createElement("style");st.textContent=Object.keys(BADGE).map(function(k){return ".bd-"+k+"{background-image:url("+BADGE[k]+")}"}).join("\n");document.head.appendChild(st)}catch(e){}})();
 $("sbg").innerHTML=bgInner();
 
 /* ---------- sæsonslut ---------- */
 var TROPHY='<svg class="tr0" width="54" height="54" viewBox="0 0 64 64" aria-hidden="true"><path d="M20 8h24v14c0 9-5 15-12 17-7-2-12-8-12-17z" fill="#e4c47a"/><path d="M20 12h-8c0 9 4 14 10 15M44 12h8c0 9-4 14-10 15" fill="none" stroke="#e4c47a" stroke-width="3"/><rect x="29" y="38" width="6" height="8" fill="#e4c47a"/><rect x="21" y="46" width="22" height="7" rx="2" fill="#c9a24e"/></svg>';
 function renderEnd(){
-  if(LIVE){renderEndLive();return}
-  var tn=function(n){return n==="me"?(S.team.trim()||"Mit hold"):n};
-  var fin=[["me",94,29,7,2],["Sara United",91,28,7,3],["Arsenal",80,24,8,6],["Man City",77,23,8,7],["Jonas Rovers",75,22,9,7]];
-  var AWI={ball:'⚽',pass:'🎯',glove:'🧤'};
-  var aw=[["Topscorer","Erling Haaland","Sara United","31 mål","ball"],["Flest assists","Alexis Mac Allister","me","19 assists","pass"],["Bedste målmand","Alisson Becker","me","21 clean sheets","glove"]];
-  var h='<h1>Sæsonen er slut</h1><div class="kit" style="margin-top:6px">'+lbadge(F.liga||"pl",34)+'<span>'+LNAME[F.liga||"pl"]+' '+(F.season||"2026/2027")+'</span></div>';
-  h+='<div class="card champ" style="margin-top:22px"><div class="lblm">'+TROPHY.replace('width="54" height="54"','width="34" height="34"')+'<span>Mester</span>'+TROPHY.replace('width="54" height="54"','width="34" height="34"')+'</div>'+tcrest("me",84)+'<b>'+esc(tn("me"))+'</b><p class="note" style="margin-top:6px">94 point, 29 sejre, 7 uafgjorte, 2 nederlag</p></div>';
-  var extra=[["Marie Athletic",58,9]];
-  h+='<h2>Slutstilling</h2><div class="card">'+fin.map(function(r,i){return '<div class="endrow'+(r[0]==="me"?" me":"")+'"><span class="hk">'+(i+1)+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+extra.map(function(r){return '<div style="text-align:center;color:var(--mut);padding:2px 0">⋯</div><div class="endrow"><span class="hk">'+r[2]+'</span><span class="en">'+tcrest(r[0],24)+'<span>'+esc(tn(r[0]))+'</span></span><span class="ev2">'+r[1]+'</span></div>'}).join("")+'</div>';
-  h+='<h2>Sæsonens priser</h2><div class="card">'+aw.map(function(a){return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+AWI[a[4]]+'</span><span class="en"><span>'+a[1]+'<small>'+a[0]+', '+esc(tn(a[2]))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[3]+'</span></div>'}).join("")+'</div>';
-  h+='<h2>Nye rekorder</h2><div class="card"><div class="newrec"><span class="st">NY #1</span><div>Flest point i en sæson<br><span class="muted">94 point, '+esc(tn("me"))+'</span></div></div><div class="newrec"><span class="st">NY #2</span><div>Flest clean sheets i en sæson<br><span class="muted">21 af Alisson Becker</span></div></div></div>';
-  h+='<div class="nav2" style="flex-direction:column"><button class="btn p wide go" data-end="hof">Se Hall of Fame</button>'+(role==="player"?'<p class="note" style="text-align:center">Admin starter en ny sæson.</p>':'<button class="btn wide" data-end="again">Ny sæson med samme gruppe</button>')+'</div>';
-  $("endbody").innerHTML=h;
+  renderEndLive();return
 }
 var leaveAct=null;
 function askClose(){
@@ -1733,7 +1301,7 @@ $("draftLeave").addEventListener("click",function(){askLeave(false)});
 $("leaveNo").addEventListener("click",function(){$("leaveBox").hidden=true});
 $("leaveBox").addEventListener("click",function(e){if(e.target===$("leaveBox"))$("leaveBox").hidden=true});
 $("leaveYes").addEventListener("click",function(){$("leaveBox").hidden=true;var a=leaveAct;leaveAct=null;if(a)a();else liveLeave()});
-$("hofBack").addEventListener("click",function(){var w=HOFBACK;HOFBACK=null;if(w==="end")go("end");else $("toStart").click()});
+$("hofBack").addEventListener("click",function(){var w=HOFBACK;HOFBACK=null;if(w==="end")go("end");else goStart()});
 $("endbody").addEventListener("click",function(e){
   var et=e.target.closest("[data-et]");if(et){S.endTab=et.dataset.et;renderEnd();return}
   var stt=e.target.closest("[data-stt]");if(stt){statTab=stt.dataset.stt;renderEnd();return}
@@ -1741,47 +1309,15 @@ $("endbody").addEventListener("click",function(e){
   var b=e.target.closest("[data-end]");if(!b)return;var a=b.dataset.end;
   if(a==="hof"){HOFBACK="end";go("hof")}
   else if(a==="home"){askLeave(false)}
-  else if(a==="newseason"){if(LIVE)askLeave(true);else{if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}}
-  else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(LIVE&&NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"Mit hold")+" sluttede som nr. "+(i+1)+" med "+rw[i].p+" point."})():(S.team.trim()||"Mit hold")+" blev mester med 94 point.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent="Kopiér resultat"},1500)}
-  else if(a==="again"){if(G.started){S.confirmRestart=true;restartGame()}else go("flow")}
+  else if(a==="newseason"){askLeave(true);}
+  else if(a==="copy"){var t="DraftSpin FC, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"Mit hold")+" sluttede som nr. "+(i+1)+" med "+rw[i].p+" point."})():(S.team.trim()||"Mit hold")+" blev mester med 94 point.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Kopieret"},function(){})}catch(x){}setTimeout(function(){b.textContent="Kopiér resultat"},1500)}
 });
 
 /* ---------- forbindelse væk og admin ude ---------- */
-var connT=null;
-function simConn(){
-  var c=$("conn");clearTimeout(connT);
-  c.className="conn";c.hidden=false;c.innerHTML='Forbindelsen er væk. Dine valg er gemt, og vi prøver igen<i></i><i></i><i></i>';
-  connT=setTimeout(function(){c.className="conn ok";c.textContent="Forbindelsen er tilbage";connT=setTimeout(function(){c.hidden=true},2200)},5200);
-}
-var awayT=null,awayLeft=600;
-function fmtT(n){var m=Math.floor(n/60),s2=n%60;return (m<10?"0":"")+m+":"+(s2<10?"0":"")+s2}
-function renderAway(){
-  var closed=awayLeft<=0,h='<div class="card">';
-  if(!closed)h+='<h3>Admin er ude af lobbyen</h3><p class="note" style="margin:0">Vi venter på, at admin joiner igen med koden <b style="color:var(--text)">'+esc(F.code||"BRY4K2")+'</b>. Du kan blive i lobbyen.</p><div class="bigcode" style="text-align:center;margin:18px 0 4px">'+fmtT(awayLeft)+'</div><p class="note" style="text-align:center;margin:0">Lobbyen lukker, hvis alle har været ude i 10 minutter.</p><div class="row2"><button class="btn" data-away="leave">Forlad lobbyen</button><button class="btn p" data-away="stay">Bliv her</button></div>';
-  else h+='<h3>Lobbyen er lukket</h3><p class="note" style="margin:0">Alle var ude af lobbyen i 10 minutter, så den er lukket. Opret et nyt spil for at komme i gang igen.</p><div class="row2"><button class="btn p wide" data-away="start">Til startskærm</button></div>';
-  $("away").innerHTML=h+'</div>';
-}
-function openAway(closed){awayLeft=closed?0:600;clearInterval(awayT);$("away").hidden=false;renderAway();if(!closed)awayT=setInterval(function(){awayLeft--;if(awayLeft<=0)clearInterval(awayT);renderAway()},1000)}
-$("away").addEventListener("click",function(e){
-  var b=e.target.closest("[data-away]");if(!b)return;
-  clearInterval(awayT);$("away").hidden=true;
-  if(b.dataset.away==="leave"||b.dataset.away==="start")$("toStart").click();
-});
+
 
 /* ---------- app-ikon ---------- */
-function iconSvg(px,round){
-  return '<svg width="'+px+'" height="'+px+'" viewBox="0 0 100 100" aria-hidden="true" style="display:block;'+(round?'border-radius:22.4%;':'')+'flex:none"><defs><linearGradient id="ig1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d2847"/><stop offset="1" stop-color="#0a101d"/></linearGradient><radialGradient id="ig2" cx=".5" cy=".4" r=".62"><stop offset="0" stop-color="#7be0a0" stop-opacity=".30"/><stop offset="1" stop-color="#7be0a0" stop-opacity="0"/></radialGradient></defs><rect width="100" height="100" fill="url(#ig1)"/><rect width="100" height="100" fill="url(#ig2)"/><g transform="translate(19 3.5) scale(1.25)"><rect x="3" y="6" width="34" height="36" rx="6" fill="#26345a"/><circle cx="12" cy="13" r="3" fill="#3f4f77"/><rect x="18" y="11.8" width="14" height="2.4" rx="1.2" fill="#3f4f77"/><circle cx="12" cy="24" r="4.2" fill="#7be0a0"/><rect x="19" y="22.6" width="13" height="2.8" rx="1.4" fill="#e6ebf5"/><circle cx="12" cy="35" r="3" fill="#3f4f77"/><rect x="18" y="33.8" width="14" height="2.4" rx="1.2" fill="#3f4f77"/><path d="M3 18.5H37M3 29.5H37" stroke="#7be0a0" stroke-width="1.6" fill="none"/><path d="M37 24H43V11" stroke="#e6ebf5" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="43" cy="8.5" r="3.4" fill="#7be0a0"/></g><text x="50" y="82" text-anchor="middle" font-family="Outfit,Helvetica,Arial,sans-serif" font-weight="700" font-size="12.5" fill="#e6ebf5">DraftSpin <tspan fill="#7be0a0">FC</tspan></text></svg>';
-}
-function renderIcon(){
-  var ph="";for(var i=0;i<7;i++)ph+='<div class="papp"><div class="pph"></div><span>&nbsp;</span></div>';
-  $("iconbody").innerHTML='<h1>App-ikon</h1><p class="sub">Sådan ser DraftSpin ud på hjemmeskærmen.</p><div class="card" style="margin-top:22px"><div style="display:flex;justify-content:center">'+iconSvg(168,true)+'</div><div class="sizes" style="justify-content:center">'+[120,80,60,40].map(function(n){return iconSvg(n,true)}).join("")+'</div></div><h2>Hjemmeskærm</h2><div class="phone"><div class="pgrid">'+ph+'<div class="papp">'+iconSvg(52,true)+'<span>DraftSpin</span></div></div></div><p class="note" style="text-align:center">Navnet står både i ikonet og under det på hjemmeskærmen.</p>';
-}
-$(".protofoot".slice(0,0)||"toStart");
-document.querySelector(".protofoot").addEventListener("click",function(e){
-  var b=e.target.closest("[data-pv]");if(!b)return;var v=b.dataset.pv;
-  if(v==="end")go("end");else if(v==="icon")go("icon");else if(v==="conn")simConn();
-  else if(v==="away")openAway(false);else if(v==="closed")openAway(true);
-});
+
 
 var toastT=null;
 function toast(t,ms){var e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){e.hidden=true},ms||3600)}
@@ -1865,7 +1401,7 @@ function liveLeave(msg){
   liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame();G.started=false;
   try{localStorage.removeItem("dsfc-gid")}catch(x){}
   if(msg)toast(msg,4200);
-  $("toStart").click();
+  goStart();
 }
 function liveApply(){
   var g=NET.game;
@@ -1936,7 +1472,7 @@ async function liveCreateLobby(btn){
     NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.timer=0;F.max=1;
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
     await liveLoad();liveSub();
-    F.step=0;$("app").classList.add("pre");renderTop();renderFlow();
+    F.step=0;$("app").classList.add("pre");renderFlow();
   }catch(e){netErr(e);if(btn){btn.disabled=false;btn.textContent=old}}
   finally{NET.creating=false}
 }
@@ -1946,22 +1482,6 @@ async function liveAbort(){
     else await NET.sb.rpc("leave_game",{p_game:NET.gid});
   }catch(e){}
   liveLeave();
-}
-var nameT=null;
-function liveNameSave(){
-  clearTimeout(nameT);
-  nameT=setTimeout(function(){
-    var nm=S.pname.trim();if(!NET.gid||nm.length<2)return;
-    var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me&&me.display_name===nm)return;
-    NET.sb.rpc("set_name",{p_game:NET.gid,p_name:nm}).then(function(r0){if(!r0.error&&me)me.display_name=nm});
-  },600);
-}
-function liveNameAuto(){
-  var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0];
-  if(me&&!me.display_name&&S.pname.trim().length>=2){
-    var nm=S.pname.trim();
-    NET.sb.rpc("set_name",{p_game:NET.gid,p_name:nm}).then(function(r0){if(!r0.error){me.display_name=nm;if(NET.game&&!NET.game.setup)liveChanged()}});
-  }
 }
 $("flow").addEventListener("focusout",function(e){if(e.target.id==="pname")setTimeout(function(){if(NET.gid&&NET.game&&!NET.game.setup&&document.activeElement.id!=="pname")renderFlow()},400)});
 /* hvilket trin skal spilleren se, ud fra spillets tilstand */
@@ -2495,13 +2015,6 @@ function renderEndLive(){
 }
 
 /* ---------- live: ny sæson og highscore ---------- */
-async function liveNewSeason(b){
-  if(b){b.disabled=true;b.textContent="Starter ny sæson..."}
-  try{
-    var r0=await NET.sb.rpc("new_season",{p_game:NET.gid});if(r0.error)throw r0.error;
-    await liveGoNext(r0.data);
-  }catch(e){netErr(e);if(b){b.disabled=false;b.textContent="Ny sæson med samme gruppe"}}
-}
 async function liveGoNext(id){
   if(NET.gid===id)return;
   liveUnsub();clearInterval(NET.tt);
@@ -2554,7 +2067,7 @@ async function renderHofLive(){
 }
 var HOFCAT="";
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-hc]");if(b){HOFCAT=b.dataset.hc;var sc=$("hbody").querySelector(".hcats"),x=sc?sc.scrollLeft:0;renderHofLive().then(function(){var s2=$("hbody").querySelector(".hcats");if(s2)s2.scrollLeft=x});}});
-$("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))$("toStart").click()});
+$("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))goStart()});
 
 /* ---------- live: draft ---------- */
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
@@ -2640,7 +2153,7 @@ function liveDraftRender(){
   }
   liveTimerTick();
 }
-var forceArm=0,respinArm=0;
+var forceArm=0;
 $("adminForce").addEventListener("click",function(e){
   var b=e.target.closest("[data-force]");if(!b)return;
   if(Date.now()-forceArm>3500){forceArm=Date.now();b.textContent="Tryk igen for at bekræfte";return}
@@ -2764,11 +2277,9 @@ async function pushToggle(){
   PUSH.busy=false;if(!role&&!G.started)renderFlow();
 }
 async function liveBoot(){
-  SAVED=null;
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   var pre=(new URLSearchParams(location.search).get("code")||"").length===6;
-  if(!pre)$("toStart").click();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
-  document.querySelector(".protofoot").hidden=true;
+  if(!pre)goStart();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
   try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}
   try{await liveInit()}catch(e){toast("Kunne ikke logge ind. Tjek forbindelsen og prøv igen.",6000);return}
   pushInit();
@@ -2792,7 +2303,7 @@ function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET
 (function(){
   var taps=[];
   document.addEventListener("click",function(e){
-    if(!LIVE||!e.target.closest(".wm3,.startwrap svg"))return;
+    if(!e.target.closest(".wm3,.startwrap svg"))return;
     var t=Date.now();taps=taps.filter(function(x){return t-x<2500});taps.push(t);
     if(taps.length>=5){taps=[];$("testBox").hidden=false}
   });
@@ -2839,13 +2350,13 @@ function liveWake(){if(NET.gid&&!document.hidden){liveSub();liveChanged();if(NET
     finally{NET.creating=false}
   }
 })();
-document.addEventListener("visibilitychange",function(){if(LIVE)liveWake()});
-window.addEventListener("pageshow",function(){if(LIVE)liveWake()});
+document.addEventListener("visibilitychange",function(){liveWake()});
+window.addEventListener("pageshow",function(){liveWake()});
 
 /* start */
-SAVED=loadSaved();fresh();
+fresh();
 var __cp=(new URLSearchParams(location.search).get("code")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);if(__cp.length===6){role="player";fresh();F.joinInput=__cp;F.timer=60;F.step=0}
-$("oppC").innerHTML=crest("CHE",34);$("myC").innerHTML=hcrest("me",34);buildReel();renderTop();renderFlow();renderDraft();renderTable();renderStats();showOthers(false);renderReady();
-if(LIVE)liveBoot();
+buildReel();renderFlow();renderDraft();
+liveBoot();
 })();
 </script>
