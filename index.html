@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.24.1">
+<meta name="app-version" content="2.24.2">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -66,6 +66,7 @@
 .sumrow .si{font-size:22px;line-height:1.2;width:28px;text-align:center;flex:none}
 .sumrow b{display:block;font-weight:600}
 .sumrow .si .sileague{display:block;height:30px;width:auto;max-width:38px;object-fit:contain;margin:0 auto}
+.sumwin{align-items:center}.sumwin .si{line-height:0}
 .sumrow .si .silion{display:block;width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);margin:0 auto}
 .recl{display:block;margin-top:6px}.recl:first-child{margin-top:2px}.sumrow .recl b{display:inline;font-weight:600;color:var(--text)}
 .sumrow small{display:block;color:var(--mut);font-size:13.5px;line-height:1.45;margin-top:1px}
@@ -551,8 +552,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .champ .lblm{display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
 .champ .lblm span{position:relative;top:-5px;background:linear-gradient(100deg,#b8913a 10%,#fff3c4 40%,#e4c47a 55%,#b8913a 90%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3.2s ease-in-out infinite}
 @keyframes shine{0%{background-position:120% 0}100%{background-position:-120% 0}}
-.champ .lblm .lblion{width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);flex:none}
-.champ.sm .lblm{gap:10px;font-size:13px;letter-spacing:.1em}
+.champ .lblm .lblion{width:44px;height:44px;object-fit:contain;filter:brightness(0) invert(1);flex:none}
+.champ.sm .lblm{gap:12px;font-size:15px;letter-spacing:.1em;line-height:1.25;margin-bottom:10px}
+.champ.sm .lblm span{top:0;text-align:left;display:block}
 .endrow .hk .hktr{display:block;height:22px;width:auto;margin:0 auto}
 .btn.gold{border-color:#e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-weight:600;box-shadow:0 0 18px -8px #e0b85a99}
 .champ .lblm svg{filter:drop-shadow(0 0 8px #e4c47a99)}
@@ -2005,7 +2007,7 @@ function renderEndLive(){
   var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
   var T34=TROPHY.replace('width="54" height="54"','width="26" height="26"');
   var tab=S.endTab||"stil";if(tab==="pris"&&0)tab="stil";
-  var h='<div class="card champ sm" style="margin-top:0"><div class="lblm"><img class="lblion" src="'+PLLOGO+'" alt=""><span>Premier League Champions</span></div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b><p class="note champs">'+champ.p+' points<br>'+champ.w+'W '+champ.d+'D '+champ.l+'L</p></div>';
+  var h='<div class="card champ sm" style="margin-top:0"><div class="lblm"><img class="lblion" src="'+PLLOGO+'" alt=""><span>Premier League<br>Champions</span></div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b></div>';
   var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
   if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
     h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Best among you</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (you)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">'+ordinal(bt.i+1)+', '+bt.r.p+' points</span></div></div>'}
