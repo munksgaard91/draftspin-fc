@@ -36,12 +36,15 @@ export const FORMS = {
 };
 const WOFF = { LWB: 0.07, RWB: 0.07, ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
 const WDEF = { LWB: 0.07, RWB: 0.07, GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
-const WGOAL = { LWB: 0.25, RWB: 0.25, ST: 1, LW: 0.65, RW: 0.65, LM: 0.4, RM: 0.4, AM: 0.55, CM: 0.25, DM: 0.15, LB: 0.12, RB: 0.12, CB: 0.15, GK: 0.002 };
+// v1.8: fladere målvægte (fløje og midtbane scorer mere, angriberen mindre dominerende)
+const WGOAL = { LWB: 0.4, RWB: 0.4, ST: 1, LW: 0.85, RW: 0.85, LM: 0.65, RM: 0.65, AM: 0.75, CM: 0.45, DM: 0.3, LB: 0.22, RB: 0.22, CB: 0.25, GK: 0.002 };
 const WASSIST = { LWB: 0.75, RWB: 0.75, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.7";
-export const K = 40, MU_H = 1.32, MU_A = 1.01;
+export const ENGINE_VERSION = "1.8";
+export const K = 46, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
-const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.4, RW_REF = 10.75; // referencesummer for et gennemsnitshold
+const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.1, RW_REF = 10.75; // referencesummer for et gennemsnitshold
+// v1.8 realisme: målscoreren afhænger mindre af rating, en spiller der lige har scoret scorer sjældnere igen i samme kamp, ekstreme holdstyrker dæmpes, og gule kort fordeles jævnere
+const GOAL_RATING_DIV = 80, REPEAT_DECAY = 0.7, LAM_SOFT = 2.4, LAM_SLOPE = 0.6, YW_POW = 0.5;
 
 // ---------- tilfældighed (deterministisk ud fra et seed) ----------
 function xmur3(str) {
@@ -144,15 +147,17 @@ export function simulateMatch(H, A, seed) {
     return { R, off: so / wo, def: sd / wd };
   };
   const h = prep(H), a = prep(A);
-  const lamH = MU_H * Math.exp((h.off - a.def) / K), lamA = MU_A * Math.exp((a.off - h.def) / K);
+  const cap = (l) => (l <= LAM_SOFT ? l : LAM_SOFT + (l - LAM_SOFT) * LAM_SLOPE);
+  const lamH = cap(MU_H * Math.exp((h.off - a.def) / K)), lamA = cap(MU_A * Math.exp((a.off - h.def) / K));
   const sides = { h: { T: H, R: h.R, lam: lamH }, a: { T: A, R: a.R, lam: lamA } };
   const ev = [];
   const off = { h: {}, a: {} }; // spillerindeks -> minut for udvisning
+  const sc = { h: {}, a: {} }; // spillerindeks -> mål scoret i denne kamp (til aftagende chance for at score igen)
 
   // kort: gule til forskellige spillere; røde (halvdelen som "2. gult") fordelt efter kortvægt
   for (const s of ["h", "a"]) {
     const T = sides[s].T, cards = [];
-    const yw = T.xi.map((x) => x.p.yellow_w ?? 0.9), rw = T.xi.map((x) => (x.pos === "GK" ? 0 : x.p.red_w ?? 1));
+    const yw = T.xi.map((x) => Math.pow(x.p.yellow_w ?? 0.9, YW_POW)), rw = T.xi.map((x) => (x.pos === "GK" ? 0 : x.p.red_w ?? 1));
     const nY = Math.min(10, rng.poisson((YELLOW_PER_TEAM * yw.reduce((p, c) => p + c, 0)) / YW_REF));
     const wy = yw.slice();
     for (let k = 0; k < nY; k++) { const i = rng.weighted(wy); if (i < 0) break; wy[i] = 0; cards.push({ m: 1 + rng.int(90), i, k: "y" }); }
@@ -188,7 +193,7 @@ export function simulateMatch(H, A, seed) {
       rate *= Math.pow(0.75, redsBefore(s, m)) * Math.pow(1.3, redsBefore(o, m));
       if (rng.next() < 1 - Math.exp(-rate)) {
         const pitch = onPitch(s, m), T = sides[s].T;
-        const w = T.xi.map((x, i) => (pitch[i] ? WGOAL[x.pos] * Math.exp((sides[s].R[i] - 140) / 25) : 0));
+        const w = T.xi.map((x, i) => (pitch[i] ? WGOAL[x.pos] * Math.pow(REPEAT_DECAY, sc[s][i] || 0) * Math.exp((sides[s].R[i] - 140) / GOAL_RATING_DIV) : 0));
         const si = rng.weighted(w);
         if (si < 0) continue;
         let aid = null;
@@ -197,6 +202,7 @@ export function simulateMatch(H, A, seed) {
           const ai = rng.weighted(aw); if (ai >= 0) aid = T.xi[ai].p.id;
         }
         ev.push({ m, type: "goal", s, pid: T.xi[si].p.id, aid, pen: false });
+        sc[s][si] = (sc[s][si] || 0) + 1;
       }
     }
   }

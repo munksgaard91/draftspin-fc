@@ -52,3 +52,10 @@ Beslutning (Rasmus, 2026-10-18): mørk hest-bonus er **+6**.
 
 ## Uheld (Rasmus, 2026-10-18)
 Ved hvert spil udpeger serveren hemmeligt ét AI-hold i top 10 (efter styrke) og giver det **−6** sæsonheld. Kun AI-hold, aldrig spillerhold, aldrig afsløret, tilfældigt hver gang. Effekt (`engine/reference/unlucky_sim.py`): rammes City, falder deres titelchance fra cirka 42 % til cirka 20 %, Arsenal fra 25 % til cirka 5 %. Samlet over mange spil ændrer det kun lidt (City 44, Arsenal 24, Liverpool 22 pr. 100 spil), fordi det oftest rammer et hold uden for top 3.
+
+
+## v1.8 (2026-10-20): realistiske målscorere og kort
+Problem: topscoreren fik i snit 55 mål pr. sæson (rigtig PL: ca. 26, max 36), 22 hattricks pr. sæson (rigtig: ca. 10). Målt med `engine/reference/realism_sim.ts` (150 sæsoner, kun AI-hold og med en "smart" drafter).
+Ændringer: scorervægt `exp((R-140)/80)` (var /25); fladere positionsvægte (ST 1, LW/RW 0,85, AM 0,75, LM/RM 0,65, CM 0,45 osv.); en spiller der har scoret i kampen får chancen ganget med 0,7 pr. mål; K 40->46; holdets forventede mål dæmpes over 2,4 (hældning 0,6); gule-kort-vægte i potens 0,5 (YW_REF 11,1) så ligasnittet (3,99 gule/kamp, 0,13 røde/kamp fra football-data.co.uk) står fast, men enkeltspillere ikke får 17 gule.
+Resultat: topscorer gns 26 (p90 31, sjældent over 40), hattricks ca. 6, mål/kamp 2,8, mester ca. 85 point, mest scorende hold ca. 86 mål, gule/kamp 3,99, bedste spiller 15 gule. Titelfordeling stort set uændret (City 47 -> 41 %).
+Tjek af den udgivne motor: `action: "hash"` i edge function returnerer fingeraftryk + simulationshash; sammenlign med `deno run --allow-read /tmp/.../fp.ts` (se commit).

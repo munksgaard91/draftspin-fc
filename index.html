@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.16.0">
+<meta name="app-version" content="2.17.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -82,9 +82,12 @@
 @media (prefers-reduced-motion:reduce){.sumwin b,.sumwin .si,.sumdown b,.sumdown .si{animation:none}}
 .gatebox{margin-top:12px;text-align:center}.gatebox .note{margin:0 0 12px}
 .simwait{text-align:center;padding:90px 0 40px}
-.rgwrap{position:relative;width:300px;height:300px;margin:0 auto 26px}
+.simwait h2{font-size:23px;line-height:1.3;margin:24px 0 12px}
+.warm{display:inline-flex;align-items:center;gap:9px;font-size:15px}
+.mini-spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--surf2);border-top-color:var(--acc);animation:simsp .9s linear infinite}
+.rgwrap{position:relative;width:300px;height:300px;margin:0 auto 54px}
 .rgc{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;display:block;line-height:0}
-.rgc img{display:block;width:96px;height:96px;object-fit:contain;filter:brightness(0) invert(1) drop-shadow(0 0 14px #ffffff55)}
+.rgc img{display:block;width:96px;height:96px;object-fit:contain;filter:brightness(0) invert(1)}
 .rgring{position:absolute;inset:0;animation:rgspin 20s linear infinite}
 .rg{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(var(--a)) translateY(-128px)}
 .rgu{position:absolute;left:0;top:0;width:0;height:0;transform:rotate(calc(var(--a) * -1))}
@@ -293,7 +296,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .row .why{font-size:13px;color:var(--mut)}
 .status{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}
 .status b{font:500 22px var(--mono)}
-.badges{display:flex;justify-content:center;gap:6px;margin-top:10px}
+.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 6px;margin-top:10px}
 .bdg{position:relative;width:52px;text-align:center;font-size:11px;color:var(--mut);display:flex;flex-direction:column;align-items:center;min-width:0}
 .bdg .bn{position:absolute;top:-5px;left:-1px;font:600 10px var(--mono)}
 .bdgc{display:inline-flex;padding:4px;border-radius:12px;border:2px solid transparent;line-height:0}
@@ -467,7 +470,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .modal h3{font-size:20px;font-weight:600;margin:0 0 6px}
 .modal .row2{display:flex;gap:10px;margin-top:20px}
 .modal .row2 .btn{flex:1}
-.joinbox{max-width:340px;margin:34px auto 0}
+.joinwrap{display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 140px);min-height:calc(100svh - 140px)}
+.joinbox{width:100%;max-width:340px;margin:0 auto}
 .codeline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:14px}
 .codeline button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:500 15px var(--mono);letter-spacing:.1em;color:var(--text);cursor:pointer}
 .startwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:calc(100vh - 220px);min-height:calc(100svh - 220px);padding-top:6vh}
@@ -762,9 +766,9 @@ function renderFlow(){
   if((stepsFor()[F.step]==="lobby"||stepsFor()[F.step]==="wait")&&!NET.game){$("flow").innerHTML="";return}
   var st=stepsFor()[F.step],h=progHtml();
   if(st==="join"){
-    h='<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div></div><div class="joinbox"><label class="field" style="margin-top:0"><span>Game code</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
+    h='<div class="joinwrap"><div class="joinbox"><label class="field" style="margin-top:0"><span>Game code</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:20px;text-transform:uppercase"></label>'+
       (F.joinErr?'<p class="err">That code doesn\'t exist. Check it and try again.</p>':'')+
-      navBtns("Join the game",String(F.joinInput).trim().length<6)+'</div>';
+      navBtns("Join the game",String(F.joinInput).trim().length<6)+'</div></div>';
   }else if(st==="hold"){
     var ct=F.ctab==="s"?"s":"p";
     h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"My team")+'</span></div>'+
@@ -1249,7 +1253,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">Create game</button><button class="btn wide" data-act="joinpick">Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+logo(88)+'<div class="wm3">DraftSpin <span>FC</span></div><div class="startbtns"><button class="btn p wide go" data-act="create">🚀 New Season</button><button class="btn wide" data-act="multi">👥 Multiplayer</button><button class="btn wide" data-act="joinpick">🔑 Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">🏆 Hall of Fame</button>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
@@ -1430,16 +1434,6 @@ function liveEnter(){
   F.step=steps.indexOf(!g.setup?"lobby":(me&&me.ready?"wait":"hold"));
   $("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow();
 }
-async function liveCreate(keep){
-  try{
-    await NET.ready;
-    var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:F.max,p_timer:F.timer,p_show:F.showR,p_pace:F.pace});
-    if(r0.error)throw r0.error;
-    NET.gid=r0.data.id;F.code=r0.data.code;role="admin";
-    try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
-    await liveLoad();liveSub();if(!keep){F.step++;renderFlow()}
-  }catch(e){netErr(e)}
-}
 async function liveJoin(){
   try{
     await NET.ready;
@@ -1464,14 +1458,14 @@ async function liveTeamDone(){
   finally{NET.teamBusy=false}
 }
 /* ny rækkefølge: lobby først (regler, deltagere), derefter åbner admin holdopsætningen for alle */
-async function liveCreateLobby(btn){
+async function liveCreateLobby(btn,multi){
   if(NET.creating)return;NET.creating=true;
   var old=btn&&btn.textContent;if(btn){btn.disabled=true;btn.textContent="Creating…"}
   try{
     await NET.ready;
-    var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:F.pace||"full"});
+    var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:multi?10:1,p_timer:0,p_show:false,p_pace:F.pace||"full"});
     if(r0.error)throw r0.error;
-    NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.timer=0;F.max=1;
+    NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.timer=0;F.max=multi?10:1;
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
     await liveLoad();liveSub();
     F.step=0;$("app").classList.add("pre");renderFlow();
@@ -1511,9 +1505,8 @@ async function liveSetting(args){
   await liveChanged();
 }
 function liveAct(a,b,st){
-  if(a==="create"){liveCreateLobby(b);return true}
+  if(a==="create"||a==="multi"){liveCreateLobby(b,a==="multi");return true}
   if(a==="next"){
-    if(st==="spil"){liveCreate();return true}
     if(st==="join"){liveJoin();return true}
     if(st==="form"){liveTeamDone();return true}
     return false;
@@ -1524,11 +1517,6 @@ function liveAct(a,b,st){
   if(a==="unready"){liveCall("set_ready",{p_game:NET.gid,p_ready:false});return true}
   if(a==="start"){liveCall("open_setup",{p_game:NET.gid});return true}
   if(a==="kick"){liveCall("kick_player",{p_game:NET.gid,p_user:b.dataset.k});return true}
-  if(a==="maxdec"||a==="maxinc"){
-    var g=NET.game,m=Math.max(Math.max(1,NET.players.length),Math.min(6,g.max_players+(a==="maxinc"?1:-1)));
-    liveSetting({p_game:NET.gid,p_max:m,p_timer:g.timer_seconds,p_show:g.show_ratings,p_pace:g.pace,p_respins:g.respins});return true;
-  }
-  if(a==="setmax"){var g3=NET.game,m3=Math.max(NET.players.length,+b.dataset.v);liveSetting({p_game:NET.gid,p_max:m3,p_timer:g3.timer_seconds,p_show:g3.show_ratings,p_pace:g3.pace,p_respins:g3.respins});return true}
   if(a==="lset"){
     var g2=NET.game,v=b.dataset.v;
     liveSetting({p_game:NET.gid,p_max:g2.max_players,p_timer:b.dataset.k==="timer"?+v:g2.timer_seconds,p_show:b.dataset.k==="show"?v==="true":g2.show_ratings,p_pace:b.dataset.k==="pace"?v:g2.pace,p_respins:b.dataset.k==="respins"?+v:g2.respins});return true;
@@ -1537,7 +1525,7 @@ function liveAct(a,b,st){
 }
 function lobbyLive(){
   var g=NET.game,pl=NET.players,n=pl.length,adm=NET.uid===g.admin_id,me=pl.filter(function(p){return p.user_id===NET.uid})[0]||{};
-  var solo=g.max_players===1,setup=!!g.setup,full=n>=g.max_players;
+  var solo=g.max_players===1,setup=!!g.setup,canStart=solo?n>=1:n>=2;
   var h=setup?'<h1 style="margin-top:2px">You\'re ready</h1>':'';
   var kick=function(p){return adm&&p.user_id!==NET.uid?'<button class="btn" data-act="kick" data-k="'+p.user_id+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Remove</button>':""};
   if(!setup){
@@ -1546,13 +1534,12 @@ function lobbyLive(){
     var row=function(label,inner){return '<div class="field lrow"><span>'+label+'</span><div class="sws">'+inner+'</div></div>'};
     h+='<div class="card" style="margin-top:10px;padding:6px 14px 12px"><b style="font-size:15px">Game rules</b>';
     if(adm){
-      h+=row("Players",segb("setmax",null,g.max_players,[1,2,3,4,5,6].map(function(x){return [x,x]}),function(v){return v<n},"num"));
       h+=row("Time per pick",segb("lset","timer",g.timer_seconds,[[0,"Off"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]));
       h+=row("Pace",segb("lset","pace",g.pace,[["full","Classic"],["quick","Quick game"]]));
       h+=row("Ratings",segb("lset","show",g.show_ratings,[[false,"Hidden"],[true,"Show"]]));
       h+=row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
     }else{
-      h+='<p class="note" style="margin-top:6px">Players: '+g.max_players+' · Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Pace: '+(g.pace==="quick"?"quick game":"classic")+' · Ratings: '+(g.show_ratings?"shown":"hidden")+' · Respins: '+g.respins+'</p>';
+      h+='<p class="note" style="margin-top:6px">Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Pace: '+(g.pace==="quick"?"quick game":"classic")+' · Ratings: '+(g.show_ratings?"shown":"hidden")+' · Respins: '+g.respins+'</p>';
     }
     h+='</div>';
     if(!solo){
@@ -1561,14 +1548,14 @@ function lobbyLive(){
         var nm=p.display_name||("Player "+(pi+1));
         h+='<div class="rr cp"><span class="av">'+(pi+1)+'</span><div class="n">'+esc(nm)+(p.user_id===NET.uid?" (you)":"")+'<small>'+(p.user_id===g.admin_id?"Admin":"In the game")+'</small></div>'+kick(p)+'</div>';
       });
-      if(!full)h+='<div class="wait">Waiting for more players, up to '+g.max_players+'.</div>';
+      if(n<2)h+='<div class="wait">Share the code so friends can join (up to 10 players).</div>';
       h+='</div></div>';
     }
     if(adm){
-      h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(full?"":" disabled")+'>Start game</button>';
-      h+='<p class="note">'+(!full?"The game can start once every seat is filled. "+(g.max_players-n)+" "+(g.max_players-n===1?"player":"players")+" missing.":(solo?"":"Everyone's in. When you start, everyone picks a name, team and formation at the same time."))+'</p>';
+      h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(canStart?"":" disabled")+'>Start game</button>';
+      h+='<p class="note">'+(!canStart?"At least 2 players are needed to start the game.":(solo?"":"Everyone who has joined will play ("+n+" players). When you start, everyone picks a name, team and formation at the same time."))+'</p>';
     }else{
-      h+='<p class="note">'+(!full?"Waiting for more players ("+n+" of "+g.max_players+").":"Waiting for the admin to start the game.")+'</p>';
+      h+='<p class="note">Waiting for the admin to start the game ('+n+' '+(n===1?'player':'players')+' so far).</p>';
     }
     h+=adm?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="back">Leave game</button>';
     return h;
@@ -1657,7 +1644,7 @@ function simKey(){return "dsfc-sim-"+NET.gid}
 function liveSimWaiting(txt){
   if(NET.simWait===txt)return;NET.simWait=txt;
   $("navwrap").hidden=true;go("sim");
-  $("simbody").innerHTML='<div class="simwait">'+waitRing()+'<h2>'+txt+'</h2><p class="note">This will take a moment.</p></div>';
+  $("simbody").innerHTML='<div class="simwait">'+waitRing()+'<h2>'+txt.replace(". ",".<br>")+'</h2><p class="note warm"><i class="mini-spin"></i>Warming up</p></div>';
 }
 /* ring af de deltagende holds crests, mens sæsonen gøres klar */
 function waitRing(){
