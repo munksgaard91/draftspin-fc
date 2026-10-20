@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.26.3">
+<meta name="app-version" content="2.27.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -520,6 +520,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 #nextOpp{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;line-height:1.3}
 .lrow .btn.num{width:36px;min-width:36px;padding-inline:0}
 .verbox{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding:6px 10px;border-radius:10px;background:color-mix(in srgb,var(--bg) 88%,transparent)}
+.verbtn{appearance:none;background:none;border:0;padding:0;font-family:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:#ffffff33;text-underline-offset:3px}
 .verok{font-size:11.5px;color:color-mix(in srgb,var(--mut) 70%,var(--text))}
 .ver{font:500 11px var(--mono);color:color-mix(in srgb,var(--mut) 70%,var(--text));letter-spacing:.3px}
 .updbtn{appearance:none;border:1px solid #6fe39a99;background:linear-gradient(#6fe39a33,#6fe39a14);color:#8dffb5;font-size:12.5px;font-weight:600;border-radius:99px;padding:7px 13px;cursor:pointer;box-shadow:0 0 18px -2px #6fe39a88;animation:updglow 2.2s infinite ease-in-out}
@@ -838,6 +839,16 @@ $("flow").addEventListener("click",function(e){
   var a=b.dataset.act,st=stepsFor()[F.step];
   if(a==="hofopen"){HOFBACK="start";$("navwrap").hidden=true;$("sbg").hidden=true;go("hof");return}
   if(a==="update"){hardReload();return}
+  if(a==="vercheck"){
+    b.textContent="Checking for updates...";
+    var fin=function(){hardReload()};
+    try{
+      Promise.all([
+        navigator.serviceWorker?navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()}).catch(function(){}):0,
+        fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).catch(function(){})
+      ]).then(function(){setTimeout(fin,400)},function(){fin()});
+    }catch(x){fin()}
+    return}
   if(a==="leavesetup"){askLeave(false);leaveAct=liveAbort;return}
   if(a==="pushtoggle"){pushToggle();return}
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
@@ -1298,7 +1309,7 @@ function startHtml(){
 /* Version: 2.MINOR.PATCH. MINOR = ny funktion eller samlet batch af ændringer, PATCH = rettelser. Det store tal skiftes kun efter aftale med Rasmus. */
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 var NEWV="",VEROK=false;
-function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Get the latest update</button>':(VEROK?'<span class="verok">You\'re on the latest version</span>':''))+'</div>'}
+function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Get the latest update</button>':(VEROK?'<button class="verok verbtn" data-act="vercheck">You\'re on the latest version</button>':''))+'</div>'}
 /* opdatering: hent altid friskt (omgår cache), og tjek ved start og når appen vækkes, om der er en nyere version */
 function hardReload(){try{location.replace(location.pathname+"?u="+Date.now())}catch(e){location.reload()}}
 function showUpdate(v){NEWV=v;if(!role&&!G.started)renderFlow()}
