@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.20.2">
+<meta name="app-version" content="2.20.3">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -452,7 +452,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .hexp::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
 .hexp.on::after{transform:rotate(225deg) translateY(-2px)}
 .hmore[hidden]{display:none}
-.hcat h3{font-size:17px;font-weight:600;margin:0 0 4px}
+.hcat h3{font-size:17px;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+.hcat h3 .ci{display:inline-flex;align-items:center;justify-content:center;min-width:24px;font-size:19px;line-height:1;color:#e4c47a}
+.hcat h3 .ci svg{width:20px;height:26px}
 .hrow{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .hrow:last-child{border:0}
 .hrow .hk{font:500 15px var(--mono);color:var(--mut);text-align:center}
@@ -2022,7 +2024,9 @@ async function liveGoNext(id){
   try{await liveLoad();liveSub();liveEnter()}catch(e){netErr(e)}
 }
 var HOFC=null;
+var CATI_E={"Most goals":"⚽","Most assists":"🎯","Most clean sheets":"🧤","Most yellow cards":"🟨","Most red cards":"🟥","Most goals in a match":"🎩","Longest winning streak":"🔥","Most points in a season":"📈","Most team goals in a season":"🥅","Fewest goals conceded":"🛡️","Best goal difference":"⚖️","Biggest win":"💥"};
 var CUP='<svg viewBox="0 0 60 80" width="26" height="34" aria-hidden="true" fill="currentColor"><circle cx="9" cy="8" r="2.4"/><circle cx="23" cy="4" r="2.4"/><circle cx="37" cy="4" r="2.4"/><circle cx="51" cy="8" r="2.4"/><path d="M9 10L17 29L24 11L30 29L36 11L43 29L51 10L46 32H14Z"/><rect x="14" y="32" width="32" height="4" rx="1"/><path d="M23 36H37L38 46C46 51 47 59 42 66L40 70H20L18 66C13 59 14 51 22 46Z"/><path d="M2 38H16V47H2ZM44 38H58V47H44Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 47L19 68M57 47L41 68" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="16" y="70" width="28" height="3"/><rect x="11" y="74" width="38" height="4" rx="1"/></svg>';
+var CATI=Object.assign({"Champions":CUP},CATI_E);
 function medal(i,em){if(em==="cup"&&i<3)return '<span class="md cup">'+CUP+'</span>';return i<3?'<span class="md">'+(i===0&&em?em:['🏆','🥈','🥉'][i])+'</span>':i+1}
 async function renderHofLive(){
   HOFTAB="pl";$("hseg").hidden=true;
@@ -2045,7 +2049,7 @@ async function renderHofLive(){
   var cat=function(title,rows){
     if(!rows.length)rows=[0,1,2,3,4].map(ph);
     var open=HOFOPEN[title]?1:0;
-    C.push([title,'<div class="card hcat"><h3>'+title+'</h3>'+rows[0]+(rows.length>1?'<div class="hmore"'+(open?'':' hidden')+'>'+rows.slice(1).join("")+'</div><button class="hexp'+(open?' on':'')+'" data-hx="'+esc(title)+'" data-n="'+rows.length+'">'+(open?'Hide':'Show top '+rows.length)+'</button>':'')+'</div>']);return ""};
+    C.push([title,'<div class="card hcat"><h3><span class="ci">'+(CATI[title]||'')+'</span>'+title+'</h3>'+rows[0]+(rows.length>1?'<div class="hmore"'+(open?'':' hidden')+'>'+rows.slice(1).join("")+'</div><button class="hexp'+(open?' on':'')+'" data-hx="'+esc(title)+'" data-n="'+rows.length+'">'+(open?'Hide':'Show top '+rows.length)+'</button>':'')+'</div>']);return ""};
   var h='';
   h+=cat("Most goals",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}));
   h+=cat("Most assists",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}));
@@ -2062,7 +2066,7 @@ async function renderHofLive(){
   h+=cat("Most yellow cards",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}));
   var by={};T.filter(function(x){return x.champion}).forEach(function(x){var k=x.user_id||x.team_name;by[k]=by[k]||Object.assign({},x,{n:0});by[k].n++;by[k].team_name=x.team_name});
   var champs=Object.keys(by).map(function(k){return by[k]});
-  h+=cat("Champions",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"),"cup")}));
+  h+=cat("Champions",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"))}));
   var ORD=["Champions","Most goals","Most assists","Most clean sheets","Most yellow cards","Most red cards","Most goals in a match","Longest winning streak","Most points in a season","Most team goals in a season","Fewest goals conceded","Best goal difference","Biggest win"];
   C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
   $("hbody").innerHTML=C.map(function(c){return c[1]}).join("");
