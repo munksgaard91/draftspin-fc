@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.19.2">
+<meta name="app-version" content="2.20.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -447,7 +447,11 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .stepper .btn{padding:8px 18px;min-height:0}
 .stepper b{font:500 17px var(--mono)}
 .seg button.lock{opacity:.45}
-.hcat{margin-top:14px}
+.hcat{margin-top:12px}
+.hexp{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:6px;padding:9px 0 2px;background:none;border:0;border-top:1px solid var(--line);color:var(--mut);font:500 13px var(--sans,inherit);cursor:pointer}
+.hexp::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.hexp.on::after{transform:rotate(225deg) translateY(-2px)}
+.hmore[hidden]{display:none}
 .hcat h3{font-size:17px;font-weight:600;margin:0 0 4px}
 .hrow{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .hrow:last-child{border:0}
@@ -2034,29 +2038,33 @@ async function renderHofLive(){
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
   var topU=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return top(Object.keys(b).map(function(k){return b[k]}),key)};
   var C=[];
-  var cat=function(title,rows){C.push([title,'<div class="card hcat" style="margin-top:10px"><h3>'+title+'</h3>'+(rows||[0,1,2].map(function(i){return '<div class="hrow r'+(i+1)+' ph"><span class="hk">'+medal(i)+'</span><div class="hm"><div class="hmn">Waiting for results...</div><small>Play a season to claim this spot</small></div><span class="hv">-</span></div>'}).join(""))+'</div>']);return ""};
+  var ph=function(i){return '<div class="hrow r'+(i+1)+' ph"><span class="hk">'+medal(i)+'</span><div class="hm"><div class="hmn">Waiting for results...</div><small>Play a season to claim this spot</small></div><span class="hv">-</span></div>'};
+  var cat=function(title,rows){
+    if(!rows.length)rows=[0,1,2,3,4].map(ph);
+    var open=HOFOPEN[title]?1:0;
+    C.push([title,'<div class="card hcat"><h3>'+title+'</h3>'+rows[0]+(rows.length>1?'<div class="hmore"'+(open?'':' hidden')+'>'+rows.slice(1).join("")+'</div><button class="hexp'+(open?' on':'')+'" data-hx="'+esc(title)+'" data-n="'+rows.length+'">'+(open?'Hide':'Show top '+rows.length)+'</button>':'')+'</div>']);return ""};
   var h='';
-  h+=cat("Most goals in a season",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}).join(""));
-  h+=cat("Most assists in a season",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}).join(""));
-  h+=cat("Most clean sheets in a season",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}).join(""));
-  h+=cat("Most points in a season",top(T,"points").map(function(x,i){return tRow(i,x,x.points,x.w+" wins, "+x.d+" draws, "+x.l+" losses")}).join(""));
-  h+=cat("Most goals in a match",topU(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,opp(x.best_match_text))}).join(""));
+  h+=cat("Most goals in a season",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}));
+  h+=cat("Most assists in a season",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}));
+  h+=cat("Most clean sheets in a season",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}));
+  h+=cat("Most points in a season",top(T,"points").map(function(x,i){return tRow(i,x,x.points,x.w+" wins, "+x.d+" draws, "+x.l+" losses")}));
+  h+=cat("Most goals in a match",topU(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,opp(x.best_match_text))}));
   var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
-  h+=cat("Best goal difference",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,x.gf+" for, "+x.ga+" against")}).join(""));
-  h+=cat("Fewest goals conceded",top(T,"ga",true).map(function(x,i){return tRow(i,x,x.ga,x.gf+" scoret")}).join(""));
-  h+=cat("Longest winning streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,"wins in a row","🔥")}).join(""));
-  h+=cat("Biggest win",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}).join(""));
-  h+=cat("Most red cards in a season",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}).join(""));
-  h+=cat("Most yellow cards in a season",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}).join(""));
+  h+=cat("Best goal difference",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,x.gf+" for, "+x.ga+" against")}));
+  h+=cat("Fewest goals conceded",top(T,"ga",true).map(function(x,i){return tRow(i,x,x.ga,x.gf+" scoret")}));
+  h+=cat("Longest winning streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,"wins in a row","🔥")}));
+  h+=cat("Biggest win",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}));
+  h+=cat("Most red cards in a season",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds,undefined,"🔴")}));
+  h+=cat("Most yellow cards in a season",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows,undefined,"🟡")}));
   var by={};T.filter(function(x){return x.champion}).forEach(function(x){var k=x.user_id||x.team_name;by[k]=by[k]||Object.assign({},x,{n:0});by[k].n++;by[k].team_name=x.team_name});
   var champs=Object.keys(by).map(function(k){return by[k]});
-  h+=cat("Most titles",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"))}).join(""));
-  var SH={"Most goals in a season":"Goals","Most assists in a season":"Assists","Most clean sheets in a season":"Clean sheets","Most points in a season":"Points","Most goals in a match":"Goals in match","Best goal difference":"Goal difference","Fewest goals conceded":"Goals conceded","Longest winning streak":"Streak","Biggest win":"Biggest win","Most red cards in a season":"Red cards","Most yellow cards in a season":"Yellow cards","Most titles":"Titles"};
-  var ci=C.map(function(c){return c[0]}).indexOf(HOFCAT);if(ci<0)ci=0;HOFCAT=C[ci][0];
-  $("hbody").innerHTML='<div class="seg hcats">'+C.map(function(c){return '<button data-hc="'+esc(c[0])+'" class="'+(c[0]===HOFCAT?"on":"")+'">'+(SH[c[0]]||c[0])+'</button>'}).join("")+'</div>'+C[ci][1];
+  h+=cat("Most titles",top(champs,"n").map(function(x,i){return tRow(i,x,x.n,x.n+(x.n===1?" season":" seasons"))}));
+  var ORD=["Most titles","Most points in a season","Most goals in a season","Best goal difference","Biggest win","Longest winning streak","Fewest goals conceded","Most assists in a season","Most clean sheets in a season","Most goals in a match","Most yellow cards in a season","Most red cards in a season"];
+  C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
+  $("hbody").innerHTML=C.map(function(c){return c[1]}).join("");
 }
-var HOFCAT="";
-$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-hc]");if(b){HOFCAT=b.dataset.hc;var sc=$("hbody").querySelector(".hcats"),x=sc?sc.scrollLeft:0;renderHofLive().then(function(){var s2=$("hbody").querySelector(".hcats");if(s2)s2.scrollLeft=x});}});
+var HOFOPEN={};
+$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-hx]");if(!b)return;var m=b.previousElementSibling,o=m.hidden;m.hidden=!o;HOFOPEN[b.dataset.hx]=o;b.classList.toggle("on",o);b.textContent=o?"Hide":"Show top "+b.dataset.n});
 $("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))goStart()});
 
 /* ---------- live: draft ---------- */
