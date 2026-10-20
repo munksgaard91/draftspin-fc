@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>DraftSpin FC</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="2.17.1">
+<meta name="app-version" content="2.17.2">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -458,6 +458,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .hrow .hmn{font-weight:500;display:flex;align-items:center;gap:8px}
 .hrow small{display:flex;align-items:center;gap:7px;color:var(--mut);font-size:13.5px;flex-wrap:wrap;margin-top:2px}
 .hrow .hv{font:500 20px var(--mono)}
+.hrow.ph{opacity:.45}
 .hrow.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
 .corner{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:12px;font-size:13.5px;min-height:28px}
 .corner{justify-content:center}
@@ -2023,7 +2024,6 @@ async function renderHofLive(){
   else{pr=await NET.sb.from("hof_players").select("*").eq("league","PL");tr=await NET.sb.from("hof_teams").select("*").eq("league","PL");if(!pr.error&&!tr.error)HOFC={at:Date.now(),pr:pr,tr:tr}}
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
   var P=pr.data||[],T=tr.data||[];
-  if(!T.length){$("hbody").innerHTML='<div class="card" style="margin-top:10px"><b>No finished seasons yet</b><p class="note" style="margin-top:4px">Records appear when a season is over.</p></div>';return}
   var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
   var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
   var who=function(x){return esc(x.team_name)};
@@ -2033,7 +2033,7 @@ async function renderHofLive(){
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
   var topU=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return top(Object.keys(b).map(function(k){return b[k]}),key)};
   var C=[];
-  var cat=function(title,rows){C.push([title,'<div class="card hcat" style="margin-top:10px"><h3>'+title+'</h3>'+(rows||'<p class="note">None yet.</p>')+'</div>']);return ""};
+  var cat=function(title,rows){C.push([title,'<div class="card hcat" style="margin-top:10px"><h3>'+title+'</h3>'+(rows||[0,1,2].map(function(i){return '<div class="hrow r'+(i+1)+' ph"><span class="hk">'+medal(i)+'</span><div class="hm"><div class="hmn">Waiting for results...</div><small>Play a season to claim this spot</small></div><span class="hv">-</span></div>'}).join(""))+'</div>']);return ""};
   var h='';
   h+=cat("Most goals in a season",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}).join(""));
   h+=cat("Most assists in a season",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}).join(""));
