@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.9.0 (beta)">
+<meta name="app-version" content="0.3.10.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1442,14 +1442,9 @@ async function liveLoad(){
   if(!NET.gid)return;
   var seq=NET.opSeq||0;
   try{
-    var rs=await Promise.all([NET.sb.from("games").select("*").eq("id",NET.gid).maybeSingle(),NET.sb.from("game_players").select("*").eq("game_id",NET.gid).order("joined_at")]);
-    var g=rs[0],p=rs[1];
-    if(g.error||p.error)throw (g.error||p.error);
-    var gm=g.data,pls=p.data||[],pks=[];
-    if(gm&&gm.status!=="lobby"){
-      var d=await NET.sb.from("draft_picks").select("*").eq("game_id",NET.gid).order("pick_number");
-      if(d.error)throw d.error;pks=d.data||[];
-    }
+    var r=await NET.sb.rpc("game_state",{p_game:NET.gid});
+    if(r.error)throw r.error;
+    var st=r.data||{},gm=st.game||null,pls=st.players||[],pks=st.picks||[];
     /* et valg/spin er startet, mens vi hentede: de data er forældede og må ikke overskrive skærmen */
     if(NET.pending||(NET.opSeq||0)!==seq){NET.staleLoad=true;return}
     NET.game=gm;NET.players=pls;NET.picks=pks;
@@ -1467,8 +1462,10 @@ function liveSub(){
     .on("postgres_changes",{event:"*",schema:"public",table:"games",filter:"id=eq."+gid},liveChangedSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"game_players",filter:"game_id=eq."+gid},function(pl){if(!heartbeatOnly(pl))liveChangedSoon()})
     .on("postgres_changes",{event:"*",schema:"public",table:"draft_picks",filter:"game_id=eq."+gid},liveChangedSoon)
-    .subscribe();
-  NET.poll=setInterval(liveChanged,4000);
+    .subscribe(function(status){NET.rt=status==="SUBSCRIBED"});
+  /* realtime leverer ændringerne; hentning hvert 4. sekund er kun sikkerhedsnet, og sjældnere når kanalen virker */
+  var pt=0;NET.rt=false;
+  NET.poll=setInterval(function(){pt++;if(!NET.rt||pt%3===0)liveChanged()},4000);
   NET.hb=setInterval(function(){if(!document.hidden&&NET.gid)NET.sb.rpc("touch_game",{p_game:gid}).then(function(){},function(){})},30000);
   NET.sb.rpc("touch_game",{p_game:gid}).then(function(){},function(){});
 }
@@ -1480,7 +1477,7 @@ function heartbeatOnly(pl){
   r.last_seen_at=pl.new.last_seen_at;return true;
 }
 var soonT=0;
-function liveChangedSoon(){clearTimeout(soonT);soonT=setTimeout(liveChanged,300)}
+function liveChangedSoon(){clearTimeout(soonT);soonT=setTimeout(liveChanged,120)}
 var liveBusy=false;
 var connFail=0;
 function liveConn(ok){
