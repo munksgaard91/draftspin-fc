@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.4.2.2 (beta)">
+<meta name="app-version" content="0.5.0.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -264,6 +264,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .slot.sv .nm{opacity:.7}
 .slot.sv::after{content:"Saving…";display:block;font-size:9px;color:#ffffffb3;margin-top:1px}
 .slot.f .dot{background:var(--me);border:2.5px solid var(--me2);color:var(--me2)}
+.slot .dot.fc{width:40px;height:40px;overflow:hidden;background:#1b1530;border:2px solid var(--me2);padding:0}
+.dot .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px}
+.dot .rf.nf{background:var(--silh) center/contain no-repeat}
 .slot .nm{font-size:10.5px;margin-top:2px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;text-shadow:0 1px 2px #0008}
 .pitch.mini .slot{width:10px}
 .pitch.mini .dot{width:9px;height:9px;border-width:0;background:#ffffffb0}
@@ -725,7 +728,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   <!-- HIGHSCORE -->
   <section id="s-hof" class="screen">
     <button class="btn" id="hofBack" hidden style="margin-bottom:10px">← Back</button>
-    <h1>Hall of Fame 🏆</h1>
+    <h1>Hall of Fame</h1>
     <div class="seg" id="hseg"></div>
     <div id="hbody"></div>
   </section>
@@ -982,7 +985,7 @@ function renderPitch(el,form,squad,mini,hl,alt){
       else if(c===2)left=PAIR[pos][k-1];
       else left=28+(k-1)*22;
       var top=PY[pos];
-      html+='<div class="slot'+(p?" f":"")+(p&&p.sv?" sv":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot">'+(mini?"":POSC[pos])+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
+      html+='<div class="slot'+(p?" f":"")+(p&&p.sv?" sv":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot'+(p&&p.fa&&!mini?" fc":"")+'">'+(p&&p.fa&&!mini?faceImg(p.fa):(mini?"":POSC[pos]))+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
   });
@@ -2250,16 +2253,16 @@ async function liveGoNext(id){
   try{await liveLoad();liveSub();liveEnter()}catch(e){netErr(e)}
 }
 var HOFC=null;
-var CATI_E={"Most goals":"⚽","Most assists":"🎯","Most clean sheets":"🧤","Most yellow cards":"🟨","Most red cards":"🟥","Most goals in a match":"🎩","Longest winning streak":"🔥","Most points in a season":"📈","Most team goals in a season":"🥅","Fewest goals conceded":"🛡️","Best goal difference":"⚖️","Biggest win":"💥"};
+var CATI_E={};
 var CUP='<svg viewBox="0 0 60 80" width="26" height="34" aria-hidden="true" fill="currentColor"><circle cx="9" cy="8" r="2.4"/><circle cx="23" cy="4" r="2.4"/><circle cx="37" cy="4" r="2.4"/><circle cx="51" cy="8" r="2.4"/><path d="M9 10L17 29L24 11L30 29L36 11L43 29L51 10L46 32H14Z"/><rect x="14" y="32" width="32" height="4" rx="1"/><path d="M23 36H37L38 46C46 51 47 59 42 66L40 70H20L18 66C13 59 14 51 22 46Z"/><path d="M2 38H16V47H2ZM44 38H58V47H44Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 47L19 68M57 47L41 68" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="16" y="70" width="28" height="3"/><rect x="11" y="74" width="38" height="4" rx="1"/></svg>';
 var CATI=Object.assign({"Champions":'<img src="badges/pl-trophy.png" alt="" width="21" height="40">'},CATI_E);
 function medal(i,em){if(em==="cup"&&i<3)return '<span class="md cup">'+CUP+'</span>';return i<3?'<span class="md">'+(i===0&&em?em:['🏆','🥈','🥉'][i])+'</span>':i+1}
 async function renderHofLive(){
   HOFTAB="pl";$("hseg").hidden=true;
-  if(!(HOFC&&HOFC.k===String(HOFRESP)&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
-  var pr,tr,hk=String(HOFRESP);
+  if(!(HOFC&&HOFC.k===String(HOFRESP)+"|"+HOFPL&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
+  var pr,tr,hk=String(HOFRESP)+"|"+HOFPL;
   if(HOFC&&HOFC.k===hk&&Date.now()-HOFC.at<60000){pr=HOFC.pr;tr=HOFC.tr}
-  else{var rp=HOFRESP==="all"?null:HOFRESP;pr=await NET.sb.rpc("hof_players_top",{p_resp:rp});tr=await NET.sb.rpc("hof_teams_top",{p_resp:rp});if(!pr.error&&!tr.error)HOFC={at:Date.now(),k:hk,pr:pr,tr:tr}}
+  else{var rp=HOFRESP==="all"?null:HOFRESP;var pq=HOFPLR[HOFPL]||[null,null],ar={p_resp:rp,p_pmin:pq[0],p_pmax:pq[1]};pr=await NET.sb.rpc("hof_players_top",ar);tr=await NET.sb.rpc("hof_teams_top",ar);if(!pr.error&&!tr.error)HOFC={at:Date.now(),k:hk,pr:pr,tr:tr}}
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
   var P=pr.data||[],T=tr.data||[];
   var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
@@ -2275,7 +2278,7 @@ async function renderHofLive(){
   var cat=function(title,rows){
     if(!rows.length)rows=[0,1,2,3,4].map(ph);
     var open=HOFOPEN[title]?1:0;
-    C.push([title,'<div class="card hcat"><h3><span class="ci">'+(CATI[title]||'')+'</span>'+title+'</h3>'+rows[0]+(rows.length>1?'<div class="hmore"'+(open?'':' hidden')+'>'+rows.slice(1).join("")+'</div><button class="hexp'+(open?' on':'')+'" data-hx="'+esc(title)+'" data-n="'+rows.length+'">'+(open?'Hide':'Show top '+rows.length)+'</button>':'')+'</div>']);return ""};
+    C.push([title,'<div class="card hcat"><h3>'+(CATI[title]?'<span class="ci">'+CATI[title]+'</span>':'')+title+'</h3>'+rows[0]+(rows.length>1?'<div class="hmore"'+(open?'':' hidden')+'>'+rows.slice(1).join("")+'</div><button class="hexp'+(open?' on':'')+'" data-hx="'+esc(title)+'" data-n="'+rows.length+'">'+(open?'Hide':'Show top '+rows.length)+'</button>':'')+'</div>']);return ""};
   var h='';
   h+=cat("Most goals",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}));
   h+=cat("Most assists",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}));
@@ -2304,18 +2307,20 @@ async function renderHofLive(){
   C.push(["Champions",'<div class="card hcat"><h3><span class="ci">'+CATI["Champions"]+'</span>Champions</h3>'+cb+'</div>']);
   var ORD=["Champions","Most goals","Most assists","Most clean sheets","Most yellow cards","Most red cards","Most goals in a match","Longest winning streak","Most points in a season","Most team goals in a season","Fewest goals conceded","Best goal difference","Biggest win"];
   C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
-  var fl='<div class="hfil"><span class="hfl">Respins</span><div class="seg" id="hresp">'+["all",0,1,2,3].map(function(v){return '<button data-rs="'+v+'" class="'+(v===HOFRESP?"on":"")+'">'+(v==="all"?"All":v)+'</button>'}).join("")+'</div></div>';
+  var fl='<div class="hfil"><span class="hfl">Respins</span><div class="seg" id="hresp">'+["all",0,1,2,3].map(function(v){return '<button data-rs="'+v+'" class="'+(v===HOFRESP?"on":"")+'">'+(v==="all"?"All":v)+'</button>'}).join("")+'</div></div><div class="hfil"><span class="hfl">Players</span><div class="seg" id="hpl">'+["all","1","2","3","4","5"].map(function(v){return '<button data-pl="'+v+'" class="'+(v===HOFPL?"on":"")+'">'+(v==="all"?"All":v==="5"?"5+":v)+'</button>'}).join("")+'</div></div>';
   $("hbody").innerHTML=fl+C.map(function(c){return c[1]}).join("");
 }
-var HOFOPEN={},HOFCH=0,HOFW={},HOFRESP="all";
+var HOFOPEN={},HOFCH=0,HOFW={},HOFRESP="all",HOFPL="all";
+var HOFPLR={all:[null,null],"1":[1,1],"2":[2,2],"3":[3,3],"4":[4,4],"5":[5,null]};
 function hofTeam(id){
   var x=HOFW[id];if(!x||!x.lineup)return;
   var el=$("hsheet");
   el.innerHTML='<div class="sheetin"><div class="hd"><b>'+esc(x.team_name)+'</b><span class="muted">'+esc(x.formation)+(x.season?', '+esc(x.season):'')+(x.owner?', '+esc(x.owner):'')+'</span><button class="x" data-cancel="1">Close</button></div><div class="pitch" id="hpitch"></div></div>';
   el.hidden=false;
-  renderPitch($("hpitch"),x.formation,x.lineup.map(function(p){return p?{name:p.n,sn:p.s}:null}));
+  renderPitch($("hpitch"),x.formation,x.lineup.map(function(p){var a=p&&NET.byName[p.n];return p?{name:p.n,sn:p.s,fa:a||null}:null}));
 }
 $("hsheet").addEventListener("click",function(e){if(e.target.closest("[data-cancel]")||e.target===$("hsheet"))$("hsheet").hidden=true});
+$("hbody").addEventListener("click",function(e){var q=e.target.closest("[data-pl]");if(q){HOFPL=q.dataset.pl;HOFCH=0;renderHofLive();return}});
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(!b)return;HOFRESP=b.dataset.rs==="all"?"all":+b.dataset.rs;HOFCH=0;renderHofLive()});
 $("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-ch]");if(b)hofTeam(b.dataset.ch)});
 $("hbody").addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var b=e.target.closest("[data-ch]");if(b){e.preventDefault();hofTeam(b.dataset.ch)}});
