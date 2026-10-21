@@ -9,9 +9,9 @@ Deno.test("index.html: scriptet kan parses", () => {
   new Function(html.slice(i + 8, j));
 });
 
-Deno.test("versionen står som MAJOR.MINOR.PATCH", () => {
+Deno.test("versionen står som f.eks. 0.3.2.0 (beta)", () => {
   const m = html.match(/name="app-version" content="([^"]+)"/);
-  ok(!!m && /^\d+\.\d+\.\d+$/.test(m[1]), "app-version mangler eller har forkert format");
+  ok(!!m && /^\d+(\.\d+){2,3}( \(beta\))?$/.test(m[1]), "app-version mangler eller har forkert format");
 });
 
 Deno.test("lokale billeder og ikoner, som appen peger på, findes", async () => {
