@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.8.0 (beta)">
+<meta name="app-version" content="0.3.8.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1677,7 +1677,7 @@ function lobbyLive(){
     }
     if(adm){
       h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(canStart?"":" disabled")+'>Start the season</button>';
-      h+='<p class="note">'+(!canStart?"At least 2 players are needed to start the game.":(solo?"":"Everyone who has joined will play ("+n+" players). When you start, everyone picks a name, team and formation at the same time."))+'</p>';
+      if(!canStart)h+='<p class="note">At least 2 players are needed to start the game.</p>';
     }else{
       h+='<p class="note">Waiting for the admin to start the game ('+n+' '+(n===1?'player':'players')+' so far).</p>';
     }
