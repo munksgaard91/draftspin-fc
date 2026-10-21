@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.11.0 (beta)">
+<meta name="app-version" content="0.3.12.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -448,6 +448,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sheetin .hint{font-size:13px;color:var(--mut);margin:8px 0 0;text-align:center}
 .app.sheeted{padding-bottom:24px}
 .row{cursor:pointer}
+.row.wf{grid-template-columns:1fr 36px 66px auto;gap:8px;padding:5px 0}
+.row.wf .rp:nth-of-type(1){text-align:right}
+.row .rf{width:36px;height:36px;object-fit:contain;display:block}
 .row.dis{cursor:default}
 .row.sel{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}
 .tools{display:flex;gap:10px;align-items:center;margin:8px 0 2px}
@@ -1094,6 +1097,9 @@ function renderClub(){
   h+='<p class="note" style="margin:6px 0 0">Tap a player, then choose his spot on the pitch.</p><div id="clist"></div><p class="avail" id="avail"></p><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Pick for me</button></div>';
   el.innerHTML=h;renderList();
 }
+/* spillerbilleder (kun i draft-listen); uden billede vises en silhuet */
+var SILH="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><circle cx="48" cy="38" r="17" fill="#5b3d96"/><path d="M14 96c0-22 15-34 34-34s34 12 34 34z" fill="#5b3d96"/></svg>');
+function faceImg(p){return '<img class="rf" width="36" height="36" alt="" decoding="async" loading="lazy" src="'+(p[7]?SB_URL+"/storage/v1/object/public/faces/"+p[7]+".webp":SILH)+'">'}
 function renderList(){
   if(!S.club||!CLUBS[S.club])return;
   var c=CLUBS[S.club],q=S.q.trim().toLowerCase(),h="";
@@ -1102,7 +1108,7 @@ function renderList(){
   list.forEach(function(p){
     var st=status(p);
     if(S.hideFilled&&!st.ok&&st.why==="Position filled")return;
-    h+='<div class="row'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div><span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?'<span></span>':'<span class="rp">'+esc(st.why)+'</span>')+'</div>';
+    h+='<div class="row wf'+(st.ok?"":" dis")+(S.sel===p[0]?" sel":"")+'"'+(st.ok?' data-sel="'+esc(p[0])+'"':'')+'><div class="rn">'+esc(p[0])+'</div>'+faceImg(p)+'<span class="rp">'+posTxt(p[1],p)+'</span>'+(st.ok?'<span></span>':'<span class="rp">'+esc(st.why)+'</span>')+'</div>';
   });
   $("clist").innerHTML=h||'<p class="note">No players match.</p>';
   var av=c.p.filter(function(p){return status(p).ok}).length;
@@ -2291,12 +2297,12 @@ $("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofba
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
 function livePlayers(){
   NET.pl=(async function(){
-    var r0=await NET.sb.from("players").select("id,club,number,name,pos,alts,rating,short_name").order("club").order("number");
+    var r0=await NET.sb.from("players").select("id,club,number,name,pos,alts,rating,short_name,face_id").order("club").order("number");
     if(r0.error){var pc=cget("pl");if(!pc||!netDown(r0.error))throw r0.error;r0={data:pc}}
     else cset("pl",r0.data);
     CLUBS={};LEAGUE.forEach(function(c){CLUBS[c[0]]={n:c[1],p:[]}});
     NET.byId={};NET.byName={};
-    r0.data.forEach(function(x){var a=[x.name,x.pos,x.number,x.id,x.alts||{},x.rating,x.short_name||""];CLUBS[x.club].p.push(a);NET.byId[x.id]={p:a,club:x.club};NET.byName[x.name]=a});
+    r0.data.forEach(function(x){var a=[x.name,x.pos,x.number,x.id,x.alts||{},x.rating,x.short_name||"",x.face_id||0];CLUBS[x.club].p.push(a);NET.byId[x.id]={p:a,club:x.club};NET.byName[x.name]=a});
     NET.plReady=true;
   })();
 }
