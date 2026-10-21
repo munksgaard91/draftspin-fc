@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.3.2 (beta)">
+<meta name="app-version" content="0.3.3.3 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -501,8 +501,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .modal .row2 .btn{flex:1}
 .joinwrap{display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 140px);min-height:calc(100svh - 140px)}
 .joinbox{width:100%;max-width:340px;margin:0 auto}
-.codeline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:14px}
-.codeline button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:500 15px var(--mono);letter-spacing:.1em;color:var(--text);cursor:pointer}
+.codeline{display:flex;flex-direction:column;align-items:center;gap:8px;margin:10px 0 14px;font-size:17px;text-align:center}
+.codeline button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:10px 22px;font:500 28px var(--mono);letter-spacing:.14em;color:var(--text);cursor:pointer}
 .startwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:calc(100vh - 220px);min-height:calc(100svh - 220px);padding-top:6vh}
 .startlogo{width:132px;height:132px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:6px}
 .wm3{font-size:32px;font-weight:600;letter-spacing:-.015em;line-height:1}
@@ -887,7 +887,6 @@ $("flow").addEventListener("click",function(e){
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(liveAct(a,b,st))return;
   if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderFlow()}
-  else if(a==="share"){var u=location.origin+location.pathname+"?code="+F.code,tx="Join my PL Draft game with the code "+F.code;try{if(navigator.share)navigator.share({title:"PL Draft",text:tx,url:u}).catch(function(){});else navigator.clipboard.writeText(tx+" "+u).then(function(){toast("Invitation copied")},function(){})}catch(x){}}
   else if(a==="copycode"){var orig=b.textContent;try{navigator.clipboard.writeText(F.code).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent=orig},1400)}
   else if(a==="back"){if(F.step>0)F.step--;else{if(NET.gid&&role==="admin"){liveLeave();return}role=null;F.joinInput="";F.joinErr=false}renderFlow()}
   else if(a==="next"){F.step++;renderFlow()}
@@ -1613,7 +1612,7 @@ function lobbyLive(){
   var h=setup?'<h1 style="margin-top:2px">You\'re ready</h1>':'';
   var kick=function(p){return adm&&p.user_id!==NET.uid?'<button class="btn" data-act="kick" data-k="'+p.user_id+'" style="padding:6px 12px;font-size:13px;margin-left:10px">Remove</button>':""};
   if(!setup){
-    if(!solo)h+='<div class="codeline"><span class="muted">Game code</span><button data-act="copycode">'+esc(g.code)+'</button><button class="btn" data-act="share" style="padding:6px 12px;font-size:13px">Share invitation</button></div>';
+    if(!solo)h+='<div class="codeline"><span class="muted">Game code</span><button data-act="copycode">'+esc(g.code)+'</button></div>';
     var segb=function(act,key,cur,opts,dis,cls){return '<div class="seg3" style="--n:'+opts.length+'">'+opts.map(function(o){return '<button class="'+(cur===o[0]?"sel":"")+'" data-act="'+act+'"'+(key?' data-k="'+key+'"':'')+' data-v="'+o[0]+'"'+(dis&&dis(o[0])?" disabled":"")+'>'+o[1]+'</button>'}).join("")+'</div>'};
     var row=function(label,inner){return '<div class="rule"><span class="rl">'+label+'</span>'+inner+'</div>'};
     h+='<div class="card" style="margin-top:10px;padding:14px 14px 16px"><b style="font-size:16px">Game rules</b>';
@@ -1631,7 +1630,6 @@ function lobbyLive(){
         var nm=p.display_name||("Player "+(pi+1));
         h+='<div class="rr cp"><span class="av">'+(pi+1)+'</span><div class="n">'+esc(nm)+(p.user_id===NET.uid?" (you)":"")+'<small>'+(p.user_id===g.admin_id?"Admin":"In the game")+'</small></div>'+kick(p)+'</div>';
       });
-      if(n<2)h+='<div class="wait">Share the code so friends can join (up to 10 players).</div>';
       h+='</div></div>';
     }
     if(adm){
