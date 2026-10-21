@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="3.0.1">
+<meta name="app-version" content="3.0.2">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1378,7 +1378,7 @@ function toast(t,ms){var e=$("toast");e.textContent=t;e.hidden=false;clearTimeou
 var SB_URL="https://apagcfedizgjnnuefzfo.supabase.co",SB_KEY="sb_publishable_WhuPfaDfcTcZJhWwAcgvhg_YyhNG4lf";
 var QUICK_FIRST=19;
 var NET={sb:null,uid:null,gid:null,game:null,players:[],ch:null,hb:null,poll:null,ready:null,draftShown:false};
-function netErr(e){toast((e&&e.message)||String(e),4200)}
+function netErr(e){var m=(e&&e.message)||String(e);if(/^timeout$/i.test(m))m="Slow connection. Please try again.";toast(m,4200)}
 /* lokalt lager: sidste kendte tilstand, så appen kan vise den med det samme uden forbindelse */
 function cset(k,v){try{localStorage.setItem("dsfc-c-"+k,JSON.stringify(v))}catch(e){try{Object.keys(localStorage).forEach(function(x){if(x.indexOf("dsfc-c-g")===0||x.indexOf("dsfc-c-s")===0)localStorage.removeItem(x)})}catch(x){}}}
 function cget(k){try{var t=localStorage.getItem("dsfc-c-"+k);return t?JSON.parse(t):null}catch(e){return null}}
@@ -1493,8 +1493,8 @@ function liveEnter(){
 }
 async function liveJoin(){
   try{
-    await NET.ready;
-    var r0=await NET.sb.rpc("join_game",{p_code:String(F.joinInput).toUpperCase().trim()});
+    await tmo(NET.ready);
+    var r0=await tmo(NET.sb.rpc("join_game",{p_code:String(F.joinInput).toUpperCase().trim()}));
     if(r0.error){if(/doesn't exist/.test(r0.error.message)){F.joinErr=true;renderFlow();return}throw r0.error}
     NET.gid=r0.data;F.joinErr=false;
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
@@ -1521,8 +1521,8 @@ async function liveCreateLobby(btn,multi){
   if(NET.creating)return;NET.creating=true;
   var old=btn&&btn.textContent;if(btn){btn.disabled=true;btn.textContent="Creating…"}
   try{
-    await NET.ready;
-    var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:multi?10:1,p_timer:0,p_show:false,p_pace:F.pace||"full"});
+    await tmo(NET.ready);
+    var r0=await tmo(NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:multi?10:1,p_timer:0,p_show:false,p_pace:F.pace||"full"}));
     if(r0.error)throw r0.error;
     NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.timer=0;F.max=multi?10:1;
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
