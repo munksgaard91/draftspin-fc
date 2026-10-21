@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.5.0 (beta)">
+<meta name="app-version" content="0.3.5.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -408,6 +408,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .seg{display:flex;gap:20px;overflow-x:auto;margin:10px 0 2px;border-bottom:1px solid var(--line)}
 .seg button{appearance:none;white-space:nowrap;border:0;border-bottom:2px solid transparent;background:none;padding:8px 0 10px;font-size:15px;color:var(--mut);cursor:pointer}
 .seg button.on{color:var(--text);font-weight:600;border-color:var(--text)}
+#mseg button{font-size:13.5px}
 .sr{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}
 .sr:last-child{border:0}
 .sr .rk{font:400 13px var(--mono);color:var(--mut)}
@@ -653,7 +654,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="bar"><i id="prog"></i></div>
     </div>
 
-    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:18px"><button class="on" data-mt="tl">Match facts</button><button data-mt="others">Results elsewhere</button><button data-mt="squad">Your team</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
+    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:16px"><button class="on" data-mt="tl">Match facts</button><button data-mt="others">Results elsewhere</button><button data-mt="squad">Your team</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
 
     <div class="mctl" style="display:flex;gap:8px;margin-top:10px">
       <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Replay</button>
