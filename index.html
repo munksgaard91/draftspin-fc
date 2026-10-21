@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.2.0 (beta)">
+<meta name="app-version" content="0.3.2.1 (beta)">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -550,7 +550,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sbgc:nth-child(even){margin-top:-44px}
 .bdc{display:block;background-size:contain;background-repeat:no-repeat;background-position:center}
 .bd{display:block;flex:none;width:46px;height:46px;margin-bottom:26px;background-size:contain;background-repeat:no-repeat;background-position:center}
-.sbg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 72% 46% at 50% 47%,color-mix(in srgb,var(--bg) 96%,transparent) 34%,transparent 100%),linear-gradient(var(--bg),transparent 16%,transparent 78%,var(--bg))}
+.sbg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 72% 46% at 50% 47%,color-mix(in srgb,var(--bg) 96%,transparent) 34%,transparent 100%),linear-gradient(var(--bg),transparent 7%,transparent 93%,var(--bg))}
 @keyframes sbgUp{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-50%,0)}}
 @media (prefers-reduced-motion:reduce){.sbgc{animation:none}}
 .toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);z-index:41;width:max-content;max-width:min(92vw,420px);background:var(--surf2);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:10px;padding:12px 16px;font-size:14.5px;box-shadow:0 14px 34px -14px #000c}
@@ -1536,7 +1536,7 @@ async function liveTeamDone(){
 /* ny rækkefølge: lobby først (regler, deltagere), derefter åbner admin holdopsætningen for alle */
 async function liveCreateLobby(btn,multi){
   if(NET.creating)return;NET.creating=true;
-  var old=btn&&btn.textContent;if(btn){btn.disabled=true;btn.textContent="Creating…"}
+  var old=btn&&btn.innerHTML;if(btn){btn.disabled=true;var bb=btn.querySelector("b");if(bb)bb.textContent="Creating…";else btn.textContent="Creating…"}
   try{
     await tmo(NET.ready);
     var r0=await tmo(NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:multi?10:1,p_timer:0,p_show:false,p_pace:F.pace||"full"}));
@@ -1545,7 +1545,7 @@ async function liveCreateLobby(btn,multi){
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
     await liveLoad();liveSub();
     F.step=0;$("app").classList.add("pre");renderFlow();
-  }catch(e){netErr(e);if(btn){btn.disabled=false;btn.textContent=old}}
+  }catch(e){netErr(e);if(btn){btn.disabled=false;btn.innerHTML=old}}
   finally{NET.creating=false}
 }
 async function liveAbort(){
