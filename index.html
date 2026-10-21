@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.2.2 (beta)">
+<meta name="app-version" content="0.3.2.3 (beta)">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -536,6 +536,10 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .stb.p{background:linear-gradient(135deg,#9af0bb 0%,#4fc788 45%,#1f8f74 100%);border-color:#b6f0cb66;color:#052014;box-shadow:0 1px 0 #ffffff55 inset,0 12px 26px -10px #2fb27fcc}
 .stb.p:hover{background:linear-gradient(135deg,#aef5c8 0%,#5fd496 45%,#27a083 100%)}
 .stb.p:active{filter:brightness(.95)}
+.stb.p:disabled{background:linear-gradient(135deg,#9af0bb 0%,#4fc788 45%,#1f8f74 100%);color:#052014;border-color:#b6f0cb66;cursor:default}
+.stb.busy .stag{opacity:0}
+.stb.busy::after{content:"";position:absolute;right:16px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;border:2.5px solid #05201455;border-top-color:#052014;animation:stbspin .7s linear infinite}
+@keyframes stbspin{to{transform:rotate(360deg)}}
 .stb{padding:9px 22px;position:relative;flex-direction:column;gap:2px;line-height:1.25}
 .stb small{display:block;font-size:12.5px;font-weight:400;opacity:.78}
 .stb .stag{position:absolute;top:7px;right:9px;font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:2px 7px;border-radius:20px;background:#0c122033;color:inherit}
@@ -1536,7 +1540,7 @@ async function liveTeamDone(){
 /* ny rækkefølge: lobby først (regler, deltagere), derefter åbner admin holdopsætningen for alle */
 async function liveCreateLobby(btn,multi){
   if(NET.creating)return;NET.creating=true;
-  var old=btn&&btn.innerHTML;if(btn){btn.disabled=true;var bb=btn.querySelector("b");if(bb)bb.textContent="Creating…";else btn.textContent="Creating…"}
+  if(btn){btn.disabled=true;btn.classList.add("busy")}
   try{
     await tmo(NET.ready);
     var r0=await tmo(NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:multi?10:1,p_timer:0,p_show:false,p_pace:F.pace||"full"}));
@@ -1545,7 +1549,7 @@ async function liveCreateLobby(btn,multi){
     try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
     await liveLoad();liveSub();
     F.step=0;$("app").classList.add("pre");renderFlow();
-  }catch(e){netErr(e);if(btn){btn.disabled=false;btn.innerHTML=old}}
+  }catch(e){netErr(e);if(btn){btn.disabled=false;btn.classList.remove("busy")}}
   finally{NET.creating=false}
 }
 async function liveAbort(){
