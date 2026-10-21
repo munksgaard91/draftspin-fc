@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.8.1 (beta)">
+<meta name="app-version" content="0.3.9.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1108,7 +1108,7 @@ function renderDraft(){
   renderCounts();renderFeed();renderClub();
   $("ordLine").textContent=(S.order.length>1)?"":S.order.length?"Order: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
   var cur=S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null;
-  $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club&&!NET.pending);
+  $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club);
   $("spinBtn").textContent=done?"The draft is finished":(!myTurn()?"Waiting for "+(cur?teamName(cur):""):(S.club?"Pick a player below":"Spin the wheel"));
   $("turnTxt").textContent=done?"Your squad is ready.":(myTurn()?(S.club?"The club is chosen. Pick freely from the players.":"Your turn. Spin to get a club."):(cur?teamName(cur)+" is up.":""));
   $("doneBox").innerHTML=done?('<p class="note fade" style="margin-top:16px">The draft is finished. The season is starting...</p>'):"";
@@ -1440,6 +1440,7 @@ function liveInit(){
 }
 async function liveLoad(){
   if(!NET.gid)return;
+  var seq=NET.opSeq||0;
   try{
     var rs=await Promise.all([NET.sb.from("games").select("*").eq("id",NET.gid).maybeSingle(),NET.sb.from("game_players").select("*").eq("game_id",NET.gid).order("joined_at")]);
     var g=rs[0],p=rs[1];
@@ -1449,6 +1450,8 @@ async function liveLoad(){
       var d=await NET.sb.from("draft_picks").select("*").eq("game_id",NET.gid).order("pick_number");
       if(d.error)throw d.error;pks=d.data||[];
     }
+    /* et valg/spin er startet, mens vi hentede: de data er forældede og må ikke overskrive skærmen */
+    if(NET.pending||(NET.opSeq||0)!==seq){NET.staleLoad=true;return}
     NET.game=gm;NET.players=pls;NET.picks=pks;
     if(gm)cset("g",{gid:NET.gid,game:gm,players:pls,picks:pks});
   }catch(e){
@@ -1489,7 +1492,7 @@ async function liveChanged(){
   if(!NET.gid||NET.pending)return;
   if(liveBusy){liveAgain=true;return}
   liveBusy=true;
-  try{await liveLoad();liveConn(true);liveApply()}catch(e){liveConn(false)}finally{liveBusy=false;if(liveAgain){liveAgain=false;liveChanged()}}
+  try{NET.staleLoad=false;await liveLoad();if(NET.staleLoad){NET.staleLoad=false;liveAgain=true}else{liveConn(true);liveApply()}}catch(e){liveConn(false)}finally{liveBusy=false;if(liveAgain){liveAgain=false;liveChanged()}}
 }
 var liveAgain=false;
 /* nulstil al tilstand fra et spil, så næste spil i samme sidesession starter rent */
@@ -1499,7 +1502,7 @@ function liveResetGame(){
   NET.sim=null;NET.simWait=null;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
   NET.dsig=null;NET.pending=false;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
   S.spinning=false;S.pre=false;S.gate=false;S.endTab=null;S.endFull=false;S.spinAt=0;
-  NET.finishedRound=0;NET.rulesOpen=false;NET.liveMin=-1;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
+  NET.finishedRound=0;NET.opt=null;NET.pendP=null;NET.rulesOpen=false;NET.liveMin=-1;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
 }
 function liveLeave(msg){
   liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame();G.started=false;
@@ -2323,6 +2326,12 @@ function liveDraftSync(){
     feed.push({who:k==="me"?"You":(FTEAM[k]||"Player"),name:info.p[0],pos:info.p[1],club:info.club});
   });
   S.feed=feed.reverse();
+  /* mit seneste valg, som serveren endnu ikke har bekræftet, bliver stående (ellers blinker det væk ved en forsinket opdatering) */
+  if(NET.opt){
+    var o=NET.opt;
+    if(S.squad[o.i]||Date.now()-o.at>20000)NET.opt=null;
+    else{S.squad[o.i]=o.e;S.taken[o.e.name]=S.team.trim()||"My team";S.counts.me=(S.counts.me||0)+1;S.feed.unshift({who:"You",name:o.e.name,pos:o.e.pos,club:o.e.club})}
+  }
   var mine=S.seq[S.pickIdx]==="me",cc=g.current_club;
   if(!S.spinning&&!NET.viewSpin){
     if(!cc){S.club=null;S.sel=null}
@@ -2377,9 +2386,15 @@ function liveTimerTick(){
   }
 }
 async function liveSpin(){
-  if(!myTurn()||S.spinning||S.club||NET.pending)return;
+  if(!myTurn()||S.spinning||S.club)return;
   S.spinning=true;renderDraft();preSpin();
   S.spinAt=Date.now();
+  /* dobbelt tur (snake): hjulet drejer med det samme, og spin sendes først, når det forrige valg er gemt */
+  if(NET.pendP){
+    try{await NET.pendP}catch(e){}
+    if(NET.pickFailed){S.spinning=false;S.pre=false;setStrip(S.k,false);renderDraft();return}
+  }
+  NET.opSeq=(NET.opSeq||0)+1;
   var r0;try{r0=await tmo(NET.sb.rpc("spin",{p_game:NET.gid}))}catch(e){r0={error:e}}
   if(r0.error){S.spinning=false;S.pre=false;setStrip(S.k,false);renderDraft();netErr(r0.error);liveChanged();return}
   var code=r0.data;
@@ -2411,17 +2426,20 @@ async function livePick(name,i){
   if(NET.pending||!myTurn())return;
   var a=NET.byName[name];if(!a)return;
   var p=CLUBS[S.club].p.filter(function(x){return x[0]===name})[0],club=S.club;
-  NET.pending=true;NET.pendAt=Date.now();
+  NET.pending=true;NET.pendAt=Date.now();NET.opSeq=(NET.opSeq||0)+1;NET.pickFailed=false;
   /* optimistisk: spilleren står på banen med det samme, serveren bekræfter i baggrunden */
   S.squad[i]={name:p[0],sn:p[6]||"",pos:p[1],club:club,pen:fit(p[1],flat()[i],p[4])===1,num:p[2],sv:1};
+  NET.opt={i:i,e:S.squad[i],at:Date.now()};
+  S.pickIdx++;
   S.taken[p[0]]=S.team.trim()||"My team";S.counts.me=(S.counts.me||0)+1;
   S.feed.unshift({who:"You",name:p[0],pos:p[1],club:club});
   S.sel=null;S.club=null;S.view="me";
   renderDraft();renderSheet();
   window.scrollTo({top:0,behavior:"smooth"});
-  var r0;try{r0=await tmo(NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1}))}catch(e){r0={error:e}}
-  NET.pending=false;
-  if(r0.error)toast("Oops, something went wrong, please try again!",4200);
+  NET.pendP=tmo(NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1}));
+  var r0;try{r0=await NET.pendP}catch(e){r0={error:e}}
+  NET.pending=false;NET.pendP=null;
+  if(r0.error){NET.pickFailed=true;NET.opt=null;toast("Oops, something went wrong, please try again!",4200)}
   await liveChanged();
 }
 /* web push: besked når det er din tur (virker på iPhone, når spillet ligger på hjemmeskærmen) */
