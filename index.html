@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.5.1 (beta)">
+<meta name="app-version" content="0.3.5.3 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -362,11 +362,11 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .ic.w{border:0;border-radius:0;width:20px;height:20px;margin:0 0 0 -2px;background:var(--mut);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M2 8.5A1.5 1.5 0 0 1 3.5 7H13a7 7 0 1 1-6.6 9.3L5 16a3 3 0 0 1-3-3zM15 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6z'/%3E%3Ccircle cx='19.5' cy='5.5' r='2.2' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M2 8.5A1.5 1.5 0 0 1 3.5 7H13a7 7 0 1 1-6.6 9.3L5 16a3 3 0 0 1-3-3zM15 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6z'/%3E%3Ccircle cx='19.5' cy='5.5' r='2.2' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center/contain no-repeat}
 .ev.me{box-shadow:inset 3px 0 0 var(--me);padding-left:10px;margin-left:-10px}
 .ev.opp{box-shadow:inset 3px 0 0 var(--mut);padding-left:10px;margin-left:-10px}
-.res{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.res{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;padding:2px 0;border-bottom:1px solid var(--line);font-size:12.5px}
 .res:last-child{border:0}
-.res .r{font:500 14px var(--mono);text-align:center;min-width:60px;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:34px}.res .r b{font-weight:500}.res .r .livetag{font-size:9.5px;letter-spacing:.6px}.res .r .livetag i{width:5px;height:5px}
-.res>span:first-child{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;text-align:right}
-.res>span:last-child{display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0}
+.res .r{font:500 14px var(--mono);text-align:center;min-width:84px;align-self:center;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:6px;min-height:24px;font-size:13px}.res .r b{font-weight:500}.res .r .livetag{font-size:9px;letter-spacing:.4px;gap:3px}.res .r .livetag i{width:5px;height:5px}
+.res>span:first-child{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0;text-align:right}
+.res>span:last-child{display:flex;align-items:center;justify-content:flex-start;gap:6px;min-width:0}
 .res .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .res .hu{color:var(--text);font-weight:700}
 .tr .rk{display:flex;align-items:center;gap:5px;font-family:var(--mono);color:var(--mut);font-size:14px}
@@ -654,7 +654,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="bar"><i id="prog"></i></div>
     </div>
 
-    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:16px"><button class="on" data-mt="tl">Match facts</button><button data-mt="others">Results elsewhere</button><button data-mt="squad">Your team</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:260px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
+    <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:16px"><button class="on" data-mt="tl">Match facts</button><button data-mt="others">Results elsewhere</button><button data-mt="squad">Your team</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:290px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
 
     <div class="mctl" style="display:flex;gap:8px;margin-top:10px">
       <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Replay</button>
@@ -1924,8 +1924,8 @@ function liveNextText(){
   var ok=home?m.away_key:m.home_key;
   return '<span>Next: round '+(r+1)+' of 38 ·</span><span class="nxo">'+lcrest(ok,20)+'<span>'+esc(lname(ok))+' ('+(home?"H":"A")+')</span></span>';
 }
-function lhname(k,right){
-  var ic=lcrest(k,20),nm='<span class="t">'+esc(lname(k))+'</span>';
+function lhname(k,right,sz){
+  var ic=lcrest(k,sz||20),nm='<span class="t">'+esc(lname(k))+'</span>';
   return '<span class="'+(lhuman(k)?"hu":"")+'">'+(right?ic+nm:nm+ic)+'</span>';
 }
 /* "Results elsewhere": AI-kampe tikker live (tilfældige mål, slutter på det rigtige resultat), menneskekampe viser rigtige mål men holdes tilbage, til spillerne er færdige */
@@ -1958,7 +1958,7 @@ function liveOthers(){
   var mine=ms.filter(function(m){return m.home_key===NET.uid||m.away_key===NET.uid}),oth=ms.filter(function(m){return !(m.home_key===NET.uid||m.away_key===NET.uid)});
   var h=mine.concat(oth).map(function(m){
     var st=otherState(m);
-    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(st.h===null?'':'<b>'+st.h+' – '+st.a+'</b>')+(st.live?'<span class="livetag"><i></i>LIVE</span>':'')+'</span>'+lhname(m.away_key,true)+'</div>';
+    return '<div class="res">'+lhname(m.home_key,false,15)+'<span class="r">'+(st.h===null?'':'<b>'+st.h+' – '+st.a+'</b>')+(st.live?'<span class="livetag"><i></i>LIVE</span>':'')+'</span>'+lhname(m.away_key,true,15)+'</div>';
   }).join("");
   var box=$("others");if(box._h!==h){box._h=h;box.innerHTML=h}
 }
