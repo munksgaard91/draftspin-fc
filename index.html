@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.3.6 (beta)">
+<meta name="app-version" content="0.3.4.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1159,7 +1159,7 @@ function showOthers(done){
 function renderReady(){
   liveReady();return
 }
-(function(){var rb=$("readyBtn"),f=function(){rb.classList.toggle("go",rb.textContent==="Next match")};new MutationObserver(f).observe(rb,{childList:true,characterData:true,subtree:true});f()})();
+(function(){var rb=$("readyBtn"),f=function(){rb.classList.toggle("go",/^Next match/.test(rb.textContent))};new MutationObserver(f).observe(rb,{childList:true,characterData:true,subtree:true});f()})();
 $("readyBtn").addEventListener("click",function(){
   liveReadyPress();return
 });
@@ -1945,13 +1945,20 @@ function liveReveal(){
   var on=function(id){return document.getElementById(id).classList.contains("on")};
   if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive();
 }
+/* hvor mange der er klar til næste runde, vist i knappen: " (1/2 ready)" (kun når man er flere) */
+function readyCnt(){
+  var g=NET.game;if(!g||NET.players.length<2)return "";
+  var k=NET.players.filter(function(p){return p.ready_round>=g.current_round||lAway(p)}).length;
+  return " ("+k+"/"+NET.players.length+" ready)";
+}
 function liveReady(){
   var g=NET.game;if(!g)return;
-  $("ready").hidden=NET.players.length<2;
-  $("ready").innerHTML=NET.players.map(function(p){
-    var me=p.user_id===NET.uid,ok=p.ready_round>=g.current_round,away=!ok&&lAway(p),nm=me?"You":(p.team_name||"Player");
-    return '<span class="'+(ok?"ok":"")+'">'+(me?'':'<i class="dotc" style="background:'+(p.color1||"#8c97b5")+'"></i>')+esc(nm)+(ok?", ready":(away?", away (skipped)":""))+'</span>';
-  }).join("");
+  $("ready").hidden=true;$("ready").innerHTML="";
+  var rb=$("readyBtn");
+  if(NET.finishedRound===g.current_round&&rb.dataset.end!=="1"){
+    var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
+    rb.textContent=(me.ready_round>=g.current_round?"Waiting for the others":"Next match")+readyCnt();
+  }
 }
 function liveFinishMatch(){
   var g=NET.game,r=NET.round;
@@ -1964,7 +1971,7 @@ function liveFinishMatch(){
   var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var rb=$("readyBtn");
   if(r>=38){rb.textContent="End season";rb.disabled=false;rb.dataset.end="1"}
-  else{rb.dataset.end="";rb.textContent=me.ready_round>=r?"Waiting for the others":"Next match";rb.disabled=me.ready_round>=r}
+  else{rb.dataset.end="";rb.textContent=(me.ready_round>=r?"Waiting for the others":"Next match")+readyCnt();rb.disabled=me.ready_round>=r}
   liveReady();
   var up=document.getElementById("s-table").classList.contains("on");if(up)renderTableLive();
 }
@@ -1975,12 +1982,12 @@ async function liveReadyPress(){
     else go("end");
     return;
   }
-  rb.disabled=true;rb.textContent="Waiting for the others";
+  rb.disabled=true;rb.textContent="Waiting for the others"+readyCnt();
   try{
     var r0=await NET.sb.rpc("ready_round",{p_game:NET.gid,p_round:NET.round});if(r0.error)throw r0.error;
     await liveChanged();
     callEngine("advance").catch(function(){}).then(function(){liveChanged()});
-  }catch(e){netErr(e);rb.disabled=false;rb.textContent="Next match"}
+  }catch(e){netErr(e);rb.disabled=false;rb.textContent="Next match"+readyCnt()}
 }
 /* europæiske pladser: kun baggrundsfarve (1-4 Champions League, 5-6 Europa League, 7 Conference League) */
 function zone(i){return i<4?" z zcl":(i<6?" z zel":(i===6?" z zec":(i>=17?" z zrd":"")))}
