@@ -39,7 +39,7 @@ const WDEF = { LWB: 0.07, RWB: 0.07, GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM:
 // v1.8: fladere målvægte (fløje og midtbane scorer mere, angriberen mindre dominerende)
 const WGOAL = { LWB: 0.4, RWB: 0.4, ST: 1, LW: 0.85, RW: 0.85, LM: 0.65, RM: 0.65, AM: 0.75, CM: 0.45, DM: 0.3, LB: 0.22, RB: 0.22, CB: 0.25, GK: 0.0003 };
 const WASSIST = { LWB: 0.75, RWB: 0.75, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.10";
+export const ENGINE_VERSION = "1.11";
 export const K = 46, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.1, RW_REF = 10.75; // referencesummer for et gennemsnitshold
@@ -78,15 +78,25 @@ export function fac(p, slotPos) {
   return null;
 }
 export function bestXI(players, form) {
-  const slots = FORMS[form], used = new Set(), xi = new Array(11);
-  const order = [...Array(11).keys()].sort((a, b) => (slots[a] !== "GK") - (slots[b] !== "GK") || (slots[a] < slots[b] ? -1 : slots[a] > slots[b] ? 1 : 0));
-  for (const i of order) {
-    let best = null, bk = -1;
-    players.forEach((p, k) => { if (used.has(k)) return; const f = fac(p, slots[i]); if (f === null) return; const v = p.rating * f; if (best === null || v > best) { best = v; bk = k; } });
-    if (bk < 0) return null;
-    used.add(bk); xi[i] = { pos: slots[i], p: players[bk], f: fac(players[bk], slots[i]) };
+  // v1.11: optimal tildeling (ungarsk metode, maksimerer sum af rating*faktor) i stedet for at fylde plads for plads
+  const slots = FORMS[form], n = 11, m = players.length;
+  if (m < n) return null;
+  const w = slots.map((s) => players.map((p) => { const f = fac(p, s); return f === null ? -1e6 : p.rating * f; }));
+  const INF = 1e12, u = new Array(n + 1).fill(0), v = new Array(m + 1).fill(0), pm = new Array(m + 1).fill(0), way = new Array(m + 1).fill(0);
+  for (let i = 1; i <= n; i++) {
+    pm[0] = i; let j0 = 0; const minv = new Array(m + 1).fill(INF), used = new Array(m + 1).fill(false);
+    do {
+      used[j0] = true; const i0 = pm[j0]; let d = INF, j1 = 0;
+      for (let j = 1; j <= m; j++) if (!used[j]) { const cur = -w[i0 - 1][j - 1] - u[i0] - v[j]; if (cur < minv[j]) { minv[j] = cur; way[j] = j0; } if (minv[j] < d) { d = minv[j]; j1 = j; } }
+      for (let j = 0; j <= m; j++) { if (used[j]) { u[pm[j]] += d; v[j] -= d; } else minv[j] -= d; }
+      j0 = j1;
+    } while (pm[j0] !== 0);
+    do { const j1 = way[j0]; pm[j0] = pm[j1]; j0 = j1; } while (j0);
   }
-  return xi;
+  const xi = new Array(n);
+  for (let j = 1; j <= m; j++) if (pm[j]) xi[pm[j] - 1] = j - 1;
+  for (let i = 0; i < n; i++) if (w[i][xi[i]] < 0) return null;
+  return xi.map((k, i) => ({ pos: slots[i], p: players[k], f: fac(players[k], slots[i]) }));
 }
 export function xiStrength(xi) { return xi.reduce((a, x) => a + x.p.rating * x.f, 0) / 11; }
 // AI-klubberne vælger kun blandt de oprindelige ni formationer (uden wingbacks, 'L'-nøglerne), så ligaens styrkebalance bevares

@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.4.0.0 (beta)">
+<meta name="app-version" content="0.4.1.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2257,7 +2257,7 @@ async function renderHofLive(){
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
   var P=pr.data||[],T=tr.data||[];
   var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
-  var isMine=function(x){return x.user_id&&x.user_id===NET.uid?" mine":""};
+  var isMine=function(x){return ""}; /* Hall of Fame er 100 % neutral: ingen markering af egne rekorder */
   var who=function(x){return esc(x.team_name)};
   var opp=function(t){if(!t)return false;var m=String(t).replace(/,?\s*runde\s*\d+\s*$/i,'').trim();return m||false};
   var pRow=function(i,x,val,note,em){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+medal(i,em)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+((note===false||!(note||se(x)))?'':', ')+(note===false?'':(note?esc(note):se(x)))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};

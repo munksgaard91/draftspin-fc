@@ -12,7 +12,7 @@ Deno.test("motoren er identisk med den udgivne (fingeraftryk + 40 faste kampe)",
   const sims: string[] = [];
   for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e: any) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
   // Værdierne er målt på den udgivne edge function (version 1.8). Ændres motoren med vilje, opdateres de her og i SPEC.md.
-  eq(await sha(parts), "136d995dc95ee7efa42b196d8453cb64ed4cc3091d0ec60213d3bb3125273527", "fingeraftryk");
+  eq(await sha(parts), "57ad7cfba39a41490c852c6ede7bc5c63284773ad8e7e0633e5edc1a4ec07976", "fingeraftryk");
   eq(await sha(sims.join("|")), "dd637d429c7b7ef036139360c1a50dd25f94128085de08c11e65ac4b230b6eea", "simulering");
 });
 
@@ -119,4 +119,13 @@ Deno.test("straffe: altid samme skytte (bedste pen_taking, ved lighed udpeget sk
     eq(new Set(mins).size, mins.length, "to straffe i samme minut");
   }
   if (pens < 500) throw new Error("for få straffe til at testen siger noget: " + pens);
+});
+
+Deno.test("bestXI vælger den optimale tildeling, ikke plads for plads (v1.11)", () => {
+  const P = (id: number, pos: string, rating: number) => ({ id, pos, rating, alts: {} });
+  const pool = [P(1, "GK", 100), P(2, "LB", 100), P(3, "CB", 100), P(4, "CB", 100), P(5, "RB", 100), P(6, "DM", 100), P(7, "CM", 160), P(8, "CM", 100), P(9, "AM", 140), P(10, "ST", 100), P(11, "ST", 100)];
+  const xi = E.bestXI(pool, "4-1-2-1-2");
+  eq(xi.find((s: any) => s.pos === "AM").p.id, 9, "AM-pladsen skal gå til den naturlige AM");
+  eq(Math.round(E.xiStrength(xi) * 11), 1100 + 60 + 40, "samlet styrke");
+  eq(E.bestXI(pool.slice(0, 10), "4-4-2"), null, "under 11 spillere");
 });

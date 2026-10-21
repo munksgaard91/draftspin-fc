@@ -60,6 +60,9 @@ Problem: topscoreren fik i snit 55 mål pr. sæson (rigtig PL: ca. 26, max 36), 
 Resultat: topscorer gns 26 (p90 31, sjældent over 40), hattricks ca. 6, mål/kamp 2,8, mester ca. 85 point, mest scorende hold ca. 86 mål, gule/kamp 3,99, bedste spiller 15 gule. Titelfordeling stort set uændret (City 47 -> 41 %).
 Tjek af den udgivne motor: `action: "hash"` i edge function returnerer fingeraftryk + simulationshash; sammenlign med `deno run --allow-read /tmp/.../fp.ts` (se commit).
 
+## v1.11 (2026-10-21): optimal opstilling til AI-klubber
+bestXI bruger nu ungarsk metode (optimal tildeling) i stedet for at fylde plads for plads. Før fik 7 af 20 klubber ikke deres bedste hold (Chelsea op til 1,75 point lavere styrke). Hold fra spillere er upåvirket. Fingeraftryk 57ad7cfb…7976, simulation uændret.
+
 ## Faste regler for nye spillere i `players` (Rasmus, 2026-10-21)
 Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprindelige tal. Eksisterende spillere røres ikke af reglerne.
 1. **Kortrisiko** (`card_risk`, `yellow_w`, `red_w`): regnes fra FM-egenskaber (0-20) med `card_risk = clamp(4,2·aggression + 4,6·dirtiness + 2,5·tackling + 0,3·bravery − 0,5·anticipation + positionskonstant, 0, 100)`, positionskonstant cirka −63 til −71 (CB −67, DM −69, ST −69). Passer på eksisterende spillere med gennemsnitlig fejl 4 point (95 % inden for 10); den oprindelige formel er ukendt. `red_w` slås op i kurven card_risk -> red_w fra eksisterende spillere (50 -> 0,83, 100 -> 1,99); `yellow_w` fra en ret linje card_risk -> yellow_w for spillerens position.
