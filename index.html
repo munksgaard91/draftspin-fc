@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.6.0 (beta)">
+<meta name="app-version" content="0.3.6.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1798,7 +1798,7 @@ function liveSimRender(ph){
     var ar=d>0?'<i class="ar up"></i>':(d<0?'<i class="ar dn"></i>':'');
     h+='<div class="tr sm'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk"><span class="arw">'+ar+'</span>'+(i+1)+'</span><span class="nm">'+lcrest(x.k,16)+'<span>'+esc(lname(x.k))+'</span></span><span class="num">'+(x.w+x.d+x.l)+'</span><span class="num">'+x.w+'</span><span class="num">'+x.d+'</span><span class="num">'+x.l+'</span><span class="num">'+(x.gd>0?"+":"")+x.gd+'</span><span class="pts">'+x.p+'</span></div>';
   });
-  h+='</div></div><div class="simlist"><div class="simlh"><b>Your matches</b><span><button class="linkbtn" data-act="simleave">Leave</button><button class="linkbtn" data-act="simskip"'+(simReady()?'':' disabled title="Available when the whole season has been simulated"')+'>Skip to end</button></span></div>';
+  h+='</div></div><div class="simlist"><div class="simlh"><b>Your matches</b><span><button class="linkbtn" data-act="simleave">Quit game</button></span></div>';
   for(var i=up;i>=1;i--){
     var mm=liveMyMatch(i);if(!mm)continue;
     var home=mm.home_key===NET.uid,mg=home?mm.home_goals:mm.away_goals,og=home?mm.away_goals:mm.home_goals;
