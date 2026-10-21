@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.4.1 (beta)">
+<meta name="app-version" content="0.3.5.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -364,11 +364,11 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .ev.opp{box-shadow:inset 3px 0 0 var(--mut);padding-left:10px;margin-left:-10px}
 .res{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .res:last-child{border:0}
-.res .r{font:500 14px var(--mono);text-align:center;min-width:52px;align-self:center}
+.res .r{font:500 14px var(--mono);text-align:center;min-width:60px;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:34px}.res .r b{font-weight:500}.res .r .livetag{font-size:9.5px;letter-spacing:.6px}.res .r .livetag i{width:5px;height:5px}
 .res>span:first-child{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;text-align:right}
 .res>span:last-child{display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0}
 .res .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.res .hu{color:var(--acc-lt);font-weight:500}
+.res .hu{color:var(--text);font-weight:700}
 .tr .rk{display:flex;align-items:center;gap:5px;font-family:var(--mono);color:var(--mut);font-size:14px}
 .tr.h>span:first-child{padding-left:13px}
 .arw{display:inline-flex;align-items:center;justify-content:center;width:8px;flex:none}
@@ -1195,7 +1195,7 @@ function startMatch(){
   $("readyBtn").disabled=true;$("readyBtn").textContent="Next match";
   var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false;
   $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
-  $("playBtn").disabled=true;$("skipBtn").disabled=false;showOthers(false);
+  $("playBtn").disabled=true;$("skipBtn").disabled=false;NET.liveMin=0;liveOthers();
   function tick(){
     var now=Date.now();acc+=(now-last)*SPEED;last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
@@ -1203,6 +1203,7 @@ function startMatch(){
       if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop")}
       tl.unshift(evRow(e));$("tl").innerHTML=tl.join("");
     }
+    NET.liveMin=m;liveOthers();
     $("clk").textContent=m<MIN?clockTxt(Math.max(m,1)):"FT";
     $("prog").style.width=(m/MIN*100)+"%";
     if(m>=MIN&&shown>=sc.length)finishMatch();
@@ -1477,7 +1478,7 @@ function liveResetGame(){
   NET.sim=null;NET.simWait=null;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
   NET.dsig=null;NET.pending=false;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
   S.spinning=false;S.pre=false;S.gate=false;S.endTab=null;S.endFull=false;S.spinAt=0;
-  NET.finishedRound=0;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
+  NET.finishedRound=0;NET.liveMin=-1;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
 }
 function liveLeave(msg){
   liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame();G.started=false;
@@ -1868,9 +1869,9 @@ function liveSeasonRender(){
     if(document.getElementById("s-match").classList.contains("on")){S.matchSeen=true;startMatch()}
     return;
   }
-  if(g.current_round!==NET.round){NET.round=g.current_round;S.matchSeen=false;
+  if(g.current_round!==NET.round){NET.round=g.current_round;S.matchSeen=false;NET.liveMin=-1;
     if(document.getElementById("s-match").classList.contains("on")){S.matchSeen=true;startMatch()}}
-  else{liveReady();liveReveal();var on=function(id){return document.getElementById(id).classList.contains("on")};if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive()}
+  else{liveReady();liveReveal();liveOthers();var on=function(id){return document.getElementById(id).classList.contains("on")};if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive()}
   // runde 38 er spillet, men sæsonen er ikke afsluttet (fx fejlede en gemning): bed serveren gøre den færdig
   if(g.status==="season"&&g.current_round>=38&&Date.now()-NET.advAt>20000){
     NET.advAt=Date.now();callEngine("advance").then(function(){liveChanged()}).catch(function(){});return;
@@ -1926,16 +1927,39 @@ function lhname(k,right){
   var ic=lcrest(k,20),nm='<span class="t">'+esc(lname(k))+'</span>';
   return '<span class="'+(lhuman(k)?"hu":"")+'">'+(right?ic+nm:nm+ic)+'</span>';
 }
-function liveOthers(mode){
-  if(!NET.season)return;
+/* "Results elsewhere": AI-kampe tikker live (tilfældige mål, slutter på det rigtige resultat), menneskekampe viser rigtige mål men holdes tilbage, til spillerne er færdige */
+function hash32(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function fakeMins(id,n,salt){var a=[],h=hash32(id+"|"+salt);for(var i=0;i<n;i++){h=Math.imul(h^(h>>>15),2246822507)>>>0;h=(h+0x9e3779b9)>>>0;a.push(1+h%90)}return a.sort(function(x,y){return x-y})}
+function myDone(r){var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};return NET.finishedRound===r||(me.done_round||0)>=r}
+function humanDone(k,r){
+  if(k===NET.uid)return myDone(r);
+  var p=NET.players.filter(function(x){return x.user_id===k})[0];
+  return !p||p.done_round>=r||p.ready_round>=r||lAway(p);
+}
+function otherState(m){
+  var r=NET.round,mi=NET.liveMin==null?-1:NET.liveMin,hh=lhuman(m.home_key),ah=lhuman(m.away_key);
+  var fin=function(){return {h:m.home_goals,a:m.away_goals,live:false}};
+  if(!hh&&!ah){
+    if(myDone(r))return fin();
+    if(mi<0)return {h:null,a:null,live:true};
+    return {h:fakeMins(m.id,m.home_goals,"h").filter(function(x){return x<=mi}).length,a:fakeMins(m.id,m.away_goals,"a").filter(function(x){return x<=mi}).length,live:true};
+  }
+  if((!hh||humanDone(m.home_key,r))&&(!ah||humanDone(m.away_key,r)))return fin();
+  if(mi<0)return {h:null,a:null,live:true};
+  var evs=NET.season.events.filter(function(e){return e.match_id===m.id&&e.type==="goal"&&e.minute<=mi}).sort(function(x,y){return x.minute-y.minute||x.id-y.id});
+  var total=m.home_goals+m.away_goals;if(evs.length>=total)evs=evs.slice(0,Math.max(0,total-1));
+  var h=0,a=0;evs.forEach(function(e){if(e.team==="h")h++;else a++});
+  return {h:h,a:a,live:true};
+}
+function liveOthers(){
+  if(!NET.season||!NET.round)return;
   var ms=NET.season.matches.filter(function(m){return m.round===NET.round});
   var mine=ms.filter(function(m){return m.home_key===NET.uid||m.away_key===NET.uid}),oth=ms.filter(function(m){return !(m.home_key===NET.uid||m.away_key===NET.uid)});
   var h=mine.concat(oth).map(function(m){
-    var mi=m.home_key===NET.uid||m.away_key===NET.uid,show=mode===true||(mode==="mine"&&mi);
-    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(show?m.home_goals+" – "+m.away_goals:'<span class="livetag"><i></i>LIVE</span>')+'</span>'+lhname(m.away_key,true)+'</div>';
+    var st=otherState(m);
+    return '<div class="res">'+lhname(m.home_key,false)+'<span class="r">'+(st.h===null?'':'<b>'+st.h+' – '+st.a+'</b>')+(st.live?'<span class="livetag"><i></i>LIVE</span>':'')+'</span>'+lhname(m.away_key,true)+'</div>';
   }).join("");
-  if(mode==="mine")h+='<p class="note" style="margin:8px 0 4px;text-align:center">The other results are shown when everyone has finished the match.</p>';
-  $("others").innerHTML=h;
+  var box=$("others");if(box._h!==h){box._h=h;box.innerHTML=h}
 }
 /* resultater fra runden vises først, når alle menneskespillere er færdige med deres kamp */
 function allDone(r){return NET.players.every(function(p){return p.done_round>=r||p.ready_round>=r||(p.user_id!==NET.uid&&lAway(p))})}
@@ -1966,7 +1990,7 @@ function liveFinishMatch(){
   NET.finishedRound=r;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me0)me0.done_round=Math.max(me0.done_round||0,r);
   NET.sb.rpc("match_done",{p_game:NET.gid,p_round:r}).then(function(){liveChanged()},function(){});
-  if(allDone(r)){NET.shownRound=r;showOthers(true)}else liveOthers("mine");
+  NET.liveMin=94;if(allDone(r))NET.shownRound=r;liveOthers();
   $("playBtn").disabled=false;$("skipBtn").disabled=true;
   var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var rb=$("readyBtn");
