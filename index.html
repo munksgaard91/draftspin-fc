@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.5.3 (beta)">
+<meta name="app-version" content="0.3.5.4 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -364,7 +364,12 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .ev.opp{box-shadow:inset 3px 0 0 var(--mut);padding-left:10px;margin-left:-10px}
 .res{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;padding:2px 0;border-bottom:1px solid var(--line);font-size:12.5px}
 .res:last-child{border:0}
-.res .r{font:500 14px var(--mono);text-align:center;min-width:84px;align-self:center;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:6px;min-height:24px;font-size:13px}.res .r b{font-weight:500}.res .r .livetag{font-size:9px;letter-spacing:.4px;gap:3px}.res .r .livetag i{width:5px;height:5px}
+.res .r{font:500 14px var(--mono);text-align:center;min-width:48px;align-self:center;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:6px;min-height:24px;font-size:13px}.res .r b{font-weight:500}
+.res{position:relative;padding-left:15px}
+.ldot{position:absolute;left:3px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--mut);opacity:.45}
+.ldot.on{background:#00ff85;opacity:1;animation:ldp 1.5s ease-out infinite}
+@keyframes ldp{0%{box-shadow:0 0 0 0 #00ff8588}70%{box-shadow:0 0 0 7px #00ff8500}100%{box-shadow:0 0 0 0 #00ff8500}}
+@media (prefers-reduced-motion:reduce){.ldot.on{animation:none}}.res .r .livetag{font-size:9px;letter-spacing:.4px;gap:3px}.res .r .livetag i{width:5px;height:5px}
 .res>span:first-child{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0;text-align:right}
 .res>span:last-child{display:flex;align-items:center;justify-content:flex-start;gap:6px;min-width:0}
 .res .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1958,7 +1963,7 @@ function liveOthers(){
   var mine=ms.filter(function(m){return m.home_key===NET.uid||m.away_key===NET.uid}),oth=ms.filter(function(m){return !(m.home_key===NET.uid||m.away_key===NET.uid)});
   var h=mine.concat(oth).map(function(m){
     var st=otherState(m);
-    return '<div class="res">'+lhname(m.home_key,false,15)+'<span class="r">'+(st.h===null?'':'<b>'+st.h+' – '+st.a+'</b>')+(st.live?'<span class="livetag"><i></i>LIVE</span>':'')+'</span>'+lhname(m.away_key,true,15)+'</div>';
+    return '<div class="res"><i class="ldot'+(st.live?' on':'')+'"></i>'+lhname(m.home_key,false,15)+'<span class="r">'+(st.h===null?'':'<b>'+st.h+' – '+st.a+'</b>')+'</span>'+lhname(m.away_key,true,15)+'</div>';
   }).join("");
   var box=$("others");if(box._h!==h){box._h=h;box.innerHTML=h}
 }
