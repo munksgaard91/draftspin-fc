@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="3.1.0">
+<meta name="app-version" content="3.1.1">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2412,7 +2412,7 @@ function spStart(){
   $("spretry").addEventListener("click",function(){location.reload()});
 }
 async function spDone(){
-  var wait=Math.max(0,800-(Date.now()-SP.t0));if(wait)await new Promise(function(res){setTimeout(res,wait)});
+  var wait=Math.max(0,1500-(Date.now()-SP.t0));if(wait)await new Promise(function(res){setTimeout(res,wait)});
   SP.t=100;$("spmsg").textContent="Ready";spWarn(false);
   await new Promise(function(res){setTimeout(res,300)});
   clearInterval(SP.iv);var e=$("splash");if(!e)return;
