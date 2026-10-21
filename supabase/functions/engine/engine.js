@@ -39,7 +39,7 @@ const WDEF = { LWB: 0.07, RWB: 0.07, GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM:
 // v1.8: fladere målvægte (fløje og midtbane scorer mere, angriberen mindre dominerende)
 const WGOAL = { LWB: 0.4, RWB: 0.4, ST: 1, LW: 0.85, RW: 0.85, LM: 0.65, RM: 0.65, AM: 0.75, CM: 0.45, DM: 0.3, LB: 0.22, RB: 0.22, CB: 0.25, GK: 0.0003 };
 const WASSIST = { LWB: 0.75, RWB: 0.75, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.9";
+export const ENGINE_VERSION = "1.10";
 export const K = 46, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.1, RW_REF = 10.75; // referencesummer for et gennemsnitshold
@@ -136,6 +136,8 @@ export function setupSeason(teams, seed) {
 }
 
 // ---------- kamp ----------
+// straffeskytte: højest pen_taking; ved lighed en udpeget straffeskytte (pen_rank) for den stærkeste klub (cstr = klubbens styrke), så laveste pen_rank, så id
+const penOrder = (a, b) => (b.p.pen_taking || 8) - (a.p.pen_taking || 8) || ((a.p.pen_rank ? 0 : 1) - (b.p.pen_rank ? 0 : 1)) || ((b.p.cstr || 0) - (a.p.cstr || 0)) || ((a.p.pen_rank || 9) - (b.p.pen_rank || 9)) || (a.p.id - b.p.id);
 // side: { xi: [{pos,p,f}], shift }   p: { id, name, rating, consistency, pen_taking, yellow_w, red_w }
 export function simulateMatch(H, A, seed) {
   const rng = makeRng(seed);
@@ -212,10 +214,11 @@ export function simulateMatch(H, A, seed) {
   for (let k = 0; k < nPen; k++) {
     const s = rng.next() < sides.h.lam / (sides.h.lam + sides.a.lam) ? "h" : "a", o = s === "h" ? "a" : "h";
     const m = 1 + rng.int(90), pitch = onPitch(s, m), T = sides[s].T;
-    const cand = T.xi.map((x, i) => ({ i, x })).filter(({ i, x }) => pitch[i] && x.pos !== "GK").sort((p, q) => (q.x.p.pen_taking || 8) - (p.x.p.pen_taking || 8)).slice(0, 3);
+    // én fast skytte: 1) bedste straffe-egenskab blandt dem på banen; 2) ved lighed den udpegede straffeskytte for den stærkeste klub
+    const cand = T.xi.map((x, i) => ({ i, x })).filter(({ i, x }) => pitch[i] && x.pos !== "GK").sort((a, b) => penOrder(a.x, b.x));
     if (!cand.length) continue;
-    const ci = rng.weighted([0.7, 0.2, 0.1].slice(0, cand.length)), taker = cand[ci].x.p;
-    if (ev.some((x) => x.m === m && x.s === s && x.pid === taker.id && (x.type === "pen_miss" || x.pen))) continue; // samme taker, samme minut: ville give samme hændelsesnøgle
+    const taker = cand[0].x.p;
+    if (ev.some((x) => x.m === m && (x.type === "pen_miss" || x.pen))) continue; // aldrig to straffe i samme minut (heller ikke for hver sit hold)
     const pScore = Math.max(0.6, Math.min(0.92, 0.8 + 0.012 * ((taker.pen_taking || 12) - 12)));
     if (rng.next() < pScore) ev.push({ m, type: "goal", s, pid: taker.id, aid: null, pen: true });
     else {

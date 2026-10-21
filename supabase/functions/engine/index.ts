@@ -12,7 +12,12 @@ const QUICK_FIRST = 19;
 const chk = (r) => { if (r.error) throw new Error(r.error.message); return r.data; };
 
 async function loadPlayers() {
-  const rows = chk(await admin.from("players").select("id,club,name,pos,rating,alts,consistency,pen_taking,yellow_w,red_w").limit(2000));
+  const rows = chk(await admin.from("players").select("id,club,name,pos,rating,alts,consistency,pen_taking,pen_rank,yellow_w,red_w").limit(2000));
+  // klubbens styrke (gennemsnit af de 14 bedste ratings) bruges til at afgøre, hvem der skyder straffe ved lighed
+  const byClub = new Map();
+  rows.forEach((p) => { if (!byClub.has(p.club)) byClub.set(p.club, []); byClub.get(p.club).push(p.rating); });
+  const cstr = new Map([...byClub].map(([c, r]) => [c, r.sort((a, b) => b - a).slice(0, 14).reduce((a, b) => a + b, 0) / Math.min(14, r.length)]));
+  rows.forEach((p) => { p.cstr = cstr.get(p.club) || 0; });
   const byId = new Map(rows.map((p) => [p.id, p]));
   return { rows, byId };
 }

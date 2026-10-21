@@ -12,8 +12,8 @@ Deno.test("motoren er identisk med den udgivne (fingeraftryk + 40 faste kampe)",
   const sims: string[] = [];
   for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e: any) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
   // Værdierne er målt på den udgivne edge function (version 1.8). Ændres motoren med vilje, opdateres de her og i SPEC.md.
-  eq(await sha(parts), "888756e0754aa71954f93a51182fda82e09dc4026ff59d582ca789d2a3aea97d", "fingeraftryk");
-  eq(await sha(sims.join("|")), "d554cacc790c730737a69a2ea6f007941184efaa4b02f6098e095de3d15cb9d0", "simulering");
+  eq(await sha(parts), "136d995dc95ee7efa42b196d8453cb64ed4cc3091d0ec60213d3bb3125273527", "fingeraftryk");
+  eq(await sha(sims.join("|")), "dd637d429c7b7ef036139360c1a50dd25f94128085de08c11e65ac4b230b6eea", "simulering");
 });
 
 Deno.test("samme seed giver samme kamp, forskellig seed giver forskellig", () => {
@@ -98,4 +98,25 @@ Deno.test("realisme: topscorer, hattricks og kort ligger i et rimeligt område",
   ok(top > 10 && top < 45, `topscorer ${top.toFixed(1)} udenfor 10-45`);
   ok(yellows / matches > 2.8 && yellows / matches < 5.2, `gule pr. kamp ${(yellows / matches).toFixed(2)}`);
   ok(reds / matches < 0.35, `røde pr. kamp ${(reds / matches).toFixed(2)}`);
+});
+
+Deno.test("straffe: altid samme skytte (bedste pen_taking, ved lighed udpeget skytte for stærkeste klub), og aldrig to straffe i samme minut", () => {
+  const team = (o: number, over: Record<number, Record<string, number>> = {}) => ({ xi: E.FORMS["4-4-2"].map((pos: string, i: number) => ({ pos, p: { id: o + i, rating: 150, consistency: 12, pen_taking: 8, yellow_w: 0.9, red_w: 1, ...(over[i] || {}) }, f: 1 })), shift: 0 });
+  // spiller 9 (en angriber) har klart bedste straffe-egenskab; spiller 10 og 8 er lige gode og begge udpeget, men 8 kommer fra den stærkeste klub
+  const H = team(100, { 9: { pen_taking: 20 } }), A = team(200, { 8: { pen_taking: 15, pen_rank: 1, cstr: 160 }, 10: { pen_taking: 15, pen_rank: 1, cstr: 120 } });
+  let pens = 0;
+  for (let seed = 1; seed <= 4000; seed++) {
+    const r = E.simulateMatch(H, A, seed);
+    const pe = r.events.filter((e: any) => e.type === "pen_miss" || e.pen);
+    pens += pe.length;
+    for (const e of pe) {
+      const want = e.s === "h" ? 109 : 208;
+      // er den rette skytte udvist før straffen, må næste i rækken tage den
+      const sentOff = r.events.some((x: any) => (x.type === "red" || x.type === "second_yellow") && x.pid === want && x.m < e.m);
+      if (!sentOff) eq(e.pid, want, "forkert straffeskytte");
+    }
+    const mins = pe.map((e: any) => e.m);
+    eq(new Set(mins).size, mins.length, "to straffe i samme minut");
+  }
+  if (pens < 500) throw new Error("for få straffe til at testen siger noget: " + pens);
 });

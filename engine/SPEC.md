@@ -6,7 +6,7 @@ Baseret på udkast 0.1, Argons review (2026-10-18) og en Python-referencemotor (
 - Kampdagsform: `R_i = (rating_i + N(0, σ_i²)) · f_i` med `σ_i = 6 − 0,25 · (consistency − 1)`, plus et fælles holdudsving `N(0, 1,5²)` til alle 11 spillere.
 - Holdstyrke: OFF og DEF er vægtede gennemsnit (vægte i udkast 0.1) over de besatte pladser.
 - Forventede mål: `λ_H = μ_H · exp((OFF_H − DEF_A) / k)`, `λ_A = μ_A · exp((OFF_A − DEF_H) / k)` med **k = 40, μ_H = 1,37, μ_A = 1,05**.
-- Straffe: 0,29 pr. kamp, tildelt holdet proportionalt med λ, scoring 0,80 (justeres efter `pen_taking`).
+- Straffe: 0,29 pr. kamp, tildelt holdet proportionalt med λ, scoring 0,80 (justeres efter `pen_taking`). v1.10: én fast skytte pr. hold (højest `pen_taking` blandt dem på banen; ved lighed den udpegede straffeskytte `pen_rank` for den stærkeste klub), og aldrig to straffe i samme minut i en kamp.
 - Resultat med 4 spillere og 16 AI-klubber: cirka 2,78 mål pr. kamp, hjemmesejre 46 %, uafgjort 23 %, udesejre 31 %, mester cirka 85 point, sidstepladsen cirka 30 point, standardafvigelse på point cirka 14,7.
 - Ratingforskel Δ mellem to hold og hjemmesejr: 0 giver 44 %, 10 giver 59 %, 20 giver 74 %, 30 giver 85 %.
 
