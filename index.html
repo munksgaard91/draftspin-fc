@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.10.0 (beta)">
+<meta name="app-version" content="0.3.11.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -573,6 +573,16 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 @keyframes sbgUp{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-50%,0)}}
 @media (prefers-reduced-motion:reduce){.sbgc{animation:none}}
 .toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);z-index:41;width:max-content;max-width:min(92vw,420px);background:var(--surf2);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:10px;padding:12px 16px;font-size:14.5px;box-shadow:0 14px 34px -14px #000c}
+.news{appearance:none;display:block;position:sticky;top:env(safe-area-inset-top,0px);z-index:30;width:100%;margin:0 0 10px;padding:9px 14px 9px 26px;border:1px solid var(--line);border-radius:10px;background:var(--surf2);color:var(--text);font-size:14px;text-align:left;overflow:hidden;height:40px;cursor:pointer}
+.news .ldot{left:10px;width:7px;height:7px;margin-top:-3.5px}
+.news .nwc{position:absolute;left:26px;right:12px;top:0;bottom:0}
+.news .nw{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;transition:transform .35s ease,opacity .35s ease}
+.news .nw>span{overflow:hidden;text-overflow:ellipsis}
+.news .nw.out{transform:translateX(-40px);opacity:0}
+.news .nw.in{animation:newsin .35s ease}
+@keyframes newsin{from{transform:translateX(60px);opacity:0}to{transform:none;opacity:1}}
+.seg button.turn::after{content:"";display:inline-block;width:7px;height:7px;margin-left:6px;border-radius:50%;background:#00ff85;animation:ldp 1.5s ease-out infinite;vertical-align:middle}
+@media (prefers-reduced-motion:reduce){.news .nw.in{animation:none}.seg button.turn::after{animation:none}}
 .conn{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:40;padding:11px max(16px,env(safe-area-inset-right,0px)) 11px max(16px,env(safe-area-inset-left,0px));background:#3b2712;color:#ffd9a8;text-align:center;font-size:14px;border-bottom:1px solid #6b4a24}
 .conn.ok{background:#12301f;color:#b8f0c8;border-color:#245a3a}
 .conn i{display:inline-block;width:5px;height:5px;border-radius:50%;background:currentColor;margin-left:5px;animation:cd 1.2s infinite ease-in-out}
@@ -629,6 +639,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   <section id="s-draft" class="screen">
     <div id="orderWrap"></div>
     <div id="draftMain" hidden>
+      <button class="news" id="news" hidden aria-live="polite"><i class="ldot on"></i><span class="nwc" id="nwc"></span></button>
       <div class="status"><h1 style="margin:0">Snake draft</h1><span class="muted">Round <b id="rnd">1</b> of 11</span></div>
       <p class="sub" id="turnTxt"></p>
       <div id="adminForce"></div>
@@ -1100,7 +1111,7 @@ function renderDraft(){
   var done=S.phase==="draft"&&S.pickIdx>=S.seq.length&&S.seq.length>0;
   var n=Math.max(1,S.order.length||ids().length);
   $("rnd").textContent=Math.min(Math.floor(S.pickIdx/n)+1,11);
-  renderSqTabs();
+  renderSqTabs();renderNews();
   var vw=(S.view==="me"||!S.fsq[S.view])?{f:S.form,s:S.squad}:{f:S.fsq[S.view].form,s:S.fsq[S.view].squad};
   renderPitch($("dpitch"),vw.f,vw.s,false);
   $("missing").textContent=(S.view==="me"||!S.fsq[S.view])?"":"Formation "+S.fsq[S.view].form;
@@ -1150,9 +1161,26 @@ function autoPick(){
   var p=opts[Math.floor(Math.random()*opts.length)];
   lockPick(p[0],eligible(p[1])[0]);
 }
+/* nyhedsbjælke: seneste valg, glider ud/ind ved nyt valg; ændrer aldrig banen af sig selv */
+function renderNews(){
+  var b=$("news"),f=S.feed&&S.feed[0];
+  if(!b)return;
+  if(S.phase!=="draft"||NET.players.length<2||!f){b.hidden=true;NET.newsId=null;return}
+  b.hidden=false;
+  var id=f.k+"|"+f.name,c=$("nwc");
+  if(id===NET.newsId)return;
+  var first=NET.newsId==null;NET.newsId=id;NET.newsKey=f.k;
+  var cr=f.k==="me"?ucrest(S.crest||0,S.color,S.color2,mytag(),22):(FCR[f.k]?ucrest(FCR[f.k][0],FCR[f.k][1],FCR[f.k][2],FCR[f.k][3]||initials(f.who),22):"");
+  var el=document.createElement("div");el.className="nw"+(first?"":" in");
+  el.innerHTML=cr+'<span><b>'+esc(f.who)+'</b> picked '+esc(f.name)+' ('+POSC[f.pos]+') from '+esc(f.club)+'</span>';
+  var old=[].slice.call(c.children);
+  old.forEach(function(o){o.classList.add("out");setTimeout(function(){if(o.parentNode)o.parentNode.removeChild(o)},400)});
+  c.appendChild(el);
+}
+$("news").addEventListener("click",function(){var k=NET.newsKey;if(k&&(k==="me"||S.fsq[k])){S.view=k;renderDraft()}});
 function renderSqTabs(){
   var ks=["me"].concat(ids().filter(function(k){return k!=="me"}));
-  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+'">'+(k==="me"?"You":(esc(teamName(k))))+' '+n+'/11</button>'}).join("");
+  $("sqTabs").innerHTML=ks.map(function(k){var n=k==="me"?filled():S.counts[k];return '<button data-v="'+k+'" class="'+(S.view===k?"on":"")+(k==="me"&&myTurn()&&S.view!=="me"?" turn":"")+'">'+(k==="me"?"You":(esc(teamName(k))))+' '+n+'/11</button>'}).join("");
 }
 $("sqTabs").addEventListener("click",function(e){var b=e.target.closest("[data-v]");if(b){S.view=b.dataset.v;renderDraft()}});
 
@@ -1499,7 +1527,7 @@ function liveResetGame(){
   NET.sim=null;NET.simWait=null;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
   NET.dsig=null;NET.pending=false;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
   S.spinning=false;S.pre=false;S.gate=false;S.endTab=null;S.endFull=false;S.spinAt=0;
-  NET.finishedRound=0;NET.opt=null;NET.pendP=null;NET.rulesOpen=false;NET.liveMin=-1;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
+  NET.finishedRound=0;NET.newsId=null;NET.newsKey=null;NET.opt=null;NET.pendP=null;NET.rulesOpen=false;NET.liveMin=-1;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
 }
 function liveLeave(msg){
   liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame();G.started=false;
@@ -2320,14 +2348,14 @@ function liveDraftSync(){
     var e={name:info.p[0],sn:info.p[6]||"",pos:info.p[1],club:info.club,num:info.p[2],pen:fit(info.p[1],slotPos,info.p[4])===1};
     if(k==="me")S.squad[pk.slot-1]=e;else if(S.fsq[k])S.fsq[k].squad[pk.slot-1]=e;
     S.counts[k]=(S.counts[k]||0)+1;S.taken[info.p[0]]=k==="me"?(S.team.trim()||"My team"):(FTEAM[k]||"Player");
-    feed.push({who:k==="me"?"You":(FTEAM[k]||"Player"),name:info.p[0],pos:info.p[1],club:info.club});
+    feed.push({k:k,who:k==="me"?(S.team.trim()||"You"):(FTEAM[k]||"Player"),name:info.p[0],pos:info.p[1],club:info.club});
   });
   S.feed=feed.reverse();
   /* mit seneste valg, som serveren endnu ikke har bekræftet, bliver stående (ellers blinker det væk ved en forsinket opdatering) */
   if(NET.opt){
     var o=NET.opt;
     if(S.squad[o.i]||Date.now()-o.at>20000)NET.opt=null;
-    else{S.squad[o.i]=o.e;S.taken[o.e.name]=S.team.trim()||"My team";S.counts.me=(S.counts.me||0)+1;S.feed.unshift({who:"You",name:o.e.name,pos:o.e.pos,club:o.e.club})}
+    else{S.squad[o.i]=o.e;S.taken[o.e.name]=S.team.trim()||"My team";S.counts.me=(S.counts.me||0)+1;S.feed.unshift({k:"me",who:S.team.trim()||"You",name:o.e.name,pos:o.e.pos,club:o.e.club})}
   }
   var mine=S.seq[S.pickIdx]==="me",cc=g.current_club;
   if(!S.spinning&&!NET.viewSpin){
@@ -2354,7 +2382,7 @@ function liveDraftRender(){
   NET.dsig=dsig;
   $("draftMain").classList.toggle("solo",NET.players.length<2);
   if(cur==="me"&&NET.lastPick!==S.pickIdx&&!S.club&&!S.spinning){toast("Your turn. Spin the wheel.",2200)}
-  if(NET.lastPick!==S.pickIdx){S.view=cur&&(cur==="me"||S.fsq[cur])?cur:"me"}
+  if(S.view!=="me"&&!S.fsq[S.view])S.view="me";
   NET.lastPick=S.pickIdx;
   renderDraft();renderSheet();
   var af=$("adminForce");
