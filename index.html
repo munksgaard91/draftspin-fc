@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.3.5 (beta)">
+<meta name="app-version" content="0.3.3.6 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -665,7 +665,6 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
       <div class="muted" id="nextOpp" style="margin-bottom:6px">Next match</div>
       <div class="ready" id="ready"></div>
       <button class="btn p wide" id="readyBtn" style="margin-top:8px" disabled>Next match</button>
-      <button class="btn wide" id="forceBtn" style="margin-top:8px" hidden>Force next round (admin)</button>
     </div>
 
 
@@ -1170,7 +1169,6 @@ function finishMatch(){
 }
 var SPEED=1;
 $("spdBtn").addEventListener("click",function(){var SP=[0.5,1,2,3];SPEED=SP[(SP.indexOf(SPEED)+1)%SP.length];$("spdBtn").textContent=(SPEED===0.5?"0.5":SPEED)+"x"});
-$("forceBtn").addEventListener("click",function(){liveForce();return});
 /* classic: første kamp venter på, at alle har trykket Klar */
 function gateOn(){var g=NET.game;return !!(g&&g.status==="season"&&g.current_round===1&&g.pace!=="quick"&&NET.players.length&&!NET.players.every(function(p){return p.start_ready||lAway(p)}))}
 function gateBlocks(){return [$("mseg").closest(".card"),document.querySelector("#s-match .mctl"),$("nextOpp").closest(".card")]}
@@ -1967,7 +1965,6 @@ function liveFinishMatch(){
   var rb=$("readyBtn");
   if(r>=38){rb.textContent="End season";rb.disabled=false;rb.dataset.end="1"}
   else{rb.dataset.end="";rb.textContent=me.ready_round>=r?"Waiting for the others":"Next match";rb.disabled=me.ready_round>=r}
-  $("forceBtn").hidden=!(g.admin_id===NET.uid&&g.status==="season"&&r<38&&NET.players.length>1);
   liveReady();
   var up=document.getElementById("s-table").classList.contains("on");if(up)renderTableLive();
 }
@@ -1984,9 +1981,6 @@ async function liveReadyPress(){
     await liveChanged();
     callEngine("advance").catch(function(){}).then(function(){liveChanged()});
   }catch(e){netErr(e);rb.disabled=false;rb.textContent="Next match"}
-}
-async function liveForce(){
-  try{await callEngine("advance",{force:true});toast("The round has been forced ahead.",2600);liveChanged()}catch(e){netErr(e)}
 }
 /* europæiske pladser: kun baggrundsfarve (1-4 Champions League, 5-6 Europa League, 7 Conference League) */
 function zone(i){return i<4?" z zcl":(i<6?" z zel":(i===6?" z zec":(i>=17?" z zrd":"")))}
