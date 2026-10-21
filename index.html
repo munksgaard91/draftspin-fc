@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.0.0 (beta)">
+<meta name="app-version" content="0.5.0.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2283,13 +2283,13 @@ async function renderHofLive(){
   h+=cat("Most goals",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}));
   h+=cat("Most assists",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}));
   h+=cat("Most clean sheets",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}));
-  h+=cat("Most points in a season",top(T,"points").map(function(x,i){return tRow(i,x,x.points,x.w+" wins, "+x.d+" draws, "+x.l+" losses")}));
+  h+=cat("Most points in a season",top(T,"points").map(function(x,i){return tRow(i,x,x.points,"")}));
   h+=cat("Most goals in a match",topU(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,opp(x.best_match_text))}));
   var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
   h+=cat("Most team goals in a season",top(T,"gf").map(function(x,i){return tRow(i,x,x.gf,false)}));
-  h+=cat("Best goal difference",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,x.gf+" for, "+x.ga+" against")}));
+  h+=cat("Best goal difference",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,"")}));
   h+=cat("Fewest goals conceded",top(T,"ga",true).map(function(x,i){return tRow(i,x,x.ga,false)}));
-  h+=cat("Longest winning streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,"wins in a row")}));
+  h+=cat("Longest winning streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,"")}));
   h+=cat("Biggest win",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}));
   h+=cat("Most red cards",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds)}));
   h+=cat("Most yellow cards",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows)}));
