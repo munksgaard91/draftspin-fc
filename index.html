@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.3.3 (beta)">
+<meta name="app-version" content="0.3.3.4 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -876,7 +876,7 @@ $("flow").addEventListener("click",function(e){
         fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).catch(function(){return ""})
       ]).then(function(rs){
         var m=String(rs[1]||"").match(/name="app-version" content="([^"]+)"/);
-        if(m&&m[1]===APP_VERSION){b.textContent="You're on the latest version";toast("You're up to date.",2200);return}
+        if(m&&m[1]===APP_VERSION){b.textContent="You're on the latest version";return}
         if(!m){b.textContent="You're on the latest version";toast("Couldn't check, try again with a better connection.",3200);return}
         setTimeout(fin,400);
       },function(){fin()});
