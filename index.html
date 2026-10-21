@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.3.1 (beta)">
+<meta name="app-version" content="0.3.3.2 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1618,11 +1618,11 @@ function lobbyLive(){
     var row=function(label,inner){return '<div class="rule"><span class="rl">'+label+'</span>'+inner+'</div>'};
     h+='<div class="card" style="margin-top:10px;padding:14px 14px 16px"><b style="font-size:16px">Game rules</b>';
     if(adm){
+      h+=row("Game mode",segb("lset","pace",g.pace,[["full","Classic"],["quick","Quick game"]]));
       h+=row("Time per pick",segb("lset","timer",g.timer_seconds,[[0,"Off"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]));
-      h+=row("Pace",segb("lset","pace",g.pace,[["full","Classic"],["quick","Quick game"]]));
       h+=row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
     }else{
-      h+='<p class="note" style="margin-top:6px">Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Pace: '+(g.pace==="quick"?"quick game":"classic")+' · Respins: '+g.respins+'</p>';
+      h+='<p class="note" style="margin-top:6px">Game mode: '+(g.pace==="quick"?"quick game":"classic")+' · Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Respins: '+g.respins+'</p>';
     }
     h+='</div>';
     if(!solo){
@@ -1635,7 +1635,7 @@ function lobbyLive(){
       h+='</div></div>';
     }
     if(adm){
-      h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(canStart?"":" disabled")+'>Start game</button>';
+      h+='<button class="btn p wide go" data-act="start" style="margin-top:14px"'+(canStart?"":" disabled")+'>Start the season</button>';
       h+='<p class="note">'+(!canStart?"At least 2 players are needed to start the game.":(solo?"":"Everyone who has joined will play ("+n+" players). When you start, everyone picks a name, team and formation at the same time."))+'</p>';
     }else{
       h+='<p class="note">Waiting for the admin to start the game ('+n+' '+(n===1?'player':'players')+' so far).</p>';
