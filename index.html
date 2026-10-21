@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.4.1.0 (beta)">
+<meta name="app-version" content="0.4.2.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -452,6 +452,11 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .row.wf .rp:nth-of-type(1){text-align:right}
 .row .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px}
 .row .rf.nf{background:var(--silh) center/contain no-repeat}
+.hrow .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px;border-radius:50%}
+.hrow .rf.nf{background:var(--silh) center/contain no-repeat}
+.hrow.hf{grid-template-columns:36px 1fr auto}
+.hrow .hk.pf{position:relative;width:36px;height:36px}
+.hrow .hk.pf .tro{position:absolute;right:-5px;bottom:-5px;font-size:15px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
 .row.dis{cursor:default}
 .row.sel{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}
 .tools{display:flex;gap:10px;align-items:center;margin:8px 0 2px}
@@ -468,8 +473,11 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .stepper b{font:500 17px var(--mono)}
 .seg button.lock{opacity:.45}
 .hcat{margin-top:12px}
-.hexp{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:6px;padding:9px 0 2px;background:none;border:0;border-top:1px solid var(--line);color:var(--mut);font:500 13px var(--sans,inherit);cursor:pointer}
+.hexp{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:6px;padding:8px 0 2px;background:none;border:0;color:var(--mut);font:500 13px var(--sans,inherit);cursor:pointer}
 .hexp::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.hcat>.hrow{border-bottom:0}
+.hcat>.hmore:not([hidden]){border-top:1px solid var(--line)}
+.hexp.on{border-top:1px solid var(--line);padding-top:10px}
 .hexp.on::after{transform:rotate(225deg) translateY(-2px)}
 .hmore[hidden],.cblk[hidden]{display:none}
 .hfil{display:flex;align-items:center;gap:12px;margin:6px 0 2px}
@@ -2260,7 +2268,7 @@ async function renderHofLive(){
   var isMine=function(x){return ""}; /* Hall of Fame er 100 % neutral: ingen markering af egne rekorder */
   var who=function(x){return esc(x.team_name)};
   var opp=function(t){if(!t)return false;var m=String(t).replace(/,?\s*runde\s*\d+\s*$/i,'').trim();return m||false};
-  var pRow=function(i,x,val,note,em){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+medal(i,em)+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+((note===false||!(note||se(x)))?'':', ')+(note===false?'':(note?esc(note):se(x)))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
+  var pRow=function(i,x,val,note,em){var pi=NET.byId[x.player_id];return '<div class="hrow hf r'+(i+1)+isMine(x)+'"><span class="hk pf">'+(pi?faceImg(pi.p):'<span class="rf nf"></span>')+(i===0?'<span class="tro">🏆</span>':'')+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+((note===false||!(note||se(x)))?'':', ')+(note===false?'':(note?esc(note):se(x)))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var tRow=function(i,x,val,note,em){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+medal(i,em)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(note===false?'':(note?esc(note):se(x)))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
   var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
   var topU=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return top(Object.keys(b).map(function(k){return b[k]}),key)};
