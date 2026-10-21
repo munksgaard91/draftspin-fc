@@ -1,5 +1,6 @@
 // Service worker: viser besked, når det er din tur i draften, og gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v4";
+var CACHE = "dsfc-shell-v5";
+var FACES = "dsfc-faces-v1"; // spillerbilleder, hentes af siden ved første start (se preloadFaces i index.html)
 var SCOPE = self.registration.scope;
 var LIB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
 var BADGES = "ARS AVL BOU BRE BHA CHE COV CRY EVE FUL HUL IPS LEE LIV MCI MUN NEW NFO SUN TOT".split(" ");
@@ -60,6 +61,8 @@ self.addEventListener("fetch", function (e) {
   if (u.origin === location.origin) {
     if (req.cache === "no-store" || u.pathname.indexOf("sw.js") !== -1) return; // versionstjek og SW-opdatering går altid direkte
     e.respondWith(networkFirst(req));
+  } else if (u.hostname.slice(-12) === ".supabase.co" && u.pathname.indexOf("/storage/v1/object/public/faces/") === 0) {
+    e.respondWith(caches.open(FACES).then(function (c) { return c.match(req.url).then(function (hit) { return hit || fetch(req); }); }));
   } else if (u.hostname === "cdn.jsdelivr.net" || u.hostname === "fonts.googleapis.com" || u.hostname === "fonts.gstatic.com") {
     e.respondWith(staleRevalidate(req));
   }

@@ -1,0 +1,5 @@
+-- Ny rating-baseline 2026-10-21: CA/PA fra Rasmus' FM26-database (Database.fm, db 26.2.0) for 530 af 539 spillere
+-- (matchet via navn+alder; se 054). rating_base = CA, pa = PA, rating = round(CA + boost); boost og alle andre kolonner er uændrede.
+-- De 9 spillere uden match beholder deres gamle tal. Tidligere værdier ligger i players_rating_backup_20261021 (kun backend).
+-- Selve opdateringen er kørt direkte i databasen; for at fortryde:
+--   update players p set rating=b.rating, rating_base=b.rating_base, pa=b.pa from players_rating_backup_20261021 b where b.id=p.id;
