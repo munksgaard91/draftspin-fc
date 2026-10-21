@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.6.1 (beta)">
+<meta name="app-version" content="0.3.7.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -529,6 +529,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .lrow .btn.num{width:36px;min-width:36px;padding-inline:0}
 .verbox{position:fixed;top:calc(28px + env(safe-area-inset-top,0px));right:12px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding:6px 10px;border-radius:10px;background:color-mix(in srgb,var(--bg) 88%,transparent)}
 .solomid{display:flex;flex-direction:column;justify-content:center;min-height:calc(100svh - 150px)}.solomid .linkbtn{align-self:center}
+.rhead{display:block;margin-top:14px;font-size:14px}
 .rule{margin-top:8px}.rule .rl{display:block;font-size:13px;color:var(--mut);margin-bottom:3px}
 .seg3{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:4px;padding:4px;background:var(--surf2);border-radius:12px}
 .seg3 button{appearance:none;border:0;background:none;color:var(--mut);font:inherit;font-size:14.5px;font-weight:500;padding:7px 4px;border-radius:9px;cursor:pointer;white-space:nowrap}
@@ -1202,10 +1203,14 @@ function startMatch(){
   liveMatchHeader();
   $("readyBtn").disabled=true;$("readyBtn").textContent="Next match";
   var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false;
+  /* multiplayer: fast hastighed for alle (Human v AI / Human v Human), ingen Replay, hastighed eller Skip */
+  var G0=NET.game,multi=!!G0&&G0.max_players>1,mm0=liveMyMatch(NET.round),opp0=mm0?(mm0.home_key===NET.uid?mm0.away_key:mm0.home_key):null;
+  var FIXSPD=multi?(lhuman(opp0)?+G0.speed_hh:+G0.speed_ai)||1:0;
+  document.querySelector(".mctl").hidden=multi;
   $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
   $("playBtn").disabled=true;$("skipBtn").disabled=false;NET.liveMin=0;liveOthers();
   function tick(){
-    var now=Date.now();acc+=(now-last)*SPEED;last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
+    var now=Date.now();acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
       if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop")}
@@ -1579,7 +1584,7 @@ function liveSyncStep(){
   var ae=document.activeElement,typing=ae&&ae.closest&&ae.closest("#flow")&&/^(INPUT|TEXTAREA)$/.test(ae.tagName);
   if(cur!==want){F.step=steps.indexOf(want);NET.lsig=null;renderFlow();return}
   if((cur==="lobby"||cur==="wait")&&!typing){
-    var sig=JSON.stringify([g.max_players,g.timer_seconds,g.show_ratings,g.pace,g.respins,g.setup,NET.players.map(function(p){return [p.user_id,p.display_name,p.team_name,p.ready,p.formation,p.color1,p.crest,p.crest_tag]})]);
+    var sig=JSON.stringify([g.max_players,g.timer_seconds,g.show_ratings,g.pace,g.respins,g.speed_ai,g.speed_hh,g.setup,NET.players.map(function(p){return [p.user_id,p.display_name,p.team_name,p.ready,p.formation,p.color1,p.crest,p.crest_tag]})]);
     if(sig!==NET.lsig){NET.lsig=sig;renderFlow()}
   }
 }
@@ -1587,6 +1592,16 @@ async function liveCall(fn,args){
   try{var r0=await NET.sb.rpc(fn,args);if(r0.error)throw r0.error;await liveLoad();liveApply()}catch(e){netErr(e)}
 }
 /* spilregler: knappen virker med det samme (optimistisk); serveren bekræfter i baggrunden */
+async function liveSpeed(key,v){
+  var g=NET.game;if(!g||NET.pending)return;
+  var keep={speed_ai:g.speed_ai,speed_hh:g.speed_hh};
+  if(key==="ai")g.speed_ai=v;else g.speed_hh=v;
+  NET.pending=true;NET.pendAt=Date.now();liveApply();
+  var r0;try{r0=await tmo(NET.sb.rpc("set_match_speed",{p_game:NET.gid,p_ai:+g.speed_ai,p_hh:+g.speed_hh}))}catch(e){r0={error:e}}
+  NET.pending=false;
+  if(r0.error){g.speed_ai=keep.speed_ai;g.speed_hh=keep.speed_hh;toast("Oops, something went wrong, please try again!",4200)}
+  liveChanged();
+}
 async function liveSetting(args){
   var g=NET.game;if(!g||NET.pending)return;
   var keep={max_players:g.max_players,timer_seconds:g.timer_seconds,show_ratings:g.show_ratings,pace:g.pace,respins:g.respins};
@@ -1610,6 +1625,7 @@ function liveAct(a,b,st){
   if(a==="unready"){liveCall("set_ready",{p_game:NET.gid,p_ready:false});return true}
   if(a==="start"){liveCall("open_setup",{p_game:NET.gid});return true}
   if(a==="kick"){liveCall("kick_player",{p_game:NET.gid,p_user:b.dataset.k});return true}
+  if(a==="lspeed"){liveSpeed(b.dataset.k,+b.dataset.v);return true}
   if(a==="lset"){
     var g2=NET.game,v=b.dataset.v;
     liveSetting({p_game:NET.gid,p_max:g2.max_players,p_timer:b.dataset.k==="timer"?+v:g2.timer_seconds,p_show:b.dataset.k==="show"?v==="true":g2.show_ratings,p_pace:b.dataset.k==="pace"?v:g2.pace,p_respins:b.dataset.k==="respins"?+v:g2.respins});return true;
@@ -1630,8 +1646,12 @@ function lobbyLive(){
       h+=row("Game mode",segb("lset","pace",g.pace,[["full","Classic"],["quick","Quick game"]]));
       h+=row("Time per pick",segb("lset","timer",g.timer_seconds,[[0,"Off"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]));
       h+=row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
+      if(!solo&&g.pace==="full"){
+        var spd=[0.5,1,2,3].map(function(x){return [x,x+"x"]});
+        h+='<b class="rhead">Match speed</b>'+row("Human v AI",segb("lspeed","ai",+g.speed_ai,spd))+row("Human v Human",segb("lspeed","hh",+g.speed_hh,spd));
+      }
     }else{
-      h+='<p class="note" style="margin-top:6px">Game mode: '+(g.pace==="quick"?"quick game":"classic")+' · Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Respins: '+g.respins+'</p>';
+      h+='<p class="note" style="margin-top:6px">Game mode: '+(g.pace==="quick"?"quick game":"classic")+' · Time per pick: '+(g.timer_seconds?g.timer_seconds+" s":"off")+' · Respins: '+g.respins+(!solo&&g.pace!=="quick"?' · Match speed: AI '+(+g.speed_ai)+'x, human '+(+g.speed_hh)+'x':'')+'</p>';
     }
     h+='</div>';
     if(!solo){
