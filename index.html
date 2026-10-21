@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.3.0 (beta)">
+<meta name="app-version" content="0.3.3.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -537,6 +537,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .stb.p:hover{background:linear-gradient(135deg,#a0ffd0 0%,#33ff9e 38%,#12cc7c 100%)}
 .stb.p:active{filter:brightness(.95)}
 .stb.p:disabled{background:linear-gradient(135deg,#7dffbc 0%,#00ff85 38%,#00b86c 100%);color:#12001f;border-color:#b6ffd966;cursor:default}
+.stb.p.busy,.stb.p.busy:hover,.stb.p.busy:disabled,.stb.p.busy:disabled:hover{background:linear-gradient(135deg,#7dffbc 0%,#00ff85 38%,#00b86c 100%);color:#12001f;border-color:#b6ffd966;opacity:1;box-shadow:0 1px 0 #ffffff66 inset,0 12px 28px -10px #00ff85aa}
 .stb.busy .stag{opacity:0}
 .stb.busy::after{content:"";position:absolute;right:16px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;border:2.5px solid #12001f55;border-top-color:#12001f;animation:stbspin .7s linear infinite}
 @keyframes stbspin{to{transform:rotate(360deg)}}
