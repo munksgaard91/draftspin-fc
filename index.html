@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.3.5.7 (beta)">
+<meta name="app-version" content="0.3.6.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -28,6 +28,8 @@
 .frm{display:flex;gap:3px;justify-content:center;min-height:16px}.frm i{font:700 9.5px/16px var(--mono);font-style:normal;width:16px;height:16px;border-radius:4px;text-align:center;color:#0b1220;background:var(--mut)}.frm i.w{background:#6fcf8a}.frm i.l{background:#e86a6a}.frm i.d{background:#8c97b5}
 .simlive .sims{font-size:30px;min-width:74px;word-spacing:-.22em;letter-spacing:-.02em}
 .sims.pop{animation:simpop .5s ease-out}
+.simmid{display:flex;flex-direction:column;align-items:center;gap:2px}
+.simclk{font:500 12px var(--mono);color:var(--mut);letter-spacing:.3px;min-height:16px}
 @keyframes simpop{0%{transform:scale(1.35);color:var(--acc-lt,#a9d4ad)}100%{transform:scale(1)}}
 .siminfo{margin:8px 0 0;padding:8px 12px 6px}
 .sirow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
@@ -1763,8 +1765,9 @@ function liveSimStep(){
   var s=NET.sim;if(!s||s.end)return;
   if(s.r>=38){liveSimDone();return}
   if(s.r+1>simAvail()){NET.simT=setTimeout(liveSimStep,600);return} // resten af sæsonen er ikke klar endnu
+  (NET.simG||[]).forEach(clearTimeout);NET.simG=[];
   s.r++;s.ph="A";NET.shownRound=s.r;liveSimRender("A");
-  var m=liveMyMatch(s.r);NET.simG=[];
+  var m=liveMyMatch(s.r);
   if(m){
     var h=0,a=0;
     NET.season.events.filter(function(e){return e.match_id===m.id&&e.type==="goal"}).sort(function(x,y){return x.minute-y.minute||x.id-y.id}).forEach(function(e){
@@ -1772,6 +1775,13 @@ function liveSimStep(){
       NET.simG.push(setTimeout(function(){var el=$("simscore");if(!el||s.end)return;el.textContent=hh+" – "+aa;el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop")},400+e.minute/95*2500));
     });
   }
+  /* kamptid på scoreboardet: 0' til 90+4' i takt med målene, derefter FT */
+  var t0=Date.now();
+  var iv=setInterval(function(){
+    var el=$("simclk");if(!el||s.end||s.ph==="B"){clearInterval(iv);return}
+    var mm=Math.min(94,Math.max(0,Math.round((Date.now()-t0-400)/2500*95)));
+    el.textContent=clockTxt(mm);
+  },80);NET.simG.push(iv);
   NET.simT=setTimeout(function(){s.ph="B";liveSimRender("B");NET.simT=setTimeout(liveSimStep,1100)},3300);
 }
 function liveSimRender(ph){
@@ -1780,7 +1790,7 @@ function liveSimRender(ph){
   if(up>1)standingsLive(up-1).forEach(function(x,i){prev[x.k]=i});
   var mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0};
   var side=function(k){return '<div class="simt">'+lcrest(k,40)+'<span>'+esc(lname(k))+'</span><div class="frm">'+formOf(k,r)+'</div></div>'};
-  var h='<div class="simtop"><div class="card simcard simlive"><button class="pausebtn'+(s.paused?" on":"")+'" data-act="simpause">'+(s.paused?"▶ Resume":"⏸ Pause")+'</button><div class="simm">'+side(m.home_key)+'<div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div>'+side(m.away_key)+'</div></div>'+
+  var h='<div class="simtop"><div class="card simcard simlive"><button class="pausebtn'+(s.paused?" on":"")+'" data-act="simpause">'+(s.paused?"▶ Resume":"⏸ Pause")+'</button><div class="simm">'+side(m.home_key)+'<div class="simmid"><div class="sims" id="simscore">'+(B?m.home_goals+' – '+m.away_goals:'0 – 0')+'</div><div class="simclk" id="simclk">'+(B?"FT":"0'")+'</div></div>'+side(m.away_key)+'</div></div>'+
     '<div class="card siminfo"><div class="sirow"><b>Round '+r+' of 38</b><span class="muted">'+(up<1?"First match in progress":ordinal(mi+1)+" place · "+me.w+"W "+me.d+"D "+me.l+"L")+'</span></div><div class="simbar"><i style="width:'+(r/38*100)+'%"></i></div>'+
     '<div class="tr h sm"><span>#</span><span>Team</span><span class="num">P</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
   rows.forEach(function(x,i){
