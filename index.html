@@ -1,8 +1,8 @@
 <html lang="en">
 <meta charset="utf-8">
 <title>PL Draft</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="0.3.5.6 (beta)">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+<meta name="app-version" content="0.3.5.7 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1348,6 +1348,9 @@ document.addEventListener("visibilitychange",function(){if(document.visibilitySt
 setTimeout(checkVersion,2500);
 (function(){try{var st=document.createElement("style");st.textContent=Object.keys(BADGE).map(function(k){return ".bd-"+k+"{background-image:url("+BADGE[k]+")}"}).join("\n");document.head.appendChild(st)}catch(e){}})();
 $("sbg").innerHTML=bgInner();
+/* ingen pinch-zoom (iOS ignorerer user-scalable=no i Safari, så gestus stoppes også her) */
+["gesturestart","gesturechange","gestureend"].forEach(function(t){document.addEventListener(t,function(e){e.preventDefault()},{passive:false})});
+document.addEventListener("touchmove",function(e){if(e.touches&&e.touches.length>1&&e.scale!==undefined&&e.scale!==1)e.preventDefault()},{passive:false});
 
 /* ---------- sæsonslut ---------- */
 var TROPHY='<svg class="tr0" width="54" height="54" viewBox="0 0 64 64" aria-hidden="true"><path d="M20 8h24v14c0 9-5 15-12 17-7-2-12-8-12-17z" fill="#e4c47a"/><path d="M20 12h-8c0 9 4 14 10 15M44 12h8c0 9-4 14-10 15" fill="none" stroke="#e4c47a" stroke-width="3"/><rect x="29" y="38" width="6" height="8" fill="#e4c47a"/><rect x="21" y="46" width="22" height="7" rx="2" fill="#c9a24e"/></svg>';
