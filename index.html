@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="3.1.2">
+<meta name="app-version" content="3.2.0">
 <meta name="theme-color" content="#0c1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -533,6 +533,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 @keyframes updglow{0%,100%{box-shadow:0 0 12px -3px #6fe39a66}50%{box-shadow:0 0 22px 0 #6fe39acc}}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(46px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:#ecc977;font-size:14px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
+.stb.p{background:linear-gradient(135deg,#9af0bb 0%,#4fc788 45%,#1f8f74 100%);border-color:#b6f0cb66;color:#052014;box-shadow:0 1px 0 #ffffff55 inset,0 12px 26px -10px #2fb27fcc}
+.stb.p:hover{background:linear-gradient(135deg,#aef5c8 0%,#5fd496 45%,#27a083 100%)}
+.stb.p:active{filter:brightness(.95)}
 .stb{padding:9px 22px;position:relative;flex-direction:column;gap:2px;line-height:1.25}
 .stb small{display:block;font-size:12.5px;font-weight:400;opacity:.78}
 .stb .stag{position:absolute;top:7px;right:9px;font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:2px 7px;border-radius:20px;background:#0c122033;color:inherit}
@@ -543,6 +546,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sbg{position:fixed;inset:0;z-index:-1;display:flex;justify-content:space-evenly;overflow:hidden;pointer-events:none}
 .sbgc{display:flex;flex-direction:column;opacity:.3;will-change:transform;animation:sbgUp var(--d,50s) linear infinite}
 .sbgc.rev{animation-direction:reverse}
+#sbg[hidden]{display:flex!important;visibility:hidden}#sbg[hidden] .sbgc{animation-play-state:paused}
 .sbgc:nth-child(even){margin-top:-44px}
 .bdc{display:block;background-size:contain;background-repeat:no-repeat;background-position:center}
 .bd{display:block;flex:none;width:46px;height:46px;margin-bottom:26px;background-size:contain;background-repeat:no-repeat;background-position:center}
@@ -1783,7 +1787,7 @@ function liveSimRender(ph){
   h+='</div>';
   $("simbody").innerHTML=h;
 }
-function liveSimDone(){
+function liveSimDone(lbl){
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
   var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
   var row=function(ic,t,d,cls,id){return '<div class="sumrow'+(cls?" "+cls:"")+'"'+(id?' id="'+id+'"':'')+'><span class="si">'+ic+'</span><div><b>'+t+'</b>'+(d?'<small>'+d+'</small>':'')+'</div></div>'};
@@ -1794,7 +1798,7 @@ function liveSimDone(){
     row("📊","Position",ordinal(mi+1)+" place")+
     row("⚽","Results",me.p+" points<br>"+me.w+"W "+me.d+"D "+me.l+"L")+
     (eu?row(eu[0],eu[1],eu[2]):"")+
-    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">Continue</button>';
+    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">'+(lbl||"Continue")+'</button>';
   $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
   sumRecords();
 }
@@ -1966,7 +1970,11 @@ function liveFinishMatch(){
 }
 async function liveReadyPress(){
   var rb=$("readyBtn"),g=NET.game;
-  if(rb.dataset.end==="1"){go("end");return}
+  if(rb.dataset.end==="1"){
+    if(NET.season&&simAvail()>=38){$("navwrap").hidden=true;go("sim");liveSimDone("See the final table")}
+    else go("end");
+    return;
+  }
   rb.disabled=true;rb.textContent="Waiting for the others";
   try{
     var r0=await NET.sb.rpc("ready_round",{p_game:NET.gid,p_round:NET.round});if(r0.error)throw r0.error;
