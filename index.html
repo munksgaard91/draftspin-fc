@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.28 (beta)">
+<meta name="app-version" content="0.5.3.29 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1962,7 +1962,7 @@ function liveSimDone(lbl){
     row("","Results",me.p+" points<br>"+me.w+"W "+me.d+"D "+me.l+"L")+
     (eu?row(eu[0],eu[1],eu[2]):"")+
     (!eu&&mi>0&&mi<17?sumMatches():"")+
-    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">'+(lbl||"Continue")+'</button>';
+    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">'+"See the final table"+'</button>';
   $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
   sumRecords();
 }
