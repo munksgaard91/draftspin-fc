@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.43 (beta)">
+<meta name="app-version" content="0.5.3.44 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1016,7 +1016,7 @@ function renderPitch(el,form,squad,mini,hl,alt){
 function showOrder(){
   S.phase="order";
   ;
-  var n=S.order.length,h='<h1>Draft order</h1><p class="sub">The order is drawn at random and is the same for everyone.</p><div class="card order">';
+  var n=S.order.length,h='<h1>Draft order</h1><p class="sub">Draft. The order is drawn at random and is the same for everyone.</p><div class="card order">';
   for(var i=0;i<n;i++)h+='<div class="orow" id="or'+i+'"><span class="onum">'+(i+1)+'</span><span class="onm" id="on'+i+'">...</span></div>';
   h+='</div><button class="btn p wide" id="startDraft" style="margin-top:18px" disabled>Start the draft</button>';
   $("orderWrap").innerHTML=h;$("draftMain").hidden=true;
