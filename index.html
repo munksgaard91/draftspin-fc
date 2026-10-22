@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.41 (beta)">
+<meta name="app-version" content="0.5.3.42 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1955,10 +1955,12 @@ function sumMatches(){
   if(!lines.length)return "";
   return '<div class="sumrow"><details class="rechof"><summary><b>Your season in three matches</b></summary><small>'+lines.join("")+'</small></details></div>';
 }
+/* testgenvej: flytter dit hold til den placering, der står i dsfc-testpos (kun sliden og slutskærmen, ikke Hall of Fame på serveren) */
+function testPos(rows,mi){try{var tp=+localStorage.getItem("dsfc-testpos");if(tp>=1&&tp<=rows.length&&mi>-1){var mr=rows.splice(mi,1)[0];rows.splice(tp-1,0,mr);return tp-1}}catch(e){}return mi}
 function liveSimDone(lbl){
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
   var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid);
-  if(isTestGame()){try{var tp=+localStorage.getItem("dsfc-testpos");if(tp>=1&&tp<=rows.length&&mi>-1){var mr=rows.splice(mi,1)[0];rows.splice(tp-1,0,mr);mi=tp-1}}catch(e){}}
+  if(isTestGame())mi=testPos(rows,mi);
   var me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
   var row=function(ic,t,d,cls,id){return '<div class="sumrow'+(cls?" "+cls:"")+'"'+(id?' id="'+id+'"':'')+'>'+(ic?'<span class="si">'+ic+'</span>':'')+'<div><b>'+t+'</b>'+(d?'<small>'+d+'</small>':'')+'</div></div>'};
   var eu=mi<4?['<img class="sileague" src="badges/eu-cl.png" alt="">',"Champions League","You qualified for the Champions League."]:(mi<6?['<img class="sileague" src="badges/eu-el.png" alt="">',"Europa League","You qualified for the Europa League."]:(mi===6?['<img class="sileague" src="badges/eu-ecl.png" alt="">',"Conference League","You qualified for the Conference League."]:null));
@@ -2259,7 +2261,7 @@ function renderStatsLive(){
 function renderEndLive(){
   HOFC=null;
   if(!NET.season){$("endbody").innerHTML='<h1>The season isn\'t over</h1>';return}
-  var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
+  var rows=standingsLive(38);if(isTestGame())testPos(rows,rows.map(function(x){return x.k}).indexOf(NET.uid));var champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
   var tab=S.endTab||"stil";if(tab==="pris"&&0)tab="stil";
   var gd=champ.gf-champ.ga;
   var h='<div class="card champ pl" style="margin-top:0"><div class="lblm"><img class="lblion" src="'+PLLOGO+'" alt=""><span>Premier League Champions</span></div><div class="chal">'+lcrest(champ.k,62)+'</div><b>'+esc(lname(champ.k))+'</b><div class="cst"><div><i>'+champ.p+'</i><small>Points</small></div><div><i>'+champ.w+'-'+champ.d+'-'+champ.l+'</i><small>W-D-L</small></div><div><i>'+(gd>0?"+":"")+gd+'</i><small>Goal diff</small></div></div></div>';
