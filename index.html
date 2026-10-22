@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.36 (beta)">
+<meta name="app-version" content="0.5.3.37 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -618,12 +618,24 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .champ{text-align:center;padding:26px 18px;border:1px solid #e4c47a55;background:radial-gradient(120% 80% at 50% 0%,#e4c47a2e,transparent 62%),var(--surf);box-shadow:0 0 0 1px #e4c47a14,0 22px 60px -24px #e4c47a88}
 .champ .tr0{display:block;margin:0 auto 10px}
 .champ.sm{padding:12px 14px}
+.champ.pl{position:relative;overflow:hidden;padding:16px 16px 12px;border-color:#e4c47a66;box-shadow:none;background:linear-gradient(115deg,#241240 0%,#3b2e18 25%,#241240 50%,#3b2e18 75%,#241240 100%);background-size:200% 100%;animation:goldflow 30s linear infinite}
+@keyframes goldflow{from{background-position:0% 0}to{background-position:100% 0}}
+@media (prefers-reduced-motion:reduce){.champ.pl,.champ .lblm span{animation:none}}
+.champ.pl .lblm{gap:9px;font-size:13px;letter-spacing:.14em;white-space:nowrap}
+.champ.pl .lblm span{top:0}
+.champ.pl .lblm .lblion{width:30px;height:30px}
+.champ.pl .chal{display:flex;justify-content:center;margin:12px auto 0}
+.champ.pl b{font-size:24px;margin-top:6px}
+.champ.pl .cst{display:flex;margin-top:10px;padding-top:8px;border-top:1px solid #e4c47a33}
+.champ.pl .cst div{flex:1}
+.champ.pl .cst i{display:block;font:500 15px var(--mono);font-style:normal;color:var(--text)}
+.champ.pl .cst small{display:block;margin-top:1px;font-size:11px;color:var(--mut)}
 .champ.sm b{font-size:21px;margin-top:6px}
 .champ.sm .lblm{font-size:15px}
 .champ b{display:block;font-size:26px;font-weight:600;margin-top:10px;letter-spacing:-.01em}
 .champ .lblm{display:flex;align-items:center;justify-content:center;gap:14px;font-size:22px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
-.champ .lblm span{position:relative;top:-5px;background:linear-gradient(100deg,#b8913a 10%,#fff3c4 40%,#e4c47a 55%,#b8913a 90%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3.2s ease-in-out infinite}
-@keyframes shine{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.champ .lblm span{position:relative;top:-5px;background:linear-gradient(100deg,#b8913a 0%,#e4c47a 15%,#fff3c4 25%,#e4c47a 35%,#b8913a 50%,#e4c47a 65%,#fff3c4 75%,#e4c47a 85%,#b8913a 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
+@keyframes shine{from{background-position:0% 0}to{background-position:100% 0}}
 .champ .lblm .lblion{width:44px;height:44px;object-fit:contain;filter:brightness(0) invert(1);flex:none}
 .champ.sm .lblm{gap:12px;font-size:15px;letter-spacing:.1em;line-height:1.25;margin-bottom:10px}
 .champ.sm .lblm span{top:0;text-align:left;display:block}
@@ -2252,7 +2264,8 @@ function renderEndLive(){
   if(!NET.season){$("endbody").innerHTML='<h1>The season isn\'t over</h1>';return}
   var rows=standingsLive(38),champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
   var tab=S.endTab||"stil";if(tab==="pris"&&0)tab="stil";
-  var h='<div class="card champ sm" style="margin-top:0"><div class="lblm"><img class="lblion" src="'+PLLOGO+'" alt=""><span>Premier League<br>Champions</span></div>'+lcrest(champ.k,58)+'<b>'+esc(lname(champ.k))+'</b></div>';
+  var gd=champ.gf-champ.ga;
+  var h='<div class="card champ pl" style="margin-top:0"><div class="lblm"><img class="lblion" src="'+PLLOGO+'" alt=""><span>Premier League Champions</span></div><div class="chal">'+lcrest(champ.k,62)+'</div><b>'+esc(lname(champ.k))+'</b><div class="cst"><div><i>'+champ.p+'</i><small>Points</small></div><div><i>'+champ.w+'-'+champ.d+'-'+champ.l+'</i><small>W-D-L</small></div><div><i>'+(gd>0?"+":"")+gd+'</i><small>Goal diff</small></div></div></div>';
   var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
   if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
     h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Best among you</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (you)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">'+ordinal(bt.i+1)+', '+bt.r.p+' points</span></div></div>'}
