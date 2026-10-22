@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.29 (beta)">
+<meta name="app-version" content="0.5.3.30 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -425,6 +425,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .seg.hcats{overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
 .seg.hcats::-webkit-scrollbar{display:none}
 .seg{display:flex;gap:20px;overflow-x:auto;margin:10px 0 2px;border-bottom:1px solid var(--line)}
+.seg.etab{justify-content:space-between;gap:8px;margin-top:12px;overflow:visible}
 .seg button{appearance:none;white-space:nowrap;border:0;border-bottom:2px solid transparent;background:none;padding:8px 0 10px;font-size:15px;color:var(--mut);cursor:pointer}
 .seg button.on{color:var(--text);font-weight:600;border-color:var(--text)}
 #mseg button{font-size:13.5px}
@@ -2256,7 +2257,7 @@ function renderEndLive(){
   var hum=rows.map(function(r1,i){return {r:r1,i:i}}).filter(function(x){return lhuman(x.r.k)});
   if(hum.length>=2){var bt=hum[0],ow=NET.players.filter(function(p){return p.user_id===bt.r.k})[0];
     h+='<div class="card" style="margin-top:8px;padding:8px 14px;display:flex;align-items:center;gap:12px">'+lcrest(bt.r.k,34)+'<div><div class="muted" style="font-size:12.5px">Best among you</div><b style="font-size:16px">'+esc(lname(bt.r.k))+(bt.r.k===NET.uid?" (you)":(ow&&ow.display_name?" ("+esc(ow.display_name)+")":""))+'</b> <span class="muted" style="font-size:13px">'+ordinal(bt.i+1)+', '+bt.r.p+' points</span></div></div>'}
-  h+='<div class="etabs">'+[["stil","Final table"],["pris","Awards"],["stats","Stats"],["kampe","Matches"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
+  h+='<div class="seg etab">'+[["stil","Final table"],["pris","Awards"],["stats","Stats"],["kampe","Matches"]].map(function(t){return '<button data-et="'+t[0]+'" class="'+(t[0]===tab?"on":"")+'">'+t[1]+'</button>'}).join("")+'</div>';
   var er=function(i,k,pts){return '<div class="endrow'+(k===NET.uid?" me":(lhuman(k)?" fr":""))+'"><span class="hk">'+(i===0?'<img class="hktr" src="badges/pl-trophy.png" alt="1">':i+1)+'</span><span class="en">'+lcrest(k,24)+'<span>'+esc(lname(k))+'</span></span><span class="ev2">'+pts+'</span></div>'};
   if(tab==="stil"){
     var full=!!S.endFull,list;
