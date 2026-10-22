@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.49 (beta)">
+<meta name="app-version" content="0.5.3.50 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -344,16 +344,22 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 @keyframes rln{from{transform:translateY(-115%)}to{transform:translateY(0)}}
 .gfill{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;visibility:hidden}
 .gfill.on{visibility:visible}
-.gw{position:absolute;inset:0}
-.gw::after{content:"";position:absolute;top:0;bottom:0;width:38px;background:var(--c2);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 120' preserveAspectRatio='none'%3E%3Cpath d='M0 0H22C34 10 10 22 22 34C34 46 10 58 22 70C34 82 10 94 22 106C34 118 22 120 22 120H0Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 120' preserveAspectRatio='none'%3E%3Cpath d='M0 0H22C34 10 10 22 22 34C34 46 10 58 22 70C34 82 10 94 22 106C34 118 22 120 22 120H0Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
-.gl .gw{background-image:linear-gradient(90deg,var(--c1) 0%,var(--c1) 66%,var(--c2) 100%)}
-.gl .gw::after{left:100%}
-.gr .gw{background-image:linear-gradient(270deg,var(--c1) 0%,var(--c1) 66%,var(--c2) 100%)}
-.gr .gw::after{right:100%;transform:scaleX(-1)}
+.gw{position:absolute;inset:0;--p:color-mix(in srgb,var(--c1) 60%,var(--c2));--q:color-mix(in srgb,var(--c1) 28%,var(--c2))}
+.gw::before,.gw::after{content:"";position:absolute;top:0;bottom:0;mask-repeat:repeat-y;-webkit-mask-repeat:repeat-y}
+.gw::before{width:128px;background:linear-gradient(90deg,var(--p),var(--c2));-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 104' preserveAspectRatio='none'%3E%3Cpath d='M0 0H124.9L124.9 0.0L123.5 2.9L121.6 5.8L119.2 8.7L116.3 11.6L113.2 14.4L109.9 17.3L106.4 20.2L102.9 23.1L99.5 26.0L96.3 28.9L93.5 31.8L90.9 34.7L88.9 37.6L87.3 40.4L86.4 43.3L86.0 46.2L86.2 49.1L87.1 52.0L88.5 54.9L90.4 57.8L92.8 60.7L95.7 63.6L98.8 66.4L102.1 69.3L105.6 72.2L109.1 75.1L112.5 78.0L115.7 80.9L118.5 83.8L121.1 86.7L123.1 89.6L124.7 92.4L125.6 95.3L126.0 98.2L125.8 101.1L124.9 104.0V104H0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 104' preserveAspectRatio='none'%3E%3Cpath d='M0 0H124.9L124.9 0.0L123.5 2.9L121.6 5.8L119.2 8.7L116.3 11.6L113.2 14.4L109.9 17.3L106.4 20.2L102.9 23.1L99.5 26.0L96.3 28.9L93.5 31.8L90.9 34.7L88.9 37.6L87.3 40.4L86.4 43.3L86.0 46.2L86.2 49.1L87.1 52.0L88.5 54.9L90.4 57.8L92.8 60.7L95.7 63.6L98.8 66.4L102.1 69.3L105.6 72.2L109.1 75.1L112.5 78.0L115.7 80.9L118.5 83.8L121.1 86.7L123.1 89.6L124.7 92.4L125.6 95.3L126.0 98.2L125.8 101.1L124.9 104.0V104H0Z'/%3E%3C/svg%3E");-webkit-mask-size:100% 104px;mask-size:100% 104px;}
+.gw::after{width:84px;background:linear-gradient(90deg,var(--p),var(--q));-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 72' preserveAspectRatio='none'%3E%3Cpath d='M0 0H69.0L69.0 0.0L71.3 2.0L73.4 4.0L75.5 6.0L77.4 8.0L79.0 10.0L80.3 12.0L81.2 14.0L81.8 16.0L82.0 18.0L81.8 20.0L81.2 22.0L80.3 24.0L79.0 26.0L77.4 28.0L75.5 30.0L73.4 32.0L71.3 34.0L69.0 36.0L66.7 38.0L64.6 40.0L62.5 42.0L60.6 44.0L59.0 46.0L57.7 48.0L56.8 50.0L56.2 52.0L56.0 54.0L56.2 56.0L56.8 58.0L57.7 60.0L59.0 62.0L60.6 64.0L62.5 66.0L64.6 68.0L66.7 70.0L69.0 72.0V72H0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 72' preserveAspectRatio='none'%3E%3Cpath d='M0 0H69.0L69.0 0.0L71.3 2.0L73.4 4.0L75.5 6.0L77.4 8.0L79.0 10.0L80.3 12.0L81.2 14.0L81.8 16.0L82.0 18.0L81.8 20.0L81.2 22.0L80.3 24.0L79.0 26.0L77.4 28.0L75.5 30.0L73.4 32.0L71.3 34.0L69.0 36.0L66.7 38.0L64.6 40.0L62.5 42.0L60.6 44.0L59.0 46.0L57.7 48.0L56.8 50.0L56.2 52.0L56.0 54.0L56.2 56.0L56.8 58.0L57.7 60.0L59.0 62.0L60.6 64.0L62.5 66.0L64.6 68.0L66.7 70.0L69.0 72.0V72H0Z'/%3E%3C/svg%3E");-webkit-mask-size:100% 72px;mask-size:100% 72px;}
+.gfill.on .gw::before{animation:wvb 3.1s linear infinite}
+.gfill.on .gw::after{animation:wva 2.4s linear infinite}
+@keyframes wva{from{-webkit-mask-position:0 0;mask-position:0 0}to{-webkit-mask-position:0 72px;mask-position:0 72px}}
+@keyframes wvb{from{-webkit-mask-position:0 0;mask-position:0 0}to{-webkit-mask-position:0 -104px;mask-position:0 -104px}}
+.gl .gw{background-image:linear-gradient(90deg,var(--c1) 0%,var(--c1) 62%,var(--p) 100%)}
+.gl .gw::before,.gl .gw::after{left:calc(100% - 2px)}
+.gr .gw{background-image:linear-gradient(270deg,var(--c1) 0%,var(--c1) 62%,var(--p) 100%)}
+.gr .gw::before,.gr .gw::after{right:calc(100% - 2px);transform:scaleX(-1)}
 .gfill.gl.on .gw{animation:gwl 1.5s ease-in-out both}
 .gfill.gr.on .gw{animation:gwr 1.5s ease-in-out both}
-@keyframes gwl{0%{transform:translateX(calc(-100% - 40px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(-100% - 40px))}}
-@keyframes gwr{0%{transform:translateX(calc(100% + 40px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(100% + 40px))}}
+@keyframes gwl{0%{transform:translateX(calc(-100% - 140px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(-100% - 140px))}}
+@keyframes gwr{0%{transform:translateX(calc(100% + 140px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(100% + 140px))}}
 
 #sbcard.gfx .sb{text-shadow:0 1px 10px #000a}
 .ev .tg{color:var(--mut);font-size:12.5px}
