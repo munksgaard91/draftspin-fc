@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.15 (beta)">
+<meta name="app-version" content="0.5.3.16 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -346,16 +346,20 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .clock{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);margin:16px 0 6px}
 .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--acc)}
-.ev{display:grid;grid-template-columns:1fr 46px 1fr;gap:6px;align-items:start;padding:6px 0;font-size:14.5px;border-bottom:1px solid var(--line)}
-.ev:last-child{border:0}
-.ev .m{font:500 13px var(--mono);color:var(--mut)}
-.ev b{font-weight:500;font-size:13px;color:var(--text)}
-.ev small.asl{display:block;margin:2px 0 0}
-.ev b+small:not(.asl){margin-left:6px}
-.ev small{display:inline;color:var(--mut);font-size:13px;margin-right:6px}
-.ev.sys{display:block;text-align:center;color:var(--mut);font-size:14px}
-.ev .l,.ev .r{display:flex;gap:8px;align-items:flex-start;min-width:0}.ev .l{justify-content:flex-end;text-align:right}
-.ev .m{text-align:center}
+.ev{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:14.5px}
+.ev.aw{flex-direction:row-reverse;text-align:right}
+.ev .m{flex:none;width:38px;font:500 13px var(--mono);color:var(--text);line-height:1.15}.ev.aw .m{text-align:right}
+.ev .m i{display:block;font-style:normal;color:var(--mut);font-size:12px}
+.ev .ic{flex:none;margin:0}.ev .ic.y,.ev .ic.r{width:14px;height:19px;margin:0}.ev .ic.g{font-size:18px;margin:0}
+.ev .et{min-width:0}
+.ev b{font-weight:500;font-size:14.5px;color:var(--text)}
+.ev small{display:block;color:var(--mut);font-size:13px;margin-top:1px}
+.ev .gs i{font-style:normal}.ev .gs i.n{color:var(--ok,#6fcf8a)}
+.ev.sys{gap:10px;padding:12px 0;color:var(--mut)}
+.ev.sys::before,.ev.sys::after{content:"";flex:1;height:1px;background:var(--line)}
+.ev.sys .pc{flex:none;width:32px;height:32px;border:2px solid var(--mut);border-radius:50%;display:grid;place-items:center;font:600 11px var(--sans);color:var(--text)}
+.ev.sys.ft .pc{border-color:var(--text)}
+.ev.sys .ds{font-size:15px;color:var(--text);margin-left:-2px}
 .ic{width:14px;height:14px;border-radius:50%;margin-top:4px;border:3px solid var(--text)}
 .ic.y,.ic.r{width:11px;height:15px;border-radius:2px;border:0;margin-left:2px;margin-top:3px}
 .ic.y{background:var(--yel)}.ic.r{background:var(--red)}
@@ -1240,15 +1244,18 @@ function script(){
   return liveScript();
 }
 function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
-function evRow(e){
-  var ic=e.t==="goal"?'<i class="ic g">⚽</i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?(e.a==="2nd yellow"?'<i class="ic y2"><i class="a"></i><i class="b"></i><i class="c"></i></i>':'<i class="ic r"></i>'):(e.t==="pm"?'<i class="ic g">❌</i>':'<i class="ic w"></i>')));
-  var min=e.t==="sys"&&e.m===94?(e.lab||"FT"):clockTxt(e.m);
-  if(e.t==="sys")return '<div class="ev sys fade"><span class="m">'+min+'</span> '+esc(e.x)+'</div>';
-  var head=e.t==="goal"?(e.ai?esc(e.x)+" scorer":esc(e.x)):(e.t==="y"?"Yellow card":(e.t==="r"?"Red card":"Missed penalty"));
-  var sub=e.a&&e.t!=="pm"&&e.a!=="2nd yellow"?(e.t==="goal"&&/^Assist/.test(e.a)?'<small class="asl">'+esc(e.a)+' 👏</small>':(e.t==="goal"&&e.pen?'<small class="asl">🥅 '+esc(e.a)+'</small>':'<small class="asl">'+esc(e.a)+'</small>')):'';
-  var left=(e.s==="me")===(NET.myHome!==false);
-  var txt='<div class="et"><b>'+head+'</b>'+sub+((e.t==="y"||e.t==="r"||e.t==="pm")&&!e.ai&&e.x?'<small class="asl">'+esc(e.x)+'</small>':'')+'</div>';
-  return '<div class="ev '+(e.t==="goal"?"goal ":"")+e.s+' fade">'+(left?'<div class="l">'+txt+ic+'</div><span class="m">'+min+'</span><div></div>':'<div></div><span class="m">'+min+'</span><div class="r">'+ic+txt+'</div>')+'</div>';
+function evRow(e,hs,as){
+  var home=(e.s==="me")===(NET.myHome!==false);
+  if(e.t==="sys")return '<div class="ev sys fade'+(e.m===94?" ft":"")+'"><span class="pc">'+(e.m===94?"FT":"HT")+'</span><span class="ds">'+hs+' - '+as+'</span></div>';
+  var ic=e.t==="goal"?'<i class="ic g">⚽</i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?(e.a==="2nd yellow"?'<i class="ic y2"><i class="a"></i><i class="b"></i><i class="c"></i></i>':'<i class="ic r"></i>'):'<i class="ic g">❌</i>'));
+  var mt=clockTxt(e.m),k=mt.indexOf("+"),min=k<0?mt:'90\''+'<i>'+mt.slice(k)+'</i>';
+  var named=!e.ai&&e.x,txt;
+  if(e.t==="goal"){
+    var sc=' <span class="gs">('+(home?'<i class="n">'+hs+'</i>':'<i>'+hs+'</i>')+' - '+(home?'<i>'+as+'</i>':'<i class="n">'+as+'</i>')+')</span>';
+    txt='<b>'+(e.ai?esc(e.x)+" scorer":esc(e.x))+'</b>'+sc+(e.a?'<small>'+esc(e.a)+'</small>':'')
+  }else if(e.t==="pm")txt='<b>Missed penalty</b>'+(named?'<small>'+esc(e.x)+'</small>':'');
+  else txt='<b>'+(named?esc(e.x):(e.t==="y"?"Yellow card":"Red card"))+'</b>'+(e.a==="2nd yellow"?'<small>Second yellow</small>':'');
+  return '<div class="ev '+(home?"hm":"aw")+' fade"><span class="m">'+min+'</span>'+ic+'<div class="et">'+txt+'</div></div>';
 }
 function showOthers(done){
   liveOthers(done);return
@@ -1302,7 +1309,7 @@ function startMatch(){
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
       if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop")}
-      tl.unshift(evRow(e));$("tl").innerHTML=tl.join("");
+      tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
     NET.liveMin=m;liveOthers();
     $("clk").textContent=m<MIN?clockTxt(Math.max(m,1)):"FT";
