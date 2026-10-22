@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.21 (beta)">
+<meta name="app-version" content="0.5.3.22 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -329,9 +329,10 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sb{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:10px;text-align:center}
 .sb .tm{font-size:14px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
 .sb .tm span:nth-child(2){max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb .sc{font:500 32px var(--mono);letter-spacing:-.02em;height:36px;display:flex;align-items:center;justify-content:center}.sb .sc .muted{margin:0 .12em}
+.sb .mid{display:flex;flex-direction:column;align-items:center;gap:6px}.sb .clk{font:500 15px var(--sans);color:var(--text);height:21px;line-height:21px;white-space:nowrap}.sb .clk.t{font-family:var(--mono);font-size:14px}
+.sb .sc{font:500 32px var(--mono);letter-spacing:-.02em;height:34px;display:flex;align-items:center;justify-content:center}.sb .sc .muted{margin:0 .12em}
 .sc.pop{animation:gpop .8s ease-out}
-.sb.away>.tm.mine{order:3}.sb.away>.tm.theirs{order:1}.sb.away>.sc{order:2;flex-direction:row-reverse}
+.sb.away>.tm.mine{order:3}.sb.away>.tm.theirs{order:1}.sb.away>.mid{order:2}.sb.away .sc{flex-direction:row-reverse}
 @keyframes gpop{0%{transform:scale(1)}25%{transform:scale(1.35)}100%{transform:scale(1)}}
 .sb{position:relative;isolation:isolate}
 .sb::after{content:"";position:absolute;inset:-14px -10px;z-index:-1;border-radius:22px;opacity:0;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 52%,color-mix(in srgb,var(--glow,var(--acc)) 42%,transparent),transparent 72%)}
@@ -343,7 +344,6 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 @keyframes cpulse{0%{transform:scale(1)}30%{transform:scale(1.22)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.sb::after,.sb .cr{animation:none!important}}
 .ev .tg{color:var(--mut);font-size:12.5px}
-.clock{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);margin:16px 0 6px}
 .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--acc)}
 .ev{display:flex;align-items:center;gap:7px;padding:9px 0;font-size:14.5px}
@@ -699,11 +699,9 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
     <div class="card" style="margin-top:12px">
       <div class="sb">
         <div class="tm mine"><span id="myC"></span><span class="myname">My team</span><div class="frm" id="myF"></div></div>
-        <div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div>
+        <div class="mid"><div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div><div class="clk" id="clk">Kick off</div></div>
         <div class="tm theirs"><span id="oppC"></span><span id="oppName">Chelsea</span><div class="frm" id="oppF"></div></div>
       </div>
-      <div class="clock"><span id="clk">Kick-off</span></div>
-      <div class="bar"><i id="prog"></i></div>
     </div>
 
     <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:16px"><button class="on" data-mt="tl">Match facts</button><button data-mt="others">Results elsewhere</button><button data-mt="squad">Your team</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:290px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
@@ -1294,7 +1292,7 @@ document.addEventListener("click",async function(e){
 });
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
-  if(gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").textContent="Kick-off";$("prog").style.width="0";renderGate();return}
+  if(gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").className="clk";$("clk").textContent="Kick off";renderGate();return}
   if(S.gate)hideGate();
   readySt={me:false};renderReady();
   liveMatchHeader();
@@ -1314,8 +1312,8 @@ function startMatch(){
       tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
     NET.liveMin=m;liveOthers();
-    $("clk").textContent=m<MIN?clockTxt(Math.max(m,1)):"FT";
-    $("prog").style.width=(m/MIN*100)+"%";
+    var fm=Math.min(MIN,el/TOTAL*MIN),fmm=Math.floor(fm);
+    $("clk").className=m>=MIN?"clk":"clk t";$("clk").textContent=m>=MIN?"Finished":(fm<=90?(fmm<10?"0":"")+fmm+":"+(Math.floor((fm-fmm)*60)<10?"0":"")+Math.floor((fm-fmm)*60):"90+"+(fmm-90)+"'");
     if(m>=MIN&&shown>=sc.length)finishMatch();
   }
   timer=setInterval(tick,120);
@@ -2149,7 +2147,7 @@ function liveReady(){
 }
 function liveFinishMatch(){
   var g=NET.game,r=NET.round;
-  $("prog").style.width="100%";$("clk").textContent="FT";
+  $("clk").className="clk";$("clk").textContent="Finished";
   NET.finishedRound=r;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me0)me0.done_round=Math.max(me0.done_round||0,r);
   NET.sb.rpc("match_done",{p_game:NET.gid,p_round:r}).then(function(){liveChanged()},function(){});
