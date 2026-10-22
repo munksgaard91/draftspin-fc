@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.0.2 (beta)">
+<meta name="app-version" content="0.5.0.3 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2423,7 +2423,6 @@ function liveDraftRender(){
   if(dsig===NET.dsig&&$("clubpanel").children.length+($("dpitch").children.length)>0){liveTimerTick();return}
   NET.dsig=dsig;
   $("draftMain").classList.toggle("solo",NET.players.length<2);
-  if(cur==="me"&&NET.lastPick!==S.pickIdx&&!S.club&&!S.spinning){toast("Your turn. Spin the wheel.",2200)}
   if(S.view!=="me"&&!S.fsq[S.view])S.view="me";
   NET.lastPick=S.pickIdx;
   renderDraft();renderSheet();
