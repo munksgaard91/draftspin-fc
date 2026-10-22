@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.6 (beta)">
+<meta name="app-version" content="0.5.3.7 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2265,7 +2265,7 @@ function renderEndLive(){
     h+='<div class="card" style="margin-top:10px;padding:2px 14px;max-height:330px;overflow-y:auto">'+mine.map(function(m){
       var home=m.home_key===NET.uid,gf=home?m.home_goals:m.away_goals,ga=home?m.away_goals:m.home_goals,opp=home?m.away_key:m.home_key;
       var res=gf>ga?"W":(gf===ga?"D":"L"),col=gf>ga?"var(--acc)":(gf===ga?"var(--mut)":"var(--red)");
-      return '<div class="endrow" style="padding:6px 0"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted">('+(home?"H":"A")+')</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
+      return '<div class="endrow" style="padding:6px 0"><span class="hk">'+m.round+'</span><span class="en">'+lcrest(opp,20)+'<span>'+esc(lname(opp))+' <small class="muted" style="display:inline;margin-left:4px">'+(home?"H":"A")+'</small></span></span><span class="ev2"><span style="color:'+col+'">'+res+'</span> '+gf+'–'+ga+'</span></div>';
     }).join("")+'</div>';
   }
   h+='<div class="nav2 endbtns"><button class="btn" data-end="home">Home</button><button class="btn gold" data-end="hof">🏆 Hall of Fame</button></div>';
