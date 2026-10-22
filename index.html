@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.2.1 (beta)">
+<meta name="app-version" content="0.5.2.2 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -72,7 +72,7 @@
 .pausebtn{position:absolute;top:7px;left:50%;transform:translateX(-50%);appearance:none;border:0;background:none;color:var(--mut);font:inherit;font-size:11.5px;padding:2px 6px;border-radius:999px;cursor:pointer}.pausebtn.on{color:var(--acc)}
 .sumwin{align-items:center}.sumwin .si{line-height:0}
 .sumrow .si .silion{display:block;width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);margin:0 auto}
-.rechof{flex:1;min-width:0}.rechof summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px}.rechof summary::-webkit-details-marker{display:none}.rechof summary::after{content:"";width:7px;height:7px;flex:none;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg) translateY(-2px);transition:transform .2s}.rechof[open] summary::after{transform:rotate(225deg) translateY(-1px)}.rechof .recl{font-size:12px;margin-top:5px}.rechof small{margin-top:6px}
+.rechof{flex:1;min-width:0}.rechof summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px}.rechof summary::-webkit-details-marker{display:none}.rechof summary::after{content:"";width:7px;height:7px;flex:none;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg) translateY(-2px);transition:transform .2s}.rechof[open] summary::after{transform:rotate(225deg) translateY(-1px)}.rechof .recl{font-size:12px;margin-top:5px}.rechof .recl.mrow{display:flex;align-items:center;gap:8px;margin-top:8px}.rechof .recl.mrow svg,.rechof .recl.mrow img{flex:none}.rechof small{margin-top:6px}
 .recl{display:block;margin-top:6px}.recl:first-child{margin-top:2px}.sumrow .recl b{display:inline;font-weight:600;color:var(--text)}
 .sumrow small{display:block;color:var(--mut);font-size:13.5px;line-height:1.45;margin-top:1px}
 .etabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
@@ -1921,12 +1921,12 @@ function sumMatches(){
   if(!ms.length)return "";
   var pick=function(fn,ok,skip){var b=null;ms.forEach(function(x){if(skip.indexOf(x.r)>-1||!ok(x))return;if(!b||fn(x)>fn(b))b=x});return b};
   var used=[],lines=[];
-  var line=function(label,x){if(!x)return;used.push(x.r);lines.push('<span class="recl">'+label+": <b>"+x.f+"–"+x.a+"</b> "+(x.home?"vs ":"at ")+esc(lname(x.opp))+"</span>")};
+  var line=function(label,x){if(!x)return;used.push(x.r);lines.push('<span class="recl mrow">'+lcrest(x.opp,18)+'<span>'+label+": <b>"+x.f+"–"+x.a+"</b> "+(x.home?"vs ":"at ")+esc(lname(x.opp))+"</span></span>")};
   line("Biggest win",pick(function(x){return (x.f-x.a)*100+x.f},function(x){return x.f>x.a},used));
   line("Heaviest defeat",pick(function(x){return (x.a-x.f)*100+x.a},function(x){return x.a>x.f},used));
   line("Most goals",pick(function(x){return (x.f+x.a)*100+x.f},function(x){return x.f+x.a>=4},used));
   if(!lines.length)return "";
-  return '<div class="sumrow"><span class="si">⚽</span><div><b>Your season in three matches</b><small>'+lines.join("")+'</small></div></div>';
+  return '<div class="sumrow"><span class="si">⚽</span><details class="rechof"><summary><b>Your season in three matches</b></summary><small>'+lines.join("")+'</small></details></div>';
 }
 function liveSimDone(lbl){
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
@@ -1969,8 +1969,7 @@ async function sumRecords(){
     out.sort(function(a,b){return a[0]-b[0]});
     var ent=function(o){return '<span class="recl">'+esc(o[1])+"<br><b>"+esc(o[2])+"</b></span>"};
     var el=document.createElement("div");el.className="sumrow";
-    if(out.length===1)el.innerHTML='<span class="si">🏆</span><div><b>New Hall of Fame entry!</b><small>'+ent(out[0])+'</small></div>';
-    else el.innerHTML='<span class="si">🏆</span><details class="rechof"><summary><b>You made it to the Hall of Fame ('+out.length+')</b></summary><small>'+out.map(ent).join("")+'</small></details>';
+    el.innerHTML='<span class="si">🏆</span><details class="rechof"><summary><b>'+(out.length===1?'New Hall of Fame entry!':'You made it to the Hall of Fame ('+out.length+')')+'</b></summary><small>'+out.map(ent).join("")+'</small></details>';
     box.appendChild(el);
   }catch(e){}
 }
