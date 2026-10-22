@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.47 (beta)">
+<meta name="app-version" content="0.5.3.48 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1309,7 +1309,7 @@ document.addEventListener("click",async function(e){
   try{var r0=await NET.sb.rpc("ready_start",{p_game:NET.gid});if(r0.error)throw r0.error;await liveChanged()}catch(x){me.start_ready=false;renderGate();netErr(x)}
 });
 /* mål: scoren er en rulle, og kortet fyldes i det scorende holds farver fra holdets side; kampen holder en skjult pause imens */
-var AIPAL={ARS:["#cb0536","#ffffff"],AVL:["#94bfe6","#ffe60b"],BHA:["#0054a5","#ffffff"],BOU:["#cb090e","#1a1c1a"],BRE:["#c10000","#ffffff"],CHE:["#091988","#ffffff"],COV:["#414e55","#b9c3c5"],CRY:["#00429b","#ffffff"],EVE:["#014593","#f7f9fc"],FUL:["#0d0802","#ffffff"],HUL:["#f5a12d","#000000"],IPS:["#0f4095","#ffffff"],LEE:["#fedd12","#2e4495"],LIV:["#bb0020","#ffffff"],MCI:["#6999c4","#ffffff"],MUN:["#dc0e12","#eea505"],NEW:["#1a1a1a","#ffffff"],NFO:["#ea0019","#ffffff"],SUN:["#f33633","#23221d"],TOT:["#0c133b","#ffffff"]};
+var AIPAL={ARS:["#cb0536","#ffffff"],AVL:["#94bfe6","#ffe60b"],BHA:["#0054a5","#ffffff"],BOU:["#cb090e","#1a1c1a"],BRE:["#c10000","#ffffff"],CHE:["#091988","#ffffff"],COV:["#414e55","#b9c3c5"],CRY:["#00429b","#ffffff"],EVE:["#014593","#f7f9fc"],FUL:["#0d0802","#ffffff"],HUL:["#f5a12d","#000000"],IPS:["#0f4095","#ffffff"],LEE:["#fedd12","#2e4495"],LIV:["#bb0020","#ffffff"],MCI:["#6999c4","#ffffff"],MUN:["#dc0e12","#ffffff"],NEW:["#1a1a1a","#ffffff"],NFO:["#ea0019","#ffffff"],SUN:["#f33633","#23221d"],TOT:["#0c133b","#ffffff"]};
 function teamCols(k){var t=NET.season&&NET.season.teams[k];if(!t)return["#3b4a6b","#e6ebf5"];return t.kind==="ai"?(AIPAL[t.club]||["#3b4a6b","#e6ebf5"]):[t.color1||"#3b4a6b",t.color2||"#e6ebf5"]}
 function setScore(el,val,anim){
   clearTimeout(el.__t);var old=el.dataset.v!==undefined?el.dataset.v:el.textContent;el.dataset.v=val;
