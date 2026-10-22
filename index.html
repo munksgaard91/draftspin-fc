@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.48 (beta)">
+<meta name="app-version" content="0.5.3.49 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -342,14 +342,19 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .rl .rln{animation:rln .55s .12s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rlo{from{transform:translateY(0)}to{transform:translateY(115%)}}
 @keyframes rln{from{transform:translateY(-115%)}to{transform:translateY(0)}}
-.gfill{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0}
-.gfill.on{animation:gfl 1.5s ease-in-out both,gflow 1.5s linear both;background-size:240% 100%}
-.gfill.gl{background-image:linear-gradient(100deg,var(--c1) 0%,var(--c1) 58%,var(--c2) 100%)}
-.gfill.gr{background-image:linear-gradient(260deg,var(--c1) 0%,var(--c1) 58%,var(--c2) 100%)}
-@keyframes gfl{0%{opacity:1;clip-path:inset(0 100% 0 0)}30%{clip-path:inset(0 0 0 0)}70%{clip-path:inset(0 0 0 0)}100%{opacity:1;clip-path:inset(0 100% 0 0)}}
-.gfill.gr.on{animation-name:gfr,gflow}
-@keyframes gfr{0%{opacity:1;clip-path:inset(0 0 0 100%)}30%{clip-path:inset(0 0 0 0)}70%{clip-path:inset(0 0 0 0)}100%{opacity:1;clip-path:inset(0 0 0 100%)}}
-@keyframes gflow{from{background-position:0% 0}to{background-position:100% 0}}
+.gfill{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;visibility:hidden}
+.gfill.on{visibility:visible}
+.gw{position:absolute;inset:0}
+.gw::after{content:"";position:absolute;top:0;bottom:0;width:38px;background:var(--c2);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 120' preserveAspectRatio='none'%3E%3Cpath d='M0 0H22C34 10 10 22 22 34C34 46 10 58 22 70C34 82 10 94 22 106C34 118 22 120 22 120H0Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 120' preserveAspectRatio='none'%3E%3Cpath d='M0 0H22C34 10 10 22 22 34C34 46 10 58 22 70C34 82 10 94 22 106C34 118 22 120 22 120H0Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
+.gl .gw{background-image:linear-gradient(90deg,var(--c1) 0%,var(--c1) 66%,var(--c2) 100%)}
+.gl .gw::after{left:100%}
+.gr .gw{background-image:linear-gradient(270deg,var(--c1) 0%,var(--c1) 66%,var(--c2) 100%)}
+.gr .gw::after{right:100%;transform:scaleX(-1)}
+.gfill.gl.on .gw{animation:gwl 1.5s ease-in-out both}
+.gfill.gr.on .gw{animation:gwr 1.5s ease-in-out both}
+@keyframes gwl{0%{transform:translateX(calc(-100% - 40px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(-100% - 40px))}}
+@keyframes gwr{0%{transform:translateX(calc(100% + 40px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(100% + 40px))}}
+
 #sbcard.gfx .sb{text-shadow:0 1px 10px #000a}
 .ev .tg{color:var(--mut);font-size:12.5px}
 .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
@@ -715,7 +720,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   <section id="s-match" class="screen">
     <div class="status" style="justify-content:flex-start;gap:10px"><h1 style="margin:0">Round <span id="rndNo">12</span></h1><span class="muted">of 38</span></div>
 
-    <div class="card" id="sbcard" style="margin-top:12px"><div class="gfill" id="gfill"></div>
+    <div class="card" id="sbcard" style="margin-top:12px"><div class="gfill" id="gfill"><div class="gw"></div></div>
       <div class="sb">
         <div class="tm mine"><span id="myC"></span><span class="myname">My team</span><div class="frm" id="myF"></div></div>
         <div class="mid"><div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div><div class="clk" id="clk">Kick off</div></div>
@@ -2168,6 +2173,7 @@ function liveReveal(){
   if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive();
 }
 /* hvor mange der er klar til næste runde, vist i knappen: " (1/2 ready)" (kun når man er flere) */
+function waitTxt(){return NET.players.length<2?"Loading":"Waiting for the others"+readyCnt()}
 function readyCnt(){
   var g=NET.game;if(!g||NET.players.length<2)return "";
   var k=NET.players.filter(function(p){return p.ready_round>=g.current_round||lAway(p)}).length;
@@ -2179,7 +2185,7 @@ function liveReady(){
   var rb=$("readyBtn");
   if(NET.finishedRound===g.current_round&&rb.dataset.end!=="1"){
     var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
-    rb.textContent=(me.ready_round>=g.current_round?"Waiting for the others":"Next match")+readyCnt();
+    rb.textContent=me.ready_round>=g.current_round?waitTxt():"Next match"+readyCnt();
   }
 }
 function liveFinishMatch(){
@@ -2194,7 +2200,7 @@ function liveFinishMatch(){
   var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var rb=$("readyBtn");
   if(r>=38){rb.textContent="End season";rb.disabled=false;rb.dataset.end="1"}
-  else{rb.dataset.end="";rb.textContent=(me.ready_round>=r?"Waiting for the others":"Next match")+readyCnt();rb.disabled=me.ready_round>=r}
+  else{rb.dataset.end="";rb.textContent=me.ready_round>=r?waitTxt():"Next match"+readyCnt();rb.disabled=me.ready_round>=r}
   liveReady();
   var up=document.getElementById("s-table").classList.contains("on");if(up)renderTableLive();
 }
@@ -2205,7 +2211,7 @@ async function liveReadyPress(){
     else go("end");
     return;
   }
-  rb.disabled=true;rb.textContent="Waiting for the others"+readyCnt();
+  rb.disabled=true;rb.textContent=waitTxt();
   try{
     var r0=await NET.sb.rpc("ready_round",{p_game:NET.gid,p_round:NET.round});if(r0.error)throw r0.error;
     await liveChanged();
