@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.46 (beta)">
+<meta name="app-version" content="0.5.3.47 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -330,32 +330,27 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sb .tm span:nth-child(2){max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb .mid{display:flex;flex-direction:column;align-items:center;gap:6px}.sb .clk{font:500 12.5px var(--sans);font-variant-numeric:tabular-nums;color:var(--mut);height:21px;line-height:21px;white-space:nowrap}
 .sb .sc{font:500 32px var(--mono);letter-spacing:-.02em;height:34px;display:flex;align-items:center;justify-content:center}.sb .sc .muted{margin:0 .12em}
-.sc.pop{animation:gpop calc(.6s/var(--gsp,1)) ease-out}
-.sc.popb{animation:gpopb calc(.85s/var(--gsp,1)) ease-out}
-.sc.popo{animation:gpopo calc(.4s/var(--gsp,1)) ease-out}
-@keyframes gpopb{0%{transform:scale(1)}22%{transform:scale(1.5);color:var(--acc-lt)}100%{transform:scale(1)}}
-@keyframes gpopo{0%{transform:scale(1)}30%{transform:scale(1.08);color:var(--red-text)}100%{transform:scale(1)}}
-#myC,#oppC{position:relative;display:inline-flex}
-.sb.fl-me #myC::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--acc);opacity:0;pointer-events:none;animation:ring calc(.7s/var(--gsp,1)) ease-out}
-.sb.fl-me.gbig #myC::after{border-width:3px;animation-name:ringb;animation-duration:calc(1s/var(--gsp,1))}
-@keyframes ring{0%{opacity:.9;transform:scale(.8)}100%{opacity:0;transform:scale(1.7)}}
-@keyframes ringb{0%{opacity:1;transform:scale(.8)}60%{opacity:.5}100%{opacity:0;transform:scale(2.3)}}
 .sb.away>.tm.mine{order:3}.sb.away>.tm.theirs{order:1}.sb.away>.mid{order:2}.sb.away .sc{flex-direction:row-reverse}
-@keyframes gpop{0%{transform:scale(1)}25%{transform:scale(1.28);color:var(--acc-lt)}100%{transform:scale(1)}}
 .sb{position:relative;isolation:isolate}
-.sb::after{content:"";position:absolute;inset:-14px -10px;z-index:-1;border-radius:22px;opacity:0;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 52%,color-mix(in srgb,var(--glow,var(--acc)) 42%,transparent),transparent 72%)}
-.sb.fl-me,.sb.fl-opp{--glow:var(--acc)}
-.sb.fl-opp{--glow:var(--red)}
-.sb.fl-me::after{animation:bloom calc(.9s/var(--gsp,1)) cubic-bezier(.2,.7,.2,1)}
-.sb.fl-me.gbig::after{animation-duration:calc(1.4s/var(--gsp,1))}
-.sb.fl-opp::after{animation:bloomo calc(.5s/var(--gsp,1)) ease-out}
-@keyframes bloomo{0%{opacity:0}30%{opacity:.4}100%{opacity:0}}
-@keyframes bloom{0%{opacity:0;transform:scale(.7)}22%{opacity:1}100%{opacity:0;transform:scale(1.25)}}
-.sb.fl-me>.tm.mine .cr{animation:cpulse calc(.7s/var(--gsp,1)) cubic-bezier(.3,1.6,.5,1)}
-.sb.fl-opp>.tm.theirs .cr{animation:cpulseo calc(.4s/var(--gsp,1)) ease-out}
-@keyframes cpulseo{0%{transform:scale(1)}30%{transform:scale(1.08)}100%{transform:scale(1)}}
-@keyframes cpulse{0%{transform:scale(1)}30%{transform:scale(1.22)}100%{transform:scale(1)}}
-@media (prefers-reduced-motion:reduce){.sb::after,.sb .cr{animation:none!important}}
+/* mål: tallet er en rulle (gammelt tal kører ned, nyt kommer ovenfra), og kortet fyldes i det scorende holds farver fra holdets side */
+#sbcard{position:relative;overflow:hidden}
+#sbcard>.sb{position:relative;z-index:1}
+.sb .sc>span.rl{position:relative;display:inline-block;overflow:hidden;height:1.12em;line-height:1.12;vertical-align:top}
+.rl i{font-style:normal}.rl .rls{visibility:hidden}
+.rl .rlo,.rl .rln{position:absolute;left:0;right:0;top:0;text-align:center}
+.rl .rlo{animation:rlo .5s cubic-bezier(.55,0,.8,.4) forwards}
+.rl .rln{animation:rln .55s .12s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rlo{from{transform:translateY(0)}to{transform:translateY(115%)}}
+@keyframes rln{from{transform:translateY(-115%)}to{transform:translateY(0)}}
+.gfill{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0}
+.gfill.on{animation:gfl 1.5s ease-in-out both,gflow 1.5s linear both;background-size:240% 100%}
+.gfill.gl{background-image:linear-gradient(100deg,var(--c1) 0%,var(--c1) 58%,var(--c2) 100%)}
+.gfill.gr{background-image:linear-gradient(260deg,var(--c1) 0%,var(--c1) 58%,var(--c2) 100%)}
+@keyframes gfl{0%{opacity:1;clip-path:inset(0 100% 0 0)}30%{clip-path:inset(0 0 0 0)}70%{clip-path:inset(0 0 0 0)}100%{opacity:1;clip-path:inset(0 100% 0 0)}}
+.gfill.gr.on{animation-name:gfr,gflow}
+@keyframes gfr{0%{opacity:1;clip-path:inset(0 0 0 100%)}30%{clip-path:inset(0 0 0 0)}70%{clip-path:inset(0 0 0 0)}100%{opacity:1;clip-path:inset(0 0 0 100%)}}
+@keyframes gflow{from{background-position:0% 0}to{background-position:100% 0}}
+#sbcard.gfx .sb{text-shadow:0 1px 10px #000a}
 .ev .tg{color:var(--mut);font-size:12.5px}
 .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--acc)}
@@ -720,7 +715,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
   <section id="s-match" class="screen">
     <div class="status" style="justify-content:flex-start;gap:10px"><h1 style="margin:0">Round <span id="rndNo">12</span></h1><span class="muted">of 38</span></div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card" id="sbcard" style="margin-top:12px"><div class="gfill" id="gfill"></div>
       <div class="sb">
         <div class="tm mine"><span id="myC"></span><span class="myname">My team</span><div class="frm" id="myF"></div></div>
         <div class="mid"><div class="sc"><span id="sh">0</span><span class="muted"> – </span><span id="sa">0</span></div><div class="clk" id="clk">Kick off</div></div>
@@ -1313,34 +1308,40 @@ document.addEventListener("click",async function(e){
   me.start_ready=true;renderGate();
   try{var r0=await NET.sb.rpc("ready_start",{p_game:NET.gid});if(r0.error)throw r0.error;await liveChanged()}catch(x){me.start_ready=false;renderGate();netErr(x)}
 });
-/* mål-animation: egne mål fejres, modstanderens er stille; føring, udligning og sene mål får mere; alt er kortere ved høj hastighed og starter forfra ved nyt mål */
-function goalFx(e,d0,d1,spd){
-  var sb=document.querySelector(".sb"),sce=sb.querySelector(".sc"),mine=e.s==="me",big=e.t==="goal"&&(Math.sign(d0)!==Math.sign(d1)||e.m>=85);
-  sb.classList.remove("fl-me","fl-opp","gbig");sce.classList.remove("pop","popb","popo");void sb.offsetWidth;
-  sb.style.setProperty("--gsp",Math.max(1,Math.min(3,spd||1)));
-  if(e.t==="goal"){sb.classList.add(mine?"fl-me":"fl-opp");if(big)sb.classList.add("gbig");sce.classList.add(mine?(big?"popb":"pop"):"popo")}
-  else sb.classList.add(mine?"fl-opp":"fl-me");
-  clearTimeout(window.__flT);window.__flT=setTimeout(function(){sb.classList.remove("fl-me","fl-opp","gbig");sce.classList.remove("pop","popb","popo")},1600);
+/* mål: scoren er en rulle, og kortet fyldes i det scorende holds farver fra holdets side; kampen holder en skjult pause imens */
+var AIPAL={ARS:["#cb0536","#ffffff"],AVL:["#94bfe6","#ffe60b"],BHA:["#0054a5","#ffffff"],BOU:["#cb090e","#1a1c1a"],BRE:["#c10000","#ffffff"],CHE:["#091988","#ffffff"],COV:["#414e55","#b9c3c5"],CRY:["#00429b","#ffffff"],EVE:["#014593","#f7f9fc"],FUL:["#0d0802","#ffffff"],HUL:["#f5a12d","#000000"],IPS:["#0f4095","#ffffff"],LEE:["#fedd12","#2e4495"],LIV:["#bb0020","#ffffff"],MCI:["#6999c4","#ffffff"],MUN:["#dc0e12","#eea505"],NEW:["#1a1a1a","#ffffff"],NFO:["#ea0019","#ffffff"],SUN:["#f33633","#23221d"],TOT:["#0c133b","#ffffff"]};
+function teamCols(k){var t=NET.season&&NET.season.teams[k];if(!t)return["#3b4a6b","#e6ebf5"];return t.kind==="ai"?(AIPAL[t.club]||["#3b4a6b","#e6ebf5"]):[t.color1||"#3b4a6b",t.color2||"#e6ebf5"]}
+function setScore(el,val,anim){
+  clearTimeout(el.__t);var old=el.dataset.v!==undefined?el.dataset.v:el.textContent;el.dataset.v=val;
+  if(!anim||String(old)===String(val)){el.classList.remove("rl");el.textContent=val;return}
+  el.classList.add("rl");el.innerHTML='<i class="rls">'+val+'</i><i class="rlo">'+old+'</i><i class="rln">'+val+'</i>';
+  el.__t=setTimeout(function(){el.classList.remove("rl");el.textContent=val},720);
+}
+function goalFill(k,left){
+  var card=$("sbcard"),f=$("gfill"),c=teamCols(k);
+  f.style.setProperty("--c1","color-mix(in srgb,"+c[0]+" 80%,#170a28)");f.style.setProperty("--c2",c[1]);
+  f.className="gfill "+(left?"gl":"gr");void f.offsetWidth;f.classList.add("on");card.classList.add("gfx");
+  clearTimeout(window.__flT);window.__flT=setTimeout(function(){f.className="gfill";card.classList.remove("gfx")},1600);
 }
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
-  if(gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").textContent="Kick off";renderGate();return}
+  if(gateOn()){liveMatchHeader();setScore($("sh"),0);setScore($("sa"),0);$("tl").innerHTML="";$("clk").textContent="Kick off";renderGate();return}
   if(S.gate)hideGate();
   readySt={me:false};renderReady();
   liveMatchHeader();
   $("readyBtn").disabled=true;$("readyBtn").textContent="Next match";
-  var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false;
+  var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false,holdUntil=0;
   /* multiplayer: fast hastighed for alle (Human v AI / Human v Human), ingen Replay, hastighed eller Skip */
   var G0=NET.game,multi=!!G0&&G0.max_players>1,mm0=liveMyMatch(NET.round),opp0=mm0?(mm0.home_key===NET.uid?mm0.away_key:mm0.home_key):null;
   var FIXSPD=multi?(lhuman(opp0)?+G0.speed_hh:+G0.speed_ai)||1:0;
   document.querySelector(".mctl").hidden=multi;
-  $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
+  setScore($("sh"),0);setScore($("sa"),0);$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
   $("skipBtn").disabled=false;NET.liveMin=0;liveOthers();
   function tick(){
-    var now=Date.now();acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
+    var now=Date.now();if(!skip&&holdUntil&&now<holdUntil){last=now;return}acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
-      if(e.t==="goal"||e.t==="r"){var d0=h-a;if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}goalFx(e,d0,h-a,FIXSPD||SPEED)}
+      if(e.t==="goal"){if(e.s==="me")h++;else a++;setScore($("sh"),h,!skip);setScore($("sa"),a,!skip);buzz();if(!skip){goalFill(e.s==="me"?NET.uid:opp0,(e.s==="me")===(NET.myHome!==false));holdUntil=Date.now()+1500;tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");break}}
       tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
     NET.liveMin=m;liveOthers();
