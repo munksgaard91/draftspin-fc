@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.42 (beta)">
+<meta name="app-version" content="0.5.3.43 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -678,7 +678,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
     <div id="orderWrap"></div>
     <div id="draftMain" hidden>
       <button class="news" id="news" hidden aria-live="polite"><i class="ldot on"></i><span class="nwc" id="nwc"></span></button>
-      <div class="status"><h1 style="margin:0">Snake draft</h1><span class="muted">Round <b id="rnd">1</b> of 11</span></div>
+      <div class="status"><h1 style="margin:0">Draft</h1><span class="muted">Round <b id="rnd">1</b> of 11</span></div>
       <p class="sub" id="turnTxt"></p>
       <div id="adminForce"></div>
       <p class="ordline" id="ordLine"></p>
@@ -687,7 +687,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 
       <div class="card" style="margin-top:10px;padding:10px">
         <div class="reel" aria-label="Club pick"><div id="strip"></div><div class="pay"></div></div>
-        <button class="btn p wide" id="spinBtn" style="margin-top:10px">Spin the wheel</button>
+        <button class="btn p wide" id="spinBtn" style="margin-top:10px">Spin</button>
       </div>
 
       <div id="clubpanel"></div>
@@ -1016,7 +1016,7 @@ function renderPitch(el,form,squad,mini,hl,alt){
 function showOrder(){
   S.phase="order";
   ;
-  var n=S.order.length,h='<h1>Draft order</h1><p class="sub">Snake draft. The order is drawn at random and is the same for everyone.</p><div class="card order">';
+  var n=S.order.length,h='<h1>Draft order</h1><p class="sub">The order is drawn at random and is the same for everyone.</p><div class="card order">';
   for(var i=0;i<n;i++)h+='<div class="orow" id="or'+i+'"><span class="onum">'+(i+1)+'</span><span class="onm" id="on'+i+'">...</span></div>';
   h+='</div><button class="btn p wide" id="startDraft" style="margin-top:18px" disabled>Start the draft</button>';
   $("orderWrap").innerHTML=h;$("draftMain").hidden=true;
@@ -1184,7 +1184,7 @@ function renderDraft(){
   $("ordLine").textContent=(S.order.length>1)?"":S.order.length?"Order: "+S.order.map(function(k,i){return (i+1)+" "+teamName(k)}).join(", "):"";
   var cur=S.pickIdx<S.seq.length?S.seq[S.pickIdx]:null;
   $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club);
-  $("spinBtn").textContent=done?"The draft is finished":(!myTurn()?"Waiting for "+(cur?teamName(cur):""):(S.club?"Pick a player below":"Spin the wheel"));
+  $("spinBtn").textContent=done?"The draft is finished":(!myTurn()?"Waiting for "+(cur?teamName(cur):""):(S.club?"Pick a player below":"Spin"));
   $("turnTxt").textContent=done?"Your squad is ready.":(myTurn()?(S.club?"The club is chosen. Pick freely from the players.":"Your turn. Spin to get a club."):(cur?teamName(cur)+" is up.":""));
   $("doneBox").innerHTML=done?('<p class="note fade" style="margin-top:16px">The draft is finished. The season is starting...</p>'):"";
   if(G.started)$("navwrap").hidden=(true);
