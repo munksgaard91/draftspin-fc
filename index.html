@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.2 (beta)">
+<meta name="app-version" content="0.5.3.3 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -233,7 +233,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sw{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:0 0 0 2px var(--bg) inset}
 .sw.on{border-color:var(--text)}
 .kit{display:flex;align-items:center;gap:12px;margin-top:22px;font-weight:500}
-.holdprev{margin-top:2px}.holdprev .kitname{font-size:19px;font-weight:600}
+.holdprev{margin-top:20px}.holdprev .kitname{font-size:19px;font-weight:600}
 #ctabs{gap:14px}#ctabs button{display:flex;align-items:center;gap:7px}#ctabs .dotc{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #ffffff4d}
 .kit .dotc{width:28px;height:28px}
 .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
@@ -882,7 +882,7 @@ function renderFlow(){
       '<div class="tagrow"><label class="field"><span>Team name</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="E.g. Dream Team" autocomplete="off"></label><label class="field tagf"><span>Abbreviation</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"My team"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+((S.tag||"").length===1?'<p class="note" style="margin:-4px 0 8px">The abbreviation needs 2 or 3 characters.</p>':"")+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primary colour</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Secondary colour</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primary":"Secondary")+' colour: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
-      '<div class="field"><span>Crest</span><div class="crests">'+crestBtns()+'</div></div>'+
+      '<div class="field"><div class="crests">'+crestBtns()+'</div></div>'+
       navBtns("Continue to formation",!holdOk(),true)+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="leavesetup">Leave game</button>'):'');
   }else if(st==="form"){
     h+='<h1>Choose formation</h1><p class="sub">It can\'t be changed once the game has started.</p><div class="fchips">'+
