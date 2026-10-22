@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.2.3 (beta)">
+<meta name="app-version" content="0.5.2.4 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -741,7 +741,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 
 <div class="toast" id="toast" hidden></div>
 <div class="conn" id="conn" hidden></div>
-<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
+<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="draft">Draft only</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
 <div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Leave the league?</h3><p class="note" style="margin:0" id="leaveP">Are you sure you want to leave the current league? If you're not done looking around, stay here.</p><div class="row2"><button class="btn" id="leaveYes">Leave</button><button class="btn p go" id="leaveNo">Stay here</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
 <div class="sheet" id="hsheet" hidden></div>
@@ -1933,7 +1933,9 @@ function sumMatches(){
 }
 function liveSimDone(lbl){
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
-  var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid),me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
+  var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid);
+  if(isTestGame()){try{var tp=+localStorage.getItem("dsfc-testpos");if(tp>=1&&tp<=rows.length&&mi>-1){var mr=rows.splice(mi,1)[0];rows.splice(tp-1,0,mr);mi=tp-1}}catch(e){}}
+  var me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
   var row=function(ic,t,d,cls,id){return '<div class="sumrow'+(cls?" "+cls:"")+'"'+(id?' id="'+id+'"':'')+'><span class="si">'+ic+'</span><div><b>'+t+'</b>'+(d?'<small>'+d+'</small>':'')+'</div></div>'};
   var eu=mi<4?['<img class="sileague" src="badges/eu-cl.png" alt="">',"Champions League","You qualified for the Champions League."]:(mi<6?['<img class="sileague" src="badges/eu-el.png" alt="">',"Europa League","You qualified for the Europa League."]:(mi===6?['<img class="sileague" src="badges/eu-ecl.png" alt="">',"Conference League","You qualified for the Conference League."]:null));
   var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>The season is over</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist" id="sumlist">'+
@@ -2670,7 +2672,7 @@ function liveWake(){if(NET.gid&&!document.hidden){
     toast("Starting test game…",90000);
     try{
       await NET.ready;
-      var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode});
+      var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode==="draft"?"full":mode});
       if(r0.error)throw r0.error;
       NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode;
       try{localStorage.setItem("dsfc-gid",NET.gid);localStorage.setItem("dsfc-testgid",NET.gid)}catch(x){}
@@ -2684,7 +2686,8 @@ function liveWake(){if(NET.gid&&!document.hidden){
       await liveLoad();liveSub();
       if(!NET.pl)livePlayers();await NET.pl;
       var sl=flat();
-      for(var n=0;n<11;n++){
+      var nPicks=11;if(mode==="draft"){try{nPicks=Math.max(0,Math.min(10,+localStorage.getItem("dsfc-testpicks")||0))}catch(e){nPicks=0}}
+      for(var n=0;n<nPicks;n++){
         var club=await call("spin",{p_game:g});
         await liveLoad();
         var usedS={},usedP={};NET.picks.forEach(function(pk){usedP[pk.player_id]=1;if(pk.user_id===NET.uid)usedS[pk.slot]=1});
