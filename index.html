@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.8 (beta)">
+<meta name="app-version" content="0.5.3.9 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2219,7 +2219,7 @@ function statsParts(attr){
   if(statTab==="squad"){
     (NET.season.lineups[NET.uid]||[]).forEach(function(pid){
       var p=NET.byId[pid].p,isg=p[1]==="GK";
-      h+='<div class="sr"><span class="rk">'+POSC[p[1]]+'</span><div>'+esc(p[0])+'<small>'+(isg?(st.cs[pid]||0)+" clean sheets":(st.g[pid]||0)+" goals, "+(st.a[pid]||0)+" assists")+'</small></div><span class="v">'+(st.y[pid]||0)+'<small>yellow</small>'+(st.rd[pid]?' '+st.rd[pid]+'<small>red</small>':'')+'</span></div>';
+      h+='<div class="sr"><span class="rk">'+faceImg(p)+'</span><div>'+esc(p[0])+'<small>'+(isg?(st.cs[pid]||0)+" clean sheets":(st.g[pid]||0)+" goals, "+(st.a[pid]||0)+" assists")+'</small></div><span class="v">'+(st.y[pid]||0)+'<small>yellow</small>'+(st.rd[pid]?' '+st.rd[pid]+'<small>red</small>':'')+'</span></div>';
     });
   }else if(statTab==="cards"){
     var ids={};Object.keys(st.y).concat(Object.keys(st.rd)).forEach(function(p){ids[p]=(st.y[p]||0)+3*(st.rd[p]||0)});
