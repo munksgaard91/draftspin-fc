@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.3 (beta)">
+<meta name="app-version" content="0.5.3.4 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1107,7 +1107,7 @@ function renderClub(){
   h+='<p class="miss">Missing: <b>'+missingTxt()+'</b></p>';
   h+='<div class="seg" id="flt">'+tabs.map(function(t){return '<button data-flt="'+t+'" class="'+(t===S.filter?"on":"")+'">'+(t==="ALL"?"All":t)+'</button>'}).join("")+'</div>';
   h+='<div class="tools"><input class="inp" id="q" type="search" enterkeyhint="search" placeholder="Search player" value="'+esc(S.q)+'" autocomplete="off"><button class="btn'+(S.hideFilled?" on":"")+'" data-hide="1">'+(S.hideFilled?"Show filled":"Hide filled")+'</button></div>';
-  h+='<p class="note" style="margin:6px 0 0">Tap a player, then choose his spot on the pitch.</p><div id="clist"></div><p class="avail" id="avail"></p><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Pick for me</button></div>';
+  h+='<div id="clist"></div><p class="avail" id="avail"></p><button class="linkbtn" data-auto="1" style="margin:8px auto 0">Pick for me</button></div>';
   el.innerHTML=h;renderList();
 }
 /* spillerbilleder (kun i draft-listen): ét samlet billedark (atlas) hentes én gang og gemmes på enheden; uden billede vises en silhuet */
