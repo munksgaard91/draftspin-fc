@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.2.2 (beta)">
+<meta name="app-version" content="0.5.2.3 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1868,8 +1868,11 @@ function simClear(){clearTimeout(NET.simT);(NET.simG||[]).forEach(clearTimeout);
 function simAvail(){var a=0;NET.season.matches.forEach(function(m){if(m.played&&m.round>a)a=m.round});return a}
 function simReady(){return !!NET.game&&NET.game.status==="done"&&!!NET.season&&simAvail()>=38}
 function liveSimUnlock(){var sk=document.querySelector('[data-act="simskip"]');if(sk&&simReady())sk.disabled=false}
+function isTestGame(){try{return !!NET.gid&&localStorage.getItem("dsfc-testgid")===NET.gid}catch(e){return false}}
 function liveSimStep(){
   var s=NET.sim;if(!s||s.end)return;
+  /* testspil (skjult, 5 tryk på logoet): spring afspilningen over og vis sæsonafslutningen, så snart hele sæsonen er simuleret */
+  if(isTestGame()){if(simAvail()>=38){s.r=38;liveSimDone()}else NET.simT=setTimeout(liveSimStep,500);return}
   if(s.r>=38){liveSimDone();return}
   if(s.r+1>simAvail()){NET.simT=setTimeout(liveSimStep,600);return} // resten af sæsonen er ikke klar endnu
   (NET.simG||[]).forEach(clearTimeout);NET.simG=[];
@@ -2670,7 +2673,7 @@ function liveWake(){if(NET.gid&&!document.hidden){
       var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode});
       if(r0.error)throw r0.error;
       NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode;
-      try{localStorage.setItem("dsfc-gid",NET.gid)}catch(x){}
+      try{localStorage.setItem("dsfc-gid",NET.gid);localStorage.setItem("dsfc-testgid",NET.gid)}catch(x){}
       var nm=S.pname.trim().length>=2?S.pname.trim():"Tester";
       S.pname=nm;S.team="Test team "+(10+Math.floor(Math.random()*90));S.tag="";S.form=rnd(FORM_ORDER);
       S.color=rnd(SWATCH);S.color2=rnd(SWATCH.filter(function(c){return c!==S.color}));S.crest=Math.floor(Math.random()*12);
