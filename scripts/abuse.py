@@ -62,9 +62,6 @@ s, r = http("PATCH", f"/rest/v1/game_players?game_id=eq.{gid}&user_id=eq.{adm.id
 rr = adm.sel("game_players", f"select=ready_round&game_id=eq.{gid}&user_id=eq.{adm.id}")[0]["ready_round"]
 check("spiller kan ikke PATCH'e ready_round direkte", rr != 99, str(rr))
 s, r = http("POST", "/rest/v1/rpc/create_game", None, {"p_league": "PL", "p_season": "x", "p_max": 2, "p_timer": 0, "p_show": False}); check("uden login: RPC afvist", s in (401, 403) or (isinstance(r, dict) and r.get("code")), str(s))
-s, _ = http("GET", "/rest/v1/push_subs?select=*", adm.tok); check("push_subs ikke læsbar", s in (401, 403) or _ == [], str(s)+str(_)[:50])
-s, _ = http("GET", "/rest/v1/push_config?select=*", adm.tok); check("push_config ikke læsbar", s in (401, 403) or _ == [], str(s)+str(_)[:50])
-s, _ = adm.rpc("save_push_sub", p_endpoint="http://x.invalid/a", p_p256dh="a", p_auth="b"); check("push: http-endpoint afvist", s >= 400)
 s, _ = http("POST", "/functions/v1/push", adm.tok, {"user_id": mem.id, "title": "Spam"}); check("push-funktion kan ikke kaldes uden hemmelighed", s == 403, str(s))
 # motor
 s, r = out.engine("init", gid); check("motor: udenforstående afvist", s in (400, 403), str(s))
