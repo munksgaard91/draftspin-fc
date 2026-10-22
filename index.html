@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.37 (beta)">
+<meta name="app-version" content="0.5.3.38 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -589,7 +589,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .err{color:#ff8f8f;font-size:14px;margin:10px 0 0}
 /* startskærm: klublogoer ruller forbi som hjul */
 .sbg{position:fixed;inset:0;z-index:-1;display:flex;justify-content:space-evenly;overflow:hidden;pointer-events:none}
-.sbgc{display:flex;flex-direction:column;opacity:.3;will-change:transform;animation:sbgUp var(--d,50s) linear infinite}
+.sbgc{display:flex;flex-direction:column;align-self:flex-start;opacity:.3;will-change:transform;animation:sbgUp var(--d,50s) linear infinite}
 .sbgc.rev{animation-direction:reverse}
 #sbg[hidden]{display:flex!important;visibility:hidden}#sbg[hidden] .sbgc{animation-play-state:paused}
 .sbgc:nth-child(even){margin-top:-44px}
@@ -1430,11 +1430,11 @@ $("hseg").addEventListener("click",function(e){var b=e.target.closest("[data-h]"
 
 /* startskærm */
 function bgInner(){
-  var codes=Object.keys(BADGE),n=codes.length,cols="",dur=[72,90,66,100,80];
+  var codes=Object.keys(BADGE),n=codes.length,cols="",dur=[480,560,440,620,520];
   for(var c=0;c<5;c++){
     var one="";
     for(var i=0;i<30;i++)one+='<i class="bd bd-'+codes[(i*7+c*11)%n]+'"></i>';
-    cols+='<div class="sbgc'+(c%2?" rev":"")+'" style="--d:'+dur[c]+'s;animation-delay:-'+(c*13)+'s">'+one+one+'</div>';
+    cols+='<div class="sbgc'+(c%2?" rev":"")+'" style="--d:'+dur[c]+'s;animation-delay:-'+(c*83)+'s">'+one+one+'</div>';
   }
   return cols;
 }
