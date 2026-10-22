@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.14 (beta)">
+<meta name="app-version" content="0.5.3.15 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2110,8 +2110,8 @@ function liveOthers(){
   var mine=ms.filter(function(m){return m.home_key===NET.uid||m.away_key===NET.uid}),oth=ms.filter(function(m){return !(m.home_key===NET.uid||m.away_key===NET.uid)});
   var h=mine.concat(oth).map(function(m){
     var st=otherState(m);
-    var mn=NET.liveMin==null?-1:NET.liveMin,pill=!st.live?"FT":(mn<0||st.h===null?"–":(mn===45?"HT":clockTxt(Math.max(mn,1)).replace("'","")));
-    return '<div class="res"><span class="pl'+(st.live&&pill!=="–"&&pill!=="HT"?' on':'')+'">'+pill+'</span>'+lhname(m.home_key,false,15)+'<span class="r">'+(st.h===null?'':'<b>'+st.h+' – '+st.a+'</b>')+'</span>'+lhname(m.away_key,true,15)+'</div>';
+    var mn=NET.liveMin==null?-1:NET.liveMin,pill=!st.live?"FT":(mn<0||st.h===null?"–":clockTxt(Math.max(mn,1)).replace("'",""));
+    return '<div class="res"><span class="pl'+(st.live&&pill!=="–"?' on':'')+'">'+pill+'</span>'+lhname(m.home_key,false,15)+'<span class="r">'+(st.h===null?'':'<b>'+st.h+' – '+st.a+'</b>')+'</span>'+lhname(m.away_key,true,15)+'</div>';
   }).join("");
   var box=$("others");if(box._h!==h){box._h=h;box.innerHTML=h}
 }
