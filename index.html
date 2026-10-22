@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.33 (beta)">
+<meta name="app-version" content="0.5.3.34 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2718,7 +2718,7 @@ function liveWake(){if(NET.gid&&!document.hidden){
         var pool=nat.length?nat:pen;if(!pool.length)throw new Error("No player fits");
         var x=rnd(pool);await call("pick_player",{p_game:g,p_player:x[0][3],p_slot:rnd(x[1])+1});
       }
-      await liveLoad();liveEnter();
+      await liveLoad();liveEnter();clearTimeout(toastT);$("toast").hidden=true;
     }catch(e){netErr(e);try{liveLeave()}catch(x){}}
     finally{NET.creating=false}
   }
