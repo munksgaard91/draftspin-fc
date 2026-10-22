@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.45 (beta)">
+<meta name="app-version" content="0.5.3.46 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -330,16 +330,30 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .sb .tm span:nth-child(2){max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb .mid{display:flex;flex-direction:column;align-items:center;gap:6px}.sb .clk{font:500 12.5px var(--sans);font-variant-numeric:tabular-nums;color:var(--mut);height:21px;line-height:21px;white-space:nowrap}
 .sb .sc{font:500 32px var(--mono);letter-spacing:-.02em;height:34px;display:flex;align-items:center;justify-content:center}.sb .sc .muted{margin:0 .12em}
-.sc.pop{animation:gpop .8s ease-out}
+.sc.pop{animation:gpop calc(.6s/var(--gsp,1)) ease-out}
+.sc.popb{animation:gpopb calc(.85s/var(--gsp,1)) ease-out}
+.sc.popo{animation:gpopo calc(.4s/var(--gsp,1)) ease-out}
+@keyframes gpopb{0%{transform:scale(1)}22%{transform:scale(1.5);color:var(--acc-lt)}100%{transform:scale(1)}}
+@keyframes gpopo{0%{transform:scale(1)}30%{transform:scale(1.08);color:var(--red-text)}100%{transform:scale(1)}}
+#myC,#oppC{position:relative;display:inline-flex}
+.sb.fl-me #myC::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--acc);opacity:0;pointer-events:none;animation:ring calc(.7s/var(--gsp,1)) ease-out}
+.sb.fl-me.gbig #myC::after{border-width:3px;animation-name:ringb;animation-duration:calc(1s/var(--gsp,1))}
+@keyframes ring{0%{opacity:.9;transform:scale(.8)}100%{opacity:0;transform:scale(1.7)}}
+@keyframes ringb{0%{opacity:1;transform:scale(.8)}60%{opacity:.5}100%{opacity:0;transform:scale(2.3)}}
 .sb.away>.tm.mine{order:3}.sb.away>.tm.theirs{order:1}.sb.away>.mid{order:2}.sb.away .sc{flex-direction:row-reverse}
-@keyframes gpop{0%{transform:scale(1)}25%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes gpop{0%{transform:scale(1)}25%{transform:scale(1.28);color:var(--acc-lt)}100%{transform:scale(1)}}
 .sb{position:relative;isolation:isolate}
 .sb::after{content:"";position:absolute;inset:-14px -10px;z-index:-1;border-radius:22px;opacity:0;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 52%,color-mix(in srgb,var(--glow,var(--acc)) 42%,transparent),transparent 72%)}
 .sb.fl-me,.sb.fl-opp{--glow:var(--acc)}
 .sb.fl-opp{--glow:var(--red)}
-.sb.fl-me::after,.sb.fl-opp::after{animation:bloom 1.25s cubic-bezier(.2,.7,.2,1)}
+.sb.fl-me::after{animation:bloom calc(.9s/var(--gsp,1)) cubic-bezier(.2,.7,.2,1)}
+.sb.fl-me.gbig::after{animation-duration:calc(1.4s/var(--gsp,1))}
+.sb.fl-opp::after{animation:bloomo calc(.5s/var(--gsp,1)) ease-out}
+@keyframes bloomo{0%{opacity:0}30%{opacity:.4}100%{opacity:0}}
 @keyframes bloom{0%{opacity:0;transform:scale(.7)}22%{opacity:1}100%{opacity:0;transform:scale(1.25)}}
-.sb.fl-me>.tm.mine .cr,.sb.fl-opp>.tm.theirs .cr{animation:cpulse .9s cubic-bezier(.3,1.6,.5,1)}
+.sb.fl-me>.tm.mine .cr{animation:cpulse calc(.7s/var(--gsp,1)) cubic-bezier(.3,1.6,.5,1)}
+.sb.fl-opp>.tm.theirs .cr{animation:cpulseo calc(.4s/var(--gsp,1)) ease-out}
+@keyframes cpulseo{0%{transform:scale(1)}30%{transform:scale(1.08)}100%{transform:scale(1)}}
 @keyframes cpulse{0%{transform:scale(1)}30%{transform:scale(1.22)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.sb::after,.sb .cr{animation:none!important}}
 .ev .tg{color:var(--mut);font-size:12.5px}
@@ -1299,6 +1313,15 @@ document.addEventListener("click",async function(e){
   me.start_ready=true;renderGate();
   try{var r0=await NET.sb.rpc("ready_start",{p_game:NET.gid});if(r0.error)throw r0.error;await liveChanged()}catch(x){me.start_ready=false;renderGate();netErr(x)}
 });
+/* mål-animation: egne mål fejres, modstanderens er stille; føring, udligning og sene mål får mere; alt er kortere ved høj hastighed og starter forfra ved nyt mål */
+function goalFx(e,d0,d1,spd){
+  var sb=document.querySelector(".sb"),sce=sb.querySelector(".sc"),mine=e.s==="me",big=e.t==="goal"&&(Math.sign(d0)!==Math.sign(d1)||e.m>=85);
+  sb.classList.remove("fl-me","fl-opp","gbig");sce.classList.remove("pop","popb","popo");void sb.offsetWidth;
+  sb.style.setProperty("--gsp",Math.max(1,Math.min(3,spd||1)));
+  if(e.t==="goal"){sb.classList.add(mine?"fl-me":"fl-opp");if(big)sb.classList.add("gbig");sce.classList.add(mine?(big?"popb":"pop"):"popo")}
+  else sb.classList.add(mine?"fl-opp":"fl-me");
+  clearTimeout(window.__flT);window.__flT=setTimeout(function(){sb.classList.remove("fl-me","fl-opp","gbig");sce.classList.remove("pop","popb","popo")},1600);
+}
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
   if(gateOn()){liveMatchHeader();$("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("clk").textContent="Kick off";renderGate();return}
@@ -1317,7 +1340,7 @@ function startMatch(){
     var now=Date.now();acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
-      if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop");clearTimeout(window.__flT);window.__flT=setTimeout(function(){sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop")},1600)}
+      if(e.t==="goal"||e.t==="r"){var d0=h-a;if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}goalFx(e,d0,h-a,FIXSPD||SPEED)}
       tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
     NET.liveMin=m;liveOthers();
@@ -2160,7 +2183,7 @@ function liveReady(){
 }
 function liveFinishMatch(){
   var g=NET.game,r=NET.round;
-  setTimeout(function(){document.querySelectorAll("#tl .fade").forEach(function(x){x.classList.remove("fade")});var sb=document.querySelector(".sb");if(sb)sb.classList.remove("fl-me","fl-opp");var sc=document.querySelector(".sb .sc");if(sc)sc.classList.remove("pop")},900); /* så intet spiller igen, når man skifter til tabellen og tilbage */
+  setTimeout(function(){document.querySelectorAll("#tl .fade").forEach(function(x){x.classList.remove("fade")});var sb=document.querySelector(".sb");if(sb)sb.classList.remove("fl-me","fl-opp","gbig");var sc=document.querySelector(".sb .sc");if(sc)sc.classList.remove("pop","popb","popo")},900); /* så intet spiller igen, når man skifter til tabellen og tilbage */
   $("clk").textContent="Finished";
   NET.finishedRound=r;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me0)me0.done_round=Math.max(me0.done_round||0,r);
