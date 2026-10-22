@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.10 (beta)">
+<meta name="app-version" content="0.5.3.11 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -539,7 +539,7 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .av.sil::after{content:"";position:absolute;inset:0;background:var(--pc);-webkit-mask:var(--silm) center 100%/128% no-repeat;mask:var(--silm) center 100%/128% no-repeat}
 .av{width:30px;height:30px;flex:none;border-radius:50%;background:var(--surf2);display:grid;place-items:center;font-weight:600;font-size:13px;color:var(--mut)}
 .tagrow{display:flex;gap:10px;align-items:flex-end;margin-top:12px}.tagrow .field{margin:0}.tagrow .field:first-child{flex:1;min-width:0}.tagf{width:84px;flex:none}.tagf .inp{text-align:center;text-transform:uppercase;letter-spacing:1px}
-.btn.skipb{border:1px solid #e0b85a80;background:linear-gradient(#e0b85a26,#e0b85a10);color:#ecc977;font-weight:600}.btn.skipb:disabled{opacity:.4}
+.btn.skipb{border:1px solid var(--line);background:var(--surf2);color:var(--text);font-weight:500}.btn.skipb:disabled{opacity:.4}
 .livetag{display:inline-flex;align-items:center;gap:5px;color:#6fcf8a;font:700 11.5px var(--mono);letter-spacing:.8px}.livetag i{width:7px;height:7px;border-radius:50%;background:#6fcf8a;animation:livep 1.4s infinite ease-in-out}@keyframes livep{0%,100%{opacity:1}50%{opacity:.3}}
 .mctl .btn{min-height:38px;padding:0 14px;font-size:14px}
 .nxo{display:inline-flex;align-items:center;gap:6px}
@@ -702,9 +702,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
     <div class="card" style="margin-top:10px;padding:0 12px 2px"><div class="seg" id="mseg" style="margin:0;gap:16px"><button class="on" data-mt="tl">Match facts</button><button data-mt="others">Results elsewhere</button><button data-mt="squad">Your team</button></div><div id="tl" style="min-height:96px;max-height:260px;overflow-y:auto"></div><div id="others" hidden style="max-height:290px;overflow-y:auto"></div><div id="msquad" hidden style="padding:8px 0 12px"><div class="pitch" id="mpitch" style="max-width:340px;margin:0 auto;aspect-ratio:5/6"></div></div></div>
 
     <div class="mctl" style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn" id="playBtn" style="flex:1;white-space:nowrap">Replay</button>
       <button class="btn" id="spdBtn" style="min-width:56px">1x</button>
-      <button class="btn skipb" id="skipBtn" style="flex:2;white-space:nowrap">🏁 Skip to result</button>
+      <button class="btn skipb" id="skipBtn" style="flex:1;white-space:nowrap">Skip to result</button>
     </div>
 
     <div class="card" style="margin-top:10px;padding:10px 14px">
@@ -1292,7 +1291,7 @@ function startMatch(){
   var FIXSPD=multi?(lhuman(opp0)?+G0.speed_hh:+G0.speed_ai)||1:0;
   document.querySelector(".mctl").hidden=multi;
   $("sh").textContent="0";$("sa").textContent="0";$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
-  $("playBtn").disabled=true;$("skipBtn").disabled=false;NET.liveMin=0;liveOthers();
+  $("skipBtn").disabled=false;NET.liveMin=0;liveOthers();
   function tick(){
     var now=Date.now();acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
@@ -1318,7 +1317,6 @@ function renderMySquad(){
   renderPitch($("mpitch"),form,sq,false);
 }
 $("mseg").addEventListener("click",function(e){var b=e.target.closest("[data-mt]");if(!b)return;var t=b.dataset.mt;$("tl").hidden=t!=="tl";$("others").hidden=t!=="others";$("msquad").hidden=t!=="squad";if(t==="squad")renderMySquad();[].forEach.call($("mseg").children,function(x){x.classList.toggle("on",x===b)})});
-$("playBtn").addEventListener("click",function(){startMatch()});
 
 /* ---------- tabel ---------- */
 function renderTable(){
@@ -2141,7 +2139,7 @@ function liveFinishMatch(){
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me0)me0.done_round=Math.max(me0.done_round||0,r);
   NET.sb.rpc("match_done",{p_game:NET.gid,p_round:r}).then(function(){liveChanged()},function(){});
   NET.liveMin=94;if(allDone(r))NET.shownRound=r;liveOthers();
-  $("playBtn").disabled=false;$("skipBtn").disabled=true;
+  $("skipBtn").disabled=true;
   var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var rb=$("readyBtn");
   if(r>=38){rb.textContent="End season";rb.disabled=false;rb.dataset.end="1"}
