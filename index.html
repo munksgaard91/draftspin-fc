@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.17 (beta)">
+<meta name="app-version" content="0.5.3.18 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -357,8 +357,10 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .ev .gs i{font-style:normal}.ev .gs i.n{color:var(--ok,#6fcf8a)}
 .ev.sys{gap:8px;padding:8px 0;color:var(--mut)}
 .ev.sys::before,.ev.sys::after{content:"";flex:1;height:1px;background:var(--line)}
-.ev.sys .pc{flex:none;width:23px;height:23px;border:1.5px solid var(--mut);border-radius:50%;display:grid;place-items:center;font:600 8.5px var(--sans);color:var(--text)}
-.ev.sys.ft .pc{border-color:var(--text)}
+.ev.sys .pc{position:relative;flex:none;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font:600 8.5px var(--sans);color:var(--text);background:conic-gradient(var(--text) 0 180deg,var(--line) 180deg 360deg)}
+.ev.sys .pc::after{content:"";position:absolute;inset:1.5px;border-radius:50%;background:var(--surf)}
+.ev.sys .pc b{position:relative;z-index:1;font-weight:600;font-size:8.5px}
+.ev.sys.ft .pc{background:var(--text)}
 .ev.sys .ds{font-size:13px;color:var(--text);margin-left:-2px}
 .ic{width:14px;height:14px;border-radius:50%;margin-top:4px;border:3px solid var(--text)}
 .ic.y,.ic.r{width:11px;height:15px;border-radius:2px;border:0;margin-left:2px;margin-top:3px}
@@ -1246,7 +1248,7 @@ function script(){
 function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
 function evRow(e,hs,as){
   var home=(e.s==="me")===(NET.myHome!==false);
-  if(e.t==="sys")return '<div class="ev sys fade'+(e.m===94?" ft":"")+'"><span class="pc">'+(e.m===94?"FT":"HT")+'</span><span class="ds">'+hs+' - '+as+'</span></div>';
+  if(e.t==="sys")return '<div class="ev sys fade'+(e.m===94?" ft":"")+'"><span class="pc"><b>'+(e.m===94?"FT":"HT")+'</b></span><span class="ds">'+hs+' - '+as+'</span></div>';
   var ic=e.t==="goal"?'<i class="ic g">⚽</i>':(e.t==="y"?'<i class="ic y"></i>':(e.t==="r"?(e.a==="2nd yellow"?'<i class="ic y2"><i class="a"></i><i class="b"></i><i class="c"></i></i>':'<i class="ic r"></i>'):'<i class="ic g">❌</i>'));
   var mt=clockTxt(e.m),k=mt.indexOf("+"),min=k<0?mt:'90\''+'<i>'+mt.slice(k)+'</i>';
   var named=!e.ai&&e.x,txt;
