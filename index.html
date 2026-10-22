@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.27 (beta)">
+<meta name="app-version" content="0.5.3.28 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1281,8 +1281,8 @@ function renderGate(){
   var n=NET.players.length,k=NET.players.filter(function(p){return p.start_ready}).length,me=NET.players.filter(function(p){return p.user_id===NET.uid})[0],done=!!(me&&me.start_ready);
   gateBlocks().forEach(function(x){if(x)x.hidden=true});
   var box=$("gateBox");
-  if(!box){box=document.createElement("div");box.id="gateBox";box.className="card gatebox";var sb=document.querySelector("#s-match .sb").closest(".card");sb.insertAdjacentElement("afterend",box);box.innerHTML='<p class="note">When everyone has pressed Ready, the first match starts.</p><button class="btn p wide" id="gateBtn"></button>'}
-  var b=$("gateBtn");b.textContent="Ready "+k+"/"+n;b.disabled=done;S.gate=true;
+  if(!box){box=document.createElement("div");box.id="gateBox";box.className="card gatebox";var sb=document.querySelector("#s-match .sb").closest(".card");sb.insertAdjacentElement("afterend",box);box.innerHTML=(n>1?'<p class="note">When everyone has pressed Ready, the first match starts.</p>':'')+'<button class="btn p wide" id="gateBtn"></button>'}
+  var b=$("gateBtn");b.textContent=n>1?"Ready "+k+"/"+n:"Kick off";b.disabled=done;S.gate=true;
 }
 function hideGate(){S.gate=false;var box=$("gateBox");if(box)box.remove();gateBlocks().forEach(function(x){if(x)x.hidden=false})}
 document.addEventListener("click",async function(e){
