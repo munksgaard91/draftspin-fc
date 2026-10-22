@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.44 (beta)">
+<meta name="app-version" content="0.5.3.45 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1317,8 +1317,8 @@ function startMatch(){
     var now=Date.now();acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
-      if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop")}
-      tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
+      if(e.t==="goal"||e.t==="r"){if(e.t==="goal"){if(e.s==="me")h++;else a++;$("sh").textContent=h;$("sa").textContent=a;buzz()}var sb=document.querySelector(".sb"),sce=document.querySelector(".sb .sc");sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop");void sb.offsetWidth;sb.classList.add(e.s==="me"?(e.t==="goal"?"fl-me":"fl-opp"):(e.t==="goal"?"fl-opp":"fl-me"));if(e.t==="goal")sce.classList.add("pop");clearTimeout(window.__flT);window.__flT=setTimeout(function(){sb.classList.remove("fl-me","fl-opp");sce.classList.remove("pop")},1600)}
+      tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
     NET.liveMin=m;liveOthers();
     var fm=Math.min(MIN,el/TOTAL*MIN),fmm=Math.floor(fm);
@@ -1327,6 +1327,7 @@ function startMatch(){
   }
   timer=setInterval(tick,120);
   $("skipBtn").onclick=function(){skip=true;tick()};
+  $("tl").onanimationend=function(e){if(e.target.classList)e.target.classList.remove("fade")};
 }
 function renderMySquad(){
   var form,sq;
@@ -2159,6 +2160,7 @@ function liveReady(){
 }
 function liveFinishMatch(){
   var g=NET.game,r=NET.round;
+  setTimeout(function(){document.querySelectorAll("#tl .fade").forEach(function(x){x.classList.remove("fade")});var sb=document.querySelector(".sb");if(sb)sb.classList.remove("fl-me","fl-opp");var sc=document.querySelector(".sb .sc");if(sc)sc.classList.remove("pop")},900); /* så intet spiller igen, når man skifter til tabellen og tilbage */
   $("clk").textContent="Finished";
   NET.finishedRound=r;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me0)me0.done_round=Math.max(me0.done_round||0,r);
