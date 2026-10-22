@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.50 (beta)">
+<meta name="app-version" content="0.5.3.51 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -356,8 +356,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .gl .gw::before,.gl .gw::after{left:calc(100% - 2px)}
 .gr .gw{background-image:linear-gradient(270deg,var(--c1) 0%,var(--c1) 62%,var(--p) 100%)}
 .gr .gw::before,.gr .gw::after{right:calc(100% - 2px);transform:scaleX(-1)}
-.gfill.gl.on .gw{animation:gwl 1.5s ease-in-out both}
-.gfill.gr.on .gw{animation:gwr 1.5s ease-in-out both}
+.gfill.gl.on .gw{animation:gwl 1.85s ease-in-out both}
+.gfill.gr.on .gw{animation:gwr 1.85s ease-in-out both}
 @keyframes gwl{0%{transform:translateX(calc(-100% - 140px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(-100% - 140px))}}
 @keyframes gwr{0%{transform:translateX(calc(100% + 140px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(100% + 140px))}}
 
@@ -1332,7 +1332,7 @@ function goalFill(k,left){
   var card=$("sbcard"),f=$("gfill"),c=teamCols(k);
   f.style.setProperty("--c1","color-mix(in srgb,"+c[0]+" 80%,#170a28)");f.style.setProperty("--c2",c[1]);
   f.className="gfill "+(left?"gl":"gr");void f.offsetWidth;f.classList.add("on");card.classList.add("gfx");
-  clearTimeout(window.__flT);window.__flT=setTimeout(function(){f.className="gfill";card.classList.remove("gfx")},1600);
+  clearTimeout(window.__flT);window.__flT=setTimeout(function(){f.className="gfill";card.classList.remove("gfx")},1950);
 }
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
@@ -1352,7 +1352,7 @@ function startMatch(){
     var now=Date.now();if(!skip&&holdUntil&&now<holdUntil){last=now;return}acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown++];
-      if(e.t==="goal"){if(e.s==="me")h++;else a++;setScore($("sh"),h,!skip);setScore($("sa"),a,!skip);buzz();if(!skip){goalFill(e.s==="me"?NET.uid:opp0,(e.s==="me")===(NET.myHome!==false));holdUntil=Date.now()+1500;tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");break}}
+      if(e.t==="goal"){if(e.s==="me")h++;else a++;setScore($("sh"),h,!skip);setScore($("sa"),a,!skip);buzz();if(!skip){goalFill(e.s==="me"?NET.uid:opp0,(e.s==="me")===(NET.myHome!==false));holdUntil=Date.now()+1850;tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");break}}
       tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
     NET.liveMin=m;liveOthers();
