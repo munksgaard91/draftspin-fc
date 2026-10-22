@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.4 (beta)">
+<meta name="app-version" content="0.5.3.5 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -622,6 +622,8 @@ h2{font-size:17px;font-weight:600;margin:22px 0 10px}
 .champ .lblm svg{filter:drop-shadow(0 0 8px #e4c47a99)}
 .endrow{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .endrow:last-child{border:0}
+.endrow .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px;border-radius:50%}
+.endrow .rf.nf{background:var(--silh) center/contain no-repeat}
 .endrow .hk{font:500 15px var(--mono);color:var(--mut);text-align:center}
 .endrow .en{display:flex;align-items:center;gap:10px;font-weight:500}
 .endrow small{display:block;color:var(--mut);font-size:13.5px;font-weight:400}
@@ -2252,7 +2254,7 @@ function renderEndLive(){
   }else if(tab==="pris"){
     var best=function(map){var b=null;Object.keys(map).forEach(function(p){if(!b||map[p]>map[b])b=p});return b};
     var aw=[["Top scorer",best(st.g),st.g,"goals","⚽"],["Most assists",best(st.a),st.a,"assists","🎯"],["Best goalkeeper",best(st.cs),st.cs,"clean sheets","🧤"]].filter(function(a){return a[1]});
-    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+(aw.length?aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow"><span style="display:flex;justify-content:center;font-size:24px;line-height:1">'+a[4]+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[2][a[1]]+' '+a[3]+'</span></div>'}).join(""):'<p class="note">No awards this season.</p>')+'</div>';
+    h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+(aw.length?aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow" style="grid-template-columns:36px 1fr auto"><span style="display:flex;justify-content:center">'+faceImg(NET.byId[a[1]].p)+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:15px">'+a[2][a[1]]+' '+a[3]+'</span></div>'}).join(""):'<p class="note">No awards this season.</p>')+'</div>';
   }else if(tab==="stats"){
     var sp=statsParts("data-stt");
     h+='<div class="seg" style="margin-top:10px">'+sp.seg+'</div><div class="card" style="margin-top:10px"><div>'+sp.list+'</div></div>';

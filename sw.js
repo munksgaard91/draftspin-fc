@@ -1,5 +1,5 @@
 // Service worker: viser besked, når det er din tur i draften, og gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v23";
+var CACHE = "dsfc-shell-v24";
 var FACES = "dsfc-faces-v1"; // spillerbilleder, hentes af siden ved første start (se preloadFaces i index.html)
 var SCOPE = self.registration.scope;
 var LIB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
