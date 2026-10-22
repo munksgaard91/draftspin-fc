@@ -1,5 +1,5 @@
-// Service worker: viser besked, når det er din tur i draften, og gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v57";
+// Service worker: gør appen klar til at åbne uden forbindelse.
+var CACHE = "dsfc-shell-v58";
 var FACES = "dsfc-faces-v1"; // spillerbilleder, hentes af siden ved første start (se preloadFaces i index.html)
 var SCOPE = self.registration.scope;
 var LIB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
@@ -66,34 +66,4 @@ self.addEventListener("fetch", function (e) {
   } else if (u.hostname === "cdn.jsdelivr.net" || u.hostname === "fonts.googleapis.com" || u.hostname === "fonts.gstatic.com") {
     e.respondWith(staleRevalidate(req));
   }
-});
-
-self.addEventListener("push", function (e) {
-  var d = {};
-  try { d = e.data.json(); } catch (x) {}
-  // WebKit tilbagekalder abonnementet, hvis en push ikke viser en notifikation. Derfor vises den altid; er appen synlig, er den lydløs og lukkes igen med det samme.
-  // (Serveren sender ikke push til en spiller, der har appen åben, så det er kun et sikkerhedsnet.)
-  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (cs) {
-    var visible = cs.some(function (c) { return c.visibilityState === "visible"; });
-    var tag = d.tag || "draftspin";
-    return self.registration.showNotification(d.title || "PL Draft", {
-      body: d.body || "",
-      tag: tag,
-      icon: "icons/icon-192.png",
-      renotify: !visible,
-      silent: visible
-    }).then(function () {
-      if (!visible) return;
-      return new Promise(function (r) { setTimeout(r, 1500); }).then(function () {
-        return self.registration.getNotifications({ tag: tag }).then(function (ns) { ns.forEach(function (n) { n.close(); }); });
-      });
-    });
-  }));
-});
-self.addEventListener("notificationclick", function (e) {
-  e.notification.close();
-  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (cs) {
-    for (var i = 0; i < cs.length; i++) { if ("focus" in cs[i]) return cs[i].focus(); }
-    return self.clients.openWindow("./");
-  }));
 });

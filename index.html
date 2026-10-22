@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.38 (beta)">
+<meta name="app-version" content="0.5.3.39 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -945,7 +945,6 @@ $("flow").addEventListener("click",function(e){
     }catch(x){fin()}
     return}
   if(a==="leavesetup"){askLeave(false);leaveAct=liveAbort;return}
-  if(a==="pushtoggle"){pushToggle();return}
   if(a==="homehide"){try{localStorage.setItem("dsfc-homehide",String(Date.now()))}catch(e){}renderFlow();return}
   if(liveAct(a,b,st))return;
   if(a==="joinpick"){role="player";F.timer=60;F.step=0;renderFlow()}
@@ -1439,7 +1438,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button>'+(pushLine())+'</div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
@@ -2305,7 +2304,7 @@ async function liveGoNext(id){
   NET.gid=id;liveResetGame();
   G.started=false;S.matchSeen=false;
   try{localStorage.setItem("dsfc-gid",id)}catch(x){}
-  toast("A new season is starting. The draft begins.",3200);
+  
   try{await liveLoad();liveSub();liveEnter()}catch(e){netErr(e)}
 }
 var HOFC=null;
@@ -2494,7 +2493,7 @@ $("adminForce").addEventListener("click",function(e){
   var b=e.target.closest("[data-force]");if(!b)return;
   if(Date.now()-forceArm>3500){forceArm=Date.now();b.textContent="Tap again to confirm";return}
   forceArm=0;b.disabled=true;
-  NET.sb.rpc("claim_timeout",{p_game:NET.gid,p_force:true}).then(function(r0){if(r0.error)netErr(r0.error);else if(r0.data===false)toast("That player is back.",2400);liveChanged()});
+  NET.sb.rpc("claim_timeout",{p_game:NET.gid,p_force:true}).then(function(r0){if(r0.error)netErr(r0.error);liveChanged()});
 });
 function liveTimerTick(){
   var g=NET.game,t=$("timerLine");if(!t)return;
@@ -2531,7 +2530,7 @@ async function liveSpin(){
 async function liveRespin(){
   if(!myTurn()||S.spinning||!S.club)return;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(!me0||(NET.game.respins||0)-(me0.respins_used||0)<=0)return;
-  S.spinning=true;S.sel=null;renderDraft();renderSheet();toast("Spinning again…",1600);
+  S.spinning=true;S.sel=null;renderDraft();renderSheet();
   window.scrollTo({top:0,behavior:"smooth"});
   S.spinAt=Date.now();
   var r0;try{r0=await tmo(NET.sb.rpc("respin",{p_game:NET.gid}))}catch(e){r0={error:e}}
@@ -2564,64 +2563,18 @@ async function livePick(name,i){
   if(r0.error){NET.pickFailed=true;NET.opt=null;toast("Oops, something went wrong, please try again!",4200)}
   await liveChanged();
 }
-/* web push: besked når det er din tur (virker på iPhone, når spillet ligger på hjemmeskærmen) */
-var VAPID_PUB="BAZ4yNE3dz6tU3yFhCqy35P_8VWggB4NNWWkipghXkcfkq2YRIbL3AoCwwkoSqrOTeiN0o3mI86fcy7U9MN7Xdc";
-var PUSH={on:false,busy:false};
-function pushStandalone(){return !!(navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches))}
-function pushIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
-function pushState(){
-  if(!("serviceWorker" in navigator))return "no";
-  if(pushIOS()&&!pushStandalone())return "home";
-  if(!("PushManager" in window)||!("Notification" in window))return "no";
-  if(Notification.permission==="denied")return "denied";
-  return PUSH.on?"on":"off";
-}
+/* hjemmeskærm-banner (iPhone/Android) */
+function isStandalone(){return !!(navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches))}
+function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
 function homeBanner(){
-  if(pushStandalone()||!(navigator.maxTouchPoints>0)||Math.min(screen.width,screen.height)>820)return "";
+  if(isStandalone()||!(navigator.maxTouchPoints>0)||Math.min(screen.width,screen.height)>820)return "";
   try{var t=+localStorage.getItem("dsfc-homehide")||0;if(Date.now()-t<7*864e5)return ""}catch(e){}
-  var how=pushIOS()?'Tap <b>Share</b>icon (square with arrow) and choose <b>Add to Home Screen</b>.':'Tap the menu (<b>⋮</b>) and choose <b>Add to Home screen</b> or <b>Install app</b>.';
-  return '<div class="hbanner"><details><summary>Add the game to your home screen</summary><p class="note">'+how+' That way it opens like a real app, your place in the game is far safer from being cleared by the phone, and you can get notified when it\'s your turn.</p></details><button class="hbx" data-act="homehide" aria-label="Hide for 7 days">✕</button></div>';
+  var how=isIOS()?'Tap <b>Share</b>icon (square with arrow) and choose <b>Add to Home Screen</b>.':'Tap the menu (<b>⋮</b>) and choose <b>Add to Home screen</b> or <b>Install app</b>.';
+  return '<div class="hbanner"><details><summary>Add the game to your home screen</summary><p class="note">'+how+' That way it opens like a real app, and your place in the game is far safer from being cleared by the phone.</p></details><button class="hbx" data-act="homehide" aria-label="Hide for 7 days">✕</button></div>';
 }
-function pushLine(){
-  var s=pushState(),st='';
-  if(s==="home")return "";
-  if(s==="denied")return '<p class="note" style="margin-top:14px;text-align:center">Notifications are turned off in your phone\'s settings.</p>';
-  if(s==="off")return '<button class="linkbtn" data-act="pushtoggle" '+st+'>Get notified when it\'s your turn</button>';
-  if(s==="on")return "";
-  return "";
-}
-function b64u(b){var p="=".repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,"+").replace(/_/g,"/")),o=new Uint8Array(r.length);for(var i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
-async function pushSave(sub){var j=sub.toJSON();var r0=await NET.sb.rpc("save_push_sub",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth});if(r0.error)throw r0.error}
-async function pushInit(){
+async function swInit(){
   if(!("serviceWorker" in navigator))return;
-  try{
-    var reg=await navigator.serviceWorker.register("sw.js");
-    await navigator.serviceWorker.ready;
-    if("PushManager" in window){
-      var sub=await reg.pushManager.getSubscription();
-      PUSH.on=!!sub;
-      if(sub&&NET.sb){try{await pushSave(sub)}catch(e){}}
-    }
-  }catch(e){}
-  if(!role&&!G.started)renderFlow();
-}
-async function pushToggle(){
-  if(PUSH.busy)return;PUSH.busy=true;
-  try{
-    var reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();
-    if(sub){
-      var ep=sub.endpoint;await sub.unsubscribe();PUSH.on=false;
-      try{await NET.sb.rpc("drop_push_sub",{p_endpoint:ep})}catch(e){}
-      toast("Notifications turned off");
-    }else{
-      var perm=await Notification.requestPermission();
-      if(perm!=="granted"){toast("You declined notifications");PUSH.busy=false;renderFlow();return}
-      sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID_PUB)});
-      await pushSave(sub);PUSH.on=true;
-      toast("You'll be notified when it's your turn");
-    }
-  }catch(e){toast("Couldn't turn on notifications")}
-  PUSH.busy=false;if(!role&&!G.started)renderFlow();
+  try{await navigator.serviceWorker.register("sw.js")}catch(e){}
 }
 /* startskærm: fremdriften følger rigtige trin; bliver et trin langsomt, vises en rød besked, og der prøves igen */
 var SP={p:0,t:0,iv:0,t0:Date.now()};
@@ -2661,7 +2614,7 @@ async function liveBoot2(){
   if(!pre)goStart();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
   try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}
   await spRun(function(){return liveInit()},"Connecting…",30);
-  pushInit();
+  swInit();
   await spRun(function(){livePlayers();return NET.pl},"Loading players…",70);
   try{await preloadFaces()}catch(e){}
   var gid=null;try{gid=localStorage.getItem("dsfc-gid")}catch(x){}
