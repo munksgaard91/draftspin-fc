@@ -34,12 +34,16 @@ export const FORMS = {
   "L5-3-2": ["ST", "ST", "CM", "DM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
   "L5-4-1": ["ST", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "CB", "RB", "GK"],
 };
-const WOFF = { LWB: 0.07, RWB: 0.07, ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
+const WOFF = { LWB: 0.10, RWB: 0.10, ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
 const WDEF = { LWB: 0.07, RWB: 0.07, GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
 // v1.8: fladere målvægte (fløje og midtbane scorer mere, angriberen mindre dominerende)
-const WGOAL = { LWB: 0.4, RWB: 0.4, ST: 1, LW: 0.85, RW: 0.85, LM: 0.65, RM: 0.65, AM: 0.75, CM: 0.45, DM: 0.3, LB: 0.22, RB: 0.22, CB: 0.25, GK: 0.0003 };
-const WASSIST = { LWB: 0.75, RWB: 0.75, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.6, RB: 0.6, ST: 0.45, DM: 0.35, CB: 0.12, GK: 0.02 };
-export const ENGINE_VERSION = "1.11";
+const WGOAL = { LWB: 0.5, RWB: 0.5, ST: 1, LW: 0.85, RW: 0.85, LM: 0.65, RM: 0.65, AM: 0.75, CM: 0.45, DM: 0.3, LB: 0.22, RB: 0.22, CB: 0.25, GK: 0.0003 };
+// v1.12: wingbacks bidrager mere offensivt (mål og assists); almindelige backs og stoppere assisterer sjældnere
+const WASSIST = { LWB: 0.9, RWB: 0.9, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM: 0.75, LB: 0.4, RB: 0.4, ST: 0.45, DM: 0.35, CB: 0.06, GK: 0.02 };
+// v1.12: selvmål (andel af modstanderens spillere på banen, der kan sparke bolden ind) og balance-regel (straf for skæv fordeling mellem angreb og forsvar)
+const WOG = { CB: 3, LB: 1.5, RB: 1.5, LWB: 1.5, RWB: 1.5, DM: 1, CM: 0.6, GK: 0.3, LM: 0.2, RM: 0.2, AM: 0.2, LW: 0.2, RW: 0.2, ST: 0.2 };
+const OG_RATE = 0.023, BAL_LAMBDA = 0.03;
+export const ENGINE_VERSION = "1.12";
 export const K = 46, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.1, RW_REF = 10.75; // referencesummer for et gennemsnitshold
@@ -98,7 +102,13 @@ export function bestXI(players, form) {
   for (let i = 0; i < n; i++) if (w[i][xi[i]] < 0) return null;
   return xi.map((k, i) => ({ pos: slots[i], p: players[k], f: fac(players[k], slots[i]) }));
 }
-export function xiStrength(xi) { return xi.reduce((a, x) => a + x.p.rating * x.f, 0) / 11; }
+// v1.12: holdstyrke = gennemsnit af angrebs- og forsvarsstyrke (samme pladsvægte som i kampen) minus straffen for skæv fordeling
+export function sideStrength(xi) {
+  let so = 0, wo = 0, sd = 0, wd = 0;
+  for (const x of xi) { const r = x.p.rating * x.f; so += WOFF[x.pos] * r; wo += WOFF[x.pos]; sd += WDEF[x.pos] * r; wd += WDEF[x.pos]; }
+  return { off: so / wo, def: sd / wd };
+}
+export function xiStrength(xi) { const { off, def } = sideStrength(xi), tilt = (off - def) / 2; return (off + def) / 2 - BAL_LAMBDA * tilt * tilt; }
 // AI-klubberne vælger kun blandt de oprindelige ni formationer (uden wingbacks, 'L'-nøglerne), så ligaens styrkebalance bevares
 export const AI_FORMS = ["4-3-3", "4-4-2", "4-2-3-1", "4-1-4-1", "4-1-2-1-2", "L3-5-2", "L3-4-3", "L5-3-2", "L5-4-1"];
 export function bestClubXI(players, forms = AI_FORMS) {
@@ -159,6 +169,7 @@ export function simulateMatch(H, A, seed) {
     return { R, off: so / wo, def: sd / wd };
   };
   const h = prep(H), a = prep(A);
+  for (const t of [h, a]) { const tilt = (t.off - t.def) / 2, pen = BAL_LAMBDA * tilt * tilt; t.off -= pen; t.def -= pen; }
   const cap = (l) => (l <= LAM_SOFT ? l : LAM_SOFT + (l - LAM_SOFT) * LAM_SLOPE);
   const lamH = cap(MU_H * Math.exp((h.off - a.def) / K)), lamA = cap(MU_A * Math.exp((a.off - h.def) / K));
   const sides = { h: { T: H, R: h.R, lam: lamH }, a: { T: A, R: a.R, lam: lamA } };
@@ -195,10 +206,11 @@ export function simulateMatch(H, A, seed) {
   const onPitch = (s, m) => sides[s].T.xi.map((_, i) => off[s][i] === undefined || off[s][i] >= m);
   const redsBefore = (s, m) => Object.values(off[s]).filter((x) => x < m).length;
 
-  // mål fra åbent spil, minut for minut (inkl. 4 tillægsminutter i 2. halvleg)
+  // mål fra åbent spil, minut for minut (inkl. tilfældig tillægstid i 2. halvleg)
   const g = (m) => (m <= 45 ? 1 : m <= 90 ? 1.18 : 1.25);
-  let G = 0; for (let m = 1; m <= 94; m++) G += g(m);
-  for (let m = 1; m <= 94; m++) {
+  const added = Math.min(9, 1 + rng.poisson(3)); // v1.12: tillægstid 1-9 minutter, i snit 4
+  let G = 0; for (let m = 1; m <= 90 + added; m++) G += g(m);
+  for (let m = 1; m <= 90 + added; m++) {
     for (const s of ["h", "a"]) {
       const o = s === "h" ? "a" : "h";
       let rate = (sides[s].lam * g(m)) / G;
@@ -216,6 +228,17 @@ export function simulateMatch(H, A, seed) {
         ev.push({ m, type: "goal", s, pid: T.xi[si].p.id, aid, pen: false });
         sc[s][si] = (sc[s][si] || 0) + 1;
       }
+    }
+  }
+
+  // selvmål: tilskrives modstanderens spiller (detail 'og'), holdet der scorer står som s
+  for (const s of ["h", "a"]) {
+    const o = s === "h" ? "a" : "h", n = rng.poisson(OG_RATE);
+    for (let k = 0; k < n; k++) {
+      const m = 1 + rng.int(90 + added), pitch = onPitch(o, m), T = sides[o].T;
+      const w = T.xi.map((x, i) => (pitch[i] ? WOG[x.pos] : 0)), i = rng.weighted(w);
+      if (i < 0 || ev.some((x) => x.m === m && (x.type === "pen_miss" || x.pen))) continue;
+      ev.push({ m, type: "goal", s, pid: T.xi[i].p.id, aid: null, pen: false, detail: "og" });
     }
   }
 
@@ -243,5 +266,5 @@ export function simulateMatch(H, A, seed) {
   const gkH = H.xi.find((x) => x.pos === "GK"), gkA = A.xi.find((x) => x.pos === "GK");
   if (ag === 0 && gkH) ev.push({ m: 90, type: "clean_sheet", s: "h", pid: gkH.p.id });
   if (hg === 0 && gkA) ev.push({ m: 90, type: "clean_sheet", s: "a", pid: gkA.p.id });
-  return { hg, ag, events: ev, lamH, lamA };
+  return { hg, ag, events: ev, lamH, lamA, added };
 }

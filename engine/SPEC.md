@@ -63,6 +63,14 @@ Tjek af den udgivne motor: `action: "hash"` i edge function returnerer fingeraft
 ## v1.11 (2026-10-21): optimal opstilling til AI-klubber
 bestXI bruger nu ungarsk metode (optimal tildeling) i stedet for at fylde plads for plads. Før fik 7 af 20 klubber ikke deres bedste hold (Chelsea op til 1,75 point lavere styrke). Hold fra spillere er upåvirket. Fingeraftryk 57ad7cfb…7976, simulation uændret.
 
+## v1.12 (2026-10-24): balance, wingbacks, selvmål og tilfældig tillægstid
+- **Balance-regel**: angrebs- og forsvarsstyrke (de vægtede gennemsnit i kampen) trækkes begge ned med 0,03 × (skævhed)², hvor skævhed = (angreb − forsvar) / 2. Små udsving er næsten gratis, ekstremer koster. Ved samme samlede rating giver blandede hold flest point (målt: ren forsvar 1,34 / balanceret 1,48 / ren angreb 1,44 point pr. kamp mod ligaen).
+- **Holdstyrke** (`xiStrength`) er nu (angreb + forsvar) / 2 − samme straf, med kampens pladsvægte (før: almindeligt gennemsnit). Bruges til AI-klubbernes formationsvalg, rangering og dark horse/uheld.
+- **Wingbacks** (LWB/RWB): angrebsvægt 0,07 → 0,10, målvægt 0,4 → 0,5, assistvægt 0,75 → 0,9. Assistvægt for LB/RB 0,6 → 0,4 og CB 0,12 → 0,06 (backs og stoppere stod for ca. 28 % af alle assists, nu ca. 20 %).
+- **Selvmål**: ca. 0,046 pr. kamp (`OG_RATE` 0,023 pr. hold). Gemmes som `goal` med `detail = 'og'`: `team` er holdet der får målet, `player_id` er modstanderens spiller. Tæller ikke som mål for spilleren i statistik og Hall of Fame.
+- **Tillægstid** i 2. halvleg: 1-9 minutter (1 + Poisson(3), snit 4), returneres som `added` og gemmes i `matches.added_time` (migration 064). Gamle kampe viser 4.
+- Fingeraftryk 40e63176…e092, simulation edcf370c…fd7f. Rang-profil og målfordeling: se rapporten i chatten 2026-10-24.
+
 ## Faste regler for nye spillere i `players` (Rasmus, 2026-10-21)
 Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprindelige tal. Eksisterende spillere røres ikke af reglerne.
 1. **Kortrisiko** (`card_risk`, `yellow_w`, `red_w`): regnes fra FM-egenskaber (0-20) med `card_risk = clamp(4,2·aggression + 4,6·dirtiness + 2,5·tackling + 0,3·bravery − 0,5·anticipation + positionskonstant, 0, 100)`, positionskonstant cirka −63 til −71 (CB −67, DM −69, ST −69). Passer på eksisterende spillere med gennemsnitlig fejl 4 point (95 % inden for 10); den oprindelige formel er ukendt. `red_w` slås op i kurven card_risk -> red_w fra eksisterende spillere (50 -> 0,83, 100 -> 1,99); `yellow_w` fra en ret linje card_risk -> yellow_w for spillerens position.

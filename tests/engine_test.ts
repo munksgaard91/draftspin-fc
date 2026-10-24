@@ -11,9 +11,9 @@ Deno.test("motoren er identisk med den udgivne (fingeraftryk + 40 faste kampe)",
   const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
   const sims: string[] = [];
   for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e: any) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
-  // Værdierne er målt på den udgivne edge function (version 1.8). Ændres motoren med vilje, opdateres de her og i SPEC.md.
-  eq(await sha(parts), "57ad7cfba39a41490c852c6ede7bc5c63284773ad8e7e0633e5edc1a4ec07976", "fingeraftryk");
-  eq(await sha(sims.join("|")), "dd637d429c7b7ef036139360c1a50dd25f94128085de08c11e65ac4b230b6eea", "simulering");
+  // Værdierne er målt på den udgivne edge function (version 1.12). Ændres motoren med vilje, opdateres de her og i SPEC.md.
+  eq(await sha(parts), "40e631765abad6a1cd0f5e733a24c3ac77008759693f38b21c05b1194ce3e092", "fingeraftryk");
+  eq(await sha(sims.join("|")), "edcf370ca08723fb18b9e28ddf40cf17bc5091fff7f3083ab7bc40369231fd7f", "simulering");
 });
 
 Deno.test("samme seed giver samme kamp, forskellig seed giver forskellig", () => {
@@ -51,7 +51,9 @@ Deno.test("kamphændelser stemmer med resultatet", () => {
     const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 0 }, "inv|" + k);
     eq(r.events.filter((e: any) => e.type === "goal" && e.s === "h").length, r.hg, "hjemmemål");
     eq(r.events.filter((e: any) => e.type === "goal" && e.s === "a").length, r.ag, "udemål");
-    ok(r.events.every((e: any) => e.m >= 1 && e.m <= 94), "minut udenfor 1-94");
+    ok(r.added >= 1 && r.added <= 9, "tillægstid udenfor 1-9");
+    ok(r.events.every((e: any) => e.m >= 1 && e.m <= 90 + r.added), "minut udenfor kampen");
+    for (const e of r.events.filter((e: any) => e.detail === "og")) ok((e.s === "h" ? e.pid >= 100 : e.pid < 100) && e.aid === null && !e.pen, "selvmål skal tilskrives modstanderens spiller, uden assist");
     const reds = r.events.filter((e: any) => e.type === "red" || e.type === "second_yellow");
     ok(new Set(reds.map((e: any) => e.s + e.pid)).size === reds.length, "samme spiller udvist to gange");
     for (const e of r.events.filter((e: any) => e.type === "goal" && e.aid != null)) ok(e.aid !== e.pid, "assist til sig selv");
@@ -126,6 +128,23 @@ Deno.test("bestXI vælger den optimale tildeling, ikke plads for plads (v1.11)",
   const pool = [P(1, "GK", 100), P(2, "LB", 100), P(3, "CB", 100), P(4, "CB", 100), P(5, "RB", 100), P(6, "DM", 100), P(7, "CM", 160), P(8, "CM", 100), P(9, "AM", 140), P(10, "ST", 100), P(11, "ST", 100)];
   const xi = E.bestXI(pool, "4-1-2-1-2");
   eq(xi.find((s: any) => s.pos === "AM").p.id, 9, "AM-pladsen skal gå til den naturlige AM");
-  eq(Math.round(E.xiStrength(xi) * 11), 1100 + 60 + 40, "samlet styrke");
+  eq(xi.reduce((a: number, x: any) => a + x.p.rating * x.f, 0), 1100 + 60 + 40, "samlet rating");
   eq(E.bestXI(pool.slice(0, 10), "4-4-2"), null, "under 11 spillere");
+});
+
+Deno.test("v1.12: tillægstid 1-9 (snit ca. 4), selvmål fra modstanderens spillere og en balance-regel der straffer skæve hold", () => {
+  let sum = 0, og = 0, n = 3000;
+  const seen = new Set<number>();
+  for (let k = 0; k < n; k++) {
+    const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 0 }, "v112|" + k);
+    sum += r.added; seen.add(r.added);
+    og += r.events.filter((e: any) => e.detail === "og").length;
+  }
+  ok(Math.abs(sum / n - 4) < 0.15, "tillægstiden skal være ca. 4 i snit: " + sum / n);
+  ok(seen.has(1) && seen.has(7), "tillægstiden skal variere");
+  ok(og / n > 0.03 && og / n < 0.07, "selvmål pr. kamp ca. 0,045: " + og / n);
+  // samme samlede rating: et hold med 170 i angreb/130 i forsvar må ikke få højere styrketal end et balanceret
+  const bal = E.FORMS["4-3-3"].map((pos: string, i: number) => ({ pos, p: { id: i, rating: 150 }, f: 1 }));
+  const skew = E.FORMS["4-3-3"].map((pos: string, i: number) => ({ pos, p: { id: i, rating: ["ST", "LW", "RW"].includes(pos) ? 175 : ["GK", "CB", "LB", "RB"].includes(pos) ? 135 : 150 }, f: 1 }));
+  ok(E.xiStrength(skew) < E.xiStrength(bal), "skævt hold skal have lavere styrke end balanceret hold med samme gennemsnit");
 });

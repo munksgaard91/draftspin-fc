@@ -110,7 +110,7 @@ async function playRound(gameId, ctx, round) {
     const th = ctx.teams[m.home_key], ta = ctx.teams[m.away_key];
     const lh = ctx.secret.luck[m.home_key], la = ctx.secret.luck[m.away_key];
     const res = E.simulateMatch({ xi: th.xi, shift: lh.season + lh.form[round - 1] }, { xi: ta.xi, shift: la.season + la.form[round - 1] }, `${ctx.secret.seed}|${round}|${m.home_key}`);
-    upd.push({ id: m.id, game_id: gameId, round, home_key: m.home_key, away_key: m.away_key, home_goals: res.hg, away_goals: res.ag, played: true });
+    upd.push({ id: m.id, game_id: gameId, round, home_key: m.home_key, away_key: m.away_key, home_goals: res.hg, away_goals: res.ag, played: true, added_time: res.added });
     if (th.kind === "human" || ta.kind === "human") {
       for (const e of res.events) {
         evs.push({ game_id: gameId, match_id: m.id, minute: e.m, type: e.type, team: e.s, player_id: e.pid ?? null, assist_id: e.aid ?? null, pen: !!e.pen, detail: e.detail ?? null });
@@ -211,8 +211,8 @@ async function finalizeSeason(gameId) {
   const evTeam = (e) => { const m = mById.get(e.match_id); return m ? (e.team === "h" ? m.home_key : m.away_key) : null; };
   const mineEv = (e, pid) => !!pid && !!own[pid] && evTeam(e) === own[pid].team_key;
   for (const e of events) {
-    if (e.type === "goal" && mineEv(e, e.player_id)) { ens(e.player_id).goals++; const k = e.match_id + "|" + e.player_id; pm[k] = (pm[k] || 0) + 1; }
-    if (e.type === "goal" && e.assist_id && mineEv(e, e.assist_id)) ens(e.assist_id).assists++;
+    if (e.type === "goal" && e.detail !== "og" && mineEv(e, e.player_id)) { ens(e.player_id).goals++; const k = e.match_id + "|" + e.player_id; pm[k] = (pm[k] || 0) + 1; }
+    if (e.type === "goal" && e.detail !== "og" && e.assist_id && mineEv(e, e.assist_id)) ens(e.assist_id).assists++;
     if (e.type === "clean_sheet" && mineEv(e, e.player_id)) ens(e.player_id).cs++;
     if ((e.type === "red" || e.type === "second_yellow") && mineEv(e, e.player_id)) ens(e.player_id).reds++;
     if (e.type === "yellow" && mineEv(e, e.player_id)) ens(e.player_id).yellows++;
