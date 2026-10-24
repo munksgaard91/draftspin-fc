@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.56 (beta)">
+<meta name="app-version" content="0.5.3.57 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -355,7 +355,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 @keyframes gwl{0%{transform:translateX(calc(-100% - 140px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(-100% - 140px))}}
 @keyframes gwr{0%{transform:translateX(calc(100% + 140px))}30%{transform:translateX(0)}70%{transform:translateX(0)}100%{transform:translateX(calc(100% + 140px))}}
 
-#sbcard.gfx .sb{text-shadow:0 1px 10px #000a}
+#sbcard.gfx .sb{text-shadow:0 1px 10px #000a}#sbcard.gfx .sb .frm i{text-shadow:none}
 .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--acc)}
 .ev{display:flex;align-items:center;gap:7px;padding:9px 0;font-size:14.5px}
@@ -1326,7 +1326,7 @@ function goalFill(k,left){
   var card=$("sbcard"),f=$("gfill"),c=teamCols(k);
   f.style.setProperty("--c1","color-mix(in srgb,"+c[0]+" 80%,#170a28)");f.style.setProperty("--c2",c[1]);
   f.className="gfill "+(left?"gl":"gr");void f.offsetWidth;f.classList.add("on");card.classList.add("gfx");
-  clearTimeout(window.__flT);window.__flT=setTimeout(function(){f.className="gfill";card.classList.remove("gfx")},1950);
+  clearTimeout(window.__flT);window.__flT=setTimeout(function(){f.className="gfill";document.querySelectorAll(".gfx").forEach(function(x){x.classList.remove("gfx")})},1950);
 }
 function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
