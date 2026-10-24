@@ -72,6 +72,14 @@ bestXI bruger nu ungarsk metode (optimal tildeling) i stedet for at fylde plads 
 - **Fire nye formationer** (24 til valg): 3-1-4-2, 4-4-2 (D), 3-4-2-1 (D), 4-2-3-1 (W) (migration 065). Bedste mulige hold fra puljen ligger inden for samme bånd som de eksisterende (2,30-2,33 point pr. kamp).
 - Fingeraftryk e340b7a8…84e6, simulation edcf370c…fd7f. Rang-profil og målfordeling: se rapporten i chatten 2026-10-24.
 
+## v1.13 (2026-10-24): realistisk ligaprofil
+- **K 46 -> 40**: ratingforskelle betyder mere (10 point = ca. 28 % flere forventede mål i stedet for 24 %). Klientens xG bruger samme K.
+- **Straf til bunden**: de tre svageste AI-klubber i feltet får fast sæsonstraf -10, -8, -6 (svagest først), så tabellens hale ligner Premier League uden at fjerne mellemhold. Menneskehold kan stadig rykke ned.
+- **AI-toppen trækkes ned**: de tre stærkeste AI-klubber får sæson -4, -3, -2, så en god draft har større titelchance (150 sæsoner, hold med styrke 158: ca. 17 % titler mod ca. 10 %).
+- Både straf og nedjustering ligger i `setupSeason` (konstanterne `TAIL` og `TOPCUT`) og gemmes derfor i sæsonens `luck`; igangværende sæsoner røres ikke.
+- Måling (20 hold, menneskehold 148): RMSE mod virkelig PL-profil ca. 2,2 (før 4,1); menneskehold 148 får ca. 55 point, plads 10,0.
+- Fingeraftryk 51392470…b3cf, simulation 7e4d2a41…9d4c.
+
 ## Faste regler for nye spillere i `players` (Rasmus, 2026-10-21)
 Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprindelige tal. Eksisterende spillere røres ikke af reglerne.
 1. **Kortrisiko** (`card_risk`, `yellow_w`, `red_w`): regnes fra FM-egenskaber (0-20) med `card_risk = clamp(4,2·aggression + 4,6·dirtiness + 2,5·tackling + 0,3·bravery − 0,5·anticipation + positionskonstant, 0, 100)`, positionskonstant cirka −63 til −71 (CB −67, DM −69, ST −69). Passer på eksisterende spillere med gennemsnitlig fejl 4 point (95 % inden for 10); den oprindelige formel er ukendt. `red_w` slås op i kurven card_risk -> red_w fra eksisterende spillere (50 -> 0,83, 100 -> 1,99); `yellow_w` fra en ret linje card_risk -> yellow_w for spillerens position.

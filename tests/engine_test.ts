@@ -11,9 +11,9 @@ Deno.test("motoren er identisk med den udgivne (fingeraftryk + 40 faste kampe)",
   const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
   const sims: string[] = [];
   for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e: any) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
-  // Værdierne er målt på den udgivne edge function (version 1.12). Ændres motoren med vilje, opdateres de her og i SPEC.md.
-  eq(await sha(parts), "e340b7a85a2041d304db7dd7084a788c1426c57d5dc495332c24333d0e9884e6", "fingeraftryk");
-  eq(await sha(sims.join("|")), "edcf370ca08723fb18b9e28ddf40cf17bc5091fff7f3083ab7bc40369231fd7f", "simulering");
+  // Værdierne er målt på den udgivne edge function (version 1.13). Ændres motoren med vilje, opdateres de her og i SPEC.md.
+  eq(await sha(parts), "51392470a23923e1d600bcc517d3f077a858de077fb41d19230cef49ee6bb3cf", "fingeraftryk");
+  eq(await sha(sims.join("|")), "7e4d2a4156c3eb8c3073fc9ae0d52e69d5e841a7f426d70fdc3f7aad33c39d4c", "simulering");
 });
 
 Deno.test("samme seed giver samme kamp, forskellig seed giver forskellig", () => {

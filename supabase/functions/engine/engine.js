@@ -47,9 +47,11 @@ const WASSIST = { LWB: 0.9, RWB: 0.9, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM:
 // v1.12: selvmål (andel af modstanderens spillere på banen, der kan sparke bolden ind) og balance-regel (straf for skæv fordeling mellem angreb og forsvar)
 const WOG = { CB: 3, LB: 1.5, RB: 1.5, LWB: 1.5, RWB: 1.5, DM: 1, CM: 0.6, GK: 0.3, LM: 0.2, RM: 0.2, AM: 0.2, LW: 0.2, RW: 0.2, ST: 0.2 };
 const OG_RATE = 0.023, BAL_LAMBDA = 0.03;
-export const ENGINE_VERSION = "1.12";
-export const K = 46, MU_H = 1.32, MU_A = 1.01;
+export const ENGINE_VERSION = "1.13";
+export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
+// v1.13: svageste AI-klubber (svagest først) får fast sæson-straf, de bedste AI-klubber (stærkest først) en lille nedjustering
+const TAIL = [-10, -8, -6], TOPCUT = [-4, -3, -2];
 const PEN_RATE = 0.29, YELLOW_PER_TEAM = 2.0, RED_PER_TEAM = 0.065, YW_REF = 11.1, RW_REF = 10.75; // referencesummer for et gennemsnitshold
 // v1.8 realisme: målscoreren afhænger mindre af rating, en spiller der lige har scoret scorer sjældnere igen i samme kamp, ekstreme holdstyrker dæmpes, og gule kort fordeles jævnere
 const GOAL_RATING_DIV = 80, REPEAT_DECAY = 0.7, LAM_SOFT = 2.4, LAM_SLOPE = 0.6, YW_POW = 0.5;
@@ -154,6 +156,9 @@ export function setupSeason(teams, seed) {
   const low = ranked.slice(10).filter((t) => t.kind === "ai");
   const dark = low.length ? low[rng.int(low.length)].key : null;
   const unlucky = top.length ? top[rng.int(top.length)].key : null;
+  const ais = ranked.filter((t) => t.kind === "ai");
+  ais.slice(-3).reverse().forEach((t, i) => (luck[t.key].season += TAIL[i]));
+  ais.slice(0, 3).forEach((t, i) => (luck[t.key].season += TOPCUT[i]));
   if (dark) luck[dark].season += DARK_BONUS;
   if (unlucky) luck[unlucky].season -= UNLUCKY_MALUS;
   return { luck, dark, unlucky };
