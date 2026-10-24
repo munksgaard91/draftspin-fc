@@ -69,7 +69,8 @@ bestXI bruger nu ungarsk metode (optimal tildeling) i stedet for at fylde plads 
 - **Wingbacks** (LWB/RWB): angrebsvægt 0,07 → 0,10, målvægt 0,4 → 0,5, assistvægt 0,75 → 0,9. Assistvægt for LB/RB 0,6 → 0,4 og CB 0,12 → 0,06 (backs og stoppere stod for ca. 28 % af alle assists, nu ca. 20 %).
 - **Selvmål**: ca. 0,046 pr. kamp (`OG_RATE` 0,023 pr. hold). Gemmes som `goal` med `detail = 'og'`: `team` er holdet der får målet, `player_id` er modstanderens spiller. Tæller ikke som mål for spilleren i statistik og Hall of Fame.
 - **Tillægstid** i 2. halvleg: 1-9 minutter (1 + Poisson(3), snit 4), returneres som `added` og gemmes i `matches.added_time` (migration 064). Gamle kampe viser 4.
-- Fingeraftryk 40e63176…e092, simulation edcf370c…fd7f. Rang-profil og målfordeling: se rapporten i chatten 2026-10-24.
+- **Fire nye formationer** (24 til valg): 3-1-4-2, 4-4-2 (D), 3-4-2-1 (D), 4-2-3-1 (W) (migration 065). Bedste mulige hold fra puljen ligger inden for samme bånd som de eksisterende (2,30-2,33 point pr. kamp).
+- Fingeraftryk e340b7a8…84e6, simulation edcf370c…fd7f. Rang-profil og målfordeling: se rapporten i chatten 2026-10-24.
 
 ## Faste regler for nye spillere i `players` (Rasmus, 2026-10-21)
 Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprindelige tal. Eksisterende spillere røres ikke af reglerne.

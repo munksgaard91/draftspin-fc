@@ -33,6 +33,10 @@ export const FORMS = {
   "L3-4-3": ["LW", "ST", "RW", "CM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
   "L5-3-2": ["ST", "ST", "CM", "DM", "CM", "LB", "CB", "CB", "CB", "RB", "GK"],
   "L5-4-1": ["ST", "LM", "CM", "CM", "RM", "LB", "CB", "CB", "CB", "RB", "GK"],
+  "3-1-4-2": ["ST", "ST", "LM", "CM", "CM", "RM", "DM", "CB", "CB", "CB", "GK"],
+  "4-4-2 (D)": ["ST", "ST", "LM", "CM", "DM", "RM", "LB", "CB", "CB", "RB", "GK"],
+  "3-4-2-1 (D)": ["ST", "AM", "AM", "DM", "CM", "LWB", "CB", "CB", "CB", "RWB", "GK"],
+  "4-2-3-1 (W)": ["ST", "LM", "AM", "RM", "DM", "DM", "LB", "CB", "CB", "RB", "GK"],
 };
 const WOFF = { LWB: 0.10, RWB: 0.10, ST: 0.24, LW: 0.16, RW: 0.16, LM: 0.12, RM: 0.12, AM: 0.16, CM: 0.10, DM: 0.04, LB: 0.04, RB: 0.04, CB: 0.02, GK: 0 };
 const WDEF = { LWB: 0.07, RWB: 0.07, GK: 0.28, CB: 0.16, LB: 0.10, RB: 0.10, DM: 0.10, CM: 0.05, LM: 0.04, RM: 0.04, AM: 0.01, LW: 0.01, RW: 0.01, ST: 0.01 };
