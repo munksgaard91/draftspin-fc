@@ -148,3 +148,17 @@ Deno.test("v1.12: tillægstid 1-9 (snit ca. 4), selvmål fra modstanderens spill
   const skew = E.FORMS["4-3-3"].map((pos: string, i: number) => ({ pos, p: { id: i, rating: ["ST", "LW", "RW"].includes(pos) ? 175 : ["GK", "CB", "LB", "RB"].includes(pos) ? 135 : 150 }, f: 1 }));
   ok(E.xiStrength(skew) < E.xiStrength(bal), "skævt hold skal have lavere styrke end balanceret hold med samme gennemsnit");
 });
+
+Deno.test("v1.13: de 3 svageste AI-klubber får sæson-straf, de 3 stærkeste en lille nedjustering, menneskehold røres ikke", () => {
+  const teams = [];
+  for (let i = 0; i < 18; i++) teams.push({ key: "A" + i, kind: "ai", strength: 120 + i * 3 });
+  teams.push({ key: "H1", kind: "human", strength: 100 }, { key: "H2", kind: "human", strength: 190 });
+  const n = 300, sum = {};
+  for (const t of teams) sum[t.key] = 0;
+  for (let s = 0; s < n; s++) { const { luck } = E.setupSeason(teams, "v113|" + s); for (const t of teams) sum[t.key] += luck[t.key].season / n; }
+  const avg = (ks: string[]) => ks.reduce((a, k) => a + sum[k], 0) / ks.length;
+  ok(avg(["A0", "A1", "A2"]) < -3.5, "svageste AI-hold skal have negativ sæsonform: " + avg(["A0", "A1", "A2"]));
+  ok(avg(["A15", "A16", "A17"]) < -1.5, "stærkeste AI-hold skal nedjusteres: " + avg(["A15", "A16", "A17"]));
+  ok(Math.abs(avg(["A8", "A9", "A10"])) < 1.2, "mellemholdene røres ikke: " + avg(["A8", "A9", "A10"]));
+  ok(Math.abs(sum.H1) < 1 && Math.abs(sum.H2) < 1, "menneskehold får ingen straf eller nedjustering");
+});
