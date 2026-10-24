@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.65 (beta)">
+<meta name="app-version" content="0.5.3.67 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -466,12 +466,13 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .pen .phd{text-align:center;margin:2px 0 8px}
 .pen .phd b{display:block;font-size:19px;font-weight:600}
 .pen .phd span{display:block;font-size:14.5px;color:var(--mut);margin-top:2px}
-.pen .ptks{display:grid;gap:6px;margin-top:6px;max-height:56vh;overflow:auto}
-.ptk{appearance:none;position:relative;display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;text-align:left;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:inherit;cursor:pointer}
-.ptk .pp{font:500 11.5px var(--mono);text-align:center;background:var(--bg);border-radius:6px;padding:3px 0}
-.ptk .pn{font-size:14.5px;font-weight:500;line-height:1.2}
-.ptk .pv{font:500 12px var(--mono);color:var(--mut);padding-right:14px}
-.ptk .pstar{position:absolute;top:3px;right:6px;font-style:normal;font-size:12px;color:var(--yel);line-height:1}
+.pen .ptks{display:grid;gap:4px;margin-top:6px;max-height:62vh;overflow:auto}
+.ptk{appearance:none;display:grid;grid-template-columns:36px 1fr auto;gap:8px;align-items:center;text-align:left;padding:5px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:inherit;cursor:pointer}
+.ptk .pp{font:500 11px var(--mono);text-align:center;background:var(--bg);border-radius:5px;padding:2px 0}
+.ptk .pn{font-size:14px;font-weight:500;line-height:1.2;min-width:0;display:flex;flex-direction:column}
+.ptk .pnn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptk .pv{font:500 11.5px var(--mono);color:var(--mut);text-align:right;line-height:1.25}
+.ptk .pstar{font-style:normal;font:500 10.5px var(--sans);color:var(--yel)}
 .pgoal{width:100%;display:block;margin:6px 0 0}
 .pgoal .pnet{fill:#ffffff0d}
 .pgoal .ppost{fill:none;stroke:#ece6f5;stroke-width:5;stroke-linejoin:round}
@@ -2211,9 +2212,9 @@ async function penPick(e,m,fin){
   lu.forEach(function(pid,i){var inf=NET.byId[pid];if(!inf||fl[i]==="GK"||off[pid])return;tk.push({pid:pid,name:inf.p[0],pos:fl[i],pen:inf.p[8]||10,g:gl[pid]||0,o:ORD.indexOf(fl[i]),i:i})});
   var reg=tk.slice().sort(function(a,b){return b.pen-a.pen})[0];
   tk.sort(function(a,b){return a.o-b.o||a.i-b.i});
-  var gk=null,ol=NET.season.lineups[oppK]||[],ofl=flat(oppK);ol.forEach(function(pid,i){if(ofl[i]==="GK")gk=NET.byId[pid]});
+  var ol=NET.season.lineups[oppK]||[],gk=NET.byId[ol[10]]||null; /* målmanden står altid på plads 11 */
   var gkTxt=gk?'<div class="pgk">In goal: <b>'+esc(gk.p[0])+'</b></div>':'';
-  var rows=tk.map(function(t){return '<button class="ptk" data-pid="'+t.pid+'"><span class="pp">'+t.pos+'</span><span class="pn">'+esc(t.name)+'</span><span class="pv">'+t.g+(t.g===1?" goal":" goals")+'</span>'+(t===reg?'<i class="pstar" title="Regular taker">\u2605</i>':'')+'</button>'}).join("");
+  var rows=tk.map(function(t){return '<button class="ptk" data-pid="'+t.pid+'"><span class="pp">'+t.pos+'</span><span class="pn"><span class="pnn">'+esc(t.name)+'</span>'+(t===reg?'<i class="pstar">\u2605 Regular taker</i>':'')+'</span><span class="pv">'+t.g+" \u26bd"+'</span></button>'}).join("");
   var o=penOv('<div class="phd"><b>Penalty!</b><span>Who takes it?</span></div><div class="ptks">'+rows+'</div>');
   var taker=await new Promise(function(res){o.querySelector(".ptks").onclick=function(ev){var b=ev.target.closest("[data-pid]");if(b)res(tk.filter(function(t){return t.pid===+b.dataset.pid})[0])}});
   var n=penInfoC(taker.pen,gk?gk.p[5]:null).n,pts=PENSP[n]||PENSP[5];
@@ -2222,9 +2223,9 @@ async function penPick(e,m,fin){
     '<g id="pkeep" style="transform:translate(150px,98px);opacity:0"><g id="pkeepi"><circle cx="0" cy="-26" r="9"/><rect x="-10" y="-16" width="20" height="38" rx="8"/><rect x="-26" y="-14" width="14" height="8" rx="4"/><rect x="12" y="-14" width="14" height="8" rx="4"/></g></g>'+
     '<circle id="pball" cx="0" cy="0" r="8" class="pball" style="transform:translate(150px,190px)"/>'+
     pts.map(function(q,i){return '<g class="psp" data-i="'+i+'" style="transform:translate('+X(q[0])+'px,'+Y(q[1])+'px)"><circle r="22" class="phit"/><circle r="13" class="pdot"/></g>'}).join("")+'</svg>';
-  o=penOv('<div class="phd"><b>'+esc(taker.name)+' takes the penalty</b>'+(gk?'<span>In goal: '+esc(gk.p[0])+'</span>':'')+'</div>'+svg+'<p class="note pres" id="pres">Pick your corner</p>');
+  o=penOv('<div class="phd"><b>'+esc(taker.name)+'<br>takes the penalty</b>'+(gk?'<span>In goal: '+esc(gk.p[0])+'</span>':'')+'</div>'+svg+'<p class="note pres" id="pres">Pick your corner</p>');
   var i=await new Promise(function(res){o.querySelector(".pgoal").onclick=function(ev){var b=ev.target.closest(".psp");if(b)res(+b.dataset.i)}});
-  o.querySelector(".pgoal").classList.add("lock");
+  o.querySelector(".pgoal").classList.add("lock");document.getElementById("pres").textContent="And he shoots\u2026";
   var r0=await callEngine("pen",{event_id:e.id,taker_id:taker.pid,spot:i}).catch(function(x){toast(x.message,4000);return null});
   if(r0&&!r0.done){
     var q=pts[r0.gk_spot]||pts[0],t=pts[i],wide=r0.result==="wide";
