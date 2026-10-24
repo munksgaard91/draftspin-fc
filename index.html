@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.67 (beta)">
+<meta name="app-version" content="0.5.3.68 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2243,7 +2243,7 @@ async function penPick(e,m,fin){
 async function penWatch(e,m,fin){
   var oppK=m.home_key===NET.uid?m.away_key:m.home_key;
   penOv('<div class="hd"><b>Penalty!</b><span class="muted">'+esc(lname(oppK))+'</span></div><div class="simwait" style="padding:14px 0 6px"><p class="note warm"><i class="mini-spin"></i>'+esc(lname(oppK))+' is taking the penalty</p></div>');
-  for(var k=0;k<30;k++){
+  for(var k=0;k<120;k++){
     await new Promise(function(res){setTimeout(res,1500)});
     if(!(await penRefresh(m)))continue;
     var ev=NET.season.events.filter(function(x){return x.id===e.id})[0];
