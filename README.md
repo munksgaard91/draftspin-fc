@@ -31,3 +31,6 @@ Idé: draft en manager som valg nr. 12; managerens FM-rating (CA) giver et %-boo
 - Push-beskeder er fjernet helt (klient, service worker og server; migration 062 og 063). Små toasts er fjernet; kun fejl, "forladt spil" og faste bjælker er tilbage.
 - Skriftstørrelser er samlet i 11 størrelser. Tal står stadig i DM Mono (nullet ligner Ø, det er okay).
 - Testgenveje: se øverst. `dsfc-testpos` flytter nu også holdet i slutskærmens tabel. `engine/reference/season_titles.ts` kører 100+ sæsoner og viser titel-%.
+
+## xG på Classic-scoreboardet (2026-10-24, v0.5.3.59)
+Ren pynt: en simuleret "xG"-linje under målscoren (kun Classic-kampskærmen). Intet gemmes og motoren er uændret. Klienten (`xgLam`, `xgPlan`) estimerer holdenes forventede mål ud fra opstillingerne (samme formel som motorens lam, uden skjult held), blander med de scorede mål, fordeler summen i små hop (mål giver et hop lige før), og lader tallet stå stille fra et seedet minut 75-90. Seedet af kamp-id, så alle ser det samme.
