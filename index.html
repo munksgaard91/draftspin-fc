@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.57 (beta)">
+<meta name="app-version" content="0.5.3.58 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -64,7 +64,7 @@
 .sumrow .si .sileague{display:block;height:30px;width:auto;max-width:38px;object-fit:contain;margin:0 auto}
 .simlive{position:relative;padding-top:30px}
 .pausebtn{position:absolute;top:7px;left:50%;transform:translateX(-50%);appearance:none;border:0;background:none;color:var(--mut);font:inherit;font-size:11.5px;padding:2px 6px;border-radius:999px;cursor:pointer}.pausebtn.on{color:var(--acc)}
-.sumwin,.summid,.sumdown{align-items:center;padding-bottom:27px}.sumwin .si,.summid .si{line-height:0;width:auto}.summid b{font-size:19px}.summid .silion{opacity:.55}
+.sumwin,.summid,.sumdown{align-items:center;padding-bottom:27px}.sumwin .si,.summid .si{line-height:0;width:auto}.summid b{font-size:19px}.summid .silion{opacity:.55}.sumeu small{display:block;margin-top:4px}.sumrow.sumeu .si .sileague{height:40px;max-width:48px}
 .sumrow .si .silion{display:block;width:32px;height:32px;object-fit:contain;filter:brightness(0) invert(1);margin:0 auto}
 .rechof{flex:1;min-width:0}.rechof summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:center;gap:8px}.rechof summary::-webkit-details-marker{display:none}.rechof .recl{font-size:11.5px;margin-top:5px}.rechof .recl.mrow{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}.rechof .recl.mrow svg,.rechof .recl.mrow img{flex:none}.rechof small{margin-top:6px}
 .recl{display:block;margin-top:6px}.recl:first-child{margin-top:2px}.sumrow .recl b{display:inline;font-weight:600;color:var(--text)}
@@ -1921,10 +1921,11 @@ function simClear(){clearTimeout(NET.simT);(NET.simG||[]).forEach(clearTimeout);
 /* højeste spillede runde i de hentede data (hurtigt spil henter sæsonen i to dele) */
 function simAvail(){var a=0;NET.season.matches.forEach(function(m){if(m.played&&m.round>a)a=m.round});return a}
 function simReady(){return !!NET.game&&NET.game.status==="done"&&!!NET.season&&simAvail()>=38}
-function liveSimUnlock(){var sk=document.querySelector('[data-act="simskip"]');if(sk&&simReady())sk.disabled=false}
+function testSkipSim(){try{if(isTestGame()&&localStorage.getItem("dsfc-testskipsim")==="1"&&simReady()){liveSimDone();return true}}catch(e){}return false}
+function liveSimUnlock(){if(testSkipSim())return;var sk=document.querySelector('[data-act="simskip"]');if(sk&&simReady())sk.disabled=false}
 function isTestGame(){try{return !!NET.gid&&localStorage.getItem("dsfc-testgid")===NET.gid}catch(e){return false}}
 function liveSimStep(){
-  var s=NET.sim;if(!s||s.end)return;
+  var s=NET.sim;if(!s||s.end)return;if(testSkipSim())return;
   /* testspil (skjult, 5 tryk på logoet): spring afspilningen over og vis sæsonafslutningen, så snart hele sæsonen er simuleret */
   if(isTestGame()&&!localStorage.getItem("dsfc-testnoskip")){if(simAvail()>=38){s.r=38;liveSimDone()}else NET.simT=setTimeout(liveSimStep,500);return}
   if(s.r>=38){liveSimDone();return}
@@ -1998,10 +1999,10 @@ function liveSimDone(lbl){
   var eu=mi<4?['<img class="sileague" src="badges/eu-cl.png" alt="">',"Champions League","You qualified for the Champions League."]:(mi<6?['<img class="sileague" src="badges/eu-el.png" alt="">',"Europa League","You qualified for the Europa League."]:(mi===6?['<img class="sileague" src="badges/eu-ecl.png" alt="">',"Conference League","You qualified for the Conference League."]:null));
   var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>The season is over</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist" id="sumlist">'+
     (mi===0?row('<img class="silion" src="'+PLLOGO+'" alt="">',"You\'re the champions!","","sumwin"):"")+
+    (eu?row(eu[0],eu[1],"","summid sumeu"):"")+
     (mi>=17?row('<img class="sileague" src="badges/efl-champ.png" alt="">',"Relegated to Championship","","sumdown"):"")+
     (mi>=7&&mi<17?row('<img class="silion" src="'+PLLOGO+'" alt="">',mi<9?"Top half finish":(mi<14?"Mid-table. Safe and sound.":"Survived!"),"","summid"):"")+
     row("","Results",me.p+" points<br>"+me.w+"W "+me.d+"D "+me.l+"L")+
-    (eu?row(eu[0],eu[1],eu[2]):"")+
     (!eu&&mi>0&&mi<17?sumMatches():"")+
     '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">'+"See the final table"+'</button>';
   $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
