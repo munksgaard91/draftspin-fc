@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.55 (beta)">
+<meta name="app-version" content="0.5.3.56 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1199,7 +1199,8 @@ function renderDraft(){
   $("spinBtn").disabled=!(myTurn()&&!S.spinning&&!S.club);
   $("spinBtn").textContent=done?"The draft is finished":(!myTurn()?"Waiting for "+(cur?teamName(cur):""):(S.club?"Pick a player below":"Spin"));
   $("turnTxt").textContent=done?"Your squad is ready.":(myTurn()?(S.club?"The club is chosen. Pick freely from the players.":"Your turn. Spin to get a club."):(cur?teamName(cur)+" is up.":""));
-  $("doneBox").innerHTML=done?('<p class="note fade" style="margin-top:16px">The draft is finished. The season is starting...</p>'):"";
+  $("doneBox").innerHTML=done?('<p class="note fade" style="margin-top:16px">The draft is finished. The season is being simulated...</p>'):"";
+  if(done&&NET.game&&NET.game.status==="draft")liveSimWaiting("The draft is finished. The season is being simulated...");
   if(G.started)$("navwrap").hidden=(true);
 }
 function spin(){
@@ -1871,7 +1872,7 @@ async function liveSeasonApply(){
     var g=NET.game,key=g.status+"|"+g.current_round,msg=function(t){var d=$("doneBox");if(d)d.innerHTML='<p class="note fade" style="margin-top:16px">'+t+'</p>'};
     if(g.current_round<1){
       if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/n't|not|draft/i.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
-      liveSimWaiting(g.pace==="quick"?"The draft is finished. The season is being simulated...":"The draft is finished. The season is starting...");return;
+      liveSimWaiting("The draft is finished. The season is being simulated...");return;
     }
     var quick=g.pace==="quick";
     if(quick&&g.status!=="done"){
@@ -1882,7 +1883,7 @@ async function liveSeasonApply(){
     if(quick)key=g.status+"|q";
     if(!NET.season||NET.seasonKey!==key){
       var ok=await liveSeasonLoad();
-      if(!ok){liveSimWaiting("The draft is finished. The season is starting...");return}
+      if(!ok){liveSimWaiting("The draft is finished. The season is being simulated...");return}
       NET.seasonKey=key;
     }
     if(!NET.seasonOn){NET.seasonOn=true;liveSeasonStart();return}
@@ -2597,7 +2598,7 @@ async function livePick(name,i){
   NET.pendP=tmo(NET.sb.rpc("pick_player",{p_game:NET.gid,p_player:a[3],p_slot:i+1}));
   var r0;try{r0=await NET.pendP}catch(e){r0={error:e}}
   NET.pending=false;NET.pendP=null;
-  if(r0.error){NET.pickFailed=true;NET.opt=null;toast("Oops, something went wrong, please try again!",4200)}
+  if(r0.error){NET.pickFailed=true;NET.opt=null;if(NET.simWait&&NET.game&&NET.game.status==="draft"){NET.simWait=null;go("flow")}toast("Oops, something went wrong, please try again!",4200)}
   await liveChanged();
 }
 /* hjemmeskærm-banner (iPhone/Android) */
