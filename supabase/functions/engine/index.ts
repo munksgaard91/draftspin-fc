@@ -109,11 +109,11 @@ async function playRound(gameId, ctx, round) {
   for (const m of ms) {
     const th = ctx.teams[m.home_key], ta = ctx.teams[m.away_key];
     const lh = ctx.secret.luck[m.home_key], la = ctx.secret.luck[m.away_key];
-    const res = E.simulateMatch({ xi: th.xi, shift: lh.season + lh.form[round - 1] }, { xi: ta.xi, shift: la.season + la.form[round - 1] }, `${ctx.secret.seed}|${round}|${m.home_key}`);
+    const res = E.simulateMatch({ xi: th.xi, shift: lh.season + lh.form[round - 1], human: ctx.interactive && th.kind === "human" }, { xi: ta.xi, shift: la.season + la.form[round - 1], human: ctx.interactive && ta.kind === "human" }, `${ctx.secret.seed}|${round}|${m.home_key}`);
     upd.push({ id: m.id, game_id: gameId, round, home_key: m.home_key, away_key: m.away_key, home_goals: res.hg, away_goals: res.ag, played: true, added_time: res.added });
     if (th.kind === "human" || ta.kind === "human") {
       for (const e of res.events) {
-        evs.push({ game_id: gameId, match_id: m.id, minute: e.m, type: e.type, team: e.s, player_id: e.pid ?? null, assist_id: e.aid ?? null, pen: !!e.pen, detail: e.detail ?? null });
+        evs.push({ game_id: gameId, match_id: m.id, minute: e.m, type: e.type, team: e.s, player_id: e.pid ?? null, assist_id: e.aid ?? null, pen: !!e.pen, detail: e.detail ?? null, pending: !!e.pend });
       }
     }
   }
@@ -132,6 +132,8 @@ async function setRound(gameId, from, to, done) {
 async function runTo(game, target) {
   target = Math.min(target, 38);
   const ctx = await loadCtx(game.id);
+  ctx.interactive = game.pace !== "quick"; // v1.14: i et normalt spil vælger spilleren selv straffeskytte og hjørne
+  chk(await admin.from("match_events").update({ pending: false }).eq("game_id", game.id).eq("pending", true).select("id")); // uafgjorte straffe (sprunget over) bliver stående med det tilfældige udfald
   let r = game.current_round;
   // gør en evt. halvfærdig runde færdig (hvis en tidligere kørsel blev afbrudt)
   if (r >= 1) await playRound(game.id, ctx, r);
@@ -148,6 +150,43 @@ async function runTo(game, target) {
   }
 }
 
+
+// ---------- v1.14: spillerens straffespark ----------
+async function resolvePen(game, uid, eventId, takerId, spot) {
+  if (game.status !== "season") throw new Fejl("The season isn't in progress");
+  const ev = chk(await admin.from("match_events").select("*").eq("id", eventId).eq("game_id", game.id))[0];
+  if (!ev) throw new Fejl("Unknown penalty");
+  if (!ev.pending) return { done: true };
+  const m = chk(await admin.from("matches").select("*").eq("id", ev.match_id))[0];
+  if (m.round !== game.current_round) return { done: true };
+  const key = ev.team === "h" ? m.home_key : m.away_key, other = ev.team === "h" ? m.away_key : m.home_key;
+  if (key !== uid) throw new Fejl("It's not your penalty");
+  const ctx = await loadCtx(game.id);
+  const tk = ctx.teams[key].xi.find((x) => x.p.id === takerId && x.pos !== "GK");
+  if (!tk) throw new Fejl("That player can't take the penalty");
+  const cards = chk(await admin.from("match_events").select("player_id,minute").eq("match_id", m.id).eq("team", ev.team).in("type", ["red", "second_yellow"]));
+  if (cards.some((c) => c.player_id === takerId && c.minute < ev.minute)) throw new Fejl("That player has been sent off");
+  const gk = ctx.teams[other].xi.find((x) => x.pos === "GK");
+  const info = E.penInfo(tk.p, gk && gk.p);
+  if (!Number.isInteger(spot) || spot < 0 || spot >= info.n) throw new Fejl("Invalid spot");
+  const rng = E.makeRng(`${ctx.secret.seed}|pen|${ev.id}`), gkSpot = rng.int(info.n);
+  const res = E.penResult(info, spot, gkSpot, rng.next());
+  const patch = res === "goal" ? { type: "goal", assist_id: null, detail: null } : { type: "pen_miss", assist_id: res === "saved" && gk ? gk.p.id : null, detail: res };
+  const u = await admin.from("match_events").update({ ...patch, player_id: takerId, pen: true, pending: false }).eq("id", ev.id).eq("pending", true).select("id");
+  if (u.error) throw new Error(u.error.message);
+  if (!u.data.length) return { done: true };
+  const all = chk(await admin.from("match_events").select("type,team").eq("match_id", m.id));
+  const hg = all.filter((e) => e.type === "goal" && e.team === "h").length, ag = all.filter((e) => e.type === "goal" && e.team === "a").length;
+  chk(await admin.from("matches").update({ home_goals: hg, away_goals: ag }).eq("id", m.id).select("id"));
+  // clean sheets følger det endelige resultat
+  chk(await admin.from("match_events").delete().eq("match_id", m.id).eq("type", "clean_sheet").select("id"));
+  const cs = [];
+  const gkH = ctx.teams[m.home_key].xi.find((x) => x.pos === "GK"), gkA = ctx.teams[m.away_key].xi.find((x) => x.pos === "GK");
+  if (ag === 0 && gkH) cs.push({ game_id: game.id, match_id: m.id, minute: 90, type: "clean_sheet", team: "h", player_id: gkH.p.id, pen: false });
+  if (hg === 0 && gkA) cs.push({ game_id: game.id, match_id: m.id, minute: 90, type: "clean_sheet", team: "a", player_id: gkA.p.id, pen: false });
+  if (cs.length) await chunkedEvents(cs);
+  return { done: false, result: res, n: info.n, gk_spot: gkSpot, spot, home_goals: hg, away_goals: ag };
+}
 
 // ---------- Highscore: gem rekorder, når sæsonen er slut ----------
 async function allRows(table, gameId) {
@@ -243,11 +282,11 @@ Deno.serve(async (req) => {
     const jwt = (req.headers.get("Authorization") || "").replace("Bearer ", "");
     const { data: u } = await admin.auth.getUser(jwt);
     if (!u || !u.user) return json({ error: "Not signed in" }, 401);
-    const { action, game_id, force } = await req.json();
+    const { action, game_id, force, event_id, taker_id, spot } = await req.json();
     if (action === "hash") {
       // kontrol af at den udgivne motor er identisk med filen i repoet: fingeraftryk af eksporterne + en fast testkamp
       const sha = async (t) => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)))].map((b) => b.toString(16).padStart(2, "0")).join("");
-      const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
+      const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.penInfo.toString(), E.penResult.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
       const mk = (o) => E.FORMS["4-4-2"].map((pos, i) => ({ pos, p: { id: o + i, rating: 140 + ((i * 7 + o) % 23), consistency: 8 + (i % 9), pen_taking: 6 + (i % 12), yellow_w: 0.9, red_w: 1 }, f: 1 }));
       const sims = [];
       for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
@@ -258,6 +297,7 @@ Deno.serve(async (req) => {
     if (!me) return json({ error: "You're not in the game" }, 403);
     const isAdmin = game.admin_id === u.user.id;
 
+    if (action === "pen") return json({ ok: true, ...(await resolvePen(game, u.user.id, event_id, taker_id, spot)) });
     if (action === "init") {
       const r = await initSeason(game);
       if (!r.already) {

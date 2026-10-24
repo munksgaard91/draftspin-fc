@@ -8,12 +8,12 @@ const sha = async (t: string) => [...new Uint8Array(await crypto.subtle.digest("
 const mk = (o: number, form = "4-4-2") => E.FORMS[form].map((pos: string, i: number) => ({ pos, p: { id: o + i, rating: 140 + ((i * 7 + o) % 23), consistency: 8 + (i % 9), pen_taking: 6 + (i % 12), yellow_w: 0.9, red_w: 1 }, f: 1 }));
 
 Deno.test("motoren er identisk med den udgivne (fingeraftryk + 40 faste kampe)", async () => {
-  const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
+  const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.penInfo.toString(), E.penResult.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
   const sims: string[] = [];
   for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e: any) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
-  // Værdierne er målt på den udgivne edge function (version 1.13). Ændres motoren med vilje, opdateres de her og i SPEC.md.
-  eq(await sha(parts), "51392470a23923e1d600bcc517d3f077a858de077fb41d19230cef49ee6bb3cf", "fingeraftryk");
-  eq(await sha(sims.join("|")), "7e4d2a4156c3eb8c3073fc9ae0d52e69d5e841a7f426d70fdc3f7aad33c39d4c", "simulering");
+  // Værdierne er målt på den udgivne edge function (version 1.14). Ændres motoren med vilje, opdateres de her og i SPEC.md.
+  eq(await sha(parts), "6132406bf97c7a08a539b852b44b16fc3644e9e8784e9ef5a8279843fcb42bbe", "fingeraftryk");
+  eq(await sha(sims.join("|")), "deb603cd03fa3341d086c6ba51682494208ca0f21f1a94091d8bb2d068e3a15a", "simulering");
 });
 
 Deno.test("samme seed giver samme kamp, forskellig seed giver forskellig", () => {
@@ -161,4 +161,20 @@ Deno.test("v1.13: de 3 svageste AI-klubber får sæson-straf, de 3 stærkeste en
   ok(avg(["A15", "A16", "A17"]) < -1.5, "stærkeste AI-hold skal nedjusteres: " + avg(["A15", "A16", "A17"]));
   ok(Math.abs(avg(["A8", "A9", "A10"])) < 1.2, "mellemholdene røres ikke: " + avg(["A8", "A9", "A10"]));
   ok(Math.abs(sum.H1) < 1 && Math.abs(sum.H2) < 1, "menneskehold får ingen straf eller nedjustering");
+});
+
+Deno.test("v1.14: straffe — hjørner afhænger af skytte og målmand, samme hjørne er reddet, menneskehold får ventende straffe", () => {
+  const best = E.penInfo({ pen_taking: 20 }, { rating: 129 }), worstVsBest = E.penInfo({ pen_taking: 1 }, { rating: 177 }), bestVsWorst = E.penInfo({ pen_taking: 20 }, { rating: 84 });
+  if (!(best.n >= 6 && best.n <= 7)) throw new Error("bedste skytte mod snit-målmand: " + best.n);
+  eq(worstVsBest.n, 2, "værste skytte mod bedste målmand = 50/50 i målet");
+  const fail = 0.5 + 0.5 * worstVsBest.miss;
+  if (!(fail > 0.55 && fail < 0.63)) throw new Error("værste mod bedste burde fejle ca. 60 %: " + fail);
+  if (!(bestVsWorst.n > best.n)) throw new Error("svag målmand giver flere hjørner");
+  eq(E.penResult(best, 3, 3, 0.99), "saved", "samme hjørne"); eq(E.penResult(best, 3, 2, 0.0), "wide", "skudt forbi"); eq(E.penResult(best, 3, 2, 0.99), "goal", "mål");
+  let pend = 0, all = 0;
+  for (let k = 0; k < 300; k++) {
+    const r = E.simulateMatch({ xi: mk(0), shift: 0, human: true }, { xi: mk(100), shift: 0 }, "pen" + k);
+    for (const e of r.events) if ((e.type === "goal" && e.pen) || e.type === "pen_miss") { all++; if (e.pend) { pend++; eq(e.s, "h", "kun menneskeholdets straffe venter"); } }
+  }
+  if (!(all > 40 && pend > 0 && pend < all)) throw new Error(`ventende straffe: ${pend} af ${all}`);
 });

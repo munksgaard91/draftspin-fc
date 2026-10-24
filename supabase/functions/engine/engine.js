@@ -47,7 +47,7 @@ const WASSIST = { LWB: 0.9, RWB: 0.9, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM:
 // v1.12: selvmål (andel af modstanderens spillere på banen, der kan sparke bolden ind) og balance-regel (straf for skæv fordeling mellem angreb og forsvar)
 const WOG = { CB: 3, LB: 1.5, RB: 1.5, LWB: 1.5, RWB: 1.5, DM: 1, CM: 0.6, GK: 0.3, LM: 0.2, RM: 0.2, AM: 0.2, LW: 0.2, RW: 0.2, ST: 0.2 };
 const OG_RATE = 0.023, BAL_LAMBDA = 0.03;
-export const ENGINE_VERSION = "1.13";
+export const ENGINE_VERSION = "1.14";
 export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 // v1.13: svageste AI-klubber (svagest først) får fast sæson-straf, de bedste AI-klubber (stærkest først) en lille nedjustering
@@ -167,7 +167,15 @@ export function setupSeason(teams, seed) {
 // ---------- kamp ----------
 // straffeskytte: højest pen_taking; ved lighed en udpeget straffeskytte (pen_rank) for den stærkeste klub (cstr = klubbens styrke), så laveste pen_rank, så id
 const penOrder = (a, b) => (b.p.pen_taking || 8) - (a.p.pen_taking || 8) || ((a.p.pen_rank ? 0 : 1) - (b.p.pen_rank ? 0 : 1)) || ((b.p.cstr || 0) - (a.p.cstr || 0)) || ((a.p.pen_rank || 9) - (b.p.pen_rank || 9)) || (a.p.id - b.p.id);
-// side: { xi: [{pos,p,f}], shift }   p: { id, name, rating, consistency, pen_taking, yellow_w, red_w }
+// v1.14: straffespark. Skytten og målmanden vælger hver et af n hjørner (n afhænger af skyttens straffeevne og målmandens rating); samme hjørne = reddet.
+// Derudover kan skytten skyde forbi/ramme stolpen (miss), oftere for en svag skytte mod en god målmand. Målt ca. 78 % scoret på tværs af ligaen (Premier League 2020-24: ca. 82 %).
+export function penInfo(taker, gk) {
+  const x = Math.max(-1.1, Math.min(1.25, ((taker.pen_taking || 10) - 10) / 8));
+  const g = gk ? Math.max(-1.3, Math.min(1.3, (gk.rating - 129) / 30)) : 0;
+  return { n: Math.max(2, Math.min(8, Math.round(5.6 + x - 1.6 * g))), miss: Math.max(0.01, Math.min(0.2, 0.03 - 0.025 * x + 0.075 * g)) };
+}
+export function penResult(info, spot, gkSpot, roll) { return spot === gkSpot ? "saved" : roll < info.miss ? "wide" : "goal"; }
+// side: { xi: [{pos,p,f}], shift, human? }   p: { id, name, rating, consistency, pen_taking, yellow_w, red_w }
 export function simulateMatch(H, A, seed) {
   const rng = makeRng(seed);
   const prep = (T) => {
@@ -261,13 +269,10 @@ export function simulateMatch(H, A, seed) {
     if (!cand.length) continue;
     const taker = cand[0].x.p;
     if (ev.some((x) => x.m === m && (x.type === "pen_miss" || x.pen))) continue; // aldrig to straffe i samme minut (heller ikke for hver sit hold)
-    const pScore = Math.max(0.6, Math.min(0.92, 0.8 + 0.012 * ((taker.pen_taking || 12) - 12)));
-    if (rng.next() < pScore) ev.push({ m, type: "goal", s, pid: taker.id, aid: null, pen: true });
-    else {
-      const gk = sides[o].T.xi.find((x) => x.pos === "GK");
-      const saved = rng.next() < 0.6;
-      ev.push({ m, type: "pen_miss", s, pid: taker.id, aid: saved && gk ? gk.p.id : null, detail: saved ? "saved" : "wide" });
-    }
+    const gk = sides[o].T.xi.find((x) => x.pos === "GK"), info = penInfo(taker, gk && gk.p);
+    const res = penResult(info, rng.int(info.n), rng.int(info.n), rng.next()); // uden spillerens valg: tilfældigt hjørne mod tilfældig målmand
+    if (res === "goal") ev.push({ m, type: "goal", s, pid: taker.id, aid: null, pen: true, pend: !!T.human });
+    else ev.push({ m, type: "pen_miss", s, pid: taker.id, aid: res === "saved" && gk ? gk.p.id : null, detail: res, pend: !!T.human });
   }
 
   ev.sort((x, y) => x.m - y.m);

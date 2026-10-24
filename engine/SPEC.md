@@ -80,6 +80,12 @@ bestXI bruger nu ungarsk metode (optimal tildeling) i stedet for at fylde plads 
 - Måling (20 hold, menneskehold 148): RMSE mod virkelig PL-profil ca. 2,2 (før 4,1); menneskehold 148 får ca. 55 point, plads 10,0.
 - Fingeraftryk 51392470…b3cf, simulation 7e4d2a41…9d4c.
 
+## v1.14 (2026-10-24): interaktive straffespark
+- Straffe i en menneskekamp (normalt spil, ikke hurtigt spil) gemmes med `pending = true` og et tilfældigt udfald. Spilleren vælger skytte (outfield-spillere på banen) og hjørne; serveren (`action: "pen"`) afgør det, retter hændelsen, kampens mål og clean sheets. Springes straffen over, bliver det tilfældige udfald stående, og `pending` ryddes ved næste runde.
+- Antal hjørner `n` = rund(5,6 + skytte − 1,6 · målmand), 2–8 (skytte = (pen_taking−10)/8, målmand = (rating−129)/30, begge afgrænset). Målmanden vælger et tilfældigt hjørne (seedet pr. hændelse, så det ikke kan genrulles). Samme hjørne = reddet. Ellers kan skytten skyde forbi: 1–20 %.
+- Målt: 0,276 straffe pr. kamp (Premier League 2020-24: ca. 0,27), ca. 78 % scoret (PL ca. 82 %). Bedste skytte mod snit-målmand: 7 hjørner. Værste skytte mod bedste målmand: 2 hjørner, ca. 58 % fejl.
+- AI-holdenes straffe og al simulering af AI-kampe er uændret (bedste skytte, tilfældigt hjørne). Fingeraftryk 6132406b…2bbe, simulation deb603cd…a15a.
+
 ## Faste regler for nye spillere i `players` (Rasmus, 2026-10-21)
 Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprindelige tal. Eksisterende spillere røres ikke af reglerne.
 1. **Kortrisiko** (`card_risk`, `yellow_w`, `red_w`): regnes fra FM-egenskaber (0-20) med `card_risk = clamp(4,2·aggression + 4,6·dirtiness + 2,5·tackling + 0,3·bravery − 0,5·anticipation + positionskonstant, 0, 100)`, positionskonstant cirka −63 til −71 (CB −67, DM −69, ST −69). Passer på eksisterende spillere med gennemsnitlig fejl 4 point (95 % inden for 10); den oprindelige formel er ukendt. `red_w` slås op i kurven card_risk -> red_w fra eksisterende spillere (50 -> 0,83, 100 -> 1,99); `yellow_w` fra en ret linje card_risk -> yellow_w for spillerens position.

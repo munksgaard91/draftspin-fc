@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.63 (beta)">
+<meta name="app-version" content="0.5.3.64 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -463,6 +463,31 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .pitch.sm .dot{width:26px;height:26px;font-size:9px}
 .pitch.sm .nm{display:none}
 @keyframes pl{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 45%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
+.pen .pgk{font-size:13.5px;color:var(--mut);margin:2px 0 6px}
+.pen .ptks{display:grid;gap:6px;margin-top:6px;max-height:56vh;overflow:auto}
+.ptk{appearance:none;display:grid;grid-template-columns:34px 1fr 64px 24px;gap:10px;align-items:center;text-align:left;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:inherit;cursor:pointer}
+.ptk:first-child{border-color:var(--acc)}
+.ptk .pp{font:500 11.5px var(--mono);text-align:center;background:var(--bg);border-radius:6px;padding:3px 0}
+.ptk .pn{font-weight:500;display:flex;flex-direction:column;line-height:1.2}
+.ptk .pn small{color:var(--acc);font-size:11.5px;font-weight:400}
+.ptk .pb{height:6px;border-radius:3px;background:var(--bg);overflow:hidden}
+.ptk .pb i{display:block;height:100%;background:var(--acc)}
+.ptk .pv{font:500 13px var(--mono);text-align:right;color:var(--mut)}
+.pgoal{width:100%;display:block;margin:6px 0 0}
+.pgoal .pnet{fill:#ffffff0d}
+.pgoal .ppost{fill:none;stroke:#ece6f5;stroke-width:5;stroke-linejoin:round}
+.pgoal .pmesh{stroke:#ffffff1f;stroke-width:1}
+.pgoal #pkeep{fill:#f5c542}
+.pgoal .pball{fill:#fff;stroke:#12001f;stroke-width:2}
+.pgoal .psp{cursor:pointer}
+.pgoal .phit{fill:transparent}
+.pgoal .pdot{fill:var(--acc);fill-opacity:.85;stroke:#12001f;stroke-width:2;animation:ppulse 1.4s ease-in-out infinite}
+.pgoal.lock .psp{pointer-events:none;opacity:.35}
+.pgoal.lock .psp .pdot{animation:none}
+@keyframes ppulse{50%{fill-opacity:.45}}
+.pen .pres{text-align:center;margin:8px 0 0;font-size:14.5px}
+.pen .pres.win,.pen .pres.lose{font-size:28px;font-weight:700;letter-spacing:.02em}
+.pen .pres.win{color:var(--acc)}.pen .pres.lose{color:var(--red-text)}
 .sheet{position:fixed;inset:0;z-index:6;background:#000000bf;display:grid;place-items:center;padding:14px}
 .sheetin{width:100%;max-width:440px;background:var(--bgb);border:1px solid var(--line);border-radius:16px;padding:12px 12px 14px;box-shadow:0 20px 60px -10px #000}
 .sheetin .hd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
@@ -1367,7 +1392,7 @@ function startMatch(){
   readySt={me:false};renderReady();
   liveMatchHeader();
   $("readyBtn").disabled=true;$("readyBtn").textContent="Next match";
-  var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false,holdUntil=0;
+  var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false,holdUntil=0,penBusy=false;
   /* multiplayer: fast hastighed for alle (Human v AI / Human v Human), ingen Replay, hastighed eller Skip */
   var G0=NET.game,multi=!!G0&&G0.max_players>1,mm0=liveMyMatch(NET.round),opp0=mm0?(mm0.home_key===NET.uid?mm0.away_key:mm0.home_key):null;MIN=mm0?mEnd(mm0):94;
   var FIXSPD=multi?(lhuman(opp0)?+G0.speed_hh:+G0.speed_ai)||1:0;
@@ -1380,9 +1405,11 @@ function startMatch(){
   setScore($("sh"),0);setScore($("sa"),0);$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
   $("skipBtn").disabled=false;NET.liveMin=0;liveOthers();
   function tick(){
-    var now=Date.now();if(!skip&&holdUntil&&now<holdUntil){last=now;return}acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
+    var now=Date.now();if(penBusy){last=now;return}if(!skip&&holdUntil&&now<holdUntil){last=now;return}acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
-      var e=sc[shown++];
+      var e=sc[shown];
+      if(e.pend&&!skip){penBusy=true;penFlow(e,mm0,function(){penBusy=false;last=Date.now()});break}
+      shown++;
       if(e.t==="goal"){if(e.s==="me")h++;else a++;setScore($("sh"),h,!skip);setScore($("sa"),a,!skip);buzz();if(!skip){goalFill(e.s==="me"?NET.uid:opp0,(e.s==="me")===(NET.myHome!==false));holdUntil=Date.now()+1850;tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");break}}
       tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
@@ -2129,6 +2156,7 @@ function liveScriptFor(m){
   if(!m)return [];
   var side=m.home_key===NET.uid?"h":"a",out=[],oppK=side==="h"?m.away_key:m.home_key,aiOpp=!lhuman(oppK),oppN=lname(oppK);
   NET.season.events.filter(function(e){return e.match_id===m.id}).sort(function(a,b){return a.minute-b.minute||a.id-b.id}).forEach(function(e){
+    var n0=out.length;
     var og=e.detail==="og",sd=e.team===side?"me":"opp",ai=sd==="opp"&&aiOpp&&!og,x=ai?oppN:pname(e.player_id);
     if(e.type==="goal")out.push({m:e.minute,t:"goal",s:sd,x:x,ai:ai?1:0,a:og?"Own goal":(e.pen?"Penalty":((e.assist_id&&!ai)?"Assist: "+pname(e.assist_id):"")),pen:e.pen?1:0});
     else if(e.type==="yellow")out.push({m:e.minute,t:"y",s:sd,x:x,ai:ai?1:0});
@@ -2138,11 +2166,87 @@ function liveScriptFor(m){
       var gkAi=sd==="me"&&aiOpp;
       out.push({m:e.minute,t:"pm",s:sd,x:x,ai:ai?1:0,a:e.assist_id?(gkAi?"The penalty was saved":"The penalty was saved by "+pname(e.assist_id)):"The penalty went wide"});
     }
+    if(out.length>n0){out[n0].id=e.id;out[n0].pend=e.pending?1:0}
   });
   var lastM=out.reduce(function(a,e){return e.t==="sys"?a:Math.max(a,e.m)},0);
   out.push({m:45,t:"sys",x:"Half-time"});out.push({m:mEnd(m),t:"sys",ft:1,x:"Full time",lab:clockTxt(Math.max(90,lastM))});
   out.sort(function(a,b){return a.m-b.m||(a.t==="sys"?-1:1)});
   return out;
+}
+/* ---------- v1.14: straffespark i kampen. Du vælger skytte og hjørne, målmanden vælger tilfældigt; samme hjørne = reddet ---------- */
+function penInfoC(takerPen,gkRating){
+  var x=Math.max(-1.1,Math.min(1.25,((takerPen||10)-10)/8)),g=gkRating==null?0:Math.max(-1.3,Math.min(1.3,(gkRating-129)/30));
+  return {n:Math.max(2,Math.min(8,Math.round(5.6+x-1.6*g)))};
+}
+var PENSP={2:[[.25,.62],[.75,.62]],3:[[.2,.62],[.5,.3],[.8,.62]],4:[[.2,.3],[.8,.3],[.2,.74],[.8,.74]],5:[[.2,.3],[.8,.3],[.5,.55],[.2,.78],[.8,.78]],6:[[.17,.3],[.5,.3],[.83,.3],[.17,.74],[.5,.74],[.83,.74]],7:[[.17,.3],[.5,.3],[.83,.3],[.12,.74],[.37,.74],[.63,.74],[.88,.74]],8:[[.12,.3],[.37,.3],[.63,.3],[.88,.3],[.12,.74],[.37,.74],[.63,.74],[.88,.74]]};
+function penOv(html){var o=document.getElementById("penov");if(!o){o=document.createElement("div");o.id="penov";o.className="sheet";document.body.appendChild(o)}o.innerHTML='<div class="sheetin pen">'+html+'</div>';return o}
+function penClose(){var o=document.getElementById("penov");if(o)o.remove()}
+async function penRefresh(m){
+  var a=await NET.sb.from("match_events").select("*").eq("match_id",m.id),b=await NET.sb.from("matches").select("*").eq("id",m.id);
+  if(a.error||b.error||!b.data[0])return false;
+  NET.season.events=NET.season.events.filter(function(x){return x.match_id!==m.id}).concat(a.data);
+  var mm=NET.season.matches.filter(function(x){return x.id===m.id})[0];if(mm){mm.home_goals=b.data[0].home_goals;mm.away_goals=b.data[0].away_goals}
+  return true;
+}
+function penApply(e,m){
+  var ns=liveScriptFor(m).filter(function(x){return x.id===e.id})[0];
+  if(ns)for(var k in ns)e[k]=ns[k];
+  e.pend=0;
+}
+function penFlow(e,m,done){
+  var fin=function(){penClose();done()};
+  (e.s==="me"?penPick(e,m,fin):penWatch(e,m,fin)).catch(function(){fin()});
+}
+async function penPick(e,m,fin){
+  var side=m.home_key===NET.uid?"h":"a",oppK=side==="h"?m.away_key:m.home_key;
+  var flat=function(k){return [].concat.apply([],FORMS[NET.season.teams[k].formation])};
+  var lu=NET.season.lineups[NET.uid]||[],fl=flat(NET.uid),off={};
+  NET.season.events.forEach(function(x){if(x.match_id===m.id&&x.team===side&&(x.type==="red"||x.type==="second_yellow")&&x.minute<e.m)off[x.player_id]=1});
+  var tk=[];lu.forEach(function(pid,i){var inf=NET.byId[pid];if(!inf||fl[i]==="GK"||off[pid])return;tk.push({pid:pid,name:inf.p[0],pos:fl[i],pen:inf.p[8]||10})});
+  tk.sort(function(a,b){return b.pen-a.pen});
+  var gk=null,ol=NET.season.lineups[oppK]||[],ofl=flat(oppK);ol.forEach(function(pid,i){if(ofl[i]==="GK")gk=NET.byId[pid]});
+  var gkTxt=gk?'<div class="pgk">Keeper: <b>'+esc(gk.p[0])+'</b></div>':'';
+  var rows=tk.map(function(t,i){return '<button class="ptk" data-pid="'+t.pid+'"><span class="pp">'+t.pos+'</span><span class="pn">'+esc(t.name)+(i===0?'<small>Best taker</small>':'')+'</span><span class="pb"><i style="width:'+Math.round(t.pen/20*100)+'%"></i></span><span class="pv">'+t.pen+'</span></button>'}).join("");
+  var o=penOv('<div class="hd"><b>Penalty!</b><span class="muted">Who takes it?</span></div>'+gkTxt+'<div class="ptks">'+rows+'</div>');
+  var taker=await new Promise(function(res){o.querySelector(".ptks").onclick=function(ev){var b=ev.target.closest("[data-pid]");if(b)res(tk.filter(function(t){return t.pid===+b.dataset.pid})[0])}});
+  var n=penInfoC(taker.pen,gk?gk.p[5]:null).n,pts=PENSP[n]||PENSP[5];
+  var X=function(f){return 20+f*260},Y=function(f){return 20+f*130};
+  var svg='<svg class="pgoal" viewBox="0 0 300 210" aria-hidden="true"><rect x="20" y="20" width="260" height="130" class="pnet"/><path d="M20 150V20H280V150" class="ppost"/><path d="M60 20V150M100 20V150M140 20V150M180 20V150M220 20V150M260 20V150M20 60H280M20 100H280" class="pmesh"/>'+
+    '<g id="pkeep" style="transform:translate(150px,98px)"><g id="pkeepi"><circle cx="0" cy="-26" r="9"/><rect x="-10" y="-16" width="20" height="38" rx="8"/><rect x="-26" y="-14" width="14" height="8" rx="4"/><rect x="12" y="-14" width="14" height="8" rx="4"/></g></g>'+
+    '<circle id="pball" cx="0" cy="0" r="8" class="pball" style="transform:translate(150px,190px)"/>'+
+    pts.map(function(q,i){return '<g class="psp" data-i="'+i+'" style="transform:translate('+X(q[0])+'px,'+Y(q[1])+'px)"><circle r="22" class="phit"/><circle r="13" class="pdot"/></g>'}).join("")+'</svg>';
+  o=penOv('<div class="hd"><b>'+esc(taker.name)+'</b><span class="muted">Pick your corner</span></div>'+gkTxt+svg+'<p class="note pres" id="pres">'+n+' places to aim. The keeper picks one too. Same place means saved.</p>');
+  var i=await new Promise(function(res){o.querySelector(".pgoal").onclick=function(ev){var b=ev.target.closest(".psp");if(b)res(+b.dataset.i)}});
+  o.querySelector(".pgoal").classList.add("lock");
+  var r0=await callEngine("pen",{event_id:e.id,taker_id:taker.pid,spot:i}).catch(function(x){toast(x.message,4000);return null});
+  if(r0&&!r0.done){
+    var q=pts[r0.gk_spot]||pts[0],t=pts[i],wide=r0.result==="wide";
+    var kp=document.getElementById("pkeep"),bl=document.getElementById("pball");
+    kp.style.transition=bl.style.transition="transform .55s cubic-bezier(.2,.7,.3,1)";
+    kp.style.transform="translate("+X(q[0])+"px,"+(Y(q[1])+8)+"px) rotate("+(q[0]<.4?-70:(q[0]>.6?70:0))+"deg)";
+    bl.style.transform="translate("+(wide?(t[0]<.5?6:294):X(t[0]))+"px,"+(wide?8:Y(t[1]))+"px) scale(.8)";
+    var pr=document.getElementById("pres");
+    setTimeout(function(){pr.textContent=r0.result==="goal"?"GOAL!":(r0.result==="saved"?"Saved!":"Wide!");pr.classList.add(r0.result==="goal"?"win":"lose")},560);
+    await new Promise(function(res){setTimeout(res,1900)});
+  }
+  await penRefresh(m);penApply(e,m);fin();
+}
+async function penWatch(e,m,fin){
+  var oppK=m.home_key===NET.uid?m.away_key:m.home_key;
+  penOv('<div class="hd"><b>Penalty!</b><span class="muted">'+esc(lname(oppK))+'</span></div><div class="simwait" style="padding:14px 0 6px"><p class="note warm"><i class="mini-spin"></i>'+esc(lname(oppK))+' is taking the penalty</p></div>');
+  for(var k=0;k<30;k++){
+    await new Promise(function(res){setTimeout(res,1500)});
+    if(!(await penRefresh(m)))continue;
+    var ev=NET.season.events.filter(function(x){return x.id===e.id})[0];
+    if(!ev||!ev.pending||humanDone(oppK,m.round))break;
+  }
+  var ev2=NET.season.events.filter(function(x){return x.id===e.id})[0];
+  if(ev2&&!ev2.pending){
+    var tx=ev2.type==="goal"?"GOAL for "+lname(oppK):(ev2.detail==="saved"?"Saved!":"Wide!");
+    penOv('<div class="hd"><b>Penalty!</b></div><p class="note pres '+(ev2.type==="goal"?"lose":"win")+'" style="margin:18px 0">'+esc(tx)+'</p>');
+    await new Promise(function(res){setTimeout(res,1500)});
+  }
+  penApply(e,m);fin();
 }
 function formOf(k,before){
   var ms=NET.season.matches.filter(function(m){return m.played&&m.round<before&&(m.home_key===k||m.away_key===k)}).sort(function(a,b){return a.round-b.round}).slice(-5);
@@ -2463,12 +2567,12 @@ $("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofba
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
 function livePlayers(){
   NET.pl=(async function(){
-    var r0=await NET.sb.from("players").select("id,club,number,name,pos,alts,rating,short_name,face_id").order("club").order("number");
+    var r0=await NET.sb.from("players").select("id,club,number,name,pos,alts,rating,short_name,face_id,pen_taking").order("club").order("number");
     if(r0.error){var pc=cget("pl");if(!pc||!netDown(r0.error))throw r0.error;r0={data:pc}}
     else cset("pl",r0.data);
     CLUBS={};LEAGUE.forEach(function(c){CLUBS[c[0]]={n:c[1],p:[]}});
     NET.byId={};NET.byName={};
-    r0.data.forEach(function(x){var a=[x.name,x.pos,x.number,x.id,x.alts||{},x.rating,x.short_name||"",x.face_id||0];CLUBS[x.club].p.push(a);NET.byId[x.id]={p:a,club:x.club};NET.byName[x.name]=a});
+    r0.data.forEach(function(x){var a=[x.name,x.pos,x.number,x.id,x.alts||{},x.rating,x.short_name||"",x.face_id||0,x.pen_taking||10];CLUBS[x.club].p.push(a);NET.byId[x.id]={p:a,club:x.club};NET.byName[x.name]=a});
     NET.plReady=true;
   })();
 }
