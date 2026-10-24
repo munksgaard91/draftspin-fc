@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.64 (beta)">
+<meta name="app-version" content="0.5.3.65 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -463,16 +463,15 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .pitch.sm .dot{width:26px;height:26px;font-size:9px}
 .pitch.sm .nm{display:none}
 @keyframes pl{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 45%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
-.pen .pgk{font-size:13.5px;color:var(--mut);margin:2px 0 6px}
+.pen .phd{text-align:center;margin:2px 0 8px}
+.pen .phd b{display:block;font-size:19px;font-weight:600}
+.pen .phd span{display:block;font-size:14.5px;color:var(--mut);margin-top:2px}
 .pen .ptks{display:grid;gap:6px;margin-top:6px;max-height:56vh;overflow:auto}
-.ptk{appearance:none;display:grid;grid-template-columns:34px 1fr 64px 24px;gap:10px;align-items:center;text-align:left;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:inherit;cursor:pointer}
-.ptk:first-child{border-color:var(--acc)}
+.ptk{appearance:none;position:relative;display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;text-align:left;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:inherit;cursor:pointer}
 .ptk .pp{font:500 11.5px var(--mono);text-align:center;background:var(--bg);border-radius:6px;padding:3px 0}
-.ptk .pn{font-weight:500;display:flex;flex-direction:column;line-height:1.2}
-.ptk .pn small{color:var(--acc);font-size:11.5px;font-weight:400}
-.ptk .pb{height:6px;border-radius:3px;background:var(--bg);overflow:hidden}
-.ptk .pb i{display:block;height:100%;background:var(--acc)}
-.ptk .pv{font:500 13px var(--mono);text-align:right;color:var(--mut)}
+.ptk .pn{font-size:14.5px;font-weight:500;line-height:1.2}
+.ptk .pv{font:500 12px var(--mono);color:var(--mut);padding-right:14px}
+.ptk .pstar{position:absolute;top:3px;right:6px;font-style:normal;font-size:12px;color:var(--yel);line-height:1}
 .pgoal{width:100%;display:block;margin:6px 0 0}
 .pgoal .pnet{fill:#ffffff0d}
 .pgoal .ppost{fill:none;stroke:#ece6f5;stroke-width:5;stroke-linejoin:round}
@@ -2202,26 +2201,35 @@ async function penPick(e,m,fin){
   var flat=function(k){return [].concat.apply([],FORMS[NET.season.teams[k].formation])};
   var lu=NET.season.lineups[NET.uid]||[],fl=flat(NET.uid),off={};
   NET.season.events.forEach(function(x){if(x.match_id===m.id&&x.team===side&&(x.type==="red"||x.type==="second_yellow")&&x.minute<e.m)off[x.player_id]=1});
-  var tk=[];lu.forEach(function(pid,i){var inf=NET.byId[pid];if(!inf||fl[i]==="GK"||off[pid])return;tk.push({pid:pid,name:inf.p[0],pos:fl[i],pen:inf.p[8]||10})});
-  tk.sort(function(a,b){return b.pen-a.pen});
+  var rn=NET.round,gl={};
+  NET.season.events.forEach(function(x){
+    if(x.type!=="goal"||x.detail==="og"||!x.player_id)return;
+    var mx=NET.season.matches.filter(function(q){return q.id===x.match_id})[0];
+    if(!mx||mx.round>=rn||(x.team==="h"?mx.home_key:mx.away_key)!==NET.uid)return;
+    gl[x.player_id]=(gl[x.player_id]||0)+1});
+  var ORD=["ST","LW","RW","AM","LM","RM","CM","DM","LWB","RWB","LB","RB","CB"],tk=[];
+  lu.forEach(function(pid,i){var inf=NET.byId[pid];if(!inf||fl[i]==="GK"||off[pid])return;tk.push({pid:pid,name:inf.p[0],pos:fl[i],pen:inf.p[8]||10,g:gl[pid]||0,o:ORD.indexOf(fl[i]),i:i})});
+  var reg=tk.slice().sort(function(a,b){return b.pen-a.pen})[0];
+  tk.sort(function(a,b){return a.o-b.o||a.i-b.i});
   var gk=null,ol=NET.season.lineups[oppK]||[],ofl=flat(oppK);ol.forEach(function(pid,i){if(ofl[i]==="GK")gk=NET.byId[pid]});
-  var gkTxt=gk?'<div class="pgk">Keeper: <b>'+esc(gk.p[0])+'</b></div>':'';
-  var rows=tk.map(function(t,i){return '<button class="ptk" data-pid="'+t.pid+'"><span class="pp">'+t.pos+'</span><span class="pn">'+esc(t.name)+(i===0?'<small>Best taker</small>':'')+'</span><span class="pb"><i style="width:'+Math.round(t.pen/20*100)+'%"></i></span><span class="pv">'+t.pen+'</span></button>'}).join("");
-  var o=penOv('<div class="hd"><b>Penalty!</b><span class="muted">Who takes it?</span></div>'+gkTxt+'<div class="ptks">'+rows+'</div>');
+  var gkTxt=gk?'<div class="pgk">In goal: <b>'+esc(gk.p[0])+'</b></div>':'';
+  var rows=tk.map(function(t){return '<button class="ptk" data-pid="'+t.pid+'"><span class="pp">'+t.pos+'</span><span class="pn">'+esc(t.name)+'</span><span class="pv">'+t.g+(t.g===1?" goal":" goals")+'</span>'+(t===reg?'<i class="pstar" title="Regular taker">\u2605</i>':'')+'</button>'}).join("");
+  var o=penOv('<div class="phd"><b>Penalty!</b><span>Who takes it?</span></div><div class="ptks">'+rows+'</div>');
   var taker=await new Promise(function(res){o.querySelector(".ptks").onclick=function(ev){var b=ev.target.closest("[data-pid]");if(b)res(tk.filter(function(t){return t.pid===+b.dataset.pid})[0])}});
   var n=penInfoC(taker.pen,gk?gk.p[5]:null).n,pts=PENSP[n]||PENSP[5];
   var X=function(f){return 20+f*260},Y=function(f){return 20+f*130};
   var svg='<svg class="pgoal" viewBox="0 0 300 210" aria-hidden="true"><rect x="20" y="20" width="260" height="130" class="pnet"/><path d="M20 150V20H280V150" class="ppost"/><path d="M60 20V150M100 20V150M140 20V150M180 20V150M220 20V150M260 20V150M20 60H280M20 100H280" class="pmesh"/>'+
-    '<g id="pkeep" style="transform:translate(150px,98px)"><g id="pkeepi"><circle cx="0" cy="-26" r="9"/><rect x="-10" y="-16" width="20" height="38" rx="8"/><rect x="-26" y="-14" width="14" height="8" rx="4"/><rect x="12" y="-14" width="14" height="8" rx="4"/></g></g>'+
+    '<g id="pkeep" style="transform:translate(150px,98px);opacity:0"><g id="pkeepi"><circle cx="0" cy="-26" r="9"/><rect x="-10" y="-16" width="20" height="38" rx="8"/><rect x="-26" y="-14" width="14" height="8" rx="4"/><rect x="12" y="-14" width="14" height="8" rx="4"/></g></g>'+
     '<circle id="pball" cx="0" cy="0" r="8" class="pball" style="transform:translate(150px,190px)"/>'+
     pts.map(function(q,i){return '<g class="psp" data-i="'+i+'" style="transform:translate('+X(q[0])+'px,'+Y(q[1])+'px)"><circle r="22" class="phit"/><circle r="13" class="pdot"/></g>'}).join("")+'</svg>';
-  o=penOv('<div class="hd"><b>'+esc(taker.name)+'</b><span class="muted">Pick your corner</span></div>'+gkTxt+svg+'<p class="note pres" id="pres">'+n+' places to aim. The keeper picks one too. Same place means saved.</p>');
+  o=penOv('<div class="phd"><b>'+esc(taker.name)+' takes the penalty</b>'+(gk?'<span>In goal: '+esc(gk.p[0])+'</span>':'')+'</div>'+svg+'<p class="note pres" id="pres">Pick your corner</p>');
   var i=await new Promise(function(res){o.querySelector(".pgoal").onclick=function(ev){var b=ev.target.closest(".psp");if(b)res(+b.dataset.i)}});
   o.querySelector(".pgoal").classList.add("lock");
   var r0=await callEngine("pen",{event_id:e.id,taker_id:taker.pid,spot:i}).catch(function(x){toast(x.message,4000);return null});
   if(r0&&!r0.done){
     var q=pts[r0.gk_spot]||pts[0],t=pts[i],wide=r0.result==="wide";
     var kp=document.getElementById("pkeep"),bl=document.getElementById("pball");
+    kp.style.opacity=1;void kp.getBoundingClientRect();
     kp.style.transition=bl.style.transition="transform .55s cubic-bezier(.2,.7,.3,1)";
     kp.style.transform="translate("+X(q[0])+"px,"+(Y(q[1])+8)+"px) rotate("+(q[0]<.4?-70:(q[0]>.6?70:0))+"deg)";
     bl.style.transform="translate("+(wide?(t[0]<.5?6:294):X(t[0]))+"px,"+(wide?8:Y(t[1]))+"px) scale(.8)";
