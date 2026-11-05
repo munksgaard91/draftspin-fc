@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.7.3 (beta)">
+<meta name="app-version" content="0.5.7.4 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -271,7 +271,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .slot.fcs .pb{top:24px}
 .slot .pb.pa{left:-6px}
 .slot .pb.pg{right:-6px}
-.slot .pb svg{width:12px;height:12px;display:block}
+.slot .pb .pe{font-size:10px;line-height:1;display:block}
 .slot .nm i{font-style:normal;color:#ffffffa6;margin-right:3px}
 .slot .nm{font-size:10px;margin-top:2px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;text-shadow:0 1px 2px #0008}
 .pitch.mini .slot{width:10px}
@@ -1442,8 +1442,8 @@ function startMatch(){
   $("skipBtn").onclick=function(){skip=true;tick()};
   $("tl").onanimationend=function(e){if(e.target.classList)e.target.classList.remove("fade")};
 }
-var ICO_BALL='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="#fff"/><path d="M12 7.3l4.5 3.2-1.7 5.3H9.2l-1.7-5.3z" fill="#170a28"/><path d="M12 7.3V3.6M16.5 10.5l3.6-1.2M14.8 15.8l2.2 3.1M9.2 15.8l-2.2 3.1M7.5 10.5L3.9 9.3" stroke="#170a28" stroke-width="1.3"/><path d="M9.6 1.7L12 3.6l2.4-1.9A10.6 10.6 0 0 0 9.6 1.7zM20.1 9.3l1.9 1.2.5 2.9a10.6 10.6 0 0 0-.4-5.6zM17 18.9l.2 2.4-2.2 1.2a10.6 10.6 0 0 0 4.4-3.4zM7 18.9l-2.2.1a10.6 10.6 0 0 0 4.4 3.5l-2-1.2zM3.9 9.3l-2.3-.3a10.6 10.6 0 0 0-.1 4.6l.5-3z" fill="#170a28"/><circle cx="12" cy="12" r="10.6" fill="none" stroke="#170a28" stroke-width=".8"/></svg>';
-var ICO_BOOT='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.6 5.8c0-.9.7-1.6 1.6-1.6h4.1c.7 0 1.3.4 1.5 1.1l.8 2.4c.2.6.7 1 1.3 1.1l6 1.2c2.3.5 3.9 2.3 3.9 4.4v.6c0 .9-.7 1.6-1.6 1.6H4.2c-.9 0-1.6-.7-1.6-1.6z" fill="#fff"/><path d="M10.7 9.5l1.3-1.8M13.2 10l1.2-1.7M15.7 10.5l1.1-1.5" stroke="#170a28" stroke-width="1.2" stroke-linecap="round"/><path d="M2.6 13.6h19.6" stroke="#170a28" stroke-width="1.1"/><path d="M4.6 16.4v2.4M8.4 16.4v2.4M14.2 16.4v2.4M18.6 16.4v2.4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+var ICO_BALL='<span class="pe" aria-hidden="true">⚽</span>';
+var ICO_BOOT='<span class="pe" aria-hidden="true">👟</span>'; /* Rasmus 2026-11-05: emojis til mål og assists */
 /* "Your team": sæsonens mål og assists for mine spillere, inkl. den igangværende kamp op til det viste minut */
 function mySeasonGA(){
   var st={},s=NET.season;if(!s)return st;
