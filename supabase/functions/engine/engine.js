@@ -47,7 +47,7 @@ const WASSIST = { LWB: 0.9, RWB: 0.9, AM: 1, LW: 1, RW: 1, LM: 0.9, RM: 0.9, CM:
 // v1.12: selvmål (andel af modstanderens spillere på banen, der kan sparke bolden ind) og balance-regel (straf for skæv fordeling mellem angreb og forsvar)
 const WOG = { CB: 3, LB: 1.5, RB: 1.5, LWB: 1.5, RWB: 1.5, DM: 1, CM: 0.6, GK: 0.3, LM: 0.2, RM: 0.2, AM: 0.2, LW: 0.2, RW: 0.2, ST: 0.2 };
 const OG_RATE = 0.023, BAL_LAMBDA = 0.03;
-export const ENGINE_VERSION = "1.14";
+export const ENGINE_VERSION = "1.15";
 export const K = 40, MU_H = 1.32, MU_A = 1.01;
 const SEASON_SD = 5, FORM_SD = 3, FORM_RHO = 0.8, TEAM_SD = 1.5, DARK_BONUS = 6, UNLUCKY_MALUS = 6;
 // v1.13: svageste AI-klubber (svagest først) får fast sæson-straf, de bedste AI-klubber (stærkest først) en lille nedjustering
@@ -271,8 +271,11 @@ export function simulateMatch(H, A, seed) {
     if (ev.some((x) => x.m === m && (x.type === "pen_miss" || x.pen))) continue; // aldrig to straffe i samme minut (heller ikke for hver sit hold)
     const gk = sides[o].T.xi.find((x) => x.pos === "GK"), info = penInfo(taker, gk && gk.p);
     const res = penResult(info, rng.int(info.n), rng.int(info.n), rng.next()); // uden spillerens valg: tilfældigt hjørne mod tilfældig målmand
-    if (res === "goal") ev.push({ m, type: "goal", s, pid: taker.id, aid: null, pen: true, pend: !!T.human });
-    else ev.push({ m, type: "pen_miss", s, pid: taker.id, aid: res === "saved" && gk ? gk.p.id : null, detail: res, pend: !!T.human });
+    // v1.15: et menneskeholds straf gemmes uden udfald ("pen_pending"); serveren afgør den, når spilleren skyder, eller når runden skifter.
+    // Trækket ovenfor bevares, så resten af kampen er uændret.
+    if (T.human) ev.push({ m, type: "pen_pending", s, pid: taker.id, aid: null, pen: true, pend: true });
+    else if (res === "goal") ev.push({ m, type: "goal", s, pid: taker.id, aid: null, pen: true });
+    else ev.push({ m, type: "pen_miss", s, pid: taker.id, aid: res === "saved" && gk ? gk.p.id : null, detail: res });
   }
 
   ev.sort((x, y) => x.m - y.m);

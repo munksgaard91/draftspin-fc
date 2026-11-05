@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.3.69 (beta)">
+<meta name="app-version" content="0.5.4.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1308,6 +1308,7 @@ function evRow(e,hs,as){
     var sc=' <span class="gs">('+(home?'<i class="n">'+hs+'</i>':'<i>'+hs+'</i>')+' - '+(home?'<i>'+as+'</i>':'<i class="n">'+as+'</i>')+')</span>';
     txt='<b>'+(e.ai?esc(e.x)+" scorer":esc(e.x))+'</b>'+sc+(e.a?'<small>'+esc(e.a)+'</small>':'')
   }else if(e.t==="pm")txt='<b>Missed penalty</b>'+(named?'<small>'+esc(e.x)+'</small>':'');
+  else if(e.t==="pw"){ic='<i class="ic g" style="opacity:.45">⚽</i>';txt='<b>Penalty</b><small>Not taken yet</small>'}
   else txt='<b>'+(named?esc(e.x):(e.t==="y"?"Yellow card":"Red card"))+'</b>'+(e.a==="2nd yellow"?'<small>Second yellow</small>':'');
   return '<div class="ev '+(home?"hm":"aw")+' fade"><span class="m">'+min+'</span>'+ic+'<div class="et">'+txt+'</div></div>';
 }
@@ -1407,7 +1408,7 @@ function startMatch(){
     var now=Date.now();if(penBusy){last=now;return}if(!skip&&holdUntil&&now<holdUntil){last=now;return}acc+=(now-last)*(FIXSPD||SPEED);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
       var e=sc[shown];
-      if(e.pend&&!skip){penBusy=true;penFlow(e,mm0,function(){penBusy=false;last=Date.now()});break}
+      if(e.pend&&(!skip||e.s==="me")){penBusy=true;penFlow(e,mm0,function(){penBusy=false;last=Date.now()});break}
       shown++;
       if(e.t==="goal"){if(e.s==="me")h++;else a++;setScore($("sh"),h,!skip);setScore($("sa"),a,!skip);buzz();if(!skip){goalFill(e.s==="me"?NET.uid:opp0,(e.s==="me")===(NET.myHome!==false));holdUntil=Date.now()+1850;tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");break}}
       tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
@@ -1688,7 +1689,7 @@ function liveResetGame(){
   try{simClear()}catch(e){}
   NET.game=null;NET.players=[];NET.picks=[];NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;
   NET.sim=null;NET.simWait=null;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
-  NET.dsig=null;NET.pending=false;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
+  NET.dsig=null;NET.pending=false;NET.endWait=false;NET.initAt=0;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
   S.spinning=false;S.pre=false;S.gate=false;S.endTab=null;S.endFull=false;S.spinAt=0;
   NET.finishedRound=0;NET.newsId=null;NET.newsKey=null;NET.opt=null;NET.pendP=null;NET.rulesOpen=false;NET.liveMin=-1;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
 }
@@ -1933,13 +1934,12 @@ async function liveSeasonApply(){
   try{
     await NET.pl;
     var g=NET.game,key=g.status+"|"+g.current_round,msg=function(t){var d=$("doneBox");if(d)d.innerHTML='<p class="note fade" style="margin-top:16px">'+t+'</p>'};
-    if(g.current_round<1){
-      if(!NET.initBusy){NET.initBusy=true;callEngine("init").catch(function(e){if(!/n't|not|draft/i.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
+    var quick=g.pace==="quick";
+    if(g.current_round<1||(quick&&g.status==="season"&&g.current_round<QUICK_FIRST)){
+      if(!NET.initBusy&&Date.now()-(NET.initAt||0)>15000){NET.initBusy=true;NET.initAt=Date.now();callEngine("init").catch(function(e){if(!/n't|not|draft/i.test(e.message))netErr(e)}).then(function(){NET.initBusy=false;setTimeout(liveChanged,600)})}
       liveSimWaiting("The draft is finished. The season is being simulated...");return;
     }
-    var quick=g.pace==="quick";
     if(quick&&g.status!=="done"){
-      if(g.current_round<QUICK_FIRST){liveSimWaiting("The draft is finished. The season is being simulated...");return}
       // første halvdel er klar: resten simuleres i baggrunden (prøver igen, hvis den ikke er rykket på 20 s)
       if(Date.now()-(NET.finAt||0)>20000){NET.finAt=Date.now();callEngine("finish").then(function(){liveChanged()}).catch(function(){})}
     }
@@ -2130,6 +2130,7 @@ function liveSeasonStart(){
 function liveSeasonRender(){
   var g=NET.game;
   if(g.pace==="quick"){liveSimUnlock();return}
+  if(NET.endWait&&g.status==="done"){NET.endWait=false;liveShowEnd();return}
   if(S.gate){
     if(gateOn()){renderGate();return}
     hideGate();
@@ -2139,11 +2140,7 @@ function liveSeasonRender(){
   if(g.current_round!==NET.round){NET.round=g.current_round;S.matchSeen=false;NET.liveMin=-1;
     if(document.getElementById("s-match").classList.contains("on")){S.matchSeen=true;startMatch()}}
   else{liveReady();liveReveal();liveOthers();var on=function(id){return document.getElementById(id).classList.contains("on")};if(on("s-table"))renderTableLive();if(on("s-stats"))renderStatsLive()}
-  // runde 38 er spillet, men sæsonen er ikke afsluttet (fx fejlede en gemning): bed serveren gøre den færdig
-  if(g.status==="season"&&g.current_round>=38&&Date.now()-NET.advAt>20000){
-    NET.advAt=Date.now();callEngine("advance").then(function(){liveChanged()}).catch(function(){});return;
-  }
-  // alle er klar: den der ser det først, beder serveren spille næste runde
+  // alle er klar (også i runde 38: så afslutter serveren sæsonen): den der ser det først, beder serveren spille næste runde
   if(g.status==="season"&&g.current_round>=1&&NET.players.every(function(p){return p.ready_round>=g.current_round||lAway(p)})&&Date.now()-NET.advAt>3000){
     NET.advAt=Date.now();callEngine("advance").then(function(){liveChanged()}).catch(function(){});
   }
@@ -2161,6 +2158,7 @@ function liveScriptFor(m){
     else if(e.type==="yellow")out.push({m:e.minute,t:"y",s:sd,x:x,ai:ai?1:0});
     else if(e.type==="red")out.push({m:e.minute,t:"r",s:sd,x:x,ai:ai?1:0});
     else if(e.type==="second_yellow")out.push({m:e.minute,t:"r",s:sd,x:x,ai:ai?1:0,a:"2nd yellow"});
+    else if(e.type==="pen_pending")out.push({m:e.minute,t:"pw",s:sd,x:x,ai:ai?1:0,a:"Penalty"});
     else if(e.type==="pen_miss"){
       var gkAi=sd==="me"&&aiOpp;
       out.push({m:e.minute,t:"pm",s:sd,x:x,ai:ai?1:0,a:e.assist_id?(gkAi?"The penalty was saved":"The penalty was saved by "+pname(e.assist_id)):"The penalty went wide"});
@@ -2334,6 +2332,7 @@ function liveReady(){
   var g=NET.game;if(!g)return;
   $("ready").hidden=true;$("ready").innerHTML="";
   var rb=$("readyBtn");
+  if(NET.endWait&&rb.dataset.end==="1")rb.textContent=waitTxt();
   if(NET.finishedRound===g.current_round&&rb.dataset.end!=="1"){
     var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
     rb.textContent=me.ready_round>=g.current_round?waitTxt():"Next match"+readyCnt();
@@ -2355,11 +2354,21 @@ function liveFinishMatch(){
   liveReady();
   var up=document.getElementById("s-table").classList.contains("on");if(up)renderTableLive();
 }
+function liveShowEnd(){
+  if(NET.season&&simAvail()>=38){$("navwrap").hidden=true;go("sim");liveSimDone("See the final table")}
+  else go("end");
+}
 async function liveReadyPress(){
   var rb=$("readyBtn"),g=NET.game;
   if(rb.dataset.end==="1"){
-    if(NET.season&&simAvail()>=38){$("navwrap").hidden=true;go("sim");liveSimDone("See the final table")}
-    else go("end");
+    if(g&&g.status==="done"){liveShowEnd();return}
+    /* runde 38: bekræft og vent, til alle har bekræftet, og serveren har afsluttet sæsonen */
+    NET.endWait=true;rb.disabled=true;rb.textContent=waitTxt();
+    try{
+      var e0=await NET.sb.rpc("ready_round",{p_game:NET.gid,p_round:38});if(e0.error)throw e0.error;
+      await liveChanged();
+      callEngine("advance").catch(function(){}).then(function(){liveChanged()});
+    }catch(e){NET.endWait=false;netErr(e);rb.disabled=false;rb.textContent="End season"}
     return;
   }
   rb.disabled=true;rb.textContent=waitTxt();

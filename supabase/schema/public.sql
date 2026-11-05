@@ -211,7 +211,8 @@ create table public.season_secret (
   dark text,
   unlucky text,
   created_at timestamp with time zone default now() not null,
-  engine_version text
+  engine_version text,
+  players jsonb
 );
 
 create table public.season_teams (
@@ -254,7 +255,7 @@ alter table public.hof_teams add constraint hof_teams_game_id_team_key_key UNIQU
 alter table public.hof_teams add constraint hof_teams_pkey PRIMARY KEY (id);
 alter table public.match_events add constraint match_events_pkey PRIMARY KEY (id);
 alter table public.match_events add constraint match_events_team_check CHECK ((team = ANY (ARRAY['h'::text, 'a'::text])));
-alter table public.match_events add constraint match_events_type_check CHECK ((type = ANY (ARRAY['goal'::text, 'yellow'::text, 'red'::text, 'second_yellow'::text, 'pen_miss'::text, 'clean_sheet'::text])));
+alter table public.match_events add constraint match_events_type_check CHECK ((type = ANY (ARRAY['goal'::text, 'yellow'::text, 'red'::text, 'second_yellow'::text, 'pen_miss'::text, 'clean_sheet'::text, 'pen_pending'::text])));
 alter table public.match_events add constraint match_events_uniq UNIQUE (match_id, minute, type, team, player_id, pen);
 alter table public.matches add constraint matches_added_time_check CHECK (((added_time >= 1) AND (added_time <= 9)));
 alter table public.matches add constraint matches_game_id_round_home_key_key UNIQUE (game_id, round, home_key);
@@ -901,6 +902,30 @@ begin
 end $function$
 ;
 
+CREATE OR REPLACE FUNCTION public.recount_match(p_match bigint, p_gk_h integer, p_gk_a integer)
+ RETURNS TABLE(home_goals integer, away_goals integer)
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare g uuid; hg integer; ag integer;
+begin
+  select m.game_id into g from matches m where m.id = p_match for update;
+  if not found then raise exception 'Unknown match'; end if;
+  select count(*) filter (where e.type = 'goal' and e.team = 'h'), count(*) filter (where e.type = 'goal' and e.team = 'a')
+    into hg, ag from match_events e where e.match_id = p_match;
+  update matches m set home_goals = hg, away_goals = ag where m.id = p_match;
+  delete from match_events e where e.match_id = p_match and e.type = 'clean_sheet';
+  if ag = 0 and p_gk_h is not null then
+    insert into match_events (game_id, match_id, minute, type, team, player_id, pen) values (g, p_match, 90, 'clean_sheet', 'h', p_gk_h, false);
+  end if;
+  if hg = 0 and p_gk_a is not null then
+    insert into match_events (game_id, match_id, minute, type, team, player_id, pen) values (g, p_match, 90, 'clean_sheet', 'a', p_gk_a, false);
+  end if;
+  return query select hg, ag;
+end $function$
+;
+
 CREATE OR REPLACE FUNCTION public.refresh_player_fit()
  RETURNS void
  LANGUAGE plpgsql
@@ -1127,24 +1152,24 @@ CREATE OR REPLACE FUNCTION public.update_team(p_game uuid, p_name text, p_c1 tex
  RETURNS void
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public'
+ SET search_path TO 'public', 'pg_temp'
 AS $function$
 declare tg text := nullif(upper(trim(coalesce(p_tag, ''))), '');
 begin
   perform 1 from games where id = p_game and status = 'lobby' for update;
-  if not found then raise exception 'Spillet er ikke i lobbyen'; end if;
-  if p_formation not in ('4-3-3','4-3-3 (D)','4-3-3 (O)','4-4-2','4-2-3-1','4-1-4-1','4-1-2-1-2','3-4-3','5-3-2','5-3-2 (D)','5-3-2 (O)','5-3-1-1','4-2-1-3','4-1-3-2','4-3-3 (F)','4-5-1 (F)','4-2-4','3-5-2 (F)','5-4-1','4-5-1','4-4-1-1','4-3-1-2','4-2-2-2','3-4-2-1','4-3-2-1','3-4-1-2','3-1-4-2','4-4-2 (D)','3-4-2-1 (D)','4-2-3-1 (W)') then raise exception 'Ukendt formation'; end if;
-  if p_crest not between 1 and 12 then raise exception 'Ukendt våbenskjold'; end if;
-  if p_c1 !~ '^#[0-9a-fA-F]{6}$' or p_c2 !~ '^#[0-9a-fA-F]{6}$' then raise exception 'Ugyldig farvekode'; end if;
-  if lower(p_c1) = lower(p_c2) then raise exception 'Vælg to forskellige farver'; end if;
-  if length(trim(p_name)) not between 2 and 22 then raise exception 'Holdnavn skal være 2 til 22 tegn'; end if;
-  if tg is not null and tg !~ '^[A-ZÆØÅ0-9]{2,3}$' then raise exception 'Forkortelsen skal være 2 til 3 bogstaver eller tal'; end if;
-  if p_display is not null and length(trim(p_display)) not between 2 and 16 then raise exception 'Dit navn skal være 2 til 16 tegn'; end if;
-  if p_name ~ '[<>]' or coalesce(p_display, '') ~ '[<>]' then raise exception 'Navne må ikke indeholde < eller >'; end if;
+  if not found then raise exception 'The game isn''t in the lobby'; end if;
+  if p_formation not in ('4-3-3','4-3-3 (D)','4-3-3 (O)','4-4-2','4-2-3-1','4-1-4-1','4-1-2-1-2','3-4-3','5-3-2','5-3-2 (D)','5-3-2 (O)','5-3-1-1','4-2-1-3','4-1-3-2','4-3-3 (F)','4-5-1 (F)','4-2-4','3-5-2 (F)','5-4-1','4-5-1','4-4-1-1','4-3-1-2','4-2-2-2','3-4-2-1','4-3-2-1','3-4-1-2','3-1-4-2','4-4-2 (D)','3-4-2-1 (D)','4-2-3-1 (W)') then raise exception 'Unknown formation'; end if;
+  if p_crest not between 1 and 12 then raise exception 'Unknown crest'; end if;
+  if p_c1 !~ '^#[0-9a-fA-F]{6}$' or p_c2 !~ '^#[0-9a-fA-F]{6}$' then raise exception 'Invalid colour code'; end if;
+  if lower(p_c1) = lower(p_c2) then raise exception 'Choose two different colours'; end if;
+  if length(trim(p_name)) not between 2 and 22 then raise exception 'Team name must be 2 to 22 characters'; end if;
+  if tg is not null and tg !~ '^[A-ZÆØÅ0-9]{2,3}$' then raise exception 'The abbreviation must be 2 to 3 letters or numbers'; end if;
+  if p_display is not null and length(trim(p_display)) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
+  if p_name ~ '[<>]' or coalesce(p_display, '') ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
   update game_players set team_name = trim(p_name), color1 = lower(p_c1), color2 = lower(p_c2), crest = p_crest, formation = p_formation, crest_tag = tg, ready = false,
     display_name = case when p_display is null then display_name else trim(p_display) end
   where game_id = p_game and user_id = auth.uid();
-  if not found then raise exception 'Du er ikke med i spillet'; end if;
+  if not found then raise exception 'You''re not in the game'; end if;
 end $function$
 ;
 
@@ -1255,6 +1280,7 @@ revoke all on function public.pfit(p_pos text, p_alts jsonb, p_slot text) from p
 revoke all on function public.pick_player(p_game uuid, p_player integer, p_slot integer) from public, anon, authenticated; grant execute on function public.pick_player(p_game uuid, p_player integer, p_slot integer) to authenticated;
 revoke all on function public.ready_round(p_game uuid, p_round integer) from public, anon, authenticated; grant execute on function public.ready_round(p_game uuid, p_round integer) to authenticated;
 revoke all on function public.ready_start(p_game uuid) from public, anon, authenticated; grant execute on function public.ready_start(p_game uuid) to authenticated;
+revoke all on function public.recount_match(p_match bigint, p_gk_h integer, p_gk_a integer) from public, anon, authenticated; grant execute on function public.recount_match(p_match bigint, p_gk_h integer, p_gk_a integer) to service_role;
 revoke all on function public.refresh_player_fit() from public, anon, authenticated;
 revoke all on function public.respin(p_game uuid) from public, anon, authenticated; grant execute on function public.respin(p_game uuid) to authenticated;
 revoke all on function public.rls_auto_enable() from public, anon, authenticated;

@@ -12,7 +12,13 @@ const QUICK_FIRST = 19;
 const chk = (r) => { if (r.error) throw new Error(r.error.message); return r.data; };
 
 async function loadPlayers() {
-  const rows = chk(await admin.from("players").select("id,club,name,pos,rating,alts,consistency,pen_taking,pen_rank,yellow_w,red_w").limit(2000));
+  // sideopdelt: Supabase returnerer højst 1000 rækker pr. kald
+  let rows = [];
+  for (let from = 0; ; from += 1000) {
+    const d = chk(await admin.from("players").select("id,club,name,pos,rating,alts,consistency,pen_taking,pen_rank,yellow_w,red_w").order("id").range(from, from + 999));
+    rows = rows.concat(d);
+    if (d.length < 1000) break;
+  }
   // klubbens styrke (gennemsnit af de 14 bedste ratings) bruges til at afgøre, hvem der skyder straffe ved lighed
   const byClub = new Map();
   rows.forEach((p) => { if (!byClub.has(p.club)) byClub.set(p.club, []); byClub.get(p.club).push(p.rating); });
@@ -37,7 +43,8 @@ async function initSeason(game) {
   let heal = null; // afbrudt start: byg videre med samme hemmelighed
   if (existing.length) {
     const mc = chk(await admin.from("matches").select("id").eq("game_id", game.id).limit(1));
-    if (mc.length || Date.now() - new Date(existing[0].created_at).getTime() < 60000) return { already: true };
+    if (mc.length) return { already: true };
+    if (Date.now() - new Date(existing[0].created_at).getTime() < 60000) return { already: true, inProgress: true }; // en anden kørsel er ved at starte sæsonen
     heal = existing[0];
     chk(await admin.from("season_lineups").delete().eq("game_id", game.id).select("game_id"));
     chk(await admin.from("season_teams").delete().eq("game_id", game.id).select("game_id"));
@@ -67,12 +74,15 @@ async function initSeason(game) {
   const field = ai.slice(teams.length).concat(teams); // de svageste AI-klubber fjernes, 1 pr. spiller
   const seed = heal ? heal.seed : crypto.randomUUID() + crypto.randomUUID();
   const { luck, dark, unlucky } = heal ? heal : E.setupSeason(field.map((t) => ({ key: t.key, kind: t.kind, strength: t.strength })), seed);
+  // v1.15: spillerdata fastfryses for sæsonen, så senere rettelser i players ikke ændrer igangværende spil
+  const snap = {};
+  field.forEach((t) => t.xi.forEach((x) => { snap[x.p.id] = x.p; }));
 
   // først den hemmelige række: den der lykkes, vinder racet
   if (!heal) {
-    const ins = await admin.from("season_secret").insert({ game_id: game.id, seed, luck, dark, unlucky, engine_version: E.ENGINE_VERSION });
-    if (ins.error) { if (ins.error.code === "23505") return { already: true }; throw new Error(ins.error.message); }
-  }
+    const ins = await admin.from("season_secret").insert({ game_id: game.id, seed, luck, dark, unlucky, engine_version: E.ENGINE_VERSION, players: snap });
+    if (ins.error) { if (ins.error.code === "23505") return { already: true, inProgress: true }; throw new Error(ins.error.message); }
+  } else chk(await admin.from("season_secret").update({ players: snap }).eq("game_id", game.id).select("game_id"));
 
   const rng = E.makeRng(seed + "|order");
   const order = field.map((t) => ({ t, k: rng.next() })).sort((a, b) => a.k - b.k).map((x) => x.t);
@@ -86,9 +96,10 @@ async function initSeason(game) {
 
 // ---------- spil runder ----------
 async function loadCtx(gameId) {
-  const { byId } = await loadPlayers();
   const secret = chk(await admin.from("season_secret").select("*").eq("game_id", gameId))[0];
   if (!secret) throw new Fejl("The season hasn't started");
+  // fastfrosne spillerdata fra sæsonstarten; sæsoner startet før v1.15 bruger de nuværende data
+  const byId = secret.players ? new Map(Object.values(secret.players).map((p) => [p.id, p])) : (await loadPlayers()).byId;
   const st = chk(await admin.from("season_teams").select("*").eq("game_id", gameId));
   const lu = chk(await admin.from("season_lineups").select("*").eq("game_id", gameId));
   const teams = {};
@@ -129,29 +140,84 @@ async function setRound(gameId, from, to, done) {
   return r.data.length > 0;
 }
 
-async function runTo(game, target) {
-  target = Math.min(target, 38);
+async function ctxFor(game) {
   const ctx = await loadCtx(game.id);
   ctx.interactive = game.pace !== "quick"; // v1.14: i et normalt spil vælger spilleren selv straffeskytte og hjørne
-  chk(await admin.from("match_events").update({ pending: false }).eq("game_id", game.id).eq("pending", true).select("id")); // uafgjorte straffe (sprunget over) bliver stående med det tilfældige udfald
+  return ctx;
+}
+
+async function runTo(game, target) {
+  target = Math.min(target, 38);
+  const ctx = await ctxFor(game);
   let r = game.current_round;
+  // straffe fra tidligere runder, som aldrig blev afgjort (fx efter en afbrudt kørsel). Kun runder FØR den aktuelle, så en samtidig kørsel aldrig rører den nye rundes straffe.
+  await settleSkipped(game, ctx, r);
   // gør en evt. halvfærdig runde færdig (hvis en tidligere kørsel blev afbrudt)
   if (r >= 1) await playRound(game.id, ctx, r);
   while (r < target) {
     if (!(await setRound(game.id, r, r + 1, false))) break; // en anden har allerede flyttet runden
+    if (r >= 1) await settleSkipped(game, ctx, r + 1); // runden er forladt: oversprungne straffe afgøres nu
     r++;
     await playRound(game.id, ctx, r);
-    if (r === 38) { await finalizeSeason(game.id); chk(await admin.from("games").update({ status: "done" }).eq("id", game.id).select("id")); }
   }
-  // selvhelende afslutning: runde 38 er spillet, men en tidligere kørsel nåede ikke at gemme rekorder og sætte status
-  if (r >= 38) {
-    const g2 = await getGame(game.id);
-    if (g2.status !== "done") { await finalizeSeason(game.id); chk(await admin.from("games").update({ status: "done" }).eq("id", game.id).select("id")); }
-  }
+  // hurtigt spil afsluttes, så snart runde 38 er spillet. Et normalt spil afsluttes først, når alle har bekræftet runde 38 (action "advance").
+  if (r >= 38 && !ctx.interactive) await finishSeason(game, ctx);
+}
+
+// sæsonafslutning (idempotent): sidste runde spillet færdig, alle straffe afgjort, rekorder gemt, status done
+async function finishSeason(game, ctx) {
+  await playRound(game.id, ctx, 38);
+  await settleSkipped(game, ctx, 39);
+  if ((await getGame(game.id)).status === "done") return;
+  await finalizeSeason(game.id);
+  chk(await admin.from("games").update({ status: "done" }).eq("id", game.id).eq("status", "season").select("id"));
 }
 
 
-// ---------- v1.14: spillerens straffespark ----------
+// ---------- v1.14/1.15: straffespark ----------
+const gkOf = (ctx, key) => { const g = ctx.teams[key].xi.find((x) => x.pos === "GK"); return g ? g.p : null; };
+
+// afgør én ventende straf. spot = null: et seedet tilfældigt hjørne (straffen blev sprunget over). Kun én kørsel kan afgøre den (betinget på pending).
+async function applyPen(game, ctx, ev, m, takerId, spot) {
+  const key = ev.team === "h" ? m.home_key : m.away_key, other = ev.team === "h" ? m.away_key : m.home_key;
+  const tk = ctx.teams[key].xi.find((x) => x.p.id === takerId && x.pos !== "GK");
+  if (!tk) throw new Fejl("That player can't take the penalty");
+  const gk = gkOf(ctx, other), info = E.penInfo(tk.p, gk);
+  if (spot == null) spot = E.makeRng(`${ctx.secret.seed}|penskip|${ev.id}`).int(info.n);
+  if (!Number.isInteger(spot) || spot < 0 || spot >= info.n) throw new Fejl("Invalid spot");
+  const rng = E.makeRng(`${ctx.secret.seed}|pen|${ev.id}`), gkSpot = rng.int(info.n);
+  const res = E.penResult(info, spot, gkSpot, rng.next());
+  const patch = res === "goal" ? { type: "goal", assist_id: null, detail: null } : { type: "pen_miss", assist_id: res === "saved" && gk ? gk.id : null, detail: res };
+  const u = await admin.from("match_events").update({ ...patch, player_id: takerId, pen: true, pending: false }).eq("id", ev.id).eq("pending", true).select("id");
+  if (u.error) throw new Error(u.error.message);
+  if (!u.data.length) return { done: true };
+  // score og clean sheets tælles op i én transaktion med lås på kampen
+  const rc = chk(await admin.rpc("recount_match", { p_match: m.id, p_gk_h: gkOf(ctx, m.home_key)?.id ?? null, p_gk_a: gkOf(ctx, m.away_key)?.id ?? null }))[0];
+  return { done: false, result: res, n: info.n, gk_spot: gkSpot, spot, home_goals: rc.home_goals, away_goals: rc.away_goals };
+}
+
+// afgør oversprungne straffe i runder før beforeRound. Udfaldet er seedet pr. hændelse, så det er det samme, uanset hvem der kører det.
+async function settleSkipped(game, ctx, beforeRound) {
+  const pend = chk(await admin.from("match_events").select("*").eq("game_id", game.id).eq("pending", true));
+  if (!pend.length) return;
+  const ms = chk(await admin.from("matches").select("*").in("id", [...new Set(pend.map((e) => e.match_id))]));
+  const byM = new Map(ms.map((m) => [m.id, m]));
+  for (const ev of pend.sort((a, b) => a.id - b.id)) {
+    const m = byM.get(ev.match_id);
+    if (!m || m.round >= beforeRound) continue;
+    if (ev.type !== "pen_pending") { // fra før v1.15: udfaldet står allerede i hændelsen
+      chk(await admin.from("match_events").update({ pending: false }).eq("id", ev.id).eq("pending", true).select("id"));
+      continue;
+    }
+    try { await applyPen(game, ctx, ev, m, ev.player_id, null); }
+    catch (e) {
+      if (!(e instanceof Fejl)) throw e;
+      // skytten findes ikke længere på holdet (bør ikke ske): straffen regnes som forbi, så sæsonen aldrig går i stå
+      chk(await admin.from("match_events").update({ type: "pen_miss", detail: "wide", pending: false }).eq("id", ev.id).eq("pending", true).select("id"));
+    }
+  }
+}
+
 async function resolvePen(game, uid, eventId, takerId, spot) {
   if (game.status !== "season") throw new Fejl("The season isn't in progress");
   const ev = chk(await admin.from("match_events").select("*").eq("id", eventId).eq("game_id", game.id))[0];
@@ -159,33 +225,13 @@ async function resolvePen(game, uid, eventId, takerId, spot) {
   if (!ev.pending) return { done: true };
   const m = chk(await admin.from("matches").select("*").eq("id", ev.match_id))[0];
   if (m.round !== game.current_round) return { done: true };
-  const key = ev.team === "h" ? m.home_key : m.away_key, other = ev.team === "h" ? m.away_key : m.home_key;
+  const key = ev.team === "h" ? m.home_key : m.away_key;
   if (key !== uid) throw new Fejl("It's not your penalty");
-  const ctx = await loadCtx(game.id);
-  const tk = ctx.teams[key].xi.find((x) => x.p.id === takerId && x.pos !== "GK");
-  if (!tk) throw new Fejl("That player can't take the penalty");
+  if (!Number.isInteger(takerId)) throw new Fejl("That player can't take the penalty");
+  if (!Number.isInteger(spot)) throw new Fejl("Invalid spot");
   const cards = chk(await admin.from("match_events").select("player_id,minute").eq("match_id", m.id).eq("team", ev.team).in("type", ["red", "second_yellow"]));
   if (cards.some((c) => c.player_id === takerId && c.minute < ev.minute)) throw new Fejl("That player has been sent off");
-  const gk = ctx.teams[other].xi.find((x) => x.pos === "GK");
-  const info = E.penInfo(tk.p, gk && gk.p);
-  if (!Number.isInteger(spot) || spot < 0 || spot >= info.n) throw new Fejl("Invalid spot");
-  const rng = E.makeRng(`${ctx.secret.seed}|pen|${ev.id}`), gkSpot = rng.int(info.n);
-  const res = E.penResult(info, spot, gkSpot, rng.next());
-  const patch = res === "goal" ? { type: "goal", assist_id: null, detail: null } : { type: "pen_miss", assist_id: res === "saved" && gk ? gk.p.id : null, detail: res };
-  const u = await admin.from("match_events").update({ ...patch, player_id: takerId, pen: true, pending: false }).eq("id", ev.id).eq("pending", true).select("id");
-  if (u.error) throw new Error(u.error.message);
-  if (!u.data.length) return { done: true };
-  const all = chk(await admin.from("match_events").select("type,team").eq("match_id", m.id));
-  const hg = all.filter((e) => e.type === "goal" && e.team === "h").length, ag = all.filter((e) => e.type === "goal" && e.team === "a").length;
-  chk(await admin.from("matches").update({ home_goals: hg, away_goals: ag }).eq("id", m.id).select("id"));
-  // clean sheets følger det endelige resultat
-  chk(await admin.from("match_events").delete().eq("match_id", m.id).eq("type", "clean_sheet").select("id"));
-  const cs = [];
-  const gkH = ctx.teams[m.home_key].xi.find((x) => x.pos === "GK"), gkA = ctx.teams[m.away_key].xi.find((x) => x.pos === "GK");
-  if (ag === 0 && gkH) cs.push({ game_id: game.id, match_id: m.id, minute: 90, type: "clean_sheet", team: "h", player_id: gkH.p.id, pen: false });
-  if (hg === 0 && gkA) cs.push({ game_id: game.id, match_id: m.id, minute: 90, type: "clean_sheet", team: "a", player_id: gkA.p.id, pen: false });
-  if (cs.length) await chunkedEvents(cs);
-  return { done: false, result: res, n: info.n, gk_spot: gkSpot, spot, home_goals: hg, away_goals: ag };
+  return await applyPen(game, await ctxFor(game), ev, m, takerId, spot);
 }
 
 // ---------- Highscore: gem rekorder, når sæsonen er slut ----------
@@ -300,22 +346,26 @@ Deno.serve(async (req) => {
     if (action === "pen") return json({ ok: true, ...(await resolvePen(game, u.user.id, event_id, taker_id, spot)) });
     if (action === "init") {
       const r = await initSeason(game);
-      if (!r.already) {
+      // også når sæsonen allerede er oprettet: en afbrudt start (kampe oprettet, runder ikke spillet) køres færdig her. runTo er idempotent.
+      if (!r.inProgress) {
         game = await getGame(game_id);
-        await runTo(game, game.pace === "quick" ? QUICK_FIRST : 1);
+        const target = game.pace === "quick" ? QUICK_FIRST : 1;
+        if (game.status === "season" && game.current_round < target) await runTo(game, target);
       }
     } else if (action === "advance") {
       if (game.status !== "season") throw new Fejl("The season isn't in progress");
       const gps = chk(await admin.from("game_players").select("user_id,ready_round,last_seen_at").eq("game_id", game_id));
       // en spiller, der ikke er set i 90 sekunder, regnes som klar (reglen om fraværende spillere)
       const allReady = gps.every((g) => g.ready_round >= game.current_round || Date.now() - Date.parse(g.last_seen_at) > 90000);
-      // runde 38 er spillet: kaldet gør kun en evt. mislykket afslutning færdig (idempotent), så ingen skal være klar
+      if (game.current_round < 1) throw new Fejl("The season hasn't started");
+      if (!allReady && !(force && isAdmin)) throw new Fejl("Not everyone is ready");
       const atEnd = game.current_round >= 38;
-      if (!atEnd && !allReady && !(force && isAdmin)) throw new Fejl("Not everyone is ready");
       // spillere, der ikke var klar og blev sprunget over, tæller som "væk" i runden (idempotent pr. runde)
       const absent = gps.filter((g) => g.ready_round < game.current_round && Date.now() - Date.parse(g.last_seen_at) > 90000).map((g) => g.user_id);
       if (absent.length && !atEnd) chk(await admin.rpc("bump_missed", { p_game: game_id, p_round: game.current_round, p_users: absent }));
-      await runTo(game, game.current_round + 1);
+      // runde 38: alle har bekræftet, så sæsonen afsluttes (sidste straffe afgøres, rekorder gemmes, status done)
+      if (atEnd) await finishSeason(game, await ctxFor(game));
+      else await runTo(game, game.current_round + 1);
     } else if (action === "finish") {
       // alle i spillet må bede om resten af et hurtigt spil; kørslen er idempotent (runden flyttes kun af én ad gangen)
       if (game.pace !== "quick") throw new Fejl("Quick games only");

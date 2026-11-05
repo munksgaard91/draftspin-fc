@@ -129,14 +129,37 @@ def draft(users, gid, mode="mixed"):
     log(f"draft færdig på {time.time()-t0:.1f}s, {steps} trin")
     return steps
 
+def pens(users, gid, cr, stats):
+    """v1.15: ventende straffe i runden har intet udfald; hver anden tages af ejeren, resten springes over (afgøres ved rundeskift)."""
+    by = {u.id: u for u in users}
+    ev = users[0].sel("match_events", f"select=id,type,team,match_id,player_id,detail&game_id=eq.{gid}&pending=is.true")
+    if not ev: return
+    ms = {m["id"]: m for m in users[0].sel("matches", f"select=id,round,home_key,away_key&game_id=eq.{gid}&round=eq.{cr}")}
+    for e in ev:
+        m = ms.get(e["match_id"])
+        if not m: continue
+        stats["pending"] += 1
+        if e["type"] != "pen_pending" or e["detail"] is not None: stats["leak"] += 1
+        owner = by.get(m["home_key"] if e["team"] == "h" else m["away_key"])
+        other = next((u for u in users if u is not owner), None)
+        if other and stats["pending"] == 1:
+            s, r = other.engine("pen", gid, event_id=e["id"], taker_id=e["player_id"], spot=0)
+            stats["wrong_user_ok"] += 1 if s == 400 else 0; stats["wrong_user_tried"] += 1
+        if owner and stats["pending"] % 2 == 1:
+            s, r = owner.engine("pen", gid, event_id=e["id"], taker_id=e["player_id"], spot=0)
+            if s == 200 and r.get("result") in ("goal", "saved", "wide"): stats["taken"] += 1
+            else: stats["pen_err"].append((s, r))
+
 def season_full(users, gid, concurrent=False):
     adm = users[0]
     s, r = adm.engine("init", gid); assert s == 200, (s, r)
     errs = []
+    stats = {"pending": 0, "leak": 0, "taken": 0, "pen_err": [], "wrong_user_ok": 0, "wrong_user_tried": 0}
     for rnd in range(1, 38):
         g = adm.sel("games", f"select=current_round,status&id=eq.{gid}")[0]
         if g["status"] == "done": break
         cr = g["current_round"]
+        pens(users, gid, cr, stats)
         for u in users: u.rpc_ok("ready_round", p_game=gid, p_round=cr)
         if concurrent and rnd % 5 == 0:   # to samtidige advance-kald
             res = []
@@ -149,6 +172,17 @@ def season_full(users, gid, concurrent=False):
             s, r = adm.engine("advance", gid)
             if s >= 500: errs.append((rnd, s, r))
     g = adm.sel("games", f"select=current_round,status&id=eq.{gid}")[0]
+    pens(users, gid, g["current_round"], stats)
+    log(f"   straffe: {stats['pending']} ventende, {stats['taken']} taget, {stats['leak']} med synligt udfald")
+    check("v1.15: ventende straffe har intet udfald", stats["leak"] == 0, str(stats["leak"]))
+    check("v1.15: egne straffe kan tages", not stats["pen_err"], str(stats["pen_err"])[:200])
+    if stats["wrong_user_tried"]: check("v1.15: andres straf afvises", stats["wrong_user_ok"] == stats["wrong_user_tried"])
+    # v1.15: runde 38 lukker først, når ALLE har bekræftet
+    if len(users) > 1 and g["current_round"] == 38 and g["status"] == "season":
+        adm.rpc("ready_round", p_game=gid, p_round=38)
+        s, r = adm.engine("advance", gid)
+        g = adm.sel("games", f"select=current_round,status&id=eq.{gid}")[0]
+        check("v1.15: sæsonen lukker ikke, før alle har bekræftet runde 38", g["status"] == "season" and s == 400, f"{s} {r} {g}")
     # sidste runde
     for _ in range(3):
         if g["status"] == "done": break
@@ -203,6 +237,8 @@ def verify(users, gid, label):
     log(f"   hændelser uden for menneskekampe: {len(outside)}")
     keys = collections.Counter((e["match_id"], e["minute"], e["type"], e["team"], e["player_id"], e["pen"]) for e in evs)
     check(f"{label}: ingen dublerede hændelser", max(keys.values() or [1]) == 1)
+    left = adm.sel("match_events", f"select=id&game_id=eq.{gid}&or=(pending.is.true,type.eq.pen_pending)")
+    check(f"{label}: ingen uafgjorte straffe efter sæsonen", not left, f"{len(left)} tilbage")
     tg = sum(m["home_goals"] + m["away_goals"] for m in ms) / 380
     check(f"{label}: mål/kamp 2.3-3.4", 2.3 <= tg <= 3.4, f"{tg:.2f}")
     yc = sum(1 for e in evs if e["type"] == "yellow") / max(1, len(hm)); rc = sum(1 for e in evs if e["type"] in ("red", "second_yellow")) / max(1, len(hm))
@@ -248,10 +284,10 @@ def run(scn):
         gid = make_game(users, "quick"); draft(users, gid, "manual"); season_quick(users, gid); verify(users, gid, "quick4")
     elif scn == "solo":
         users = [U("S0")]
-        gid = make_game(users, "quick"); draft(users, gid, "auto"); season_quick(users, gid); verify(users, gid, "solo")
+        gid = make_game(users, "quick"); draft(users, gid, "manual"); season_quick(users, gid); verify(users, gid, "solo")
     elif scn == "duo":
         users = [U(f"D{i}") for i in range(2)]
-        gid = make_game(users, "full"); draft(users, gid, "auto"); season_full(users, gid); verify(users, gid, "duo")
+        gid = make_game(users, "full"); draft(users, gid, "manual"); season_full(users, gid); verify(users, gid, "duo")  # auto virker kun, når spilleren har været væk i 2 min
     print("\nRESULTAT:", sum(1 for c in checks if c[1]), "ok,", sum(1 for c in checks if not c[1]), "fejl")
     for c in checks:
         if not c[1]: print("  FEJL:", c[0], c[2])

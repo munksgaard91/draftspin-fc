@@ -20,15 +20,17 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.5.3.69 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.5.4.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 
 ## Motoren
 
-- `ENGINE_VERSION` i `engine.js` (nu 1.14). Hver ændring af motoren ændrer fingeraftrykket.
+- `ENGINE_VERSION` i `engine.js` (nu 1.15). Hver ændring af motoren ændrer fingeraftrykket.
 - Ændres motoren med vilje: opdatér fingeraftryk og simulationshash i `tests/engine_test.ts` og i `engine/SPEC.md`, tilføj en kort sektion i `SPEC.md`/README.
 - Kør alle tests: `./tests/run.sh` (kræver `deno`). De skal være grønne før commit.
 - Deploy af edge function: udgiv både `engine.js` og `index.ts` som fulde filer (Supabase-konnektoren `deploy_edge_function` eller Supabase CLI). Verificér bagefter med `action: "hash"` (kræver en gyldig bruger-token; en anonym tilmelding mod `/auth/v1/signup` med projektets publishable key giver en) og sammenlign med fingeraftrykket fra testene. Repo og udgivet kode skal være identiske.
-- Straffespark (v1.14): i menneskekampe (ikke Quick) gemmes straffe som `pending` med et tilfældigt foreløbigt udfald; serverhandlingen `pen` afgør dem med spillerens valg. Se `penInfo`/`penResult` og `resolvePen`.
+- Straffespark (v1.15): i menneskekampe (ikke Quick) gemmes straffe som `type = 'pen_pending'` uden udfald og tæller ikke i scoren. Serverhandlingen `pen` afgør dem med spillerens valg (`applyPen`). Springes en straf over, afgør serveren den med et seedet hjørne, når runden skifter (`settleSkipped`). Score og clean sheets tælles op i RPC'en `recount_match`.
+- Sæsonafslutning: et normalt spil afsluttes først, når alle har bekræftet runde 38 ("End season", `advance` i runde 38 → `finishSeason`). Hurtigt spil afsluttes, så snart runde 38 er spillet.
+- Spillerdata fastfryses ved sæsonstart i `season_secret.players`; sæsoner fra før v1.15 bruger de nuværende data.
 
 ## Test uden at vente
 
@@ -42,7 +44,6 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 - Brugere/login og statistik pr. bruger (inkl. "Flest nedrykninger"); i dag er alle anonyme.
 - Mere realistiske klubemblemer; spillerbilleder (facepacks); pokaler/cup; ⚽/❌ i Match facts; nyt logo/navn; manager i draften; karakterer pr. spiller pr. kamp; redesign af målanimationen; færre emojis.
-- Evt. loft på 2 straffe pr. hold pr. kamp (motor 1.15): Rasmus har ikke svaret endnu.
 - To-spiller-straffeflowet (modstander venter via `penWatch`) er ikke testet med to rigtige enheder.
 
 ## Adgang

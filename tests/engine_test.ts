@@ -11,8 +11,8 @@ Deno.test("motoren er identisk med den udgivne (fingeraftryk + 40 faste kampe)",
   const parts = [E.ENGINE_VERSION, E.K, E.MU_H, E.MU_A, E.PEN_FACTOR, JSON.stringify(E.FORMS), JSON.stringify(E.AI_FORMS), E.makeRng.toString(), E.fac.toString(), E.bestXI.toString(), E.xiStrength.toString(), E.bestClubXI.toString(), E.penInfo.toString(), E.penResult.toString(), E.schedule.toString(), E.setupSeason.toString(), E.simulateMatch.toString()].join("\n");
   const sims: string[] = [];
   for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e: any) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
-  // Værdierne er målt på den udgivne edge function (version 1.14). Ændres motoren med vilje, opdateres de her og i SPEC.md.
-  eq(await sha(parts), "6132406bf97c7a08a539b852b44b16fc3644e9e8784e9ef5a8279843fcb42bbe", "fingeraftryk");
+  // Værdierne er målt på den udgivne edge function (version 1.15). Ændres motoren med vilje, opdateres de her og i SPEC.md.
+  eq(await sha(parts), "584da1f320ac26372f9cdb5e9ff167dfe80e5a7605cd032ad621422679e238bd", "fingeraftryk");
   eq(await sha(sims.join("|")), "deb603cd03fa3341d086c6ba51682494208ca0f21f1a94091d8bb2d068e3a15a", "simulering");
 });
 
@@ -174,7 +174,25 @@ Deno.test("v1.14: straffe — hjørner afhænger af skytte og målmand, samme hj
   let pend = 0, all = 0;
   for (let k = 0; k < 300; k++) {
     const r = E.simulateMatch({ xi: mk(0), shift: 0, human: true }, { xi: mk(100), shift: 0 }, "pen" + k);
-    for (const e of r.events) if ((e.type === "goal" && e.pen) || e.type === "pen_miss") { all++; if (e.pend) { pend++; eq(e.s, "h", "kun menneskeholdets straffe venter"); } }
+    for (const e of r.events) if ((e.type === "goal" && e.pen) || e.type === "pen_miss" || e.type === "pen_pending") { all++; if (e.pend) { pend++; eq(e.s, "h", "kun menneskeholdets straffe venter"); } }
   }
   if (!(all > 40 && pend > 0 && pend < all)) throw new Error(`ventende straffe: ${pend} af ${all}`);
+});
+
+Deno.test("v1.15: en ventende straf har intet udfald og tæller ikke i scoren; resten af kampen er som uden menneskehold", () => {
+  let seen = 0;
+  for (let k = 0; k < 400; k++) {
+    const hu = E.simulateMatch({ xi: mk(0), shift: 0, human: true }, { xi: mk(100), shift: 0 }, "p15|" + k);
+    const ai = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 0 }, "p15|" + k);
+    for (const e of hu.events) {
+      if (e.type === "pen_pending") { seen++; eq(e.pend, true, "ventende"); eq(e.s, "h", "kun menneskeholdet"); eq(e.detail, undefined, "intet udfald"); eq(e.aid, null, "ingen målmand"); }
+      if (e.type === "goal" && e.pen && e.s === "h") throw new Error("menneskeholdets straf må ikke være afgjort");
+      if (e.type === "pen_miss" && e.s === "h") throw new Error("menneskeholdets straf må ikke være afgjort");
+    }
+    eq(hu.hg, hu.events.filter((e) => e.type === "goal" && e.s === "h").length, "score uden ventende straf");
+    // samme kamp uden menneskehold: alle andre hændelser (minut, type, spiller) er identiske
+    const other = (r) => r.events.filter((e) => !(e.s === "h" && (e.pen || e.type === "pen_miss" || e.type === "pen_pending")) && e.type !== "clean_sheet").map((e) => e.m + e.type + e.s + e.pid).join(",");
+    eq(other(hu), other(ai), "resten af kampen");
+  }
+  if (seen < 20) throw new Error("for få ventende straffe: " + seen);
 });

@@ -5,7 +5,7 @@ Baseret på udkast 0.1, Argons review (2026-10-18) og en Python-referencemotor (
 ## Kalibrerede parametre
 - Kampdagsform: `R_i = (rating_i + N(0, σ_i²)) · f_i` med `σ_i = 6 − 0,25 · (consistency − 1)`, plus et fælles holdudsving `N(0, 1,5²)` til alle 11 spillere.
 - Holdstyrke: OFF og DEF er vægtede gennemsnit (vægte i udkast 0.1) over de besatte pladser.
-- Forventede mål: `λ_H = μ_H · exp((OFF_H − DEF_A) / k)`, `λ_A = μ_A · exp((OFF_A − DEF_H) / k)` med **k = 40, μ_H = 1,37, μ_A = 1,05**.
+- Forventede mål: `λ_H = μ_H · exp((OFF_H − DEF_A) / k)`, `λ_A = μ_A · exp((OFF_A − DEF_H) / k)` med **k = 40, μ_H = 1,32, μ_A = 1,01** (koden; udkastet sagde 1,37/1,05).
 - Straffe: 0,29 pr. kamp, tildelt holdet proportionalt med λ, scoring 0,80 (justeres efter `pen_taking`). v1.10: én fast skytte pr. hold (højest `pen_taking` blandt dem på banen; ved lighed den udpegede straffeskytte `pen_rank` for den stærkeste klub), og aldrig to straffe i samme minut i en kamp.
 - Resultat med 4 spillere og 16 AI-klubber: cirka 2,78 mål pr. kamp, hjemmesejre 46 %, uafgjort 23 %, udesejre 31 %, mester cirka 85 point, sidstepladsen cirka 30 point, standardafvigelse på point cirka 14,7.
 - Ratingforskel Δ mellem to hold og hjemmesejr: 0 giver 44 %, 10 giver 59 %, 20 giver 74 %, 30 giver 85 %.
@@ -85,6 +85,13 @@ bestXI bruger nu ungarsk metode (optimal tildeling) i stedet for at fylde plads 
 - Antal hjørner `n` = rund(5,6 + skytte − 1,6 · målmand), 2–8 (skytte = (pen_taking−10)/8, målmand = (rating−129)/30, begge afgrænset). Målmanden vælger et tilfældigt hjørne (seedet pr. hændelse, så det ikke kan genrulles). Samme hjørne = reddet. Ellers kan skytten skyde forbi: 1–20 %.
 - Målt: 0,276 straffe pr. kamp (Premier League 2020-24: ca. 0,27), ca. 78 % scoret (PL ca. 82 %). Bedste skytte mod snit-målmand: 7 hjørner. Værste skytte mod bedste målmand: 2 hjørner, ca. 58 % fejl.
 - AI-holdenes straffe og al simulering af AI-kampe er uændret (bedste skytte, tilfældigt hjørne). Fingeraftryk 6132406b…2bbe, simulation deb603cd…a15a.
+
+## v1.15 (2026-11-05): skjult straffeudfald og robust sæsonforløb
+- Et menneskeholds straf i et normalt spil gemmes som `pen_pending` uden udfald og tæller ikke i scoren, så ingen kan se udfaldet og vælge at springe over. Motorens træk er uændret, så resten af kampen er identisk.
+- Springes straffen over, afgør serveren den, når runden skifter: standardskytten og et hjørne seedet pr. hændelse (`seed|penskip|id`). Målmandens hjørne er som før seedet (`seed|pen|id`).
+- Intet loft på straffe (Rasmus 2026-11-05: statistisk realistisk). Målt over 200.000 kampe: 0,29 straffe pr. kamp, et hold får 2+ i samme kamp ca. 7 gange pr. sæson, 3 ca. hver tredje sæson.
+- Sæsonen afsluttes først, når alle har bekræftet runde 38 (normalt spil). En afbrudt sæsonstart genoptages ved næste `init`. Spillerdata fastfryses ved sæsonstart.
+- Fingeraftryk 584da1f3…38bd, simulation deb603cd…a15a (uændret).
 
 ## Faste regler for nye spillere i `players` (Rasmus, 2026-10-21)
 Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprindelige tal. Eksisterende spillere røres ikke af reglerne.
