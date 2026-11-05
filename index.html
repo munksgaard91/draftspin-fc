@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.8.0 (beta)">
+<meta name="app-version" content="0.5.9.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -53,6 +53,28 @@
 .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
 @keyframes simd{0%,80%,100%{opacity:.25}40%{opacity:1}}
 .simrec{font-size:14.5px;color:var(--mut);margin-top:6px}
+.ehero{text-align:center;padding-top:14px}.ehero .etro{height:64px;width:auto;display:block;margin:0 auto}
+.epos{font:700 72px/1 var(--sans);letter-spacing:-.03em;margin-top:8px;background:linear-gradient(180deg,#fff,#cdbdf0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.epos sup{font-size:30px;vertical-align:top;position:relative;top:8px}
+.simdone.egold .epos{background-image:linear-gradient(180deg,#ffe9a3,#f5c542)}
+.eteam{font-size:18px;font-weight:600;margin:2px 0 0}
+.ebadge{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 14px;border-radius:99px;background:#ffffff10;border:1px solid #ffffff22;font-size:13.5px;font-weight:600}
+.ebadge img{width:22px;height:22px;object-fit:contain;margin-left:-6px}
+.ebadge.gold{background:#f5c54222;border-color:#f5c54266;color:#ffe9a3}.ebadge.down{background:#f0245f22;border-color:#f0245f55}
+.ekpi{display:grid;grid-template-columns:repeat(3,1fr);margin-top:14px;padding:0}
+.ekpi div{text-align:center;padding:8px 4px}.ekpi div+div{border-left:1px solid var(--line)}
+.ekpi b{display:block;font:500 19px var(--mono)}.ekpi span{font-size:11.5px;color:var(--mut)}
+.etbl{margin-top:10px;padding:4px 10px}.etbl .tr:last-child{border-bottom:0}
+.etops{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.etop{margin:0;padding:10px 12px;line-height:1.3;min-width:0}.etop small{display:block;font-size:11.5px;color:var(--mut)}.etop b{display:block;font-size:14px;font-weight:600;margin-top:2px;line-height:1.2}.etop span{font:500 13px var(--mono);color:var(--acc)}
+#sumlist .sumrow{margin-top:8px;padding:11px 14px;background:var(--surf);border:1px solid var(--line);border-radius:16px}
+.wprog{margin-top:10px;padding:14px 16px}
+.wtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.wtop b{font:500 26px var(--mono)}.wtop span{color:var(--mut);font-size:13px;text-align:right}
+.wbar{height:6px;border-radius:9px;background:#ffffff14;margin-top:10px;overflow:hidden}.wbar i{display:block;height:100%;background:var(--acc);border-radius:9px;transition:width .4s}
+.fchip{font:500 11px var(--mono);padding:1px 6px;border-radius:6px;background:#ffffff12;color:var(--mut);margin-left:8px;white-space:nowrap}
+.rr .s.wt{color:var(--mut)}.rr .s.wt:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;animation:wpulse 1.2s infinite}
+@keyframes wpulse{50%{opacity:.25}}
+.wform{margin-top:10px;padding:12px 14px}.wform .pitch{aspect-ratio:auto;height:190px;max-width:none}.wtop2{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-bottom:8px}
 .sumtop{text-align:center;padding-top:28px}
 .sumtop h1{margin:10px 0 0;font-size:26px}
 .sumteam{margin:4px 0 0;font-size:19px;font-weight:600;color:var(--acc)}
@@ -1928,14 +1950,19 @@ function lobbyLive(){
     return leaveBack()+(solo?'<div class="solomid">'+h+'</div>':h);
   }
   /* holdopsætning er åbnet, og du er klar: vent på de andre */
+  var nr=pl.filter(function(p){return p.ready}).length;
+  var wait=pl.filter(function(p){return !p.ready}).map(function(p){return esc(p.display_name||"a player")});
+  h+='<div class="card wprog"><div class="wtop"><b>'+nr+'/'+n+'</b><span>'+(wait.length?"Waiting for "+wait.join(", "):"Everyone is ready")+'</span></div><div class="wbar"><i style="width:'+(n?Math.round(nr/n*100):0)+'%"></i></div></div>';
   h+='<div class="card" style="margin-top:10px;padding:2px 14px"><div class="roster">';
   pl.forEach(function(p){
     var icon=p.team_name?ucrest((p.crest||1)-1,p.color1||"#3b4a6b",p.color2||"#e6ebf5",p.crest_tag||initials(p.team_name),30):'<span class="av">?</span>';
-    h+=rosterRow(p.user_id,p.team_name||"Setting up their team",(p.display_name||"Player")+(p.user_id===NET.uid?" (you)":"")+(p.user_id===g.admin_id?", admin":""),p.ready,icon,kick(p));
+    var fm=p.ready&&p.formation?'<span class="fchip">'+esc(flabel(p.formation))+'</span>':'';
+    h+='<div class="rr">'+icon+'<div class="n">'+esc(p.team_name||"Setting up their team")+'<small>'+esc((p.display_name||"Player")+(p.user_id===NET.uid?" (you)":"")+(p.user_id===g.admin_id?" · admin":""))+fm+'</small></div><span class="s'+(p.ready?" ok":" wt")+'">'+(p.ready?"Ready":"Setting up")+'</span>'+kick(p)+'</div>';
   });
   h+='</div></div>';
-  var wait=pl.filter(function(p){return !p.ready}).map(function(p){return p.display_name||"a player"});
-  h+='<p class="note">'+(wait.length?"Waiting for "+wait.map(function(x){return esc(x)}).join(", ")+".":"Everyone is ready. The draft is starting...")+'</p>';
+  var myf=me.formation||S.form;
+  if(myf)h+='<div class="card wform"><div class="wtop2"><span>Your formation</span><span class="mono">'+esc(flabel(myf))+'</span></div><div class="pitch" data-mini="'+esc(myf)+'"></div></div>';
+  h+='<p class="note" style="text-align:center">'+(wait.length?"The draft starts automatically when everyone is ready.":"Everyone is ready. The draft is starting...")+'</p>';
   return topBack("unready")+h;
 }
 /* ---------- live: sæson ---------- */
@@ -2106,19 +2133,6 @@ function liveSimRender(ph){
   h+='</div>';
   $("simbody").innerHTML=h;
 }
-/* "Your season in three matches": vises kun når sliden ellers har få rækker (ikke mester, Europa eller nedrykning) */
-function sumMatches(){
-  var ms=[];for(var i=1;i<=38;i++){var m=liveMyMatch(i);if(!m||!m.played)continue;var home=m.home_key===NET.uid;ms.push({r:i,home:home,f:home?m.home_goals:m.away_goals,a:home?m.away_goals:m.home_goals,opp:home?m.away_key:m.home_key})}
-  if(!ms.length)return "";
-  var pick=function(fn,ok,skip){var b=null;ms.forEach(function(x){if(skip.indexOf(x.r)>-1||!ok(x))return;if(!b||fn(x)>fn(b))b=x});return b};
-  var used=[],lines=[];
-  var line=function(label,x){if(!x)return;used.push(x.r);lines.push('<span class="recl mrow">'+lcrest(x.opp,18)+'<span>'+label+": <b>"+x.f+"–"+x.a+"</b> "+(x.home?"vs ":"at ")+esc(lname(x.opp))+"</span></span>")};
-  line("Biggest win",pick(function(x){return (x.f-x.a)*100+x.f},function(x){return x.f>x.a},used));
-  line("Heaviest defeat",pick(function(x){return (x.a-x.f)*100+x.a},function(x){return x.a>x.f},used));
-  line("Most goals",pick(function(x){return (x.f+x.a)*100+x.f},function(x){return x.f+x.a>=4},used));
-  if(!lines.length)return "";
-  return '<div class="sumrow"><details class="rechof"><summary><b>Your season in three matches</b></summary><small>'+lines.join("")+'</small></details></div>';
-}
 /* testgenvej: flytter dit hold til den placering, der står i dsfc-testpos (kun sliden og slutskærmen, ikke Hall of Fame på serveren) */
 function testPos(rows,mi){try{var tp=+localStorage.getItem("dsfc-testpos");if(tp>=1&&tp<=rows.length&&mi>-1){var mr=rows.splice(mi,1)[0];rows.splice(tp-1,0,mr);return tp-1}}catch(e){}return mi}
 function liveSimDone(lbl){
@@ -2126,17 +2140,26 @@ function liveSimDone(lbl){
   var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid);
   if(isTestGame())mi=testPos(rows,mi);
   var me=rows[mi]||{p:0,w:0,d:0,l:0,gf:0,ga:0},n=rows.length;
-  var row=function(ic,t,d,cls,id){return '<div class="sumrow'+(cls?" "+cls:"")+'"'+(id?' id="'+id+'"':'')+'>'+(ic?'<span class="si">'+ic+'</span>':'')+'<div><b>'+t+'</b>'+(d?'<small>'+d+'</small>':'')+'</div></div>'};
-  var eu=mi<4?['<img class="sileague" src="badges/eu-cl.png" alt="">',"Champions League","You qualified for the Champions League."]:(mi<6?['<img class="sileague" src="badges/eu-el.png" alt="">',"Europa League","You qualified for the Europa League."]:(mi===6?['<img class="sileague" src="badges/eu-ecl.png" alt="">',"Conference League","You qualified for the Conference League."]:null));
-  var h='<div class="sumtop">'+lcrest(NET.uid,84)+'<h1>The season is over</h1><p class="sumteam">'+esc(lname(NET.uid))+'</p></div><div class="card sumlist" id="sumlist">'+
-    (mi===0?row('<img class="silion" src="'+PLLOGO+'" alt="">',"You\'re the champions!","","sumwin"):"")+
-    (eu?row(eu[0],eu[1],"","summid sumeu"):"")+
-    (mi>=17?row('<img class="sileague" src="badges/efl-champ.png" alt="">',"Relegated to Championship","","sumdown"):"")+
-    (mi>=7&&mi<17?row('<img class="silion" src="'+PLLOGO+'" alt="">',mi<9?"Top half finish":(mi<14?"Mid-table. Safe and sound.":"Survived!"),"","summid"):"")+
-    row("","Results",me.p+" points<br>"+me.w+"W "+me.d+"D "+me.l+"L")+
-    (!eu&&mi>0&&mi<17?sumMatches():"")+
-    '</div><button class="btn p wide go" data-act="simend" style="margin-top:18px">'+"See the final table"+'</button>';
-  $("simbody").innerHTML='<div class="simdone">'+h+'</div>';
+  var gd=me.gf-me.ga,pos=mi+1,suf=ordinal(pos).replace(/^\d+/,"");
+  var badge=mi===0?'<span class="ebadge gold">You\'re the champions!</span>':
+    (mi<4?'<span class="ebadge"><img src="badges/eu-cl.png" alt="">Champions League</span>':
+    (mi<6?'<span class="ebadge"><img src="badges/eu-el.png" alt="">Europa League</span>':
+    (mi===6?'<span class="ebadge"><img src="badges/eu-ecl.png" alt="">Conference League</span>':
+    (mi>=17?'<span class="ebadge down"><img src="badges/efl-champ.png" alt="">Relegated to Championship</span>':
+    '<span class="ebadge">'+(mi<9?"Top half finish":(mi<14?"Mid-table. Safe and sound.":"Survived!"))+'</span>'))));
+  var w0=Math.max(0,Math.min(mi-3,n-7)),tb='<div class="tr h"><span>#</span><span>Team</span><span class="num">P</span><span class="num">W</span><span class="num">D</span><span class="num">L</span><span class="num">+/-</span><span class="num">Pts</span></div>';
+  rows.slice(w0,w0+7).forEach(function(r1,j){var i=w0+j,mine=r1.k===NET.uid,fr=lhuman(r1.k)&&!mine;
+    tb+='<div class="tr'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+lcrest(r1.k,18)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+(r1.w+r1.d+r1.l)+'</span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>'});
+  var st=liveStatMaps(),topOf=function(map){var b=null;Object.keys(map).forEach(function(p){if(st.owner[p]!==NET.uid)return;if(!b||map[p]>map[b])b=p});return b};
+  var tg=topOf(st.g),ta=topOf(st.a);
+  var tbox=function(lbl,pid,map,unit){return '<div class="card etop"><small>'+lbl+'</small><b>'+(pid?esc(pname(pid)):"–")+'</b><span>'+(pid?pl(map[pid],unit):"&nbsp;")+'</span></div>'};
+  var h='<div class="ehero">'+(mi===0?'<img class="etro" src="badges/pl-trophy.png" alt="">':lcrest(NET.uid,64))+'<div class="epos">'+pos+'<sup>'+suf+'</sup></div><p class="eteam">'+esc(lname(NET.uid))+'</p>'+badge+'</div>'+
+    '<div class="card ekpi"><div><b>'+me.p+'</b><span>Points</span></div><div><b>'+me.w+'-'+me.d+'-'+me.l+'</b><span>W-D-L</span></div><div><b>'+(gd>0?"+":"")+gd+'</b><span>Goal diff.</span></div></div>'+
+    '<div class="card etbl">'+tb+'</div>'+
+    '<div class="etops">'+tbox("⚽ Top scorer",tg,st.g,"goal")+tbox("👟 Top assists",ta,st.a,"assist")+'</div>'+
+    '<div id="sumlist"></div>'+
+    '<button class="btn p wide go" data-act="simend" style="margin-top:16px">'+"See the final table"+'</button>';
+  $("simbody").innerHTML='<div class="simdone'+(mi===0?" egold":"")+'">'+h+'</div>';
   sumRecords();
 }
 async function sumRecords(){
