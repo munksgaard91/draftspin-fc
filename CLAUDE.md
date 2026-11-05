@@ -21,7 +21,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.5.5.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.5.6.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 
 ## Motoren
 
@@ -32,6 +32,14 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 - Straffespark (v1.15): i menneskekampe (ikke Quick) gemmes straffe som `type = 'pen_pending'` uden udfald og tæller ikke i scoren. Serverhandlingen `pen` afgør dem med spillerens valg (`applyPen`). Springes en straf over, afgør serveren den med et seedet hjørne, når runden skifter (`settleSkipped`). Score og clean sheets tælles op i RPC'en `recount_match`.
 - Sæsonafslutning: et normalt spil afsluttes først, når alle har bekræftet runde 38 ("End season", `advance` i runde 38 → `finishSeason`). Hurtigt spil afsluttes, så snart runde 38 er spillet.
 - Spillerdata fastfryses ved sæsonstart i `season_secret.players`; sæsoner fra før v1.15 bruger de nuværende data.
+
+## Demotilstand og skærmgalleri (design)
+
+- `index.html?demo=<skærm>` viser en skærm med faste, opdigtede data (4 demo-hold, en hel sæson simuleret med motoren). `?demo=list` viser alle skærme. Supabase erstattes af en falsk klient (`demoClient`), og browserens lager kører kun i hukommelsen, så intet skrives til databasen, og et rigtigt spil på telefonen røres ikke. Mærket "DEMO" vises nederst til venstre.
+- Skærme: `DEMO_SCREENS` i `index.html` (start, lobby, draft, kickoff, live, others, squad, goal, penalty, penalty-corner, fulltime, table, stats, end-champion, end-top, end-mid, end-down, hof, hof-empty). Nye skærme tilføjes dér, når de kommer (Rasmus 2026-11-05).
+- Data: `demo/fixtures.json`, genereres med `deno run --allow-read --allow-write scripts/demo_fixtures.ts <players.json> <clubs.json>` (eksportér spillere/klubber med `supabase db query ... --read-only`, se kommentaren i scriptet). Generér igen, når spillerdata eller motoren ændres.
+- Skærmgalleri: Claude tager selv billeder i browser-panelet (390×844) af hver `?demo=`-skærm og samler dem med `python3 scripts/gallery_sheet.py <ud.png> "nøgle|titel|billede" ...` til ét billede i `~/Desktop/PL Draft/galleri/`. Send det til Rasmus efter UI-ændringer.
+- Animationer står stille, når browser-panelet er skjult; demoen slår derfor indtoning fra og fryser målanimationen midtvejs.
 
 ## Test uden at vente
 
