@@ -95,7 +95,9 @@ for (const h of HUMANS) {
   const side = (m) => (m.home_key === h.uid ? "h" : "a");
   const goalRound = mine.find((m) => m.round >= 6 && events.some((e) => e.match_id === m.id && e.type === "goal" && e.team === side(m) && !e.pen && e.detail !== "og"))?.round ?? null;
   const penRound = mine.find((m) => m.round >= 3 && events.some((e) => e.match_id === m.id && e.pen && e.team === side(m)))?.round ?? null;
-  meta[h.uid] = { pos: pos[h.uid], goalRound, penRound };
+  const isAi = (m) => !HUMANS.some((x) => x.uid === (m.home_key === h.uid ? m.away_key : m.home_key));
+  const penAiRound = mine.find((m) => m.round >= 3 && isAi(m) && events.some((e) => e.match_id === m.id && e.pen && e.team === side(m)))?.round ?? null;
+  meta[h.uid] = { pos: pos[h.uid], goalRound, penRound, penAiRound };
 }
 
 // Hall of Fame (samme regler som serverens finalizeSeason, forenklet til én sæson)
@@ -150,4 +152,4 @@ const fx = {
 await Deno.mkdir(new URL("../demo/", import.meta.url), { recursive: true });
 await Deno.writeTextFile(OUT, JSON.stringify(fx));
 console.log(`demo/fixtures.json: sæson ${seedNo}, ${matches.length} kampe, ${events.length} hændelser`);
-for (const h of fx.humans) console.log(`  ${h.team}: plads ${h.pos}, mål i runde ${h.goalRound}, straffe i runde ${h.penRound}`);
+for (const h of fx.humans) console.log(`  ${h.team}: plads ${h.pos}, mål i runde ${h.goalRound}, straffe i runde ${h.penRound} (mod AI: ${h.penAiRound})`);

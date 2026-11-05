@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.6.0 (beta)">
+<meta name="app-version" content="0.5.6.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1319,7 +1319,7 @@ function evRow(e,hs,as){
   var named=!e.ai&&e.x,txt;
   if(e.t==="goal"){
     var sc=' <span class="gs">('+(home?'<i class="n">'+hs+'</i>':'<i>'+hs+'</i>')+' - '+(home?'<i>'+as+'</i>':'<i class="n">'+as+'</i>')+')</span>';
-    txt='<b>'+(e.ai?esc(e.x)+" scorer":esc(e.x))+'</b>'+sc+(e.a?'<small>'+esc(e.a)+'</small>':'')
+    txt='<b>'+(e.ai?esc(e.x)+" scores":esc(e.x))+'</b>'+sc+(e.a?'<small>'+esc(e.a)+'</small>':'')
   }else if(e.t==="pm")txt='<b>Missed penalty</b>'+(named?'<small>'+esc(e.x)+'</small>':'');
   else if(e.t==="pw"){ic='<i class="ic g" style="opacity:.45">⚽</i>';txt='<b>Penalty</b><small>Not taken yet</small>'}
   else txt='<b>'+(named?esc(e.x):(e.t==="y"?"Yellow card":"Red card"))+'</b>'+(e.a==="2nd yellow"?'<small>Second yellow</small>':'');
@@ -2243,7 +2243,7 @@ async function penPick(e,m,fin){
   var reg=tk.slice().sort(function(a,b){return b.pen-a.pen})[0];
   tk.sort(function(a,b){return a.o-b.o||a.i-b.i});
   var ol=NET.season.lineups[oppK]||[],gk=NET.byId[ol[10]]||null; /* målmanden står altid på plads 11 */
-  var gkTxt=gk?'<div class="pgk">In goal: <b>'+esc(gk.p[0])+'</b></div>':'';
+  var gkName=gk&&lhuman(oppK)?gk.p[0]:null; /* AI-holdenes spillere er anonyme: målmandens navn kun mod et andet menneskehold */
   var rows=tk.map(function(t){return '<button class="ptk" data-pid="'+t.pid+'"><span class="pp">'+t.pos+'</span><span class="pn"><span class="pnn">'+esc(t.name)+'</span>'+(t===reg?'<i class="pstar">\u2605 Regular taker</i>':'')+'</span><span class="pv">'+t.g+" \u26bd"+'</span></button>'}).join("");
   var o=penOv('<div class="phd"><b>Penalty!</b><span>Who takes it?</span></div><div class="ptks">'+rows+'</div>');
   var taker=await new Promise(function(res){o.querySelector(".ptks").onclick=function(ev){var b=ev.target.closest("[data-pid]");if(b)res(tk.filter(function(t){return t.pid===+b.dataset.pid})[0])}});
@@ -2253,7 +2253,7 @@ async function penPick(e,m,fin){
     '<g id="pkeep" style="transform:translate(150px,98px);opacity:0"><g id="pkeepi"><rect x="-8.5" y="14" width="7" height="17" rx="3" fill="#2a1d44" stroke="#12001f" stroke-width="1.2"/><rect x="1.5" y="14" width="7" height="17" rx="3" fill="#2a1d44" stroke="#12001f" stroke-width="1.2"/><rect x="-10.5" y="29" width="10" height="5" rx="2.5" fill="#fff" stroke="#12001f" stroke-width="1.2"/><rect x="0.5" y="29" width="10" height="5" rx="2.5" fill="#fff" stroke="#12001f" stroke-width="1.2"/><path d="M-11 5h22l2.5 12h-11l-2.5-6-2.5 6h-11z" fill="#3a2a60" stroke="#12001f" stroke-width="1.2" stroke-linejoin="round"/><path d="M-10-14-27-27M10-14 27-27" stroke="#12001f" stroke-width="9.5" stroke-linecap="round"/><path d="M-10-14-27-27M10-14 27-27" stroke="#f5c542" stroke-width="6.5" stroke-linecap="round"/><path d="M-11-15q11-5 22 0l2 21h-26z" fill="#f5c542" stroke="#12001f" stroke-width="1.2" stroke-linejoin="round"/><circle cx="-28.5" cy="-28.5" r="5.5" fill="#fff" stroke="#12001f" stroke-width="1.2"/><circle cx="28.5" cy="-28.5" r="5.5" fill="#fff" stroke="#12001f" stroke-width="1.2"/><circle cx="0" cy="-23" r="7.5" fill="#e8b88a" stroke="#12001f" stroke-width="1.2"/><path d="M-7.3-24a7.3 7.3 0 0 1 14.6 0q-7.3-4-14.6 0z" fill="#3b2a1a"/></g></g>'+
     '<circle id="pball" cx="0" cy="0" r="8" class="pball" style="transform:translate(150px,190px)"/>'+
     pts.map(function(q,i){return '<g class="psp" data-i="'+i+'" style="transform:translate('+X(q[0])+'px,'+Y(q[1])+'px)"><circle r="22" class="phit"/><circle r="13" class="pdot"/></g>'}).join("")+'</svg>';
-  o=penOv('<div class="phd"><b>'+esc(taker.name)+'<br>takes the penalty</b>'+(gk?'<span>In goal: '+esc(gk.p[0])+'</span>':'')+'</div>'+svg+'<p class="note pres" id="pres">Pick your corner</p>');
+  o=penOv('<div class="phd"><b>'+esc(taker.name)+'<br>takes the penalty</b>'+(gkName?'<span>In goal: '+esc(gkName)+'</span>':'')+'</div>'+svg+'<p class="note pres" id="pres">Pick your corner</p>');
   var i=await new Promise(function(res){o.querySelector(".pgoal").onclick=function(ev){var b=ev.target.closest(".psp");if(b)res(+b.dataset.i)}});
   o.querySelector(".pgoal").classList.add("lock");document.getElementById("pres").textContent="And he shoots\u2026";
   var r0=await callEngine("pen",{event_id:e.id,taker_id:taker.pid,spot:i}).catch(function(x){toast(x.message,4000);return null});
@@ -2955,6 +2955,7 @@ var DEMO_SCREENS={
   goal:{t:"Match: goal",st:"season",round:"goal",pauseAt:"goal"},
   penalty:{t:"Match: penalty, pick a taker",st:"season",round:"pen",skip:1},
   "penalty-corner":{t:"Match: penalty, pick a corner",st:"season",round:"pen",skip:1,corner:1},
+  "penalty-ai":{t:"Match: penalty vs an AI club (keeper anonymous)",st:"season",round:"penai",skip:1,corner:1},
   fulltime:{t:"Match: full time",st:"season",round:12,skip:1},
   table:{t:"Table",st:"season",round:12,skip:1,tab:"table"},
   stats:{t:"Stats",st:"season",round:12,skip:1,tab:"stats"},
@@ -2969,7 +2970,7 @@ function demoClone(x){return x==null?x:JSON.parse(JSON.stringify(x))}
 function demoState(fx,cfg){
   var H=fx.humans,me=H[0],gid=fx.gid,st=cfg.st||"lobby";
   if(cfg.end!=null)me=H.slice().sort(function(a,b){return a.pos-b.pos})[cfg.end];
-  var round=cfg.round==="goal"?me.goalRound:(cfg.round==="pen"?me.penRound:(cfg.round||0));
+  var round=cfg.round==="goal"?me.goalRound:(cfg.round==="pen"?me.penRound:(cfg.round==="penai"?me.penAiRound:(cfg.round||0)));
   if(st==="done")round=38;
   var order=[me].concat(H.filter(function(h){return h!==me})),now=new Date().toISOString();
   var players=order.map(function(h,i){return {game_id:gid,user_id:h.uid,team_name:h.team,color1:h.c1,color2:h.c2,crest:h.crest,formation:h.form,ready:st!=="lobby"||i<2,auto_ready:false,draft_pos:i,joined_at:"2026-11-01T12:0"+i+":00Z",last_seen_at:now,ready_round:Math.max(0,round-1),display_name:h.display,missed_rounds:0,last_missed_round:0,crest_tag:h.tag,respins_used:0,done_round:Math.max(0,round-1),start_ready:round>1}});
@@ -2984,7 +2985,7 @@ function demoState(fx,cfg){
     var live={};ms.forEach(function(m){if(m.round>round){m.played=false;m.home_goals=null;m.away_goals=null}else if(m.round===round)live[m.id]=1});
     var played={};ms.forEach(function(m){if(m.played)played[m.id]=1});
     evs=evs.filter(function(e){return played[e.match_id]});
-    if(cfg.round==="pen"){
+    if(cfg.round==="pen"||cfg.round==="penai"){
       var mm=ms.filter(function(m){return m.round===round&&(m.home_key===me.uid||m.away_key===me.uid)})[0],sd=mm.home_key===me.uid?"h":"a";
       var pe=evs.filter(function(e){return e.match_id===mm.id&&e.pen&&e.team===sd})[0];
       if(pe.type==="goal"){if(sd==="h")mm.home_goals--;else mm.away_goals--}
@@ -3054,8 +3055,9 @@ async function demoBoot(){
   document.body.appendChild(tag);
   /* indtoning slås fra, så skærmbilleder altid viser det færdige resultat (også når fanen er skjult og animationer står stille) */
   var ds=document.createElement("style");ds.textContent=".fade{animation:none!important;opacity:1!important}";document.head.appendChild(ds);
-  var fx=await (await fetch("demo/fixtures.json")).json();
-  var S0=demoState(fx,cfg);
+  var fx,S0;
+  try{fx=await (await fetch("demo/fixtures.json",{cache:"no-cache"})).json();S0=demoState(fx,cfg)} /* no-cache: aldrig en gammel demofil fra browserens cache */
+  catch(e){document.body.innerHTML='<p style="padding:24px 16px">Demo data could not be loaded. <a style="color:inherit" href="?demo=list">All demo screens</a></p>';return}
   DEMO.spd=cfg.pauseAt!=null?8:1;DEMO.pauseAt=cfg.pauseAt==="goal"?S0.pauseAt:(cfg.pauseAt!=null?cfg.pauseAt:null);DEMO.skip=!!cfg.skip;
   if(cfg.st){DEMO.mem["dsfc-gid"]=fx.gid;DEMO.mem["dsfc-name"]=S0.players[0].display_name}
   if(cfg.st==="done")DEMO.mem["dsfc-testgid"]=fx.gid; /* sæsonafslutningen vises med det samme */
