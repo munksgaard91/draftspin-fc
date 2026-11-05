@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.7.6 (beta)">
+<meta name="app-version" content="0.5.8.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -213,6 +213,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .hbanner .note{margin:8px 0 0}
 .hbx{position:absolute;top:4px;right:6px;height:34px;padding:0 8px;background:none;border:0;color:var(--mut);font-size:13px;cursor:pointer}
 .rechof summary b,.hexp,.pausebtn,.hbanner summary,.hbx{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent)}
+.topback{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px -2px;padding:6px 10px 6px 6px;background:none;border:0;color:var(--mut);font-family:inherit;font-size:14px;font-weight:500;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}.topback:before{content:"";width:8px;height:8px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-left:4px}.topback[hidden]{display:none}.topback:active{color:var(--ink,#fff)}
 .linkbtn{display:block;margin:6px auto 0;background:none;border:0;color:var(--mut);text-decoration:underline;text-underline-offset:3px;font-size:13px;padding:10px 12px;cursor:pointer}
 .nav2 .btn.p{flex:1}
 .field{display:block;margin-top:12px}
@@ -801,7 +802,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 
   <!-- HIGHSCORE -->
   <section id="s-hof" class="screen">
-    <button class="linkbtn" id="hofBack" hidden style="margin:0 0 10px;padding:6px 0;text-align:left">Back</button>
+    <button class="topback" id="hofBack" hidden>Back</button>
     <h1>Hall of Fame</h1>
     <div class="seg" id="hseg"></div>
     <div id="hbody"></div>
@@ -952,6 +953,8 @@ function progHtml(){
   for(var k=0;k<post.length;k++)h+='<i class="'+(k<=i?"d":"")+'"></i>';
   return h+'</div>';
 }
+function topBack(act,label){return '<button class="topback" data-act="'+act+'">'+(label||"Back")+'</button>'}
+function leaveBack(){return NET.game?topBack(NET.game.admin_id===NET.uid?"closegame":"leavesetup"):""}
 function navBtns(nextLabel,nextDis,noBack){
   return '<div class="nav2"'+(noBack?' style="grid-template-columns:1fr"':'')+'>'+(noBack?'':'<button class="btn" data-act="back">Back</button>')+'<button class="btn p go" data-act="next"'+(nextDis?" disabled":"")+'>'+nextLabel+'</button></div>';
 }
@@ -963,22 +966,24 @@ function renderFlow(){
   if((stepsFor()[F.step]==="lobby"||stepsFor()[F.step]==="wait")&&!NET.game){$("flow").innerHTML="";return}
   var st=stepsFor()[F.step],h=progHtml();
   if(st==="join"){
-    h='<div class="joinwrap"><div class="joinbox"><label class="field" style="margin-top:0"><span>Game code</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:19px;text-transform:uppercase"></label>'+
+    h=topBack("back")+'<div class="joinwrap"><div class="joinbox"><label class="field" style="margin-top:0"><span>Game code</span><input class="inp" id="joinCode" value="'+esc(F.joinInput)+'" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FX7K9P" style="font-family:var(--mono);letter-spacing:.14em;font-size:19px;text-transform:uppercase"></label>'+
       (F.joinErr?'<p class="err">That code doesn\'t exist. Check it and try again.</p>':'')+
-      navBtns("Join the game",String(F.joinInput).trim().length<6)+'</div></div>';
+      navBtns("Join the game",String(F.joinInput).trim().length<6,true)+'</div></div>';
   }else if(st==="hold"){
     var ct=F.ctab==="s"?"s":"p";
+    h=leaveBack()+h;
     h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"My team")+'</span></div>'+
       ('<label class="field"><span>Your name</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="E.g. Emil" autocomplete="off"></label>')+
       '<div class="tagrow"><label class="field"><span>Team name</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="E.g. Dream Team" autocomplete="off"></label><label class="field tagf"><span>Abbreviation</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"My team"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+((S.tag||"").length===1?'<p class="note" style="margin:-4px 0 8px">The abbreviation needs 2 or 3 characters.</p>':"")+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primary colour</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Secondary colour</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primary":"Secondary")+' colour: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
       '<div class="field"><div class="crests">'+crestBtns()+'</div></div>'+
-      navBtns("Continue to formation",!holdOk(),true)+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="leavesetup">Leave game</button>'):'');
+      navBtns("Continue to formation",!holdOk(),true);
   }else if(st==="form"){
+    h=topBack("back")+h;
     h+='<h1>Choose formation</h1><p class="sub">It can\'t be changed once the game has started.</p><div class="fchips">'+
       FORM_ORDER.map(function(f){return '<button class="fcard chip'+(f===S.form?" on":"")+'" data-f="'+f+'">'+flabel(f)+'</button>'}).join("")+'</div><p class="fnote">(D) defensive midfielder · (O) attacking midfielder · (W) wide midfielders</p>'+
-      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("I'm ready for the draft")+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="leavesetup">Leave game</button>'):'');
+      '<div class="card" style="margin-top:12px;padding:10px"><div class="pitch" id="fprev" data-wide="1"></div></div>'+navBtns("I'm ready for the draft",false,true)+(NET.game?(NET.game.admin_id===NET.uid?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="leavesetup">Leave game</button>'):'');
   }else {
     h+=lobbyLive();
   }
@@ -1920,8 +1925,7 @@ function lobbyLive(){
     }else{
       h+='<p class="note">Waiting for the admin to start the game ('+n+' '+(n===1?'player':'players')+' so far).</p>';
     }
-    h+=adm?'<button class="linkbtn" data-act="closegame">Close session</button>':'<button class="linkbtn" data-act="back">Leave game</button>';
-    return solo?'<div class="solomid">'+h+'</div>':h;
+    return leaveBack()+(solo?'<div class="solomid">'+h+'</div>':h);
   }
   /* holdopsætning er åbnet, og du er klar: vent på de andre */
   h+='<div class="card" style="margin-top:10px;padding:2px 14px"><div class="roster">';
@@ -1932,8 +1936,7 @@ function lobbyLive(){
   h+='</div></div>';
   var wait=pl.filter(function(p){return !p.ready}).map(function(p){return p.display_name||"a player"});
   h+='<p class="note">'+(wait.length?"Waiting for "+wait.map(function(x){return esc(x)}).join(", ")+".":"Everyone is ready. The draft is starting...")+'</p>';
-  h+='<button class="linkbtn" data-act="unready">Back</button>';
-  return h;
+  return topBack("unready")+h;
 }
 /* ---------- live: sæson ---------- */
 NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;NET.round=0;NET.shownRound=0;NET.myMatch=null;NET.oppName="";NET.advAt=0;
