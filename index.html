@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.7.2 (beta)">
+<meta name="app-version" content="0.5.7.3 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -260,6 +260,11 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .slot .dot.fc{width:40px;height:40px;overflow:hidden;background:#1b1530;border:2px solid var(--me2);padding:0}
 .dot .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px}
 /* kampens holdkort: fritlagte ansigter uden cirkel, kant og baggrund */
+/* navne afkortes ikke på kampens holdkort (4 spillere i en række har ca. 85 px hver) */
+#mpitch .slot{width:84px}
+#mpitch .slot .nm{overflow:visible;text-overflow:clip}
+#mpitch .slot .pb.pa{left:auto;right:calc(50% + 4px)}
+#mpitch .slot .pb.pg{right:auto;left:calc(50% + 4px)}
 #mpitch .slot.f .dot.fc{width:36px;height:36px;background:none;border:0;border-radius:0;overflow:visible;filter:drop-shadow(0 2px 3px #000a)}
 .dot .rf.nf{background:var(--silh) center/contain no-repeat}
 .slot .pb{position:absolute;top:18px;display:flex;align-items:center;gap:2px;height:16px;padding:0 4px 0 3px;border-radius:99px;background:#1b1530;border:1px solid #ffffff3d;font:500 10px/1 var(--mono);color:#fff;z-index:2}
@@ -1565,7 +1570,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button><p class="hsnote">Beta: the Hall of Fame and all records reset at version 1.0</p>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button><p class="hsnote">All records and Hall of Fame stats will be reset after 1.0 release</p>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
