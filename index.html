@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.6.1 (beta)">
+<meta name="app-version" content="0.5.6.2 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -607,6 +607,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .updbtn{appearance:none;border:1px solid #6fe39a99;background:linear-gradient(#6fe39a33,#6fe39a14);color:#8dffb5;font-size:13px;font-weight:600;border-radius:99px;padding:7px 13px;cursor:pointer;box-shadow:0 0 18px -2px #6fe39a88;animation:updglow 2.2s infinite ease-in-out}
 @keyframes updglow{0%,100%{box-shadow:0 0 12px -3px #6fe39a66}50%{box-shadow:0 0 22px 0 #6fe39acc}}
 .hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(46px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:var(--gold-ink);font-size:14.5px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
+.hsnote{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:5;margin:0;width:max-content;max-width:calc(100% - 32px);padding:4px 10px;border-radius:99px;background:#170a28d9;text-align:center;font-size:11.5px;color:var(--mut);pointer-events:none}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .stb.p{background:linear-gradient(135deg,#7dffbc 0%,#00ff85 38%,#00b86c 100%);border-color:#b6ffd966;color:#12001f;box-shadow:0 1px 0 #ffffff66 inset,0 12px 28px -10px #00ff85aa}
 .stb.p:hover{background:linear-gradient(135deg,#a0ffd0 0%,#33ff9e 38%,#12cc7c 100%)}
@@ -1538,7 +1539,7 @@ function bgInner(){
   return cols;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button><p class="hsnote">Beta: the Hall of Fame and all records reset at version 1.0</p>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
