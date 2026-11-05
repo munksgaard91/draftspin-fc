@@ -14,7 +14,8 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 - `index.html`: hele klienten i én fil. Hostes på GitHub Pages (`munksgaard91/draftspin-fc`, branch `main`). `sw.js` er service worker; hæv `CACHE` (`dsfc-shell-vNN`) ved hver klientændring, ellers ser telefonerne den gamle version.
 - Supabase-projekt `apagcfedizgjnnuefzfo` (Postgres, anonym login, RPC'er, edge function `engine`). Kampmotoren kører på serveren: `supabase/functions/engine/engine.js` (ren simulation) og `index.ts` (handlinger, fx afspilning af runder og interaktive straffe).
-- `supabase/migrations/`: databasens opbygning, nummereret 001-066 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre.
+- `supabase/migrations/`: databasens historik, nummereret 001-068 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
+- `supabase/schema/public.sql`: øjebliksbillede af den levende database (tabeller, funktioner, policies, rettigheder, realtime, cron). Det er sandheden om databasen. Genereres med `./scripts/schema_snapshot.sh` (kun læsning); kør det efter hver migration og commit det sammen med migrationen.
 - `data/` og `scripts/`: spillerdata og lokale hjælpescripts.
 
 ## Versionsnummer
@@ -46,4 +47,11 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Adgang
 
-Supabase-projektet ligger på Rasmus' private konto. Den nye Claude skal have adgang dertil (Supabase-konnektor eller CLI-login) og skrivetilladelse til GitHub-repoet. Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
+Supabase-projektet ligger på Rasmus' private konto. Adgang sker via Supabase CLI (`brew install supabase/tap/supabase`, Rasmus kører selv `supabase login`); kør kommandoerne fra repo-roden.
+- Læse-SQL: `supabase db query "<sql>" --remote=apagcfedizgjnnuefzfo --read-only` (tilføj `--output-format json` for at parse). SQL der skriver kræver `--yes`: spørg Rasmus først.
+- Edge functions: `supabase functions deploy engine --remote=apagcfedizgjnnuefzfo`; `supabase functions download` til at sammenligne med repoet.
+- `supabase db dump` kræver Docker, som ikke er installeret; brug `scripts/schema_snapshot.sh` i stedet.
+- Kontoen har også projektet "Lottes PlexPlan": rør det aldrig.
+- GitHub Actions kører `./tests/run.sh` ved hvert push (`.github/workflows/tests.yml`).
+
+Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.

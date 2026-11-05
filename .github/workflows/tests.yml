@@ -1,0 +1,17 @@
+name: Tests
+# Kører ./tests/run.sh ved hvert push og pull request. Rødt kryds på GitHub = noget er gået i stykker.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: ./tests/run.sh
