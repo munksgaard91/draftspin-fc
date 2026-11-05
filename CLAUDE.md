@@ -1,0 +1,49 @@
+# PL Draft: arbejdsnoter til Claude
+
+Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: den nye Claude skal kunne køre videre uden at spørge om det grundlæggende. Læs også `README.md` (beslutninger og testgenveje) og `engine/SPEC.md` (motorens regler).
+
+## Sprog og stil
+
+- Rasmus skriver dansk; svar på dansk. Selve appen er på engelsk.
+- Hold svarene korte: besvar hans spørgsmål først, rapportér kun det han selv skal gøre og det vi har lært. Ingen lange succesopsummeringer.
+- Beslutninger til ham: en simpel nummereret liste, ét konkret ja/nej-spørgsmål pr. punkt, uden baggrund.
+- Nævn ikke hver gang, at noget ikke er set på hans telefon.
+- Efter synlige UI-ændringer: tag selv et screenshot (390×844) i en lokal kopi og send det, i stedet for at bede ham åbne appen.
+
+## Arkitektur
+
+- `index.html`: hele klienten i én fil. Hostes på GitHub Pages (`munksgaard91/draftspin-fc`, branch `main`). `sw.js` er service worker; hæv `CACHE` (`dsfc-shell-vNN`) ved hver klientændring, ellers ser telefonerne den gamle version.
+- Supabase-projekt `apagcfedizgjnnuefzfo` (Postgres, anonym login, RPC'er, edge function `engine`). Kampmotoren kører på serveren: `supabase/functions/engine/engine.js` (ren simulation) og `index.ts` (handlinger, fx afspilning af runder og interaktive straffe).
+- `supabase/migrations/`: databasens opbygning, nummereret 001-066 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre.
+- `data/` og `scripts/`: spillerdata og lokale hjælpescripts.
+
+## Versionsnummer
+
+`<meta name="app-version" content="0.5.3.69 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+
+## Motoren
+
+- `ENGINE_VERSION` i `engine.js` (nu 1.14). Hver ændring af motoren ændrer fingeraftrykket.
+- Ændres motoren med vilje: opdatér fingeraftryk og simulationshash i `tests/engine_test.ts` og i `engine/SPEC.md`, tilføj en kort sektion i `SPEC.md`/README.
+- Kør alle tests: `./tests/run.sh` (kræver `deno`). De skal være grønne før commit.
+- Deploy af edge function: udgiv både `engine.js` og `index.ts` som fulde filer (Supabase-konnektoren `deploy_edge_function` eller Supabase CLI). Verificér bagefter med `action: "hash"` (kræver en gyldig bruger-token; en anonym tilmelding mod `/auth/v1/signup` med projektets publishable key giver en) og sammenlign med fingeraftrykket fra testene. Repo og udgivet kode skal være identiske.
+- Straffespark (v1.14): i menneskekampe (ikke Quick) gemmes straffe som `pending` med et tilfældigt foreløbigt udfald; serverhandlingen `pen` afgør dem med spillerens valg. Se `penInfo`/`penResult` og `resolvePen`.
+
+## Test uden at vente
+
+- Skjult testspil: tryk 5× på logoet (`.startlogo`), vælg Quick game (`[data-tm=quick]`) eller Draft only (`[data-tm=draft]`). Mere i README, afsnittet om test-noter.
+- Vent aldrig på en hel sæson: sæt `localStorage dsfc-testskipsim`=1 i testspillet; `dsfc-testpos` (1-20) flytter holdet i slutskærmens tabel.
+- Lokal server: `python3 -m http.server 8123` i repo-mappen (browser-preview via `.claude/launch.json`).
+- Ryd ikke localStorage og slet ikke testbrugere, mens siden kører (giver 401 / "permission denied for function create_game"); genindlæs først.
+- Registrér hvert testspil i `scripts/testids.json`. Slet bagefter dine egne testspil (først `hof_*`, så `games`) og anonyme testbrugere (`is_anonymous`), verificér antal før/efter. Rør aldrig Rasmus' egne spil eller Hall of Fame-rækker; hans konto har et spil kaldet "Test" (id 523de12e…) og et spil f303deb9-5205-4387-8143-7a65208175b8, som må blive.
+
+## Åbne punkter (ikke påbegyndt, start ikke uden besked)
+
+- Brugere/login og statistik pr. bruger (inkl. "Flest nedrykninger"); i dag er alle anonyme.
+- Mere realistiske klubemblemer; spillerbilleder (facepacks); pokaler/cup; ⚽/❌ i Match facts; nyt logo/navn; manager i draften; karakterer pr. spiller pr. kamp; redesign af målanimationen; færre emojis.
+- Evt. loft på 2 straffe pr. hold pr. kamp (motor 1.15): Rasmus har ikke svaret endnu.
+- To-spiller-straffeflowet (modstander venter via `penWatch`) er ikke testet med to rigtige enheder.
+
+## Adgang
+
+Supabase-projektet ligger på Rasmus' private konto. Den nye Claude skal have adgang dertil (Supabase-konnektor eller CLI-login) og skrivetilladelse til GitHub-repoet. Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
