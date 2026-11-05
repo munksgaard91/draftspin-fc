@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.6.2 (beta)">
+<meta name="app-version" content="0.5.7.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -260,6 +260,12 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .slot .dot.fc{width:40px;height:40px;overflow:hidden;background:#1b1530;border:2px solid var(--me2);padding:0}
 .dot .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px}
 .dot .rf.nf{background:var(--silh) center/contain no-repeat}
+.slot .pb{position:absolute;top:18px;display:flex;align-items:center;gap:2px;height:16px;padding:0 4px 0 3px;border-radius:99px;background:#1b1530;border:1px solid #ffffff3d;font:500 10px/1 var(--mono);color:#fff;z-index:2}
+.slot.fcs .pb{top:26px}
+.slot .pb.pa{left:-6px}
+.slot .pb.pg{right:-6px}
+.slot .pb svg{width:10px;height:10px;display:block}
+.slot .nm i{font-style:normal;color:#ffffffa6;margin-right:3px}
 .slot .nm{font-size:10px;margin-top:2px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;text-shadow:0 1px 2px #0008}
 .pitch.mini .slot{width:10px}
 .pitch.mini .dot{width:9px;height:9px;border-width:0;background:#ffffffb0}
@@ -1065,7 +1071,9 @@ function renderPitch(el,form,squad,mini,hl,alt){
       else if(c===2)left=PAIR[pos][k-1];
       else left=28+(k-1)*22;
       var top=PY[pos];
-      html+='<div class="slot'+(p?" f":"")+(p&&p.sv?" sv":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot'+(p&&p.fa&&!mini?" fc":"")+'">'+(p&&p.fa&&!mini?faceImg(p.fa):(mini?"":POSC[pos]))+'</div>'+(p&&!mini?'<div class="nm">'+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
+      var fcs=p&&p.fa&&!mini,bd="";
+      if(p&&!mini){if(p.a)bd+='<span class="pb pa" title="Assists">'+ICO_BOOT+p.a+'</span>';if(p.g)bd+='<span class="pb pg" title="Goals">'+ICO_BALL+p.g+'</span>'}
+      html+='<div class="slot'+(fcs?" fcs":"")+(p?" f":"")+(p&&p.sv?" sv":"")+(hl&&hl.indexOf(idx)>-1?" hl"+(alt&&alt.indexOf(idx)>-1?" alt":""):"")+'" data-i="'+idx+'" style="left:'+left+'%;top:'+top+'%"><div class="dot'+(p&&p.fa&&!mini?" fc":"")+'">'+(p&&p.fa&&!mini?faceImg(p.fa):(mini?"":POSC[pos]))+'</div>'+bd+(p&&!mini?'<div class="nm">'+(p.no?'<i>'+esc(p.no)+'</i>':'')+esc(p.sn||lastName(p.name))+'</div>':'')+'</div>';
       idx++;
     });
   });
@@ -1406,7 +1414,7 @@ function startMatch(){
   function showXg(mn,fin){if(!xp)return;$("xm").textContent=xgAt(xp.m,mn,fin);$("xo").textContent=xgAt(xp.o,mn,fin)}
   showXg(0);
   setScore($("sh"),0);setScore($("sa"),0);$("tl").innerHTML="";$("myC").innerHTML=hcrest("me",34);
-  $("skipBtn").disabled=false;NET.liveMin=0;liveOthers();
+  $("skipBtn").disabled=false;NET.liveMin=0;liveOthers();if(!$("msquad").hidden)renderMySquad();
   function tick(){
     var now=Date.now();if(penBusy){last=now;return}if(!skip&&holdUntil&&now<holdUntil){last=now;return}acc+=(now-last)*(FIXSPD||SPEED)*(DEMO&&DEMO.spd||1);last=now;var el=skip?TOTAL:acc,m=Math.min(MIN,Math.floor(el/TOTAL*MIN));
     while(shown<sc.length&&sc[shown].m<=m){
@@ -1416,7 +1424,7 @@ function startMatch(){
       if(e.t==="goal"){if(e.s==="me")h++;else a++;setScore($("sh"),h,!skip);setScore($("sa"),a,!skip);buzz();if(!skip){goalFill(e.s==="me"?NET.uid:opp0,(e.s==="me")===(NET.myHome!==false));holdUntil=Date.now()+1850;tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");break}}
       tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
-    if(m!==NET.liveMin){NET.liveMin=m;liveOthers()}showXg(m,m>=MIN||skip);
+    if(m!==NET.liveMin){NET.liveMin=m;liveOthers();if(!$("msquad").hidden)renderMySquad()}showXg(m,m>=MIN||skip);
     var fm=Math.min(MIN,el/TOTAL*MIN),fmm=Math.floor(fm);
     $("clk").textContent=m>=MIN?"Finished":(fm<=90?(fmm<10?"0":"")+fmm+":"+(Math.floor((fm-fmm)*60)<10?"0":"")+Math.floor((fm-fmm)*60):"90+"+(fmm-90)+"'");
     if(m>=MIN&&shown>=sc.length)finishMatch();
@@ -1427,11 +1435,27 @@ function startMatch(){
   $("skipBtn").onclick=function(){skip=true;tick()};
   $("tl").onanimationend=function(e){if(e.target.classList)e.target.classList.remove("fade")};
 }
+var ICO_BALL='<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="#fff"/><path d="M8 5.2l2.4 1.7-.9 2.8H6.5l-.9-2.8z" fill="#1b1530"/><path d="M8 1.4v3.8M10.4 6.9l3.5-1.2M9.5 9.7l2.2 3M6.5 9.7l-2.2 3M5.6 6.9L2.1 5.7" stroke="#1b1530" stroke-width="1.1"/></svg>';
+var ICO_BOOT='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 5.5h4.2l1 2.3c1.6.4 4.6 1.1 6.1 2 .8.5.9 1.6.2 2.2H2.6A.9.9 0 0 1 1.7 11z" fill="#fff"/><path d="M3.4 12v1.6M6 12v1.6M8.6 12v1.6M11.2 12v1.6" stroke="#fff" stroke-width="1.2"/></svg>';
+/* "Your team": sæsonens mål og assists for mine spillere, inkl. den igangværende kamp op til det viste minut */
+function mySeasonGA(){
+  var st={},s=NET.season;if(!s)return st;
+  var r=NET.round,cur=liveMyMatch(r),full=myDone(r),mn=NET.liveMin==null?-1:NET.liveMin,side={};
+  s.matches.forEach(function(m){if(m.played&&m.round<=r&&(m.home_key===NET.uid||m.away_key===NET.uid))side[m.id]=m.home_key===NET.uid?"h":"a"});
+  s.events.forEach(function(e){
+    if(e.type!=="goal"||e.detail==="og"||side[e.match_id]!==e.team)return;
+    if(cur&&e.match_id===cur.id&&!full&&e.minute>mn)return;
+    if(e.player_id)(st[e.player_id]=st[e.player_id]||{g:0,a:0}).g++;
+    if(e.assist_id)(st[e.assist_id]=st[e.assist_id]||{g:0,a:0}).a++;
+  });
+  return st;
+}
 function renderMySquad(){
   var form,sq;
   if(NET.season&&NET.season.teams[NET.uid]){
     form=NET.season.teams[NET.uid].formation;
-    sq=(NET.season.lineups[NET.uid]||[]).map(function(pid){var i=NET.byId[pid];return i?{name:i.p[0],sn:i.p[6]||"",pos:i.p[1]}:null});
+    var ga=mySeasonGA();
+    sq=(NET.season.lineups[NET.uid]||[]).map(function(pid){var i=NET.byId[pid],x=ga[pid]||{};return i?{name:i.p[0],sn:i.p[6]||"",pos:i.p[1],fa:i.p[7]?i.p:null,no:i.p[2]||"",g:x.g||0,a:x.a||0}:null});
   }else{form=S.form;sq=S.squad}
   if(!FORMS[form])return;
   renderPitch($("mpitch"),form,sq,false);
@@ -2390,7 +2414,7 @@ function liveFinishMatch(){
   NET.finishedRound=r;
   var me0=NET.players.filter(function(p){return p.user_id===NET.uid})[0];if(me0)me0.done_round=Math.max(me0.done_round||0,r);
   NET.sb.rpc("match_done",{p_game:NET.gid,p_round:r}).then(function(){liveChanged()},function(){});
-  NET.liveMin=99;if(allDone(r))NET.shownRound=r;liveOthers();
+  NET.liveMin=99;if(allDone(r))NET.shownRound=r;liveOthers();if(!$("msquad").hidden)renderMySquad();
   $("skipBtn").disabled=true;
   var me=NET.players.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var rb=$("readyBtn");
