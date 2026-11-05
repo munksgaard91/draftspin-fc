@@ -1,16 +1,16 @@
 // Service worker: gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v89";
+var CACHE = "dsfc-shell-v90";
 var FACES = "dsfc-faces-v1"; // spillerbilleder, hentes af siden ved første start (se preloadFaces i index.html)
 var SCOPE = self.registration.scope;
-var LIB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
 var BADGES = "ARS AVL BOU BRE BHA CHE COV CRY EVE FUL HUL IPS LEE LIV MCI MUN NEW NFO SUN TOT".split(" ");
-var SHELL = [SCOPE, SCOPE + "manifest.webmanifest", SCOPE + "icons/icon-192.png", SCOPE + "icons/icon-180.png", SCOPE + "favicon.png", SCOPE + "badges/pl-logo.svg"].concat(BADGES.map(function (c) { return SCOPE + "badges/" + c + ".png"; }));
+var SHELL = [SCOPE + "vendor/supabase-2.45.4.min.js", SCOPE + "manifest.webmanifest", SCOPE + "icons/icon-192.png", SCOPE + "icons/icon-180.png", SCOPE + "favicon.png", SCOPE + "badges/pl-logo.svg"].concat(BADGES.map(function (c) { return SCOPE + "badges/" + c + ".png"; }));
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {
-    var jobs = SHELL.map(function (u) { return c.add(u).catch(function () {}); });
-    jobs.push(fetch(LIB, { mode: "no-cors" }).then(function (r) { return c.put(LIB, r); }).catch(function () {}));
-    return Promise.all(jobs);
+    // selve siden og Supabase-biblioteket SKAL caches, ellers fejler installationen, og den gamle version bliver (så appen altid kan åbne offline)
+    var must = c.addAll([SCOPE, SCOPE + "vendor/supabase-2.45.4.min.js"]);
+    var rest = SHELL.map(function (u) { return c.add(u).catch(function () {}); });
+    return Promise.all([must].concat(rest));
   }).then(function () { return self.skipWaiting(); }));
 });
 self.addEventListener("activate", function (e) {
@@ -31,17 +31,18 @@ function networkFirst(req) {
   return caches.open(CACHE).then(function (c) {
     return new Promise(function (resolve) {
       var done = false;
-      function fallback() {
-        c.match(key).then(function (hit) { if (!done) { done = true; resolve(hit || Response.error()); } });
+      // efter fristen: brug det gemte, hvis det findes; ellers vent videre på nettet (en langsom forbindelse må ikke give en fejlside)
+      function fallback(final) {
+        c.match(key).then(function (hit) { if (!done && (hit || final)) { done = true; resolve(hit || Response.error()); } });
       }
       // en bevidst opdatering (?u=) må vente længere på nettet, ellers får brugeren den gamle side igen
       var wait = new URL(req.url).searchParams.has("u") ? 10000 : 3000;
-      var timer = setTimeout(function () { if (!done) fallback(); }, wait);
+      var timer = setTimeout(function () { if (!done) fallback(false); }, wait);
       fetch(req).then(function (r) {
         clearTimeout(timer);
         if (r && r.ok) { c.put(key, r.clone()); }
         if (!done) { done = true; resolve(r); }
-      }, function () { clearTimeout(timer); fallback(); });
+      }, function () { clearTimeout(timer); fallback(true); });
     });
   });
 }

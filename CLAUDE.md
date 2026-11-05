@@ -12,6 +12,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Arkitektur
 
+- `vendor/supabase-2.45.4.min.js`: supabase-js, kopieret fra npm-pakken (integritet tjekket mod npm-registret). Opdateres ved at lægge en ny fil og rette navnet i både `index.html` og `sw.js`.
 - `index.html`: hele klienten i én fil. Hostes på GitHub Pages (`munksgaard91/draftspin-fc`, branch `main`). `sw.js` er service worker; hæv `CACHE` (`dsfc-shell-vNN`) ved hver klientændring, ellers ser telefonerne den gamle version.
 - Supabase-projekt `apagcfedizgjnnuefzfo` (Postgres, anonym login, RPC'er, edge function `engine`). Kampmotoren kører på serveren: `supabase/functions/engine/engine.js` (ren simulation) og `index.ts` (handlinger, fx afspilning af runder og interaktive straffe).
 - `supabase/migrations/`: databasens historik, nummereret 001-068 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
@@ -20,7 +21,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.5.4.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.5.5.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 
 ## Motoren
 
@@ -37,6 +38,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 - Skjult testspil: tryk 5× på logoet (`.startlogo`), vælg Quick game (`[data-tm=quick]`) eller Draft only (`[data-tm=draft]`). Mere i README, afsnittet om test-noter.
 - Vent aldrig på en hel sæson: sæt `localStorage dsfc-testskipsim`=1 i testspillet; `dsfc-testpos` (1-20) flytter holdet i slutskærmens tabel.
 - Lokal server: `python3 -m http.server 8123` i repo-mappen (browser-preview via `.claude/launch.json`).
+- Browser-panelet kan ikke registrere service workers på localhost (selv en tom fejler); test `sw.js` på den udgivne side eller i et lille Deno-testmiljø.
 - Ryd ikke localStorage og slet ikke testbrugere, mens siden kører (giver 401 / "permission denied for function create_game"); genindlæs først.
 - Registrér hvert testspil i `scripts/testids.json`. Slet bagefter dine egne testspil (først `hof_*`, så `games`) og anonyme testbrugere (`is_anonymous`), verificér antal før/efter. Rør aldrig Rasmus' egne spil eller Hall of Fame-rækker; hans konto har et spil kaldet "Test" (id 523de12e…) og et spil f303deb9-5205-4387-8143-7a65208175b8, som må blive.
 

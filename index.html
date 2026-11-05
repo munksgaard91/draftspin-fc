@@ -2,14 +2,14 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.4.0 (beta)">
+<meta name="app-version" content="0.5.5.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PL Draft">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="manifest" href="manifest.webmanifest">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="vendor/supabase-2.45.4.min.js"></script>
 <link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
@@ -874,7 +874,10 @@ var S,P,F,G,role="admin",simT=[],draftT=[],timer=null,readyTimers=[],readySt,sta
 
 function $(id){return document.getElementById(id)}
 function ordinal(n){var v=n%100,x=["th","st","nd","rd"];return n+(x[(v-20)%10]||x[v]||x[0])}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+/* farver fra andre spillere bruges i style-attributter: kun gyldige #rrggbb slipper igennem (serveren tjekker også) */
+function hexOk(c){return typeof c==="string"&&/^#[0-9a-fA-F]{6}$/.test(c)}
+function safeCols(o){if(o){if(!hexOk(o.color1))o.color1=null;if(!hexOk(o.color2))o.color2=null}return o}
 function logo(px){
   return '<svg width="'+px+'" height="'+px+'" viewBox="0 0 48 48" aria-hidden="true">'+
    '<rect x="3" y="6" width="34" height="36" rx="6" style="fill:var(--surf2)"/>'+
@@ -1293,9 +1296,6 @@ function renderSqTabs(){
 $("sqTabs").addEventListener("click",function(e){var b=e.target.closest("[data-v]");if(b){S.view=b.dataset.v;renderDraft()}});
 
 /* ---------- kamp ---------- */
-function script(){
-  return liveScript();
-}
 function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
 function mEnd(m){return 90+((m&&m.added_time)||4)}
 function evRow(e,hs,as){
@@ -1312,20 +1312,9 @@ function evRow(e,hs,as){
   else txt='<b>'+(named?esc(e.x):(e.t==="y"?"Yellow card":"Red card"))+'</b>'+(e.a==="2nd yellow"?'<small>Second yellow</small>':'');
   return '<div class="ev '+(home?"hm":"aw")+' fade"><span class="m">'+min+'</span>'+ic+'<div class="et">'+txt+'</div></div>';
 }
-function showOthers(done){
-  liveOthers(done);return
-}
-function renderReady(){
-  liveReady();return
-}
 (function(){var rb=$("readyBtn"),f=function(){rb.classList.toggle("go",/^Next match/.test(rb.textContent))};new MutationObserver(f).observe(rb,{childList:true,characterData:true,subtree:true});f()})();
-$("readyBtn").addEventListener("click",function(){
-  liveReadyPress();return
-});
-function finishMatch(){
-  clearInterval(timer);timer=null;
-  liveFinishMatch();return
-}
+$("readyBtn").addEventListener("click",liveReadyPress);
+function finishMatch(){clearInterval(timer);timer=null;liveFinishMatch()}
 var SPEED=1;
 $("spdBtn").addEventListener("click",function(){var SP=[0.5,1,2,3];SPEED=SP[(SP.indexOf(SPEED)+1)%SP.length];$("spdBtn").textContent=(SPEED===0.5?"0.5":SPEED)+"x"});
 /* classic: første kamp venter på, at alle har trykket Klar */
@@ -1389,10 +1378,10 @@ function startMatch(){
   clearInterval(timer);readyTimers.forEach(clearTimeout);readyTimers=[];
   if(gateOn()){liveMatchHeader();setScore($("sh"),0);setScore($("sa"),0);$("xm").textContent=$("xo").textContent="0.00";$("tl").innerHTML="";$("clk").textContent="Kick off";renderGate();return}
   if(S.gate)hideGate();
-  readySt={me:false};renderReady();
+  readySt={me:false};liveReady();
   liveMatchHeader();
   $("readyBtn").disabled=true;$("readyBtn").textContent="Next match";
-  var sc=script(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false,holdUntil=0,penBusy=false;
+  var sc=liveScript(),h=0,a=0,shown=0,acc=0,last=Date.now(),TOTAL=26000,MIN=94,tl=[],skip=false,holdUntil=0,penBusy=false;
   /* multiplayer: fast hastighed for alle (Human v AI / Human v Human), ingen Replay, hastighed eller Skip */
   var G0=NET.game,multi=!!G0&&G0.max_players>1,mm0=liveMyMatch(NET.round),opp0=mm0?(mm0.home_key===NET.uid?mm0.away_key:mm0.home_key):null;MIN=mm0?mEnd(mm0):94;
   var FIXSPD=multi?(lhuman(opp0)?+G0.speed_hh:+G0.speed_ai)||1:0;
@@ -1413,7 +1402,7 @@ function startMatch(){
       if(e.t==="goal"){if(e.s==="me")h++;else a++;setScore($("sh"),h,!skip);setScore($("sa"),a,!skip);buzz();if(!skip){goalFill(e.s==="me"?NET.uid:opp0,(e.s==="me")===(NET.myHome!==false));holdUntil=Date.now()+1850;tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");break}}
       tl=tl.map(function(x){return x.replace(" fade","")});tl.unshift(evRow(e,NET.myHome!==false?h:a,NET.myHome!==false?a:h));$("tl").innerHTML=tl.join("");
     }
-    NET.liveMin=m;liveOthers();showXg(m,m>=MIN||skip);
+    if(m!==NET.liveMin){NET.liveMin=m;liveOthers()}showXg(m,m>=MIN||skip);
     var fm=Math.min(MIN,el/TOTAL*MIN),fmm=Math.floor(fm);
     $("clk").textContent=m>=MIN?"Finished":(fm<=90?(fmm<10?"0":"")+fmm+":"+(Math.floor((fm-fmm)*60)<10?"0":"")+Math.floor((fm-fmm)*60):"90+"+(fmm-90)+"'");
     if(m>=MIN&&shown>=sc.length)finishMatch();
@@ -1464,6 +1453,7 @@ function utag(uid,name){var p=NET.players&&NET.players.filter(function(x){return
 function initials(n){var w=String(n).trim().split(/\s+/).filter(Boolean);var r=w.length>1?w.map(function(x){return x[0]}).join(""):String(n).trim().slice(0,2);return r.slice(0,3).toUpperCase()}
 function star(cx,cy,r){var p=[];for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1))}return p.join(" ")}
 function ucrest(k,c1,c2,t,px){
+  if(!hexOk(c1))c1="#3b4a6b";if(!hexOk(c2))c2="#e6ebf5";
   var id="cp"+(++CPID),SH="M50 4L90 14V50C90 74 72 90 50 97C28 90 10 74 10 50V14Z",sz=t.length>2?15:19,g="";
   function tx(y,fill,size){return '<text x="50" y="'+y+'" text-anchor="middle" style="font:700 '+(size||sz)+'px Outfit,sans-serif;fill:'+fill+'">'+esc(t)+'</text>'}
   function clip(p){return '<defs><clipPath id="'+id+'"><path d="'+p+'"/></clipPath></defs>'}
@@ -1502,7 +1492,11 @@ function nm(n){return NAMECODE[n]?crest(NAMECODE[n],16)+n:n}
 
 /* skærmen forbliver tændt, vibration ved mål, ingen lyd */
 var WL=null;
-function keepAwake(){try{if(navigator.wakeLock&&navigator.wakeLock.request)navigator.wakeLock.request("screen").then(function(l){WL=l},function(){})}catch(e){}}
+var WLreq=false;
+function keepAwake(){
+  if((WL&&!WL.released)||WLreq)return; /* der er allerede en lås (eller én på vej) */
+  try{if(navigator.wakeLock&&navigator.wakeLock.request){WLreq=true;navigator.wakeLock.request("screen").then(function(l){WL=l;WLreq=false;l.addEventListener("release",function(){if(WL===l)WL=null})},function(){WLreq=false})}}catch(e){WLreq=false}
+}
 function buzz(){try{if(navigator.vibrate)navigator.vibrate([140,70,140])}catch(e){}}
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&G&&G.started)keepAwake()});
 
@@ -1598,9 +1592,6 @@ $("endbody").addEventListener("click",function(e){
   else if(a==="copy"){var t="PL Draft, "+LNAME[F.liga||"pl"]+" "+(F.season||"2026/2027")+": "+(NET.season?(function(){var rw=standingsLive(38),i=rw.map(function(x){return x.k}).indexOf(NET.uid);return (S.team.trim()||"My team")+" finished "+ordinal(i+1)+" with "+rw[i].p+" points."})():(S.team.trim()||"My team")+" finished the season.");try{navigator.clipboard.writeText(t).then(function(){b.textContent="Copied"},function(){})}catch(x){}setTimeout(function(){b.textContent="Copy result"},1500)}
 });
 
-/* ---------- forbindelse væk og admin ude ---------- */
-
-
 /* ---------- app-ikon ---------- */
 
 
@@ -1617,11 +1608,14 @@ function cset(k,v){try{localStorage.setItem("dsfc-c-"+k,JSON.stringify(v))}catch
 function cget(k){try{var t=localStorage.getItem("dsfc-c-"+k);return t?JSON.parse(t):null}catch(e){return null}}
 function netDown(e){var m=String((e&&e.message)||e||"");return navigator.onLine===false||/fetch|network|load failed|timeout|abort/i.test(m)}
 function liveInit(){
-  NET.sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+  /* klienten oprettes kun én gang, også når opstarten prøves igen (ellers kan to klienter dele samme session-lager) */
+  if(!NET.sb)NET.sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
   NET.ready=(async function(){
     try{
       var s0=await NET.sb.auth.getSession(),sess=s0.data&&s0.data.session;
-      if(!sess){var r0=await NET.sb.auth.signInAnonymously();if(r0.error)throw r0.error;sess=r0.data.session}
+      if(!sess){
+        if(!NET.signP)NET.signP=NET.sb.auth.signInAnonymously().finally(function(){NET.signP=null});
+        var r0=await NET.signP;if(r0.error)throw r0.error;sess=r0.data.session}
       NET.uid=sess.user.id;cset("uid",NET.uid);
     }catch(e){
       var u=cget("uid");if(!u)throw e;
@@ -1632,16 +1626,19 @@ function liveInit(){
 }
 async function liveLoad(){
   if(!NET.gid)return;
-  var seq=NET.opSeq||0;
+  var seq=NET.opSeq||0,gid=NET.gid;
   try{
-    var r=await NET.sb.rpc("game_state",{p_game:NET.gid});
+    var r=await tmo(NET.sb.rpc("game_state",{p_game:gid}));
+    if(NET.gid!==gid)return; /* spillet er forladt eller skiftet, mens vi hentede */
     if(r.error)throw r.error;
     var st=r.data||{},gm=st.game||null,pls=st.players||[],pks=st.picks||[];
     /* et valg/spin er startet, mens vi hentede: de data er forældede og må ikke overskrive skærmen */
     if(NET.pending||(NET.opSeq||0)!==seq){NET.staleLoad=true;return}
+    pls.forEach(safeCols);
     NET.game=gm;NET.players=pls;NET.picks=pks;
     if(gm)cset("g",{gid:NET.gid,game:gm,players:pls,picks:pks});
   }catch(e){
+    if(NET.gid!==gid)return;
     var c=cget("g");
     if(NET.game||!c||c.gid!==NET.gid||!netDown(e))throw e;
     NET.game=c.game;NET.players=c.players;NET.picks=c.picks;NET.fromCache=true;
@@ -1650,11 +1647,12 @@ async function liveLoad(){
 function liveUnsub(){if(NET.ch){NET.sb.removeChannel(NET.ch);NET.ch=null}clearInterval(NET.poll);clearInterval(NET.hb)}
 function liveSub(){
   liveUnsub();var gid=NET.gid;
-  NET.ch=NET.sb.channel("g-"+gid)
+  var ch=NET.sb.channel("g-"+gid)
     .on("postgres_changes",{event:"*",schema:"public",table:"games",filter:"id=eq."+gid},liveChangedSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"game_players",filter:"game_id=eq."+gid},function(pl){if(!heartbeatOnly(pl))liveChangedSoon()})
-    .on("postgres_changes",{event:"*",schema:"public",table:"draft_picks",filter:"game_id=eq."+gid},liveChangedSoon)
-    .subscribe(function(status){NET.rt=status==="SUBSCRIBED"});
+    .on("postgres_changes",{event:"*",schema:"public",table:"draft_picks",filter:"game_id=eq."+gid},liveChangedSoon);
+  NET.ch=ch;
+  ch.subscribe(function(status){if(NET.ch===ch)NET.rt=status==="SUBSCRIBED"}); /* en gammel kanal, der lukkes, må ikke slå den nye fra */
   /* realtime leverer ændringerne; hentning hvert 4. sekund er kun sikkerhedsnet, og sjældnere når kanalen virker */
   var pt=0;NET.rt=false;
   NET.poll=setInterval(function(){pt++;if(!NET.rt||pt%3===0)liveChanged()},4000);
@@ -1680,8 +1678,8 @@ function liveConn(ok){
 async function liveChanged(){
   if(!NET.gid||NET.pending)return;
   if(liveBusy){liveAgain=true;return}
-  liveBusy=true;
-  try{NET.staleLoad=false;await liveLoad();if(NET.staleLoad){NET.staleLoad=false;liveAgain=true}else{liveConn(true);liveApply()}}catch(e){liveConn(false)}finally{liveBusy=false;if(liveAgain){liveAgain=false;liveChanged()}}
+  liveBusy=Date.now();var gid=NET.gid;
+  try{NET.staleLoad=false;await liveLoad();if(NET.gid!==gid)return;if(NET.staleLoad){NET.staleLoad=false;liveAgain=true}else{liveConn(true);liveApply()}}catch(e){liveConn(false)}finally{liveBusy=false;if(liveAgain){liveAgain=false;liveChanged()}}
 }
 var liveAgain=false;
 /* nulstil al tilstand fra et spil, så næste spil i samme sidesession starter rent */
@@ -1689,6 +1687,7 @@ function liveResetGame(){
   try{simClear()}catch(e){}
   NET.game=null;NET.players=[];NET.picks=[];NET.season=null;NET.seasonKey="";NET.seasonOn=false;NET.seasonBusy=false;NET.initBusy=false;
   NET.sim=null;NET.simWait=null;NET.draftOn=false;NET.lastClub=undefined;NET.lastPick=-1;NET.round=0;NET.shownRound=0;NET.myMatch=null;
+  NET.opSeq=(NET.opSeq||0)+1;NET.seasonRound=0; /* svar, der stadig er på vej fra det gamle spil, kasseres */
   NET.dsig=null;NET.pending=false;NET.endWait=false;NET.initAt=0;NET.viewSpin=false;NET.fromCache=false;S.matchSeen=false;
   S.spinning=false;S.pre=false;S.gate=false;S.endTab=null;S.endFull=false;S.spinAt=0;
   NET.finishedRound=0;NET.newsId=null;NET.newsKey=null;NET.opt=null;NET.pendP=null;NET.rulesOpen=false;NET.liveMin=-1;NET.teamBusy=false;NET.finAt=0;NET.advAt=0;NET.claimAt=0;NET.seasonErr=0;NET.lsig=null;
@@ -1700,6 +1699,7 @@ function liveLeave(msg){
   goStart();
 }
 function liveApply(){
+  if(!NET.gid)return;
   var g=NET.game;
   if(!g){liveLeave("The game no longer exists.");return}
   if(g.status==="closed"){liveLeave("The game was closed because nobody was present.");return}
@@ -1896,10 +1896,10 @@ function lname(k){var t=NET.season&&NET.season.teams[k];if(!t)return"?";return t
 function lcrest(k,px){var t=NET.season&&NET.season.teams[k];if(!t)return"";return t.kind==="ai"?crest(t.club,px):ucrest((t.crest||1)-1,t.color1||"#3b4a6b",t.color2||"#e6ebf5",utag(t.user_id,t.name),px)}
 function lhuman(k){var t=NET.season&&NET.season.teams[k];return !!t&&t.kind==="human"}
 function pname(pid){var x=NET.byId[pid];return x?x.p[0]:"Unknown"}
-async function fetchAll(table){
+async function fetchAll(table,gid){
   var rows=[];
   for(var from=0;;from+=1000){
-    var r0=await NET.sb.from(table).select("*").eq("game_id",NET.gid).order("id").range(from,from+999);
+    var r0=await tmo(NET.sb.from(table).select("*").eq("game_id",gid).order("id").range(from,from+999));
     if(r0.error)throw r0.error;rows=rows.concat(r0.data);if(r0.data.length<1000)break;
   }
   return rows;
@@ -1913,15 +1913,30 @@ async function liveSeasonLoad(){
   }
 }
 async function liveSeasonLoad0(){
-  var s0={teams:{},lineups:{},matches:[],events:[]};
-  var tm=await NET.sb.from("season_teams").select("*").eq("game_id",NET.gid);if(tm.error)throw tm.error;
+  var gid=NET.gid,s0={teams:{},lineups:{},matches:[],events:[]};
+  var tm=await tmo(NET.sb.from("season_teams").select("*").eq("game_id",gid));if(tm.error)throw tm.error;
   if(!tm.data.length)return false;
-  tm.data.forEach(function(t){s0.teams[t.team_key]=t});
-  var lu=await NET.sb.from("season_lineups").select("*").eq("game_id",NET.gid);if(lu.error)throw lu.error;
+  tm.data.forEach(function(t){s0.teams[t.team_key]=safeCols(t)});
+  var lu=await tmo(NET.sb.from("season_lineups").select("*").eq("game_id",gid));if(lu.error)throw lu.error;
   lu.data.forEach(function(l){(s0.lineups[l.team_key]=s0.lineups[l.team_key]||[])[l.slot-1]=l.player_id});
-  s0.matches=await fetchAll("matches");
-  s0.events=await fetchAll("match_events");
-  NET.season=s0;cset("s",{gid:NET.gid,season:s0});return true;
+  s0.matches=await fetchAll("matches",gid);
+  s0.events=await fetchAll("match_events",gid);
+  if(NET.gid!==gid)return false;
+  NET.season=s0;NET.othC=null;cset("s",{gid:gid,season:s0});return true;
+}
+/* klassisk spil: når runden skifter, hentes kun runderne fra r0 til den aktuelle (hold og opstillinger ændrer sig ikke i sæsonen).
+   r0 er den forrige runde, fordi oversprungne straffe derfra afgøres, når runden skifter. */
+async function liveSeasonLoadInc(r0,r1){
+  var gid=NET.gid;
+  var m=await tmo(NET.sb.from("matches").select("*").eq("game_id",gid).gte("round",r0).lte("round",r1).order("id"));if(m.error)throw m.error;
+  var ids=m.data.map(function(x){return x.id});
+  var ev=ids.length?await tmo(NET.sb.from("match_events").select("*").in("match_id",ids).order("id")):{data:[]};if(ev.error)throw ev.error;
+  if(NET.gid!==gid||!NET.season)return false;
+  var set={};ids.forEach(function(i){set[i]=1});
+  var s0=NET.season;
+  s0.matches=s0.matches.filter(function(x){return !set[x.id]}).concat(m.data).sort(function(a,b){return a.id-b.id});
+  s0.events=s0.events.filter(function(x){return !set[x.match_id]}).concat(ev.data).sort(function(a,b){return a.id-b.id});
+  NET.othC=null;cset("s",{gid:gid,season:s0});return true;
 }
 async function callEngine(action,extra){
   var body={action:action,game_id:NET.gid};if(extra)for(var k in extra)body[k]=extra[k];
@@ -1930,7 +1945,7 @@ async function callEngine(action,extra){
   return r0.data;
 }
 async function liveSeasonApply(){
-  if(NET.seasonBusy)return;NET.seasonBusy=true;
+  if(NET.seasonBusy)return;NET.seasonBusy=Date.now();var gid=NET.gid;
   try{
     await NET.pl;
     var g=NET.game,key=g.status+"|"+g.current_round,msg=function(t){var d=$("doneBox");if(d)d.innerHTML='<p class="note fade" style="margin-top:16px">'+t+'</p>'};
@@ -1945,9 +1960,12 @@ async function liveSeasonApply(){
     }
     if(quick)key=g.status+"|q";
     if(!NET.season||NET.seasonKey!==key){
-      var ok=await liveSeasonLoad();
+      /* samme status, ny runde i et klassisk spil: hent kun de nye runder. Ellers (første gang, sæsonslut, hurtigt spil) alt. */
+      var inc=!quick&&!!NET.season&&!NET.fromCache&&g.status==="season"&&(NET.seasonKey||"").split("|")[0]==="season"&&NET.seasonRound>0&&g.current_round>=NET.seasonRound;
+      var ok=inc?await liveSeasonLoadInc(Math.max(1,NET.seasonRound-1),g.current_round):await liveSeasonLoad();
+      if(NET.gid!==gid)return;
       if(!ok){liveSimWaiting("The draft is finished. The season is being simulated...");return}
-      NET.seasonKey=key;
+      NET.seasonKey=key;NET.seasonRound=g.current_round;
     }
     if(!NET.seasonOn){NET.seasonOn=true;liveSeasonStart();return}
     liveSeasonRender();NET.seasonErr=0;
@@ -2181,7 +2199,7 @@ function penClose(){var o=document.getElementById("penov");if(o)o.remove()}
 async function penRefresh(m){
   var a=await NET.sb.from("match_events").select("*").eq("match_id",m.id),b=await NET.sb.from("matches").select("*").eq("id",m.id);
   if(a.error||b.error||!b.data[0])return false;
-  NET.season.events=NET.season.events.filter(function(x){return x.match_id!==m.id}).concat(a.data);
+  NET.season.events=NET.season.events.filter(function(x){return x.match_id!==m.id}).concat(a.data);NET.othC=null;
   var mm=NET.season.matches.filter(function(x){return x.id===m.id})[0];if(mm){mm.home_goals=b.data[0].home_goals;mm.away_goals=b.data[0].away_goals}
   return true;
 }
@@ -2287,6 +2305,17 @@ function humanDone(k,r){
   var p=NET.players.filter(function(x){return x.user_id===k})[0];
   return !p||p.done_round>=r||p.ready_round>=r||lAway(p);
 }
+/* rundens mål pr. kamp, sorteret; bygges kun igen, når runden eller hændelserne ændrer sig */
+function othGoals(mid){
+  var ev=NET.season.events,k=NET.round+"|"+ev.length;
+  if(!NET.othC||NET.othC.k!==k){
+    var ids={},by={};NET.season.matches.forEach(function(m){if(m.round===NET.round)ids[m.id]=1});
+    ev.forEach(function(e){if(e.type==="goal"&&ids[e.match_id])(by[e.match_id]=by[e.match_id]||[]).push(e)});
+    for(var x in by)by[x].sort(function(a,b){return a.minute-b.minute||a.id-b.id});
+    NET.othC={k:k,by:by};
+  }
+  return NET.othC.by[mid]||[];
+}
 function otherState(m){
   var r=NET.round,mi=NET.liveMin==null?-1:NET.liveMin,hh=lhuman(m.home_key),ah=lhuman(m.away_key);
   var fin=function(){return {h:m.home_goals,a:m.away_goals,live:false}};
@@ -2297,7 +2326,7 @@ function otherState(m){
   }
   if((!hh||humanDone(m.home_key,r))&&(!ah||humanDone(m.away_key,r)))return fin();
   if(mi<0)return {h:null,a:null,live:true};
-  var evs=NET.season.events.filter(function(e){return e.match_id===m.id&&e.type==="goal"&&e.minute<=mi}).sort(function(x,y){return x.minute-y.minute||x.id-y.id});
+  var evs=othGoals(m.id).filter(function(e){return e.minute<=mi});
   var total=m.home_goals+m.away_goals;if(evs.length>=total)evs=evs.slice(0,Math.max(0,total-1));
   var h=0,a=0;evs.forEach(function(e){if(e.team==="h")h++;else a++});
   return {h:h,a:a,live:true};
@@ -2572,13 +2601,16 @@ function hofTeam(id){
   renderPitch($("hpitch"),x.formation,x.lineup.map(function(p){var a=p&&NET.byName[p.n];return p?{name:p.n,sn:p.s,fa:a||null}:null}));
 }
 $("hsheet").addEventListener("click",function(e){if(e.target.closest("[data-cancel]")||e.target===$("hsheet"))$("hsheet").hidden=true});
-$("hbody").addEventListener("click",function(e){var q=e.target.closest("[data-pl]");if(q){HOFPL=q.dataset.pl;HOFCH=0;renderHofLive();return}});
-$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-rs]");if(!b)return;HOFRESP=b.dataset.rs==="all"?"all":+b.dataset.rs;HOFCH=0;renderHofLive()});
-$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-ch]");if(b)hofTeam(b.dataset.ch)});
+/* Hall of Fame: én klik-lytter for hele listen */
+$("hbody").addEventListener("click",function(e){
+  var q=e.target.closest("[data-pl]");if(q){HOFPL=q.dataset.pl;HOFCH=0;renderHofLive();return}
+  var b=e.target.closest("[data-rs]");if(b){HOFRESP=b.dataset.rs==="all"?"all":+b.dataset.rs;HOFCH=0;renderHofLive();return}
+  b=e.target.closest("[data-ch]");if(b){hofTeam(b.dataset.ch);return}
+  b=e.target.closest("[data-cm]");if(b){var k=b.parentNode.querySelector(".cblk[hidden]");if(k){k.hidden=false;HOFCH++}if(!b.parentNode.querySelector(".cblk[hidden]"))b.remove();return}
+  b=e.target.closest("[data-hx]");if(b){var m=b.previousElementSibling,o=m.hidden;m.hidden=!o;HOFOPEN[b.dataset.hx]=o;b.classList.toggle("on",o);b.textContent=o?"Hide":"Show top "+b.dataset.n;return}
+  if(e.target.closest("[data-hofback]"))goStart();
+});
 $("hbody").addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var b=e.target.closest("[data-ch]");if(b){e.preventDefault();hofTeam(b.dataset.ch)}});
-$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-cm]");if(!b)return;var k=b.parentNode.querySelector(".cblk[hidden]");if(k){k.hidden=false;HOFCH++}if(!b.parentNode.querySelector(".cblk[hidden]"))b.remove()});
-$("hbody").addEventListener("click",function(e){var b=e.target.closest("[data-hx]");if(!b)return;var m=b.previousElementSibling,o=m.hidden;m.hidden=!o;HOFOPEN[b.dataset.hx]=o;b.classList.toggle("on",o);b.textContent=o?"Hide":"Show top "+b.dataset.n});
-$("hbody").addEventListener("click",function(e){if(e.target.closest("[data-hofback]"))goStart()});
 
 /* ---------- live: draft ---------- */
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
@@ -2617,7 +2649,7 @@ function reelTo(code,done){
   draftT.push(setTimeout(function(){S.k=2*NL+t;setStrip(S.k,false);done()},fast?50:3900));
 }
 function liveDraftApply(){
-  if(!NET.plReady){NET.pl.then(liveDraftApply);return}
+  if(!NET.plReady){if(!NET.plWait){NET.plWait=true;NET.pl.then(function(){NET.plWait=false;liveDraftApply()},function(){NET.plWait=false})}return}
   liveDraftSync();
   if(!NET.draftOn){NET.draftOn=true;liveDraftStart();return}
   if(S.phase==="draft")liveDraftRender();
@@ -2690,7 +2722,7 @@ $("adminForce").addEventListener("click",function(e){
   var b=e.target.closest("[data-force]");if(!b)return;
   if(Date.now()-forceArm>3500){forceArm=Date.now();b.textContent="Tap again to confirm";return}
   forceArm=0;b.disabled=true;
-  NET.sb.rpc("claim_timeout",{p_game:NET.gid,p_force:true}).then(function(r0){if(r0.error)netErr(r0.error);liveChanged()});
+  NET.sb.rpc("claim_timeout",{p_game:NET.gid,p_force:true}).then(function(r0){if(r0.error)netErr(r0.error);liveChanged()},function(e){netErr(e)});
 });
 function liveTimerTick(){
   var g=NET.game,t=$("timerLine");if(!t)return;
@@ -2700,7 +2732,7 @@ function liveTimerTick(){
   t.className="timer"+(left<=10?" low":"");
   if(left<=-1&&Date.now()-NET.claimAt>2500){
     NET.claimAt=Date.now();
-    setTimeout(function(){NET.sb.rpc("claim_timeout",{p_game:NET.gid}).then(function(){liveChanged()})},Math.random()*1200);
+    setTimeout(function(){NET.sb.rpc("claim_timeout",{p_game:NET.gid}).then(function(){liveChanged()},function(){})},Math.random()*1200);
   }
 }
 async function liveSpin(){
@@ -2809,9 +2841,8 @@ async function liveBoot2(){
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   var pre=(new URLSearchParams(location.search).get("code")||"").length===6;
   if(!pre)goStart();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
-  try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}
+  swInit(); /* service worker registreres én gang, tidligt */
   await spRun(function(){return liveInit()},"Connecting…",30);
-  swInit();
   await spRun(function(){livePlayers();return NET.pl},"Loading players…",70);
   try{await preloadFaces()}catch(e){}
   var gid=null;try{gid=localStorage.getItem("dsfc-gid")}catch(x){}
@@ -2833,6 +2864,9 @@ function liveWake(){if(NET.gid&&!document.hidden){
   if(NET.pending&&now-(NET.pendAt||0)>16000)NET.pending=false;
   if(S.spinning&&now-(S.spinAt||0)>16000){S.spinning=false;S.pre=false;if(S.phase==="draft")renderDraft()}
   if(NET.teamBusy&&now-(NET.pendAt||now)>16000)NET.teamBusy=false;
+  /* et kald, der hang, mens appen var i baggrunden, må ikke blokere synkroniseringen for evigt */
+  if(liveBusy&&now-liveBusy>20000){liveBusy=false;liveAgain=false}
+  if(NET.seasonBusy&&now-NET.seasonBusy>45000)NET.seasonBusy=false;
   liveSub();liveChanged();if(NET.draftOn)keepAwake()}}
 /* skjult testspil: tryk 5 gange hurtigt på logoet på startskærmen */
 (function(){
@@ -2852,6 +2886,8 @@ function liveWake(){if(NET.gid&&!document.hidden){
     if(NET.creating)return;NET.creating=true;
     try{
       await NET.ready;
+      /* et tidligere spil i samme sidesession (fx forladt via Home-fanen) må ikke blande sig i testspillet */
+      if(NET.gid){liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame()}
       var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode==="draft"?"full":mode});
       if(r0.error)throw r0.error;
       NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode;
