@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.5.9.0 (beta)">
+<meta name="app-version" content="0.5.10.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -53,20 +53,21 @@
 .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
 @keyframes simd{0%,80%,100%{opacity:.25}40%{opacity:1}}
 .simrec{font-size:14.5px;color:var(--mut);margin-top:6px}
-.ehero{text-align:center;padding-top:14px}.ehero .etro{height:64px;width:auto;display:block;margin:0 auto}
-.epos{font:700 72px/1 var(--sans);letter-spacing:-.03em;margin-top:8px;background:linear-gradient(180deg,#fff,#cdbdf0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ehero{text-align:center;padding-top:2px}.ehero .etro{height:64px;width:auto;display:block;margin:0 auto}
+.epos{font:700 62px/1 var(--sans);letter-spacing:-.03em;margin-top:6px;background:linear-gradient(180deg,#fff,#cdbdf0);-webkit-background-clip:text;background-clip:text;color:transparent}
 .epos sup{font-size:30px;vertical-align:top;position:relative;top:8px}
 .simdone.egold .epos{background-image:linear-gradient(180deg,#ffe9a3,#f5c542)}
 .eteam{font-size:18px;font-weight:600;margin:2px 0 0}
 .ebadge{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 14px;border-radius:99px;background:#ffffff10;border:1px solid #ffffff22;font-size:13.5px;font-weight:600}
 .ebadge img{width:22px;height:22px;object-fit:contain;margin-left:-6px}
 .ebadge.gold{background:#f5c54222;border-color:#f5c54266;color:#ffe9a3}.ebadge.down{background:#f0245f22;border-color:#f0245f55}
-.ekpi{display:grid;grid-template-columns:repeat(3,1fr);margin-top:14px;padding:0}
+.ekpi{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;padding:0}
 .ekpi div{text-align:center;padding:8px 4px}.ekpi div+div{border-left:1px solid var(--line)}
 .ekpi b{display:block;font:500 19px var(--mono)}.ekpi span{font-size:11.5px;color:var(--mut)}
 .etbl{margin-top:10px;padding:4px 10px}.etbl .tr:last-child{border-bottom:0}
-.etops{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.etop{margin:0;padding:10px 12px;line-height:1.3;min-width:0}.etop small{display:block;font-size:11.5px;color:var(--mut)}.etop b{display:block;font-size:14px;font-weight:600;margin-top:2px;line-height:1.2}.etop span{font:500 13px var(--mono);color:var(--acc)}
+.etops{margin-top:10px;padding:2px 14px}
+.etop{display:flex;align-items:center;gap:12px;padding:6px 0;line-height:1.25}.etop+.etop{border-top:1px solid var(--line)}
+.etop .etn{flex:1;min-width:0}.etop small{display:block;font-size:11.5px;color:var(--mut)}.etop b{display:block;font-size:14.5px;font-weight:600}.etop .etv{font:500 13px var(--mono);color:var(--acc);white-space:nowrap}
 #sumlist .sumrow{margin-top:8px;padding:11px 14px;background:var(--surf);border:1px solid var(--line);border-radius:16px}
 .wprog{margin-top:10px;padding:14px 16px}
 .wtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.wtop b{font:500 26px var(--mono)}.wtop span{color:var(--mut);font-size:13px;text-align:right}
@@ -564,6 +565,10 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .hcat>.hrow{border-bottom:0}
 .hcat>.hmore:not([hidden]){border-top:1px solid var(--line)}
 .hmore[hidden],.cblk[hidden]{display:none}
+.hfilt{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px;row-gap:8px;margin:6px 0 4px}
+.hfilt .hfl{font-size:13px;color:var(--mut)}
+.hfilt .seg.hseg2{margin:0;gap:0;display:grid;grid-template-columns:repeat(var(--n),1fr)}
+.hfilt .seg.hseg2 button{min-width:0;padding-left:0;padding-right:0}
 .hfil{display:flex;align-items:center;gap:12px;margin:6px 0 2px}
 .hfil .hfl{font-size:13px;color:var(--mut)}
 .hfil .seg{margin:0;flex:1}
@@ -716,8 +721,8 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .champ .lblm svg{filter:drop-shadow(0 0 8px #e4c47a99)}
 .endrow{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .endrow:last-child{border:0}
-.endrow .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px;border-radius:50%}
-.endrow .rf.nf{background:var(--silh) center/contain no-repeat}
+.etop .rf,.endrow .rf{flex:none;width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px;border-radius:50%}
+.etop .rf.nf,.endrow .rf.nf{background:var(--silh) center/contain no-repeat}
 .endrow .hk{font:500 14.5px var(--mono);color:var(--mut);text-align:center}
 .endrow .en{display:flex;align-items:center;gap:10px;font-weight:500}
 .endrow small{display:block;color:var(--mut);font-size:13px;font-weight:400}
@@ -2152,11 +2157,11 @@ function liveSimDone(lbl){
     tb+='<div class="tr'+(mine?" mine":"")+(fr?" friend":"")+zone(i)+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+lcrest(r1.k,18)+'<span>'+esc(lname(r1.k))+'</span></span><span class="num">'+(r1.w+r1.d+r1.l)+'</span><span class="num">'+r1.w+'</span><span class="num">'+r1.d+'</span><span class="num">'+r1.l+'</span><span class="num">'+(r1.gd>0?"+":"")+r1.gd+'</span><span class="pts">'+r1.p+'</span></div>'});
   var st=liveStatMaps(),topOf=function(map){var b=null;Object.keys(map).forEach(function(p){if(st.owner[p]!==NET.uid)return;if(!b||map[p]>map[b])b=p});return b};
   var tg=topOf(st.g),ta=topOf(st.a);
-  var tbox=function(lbl,pid,map,unit){return '<div class="card etop"><small>'+lbl+'</small><b>'+(pid?esc(pname(pid)):"–")+'</b><span>'+(pid?pl(map[pid],unit):"&nbsp;")+'</span></div>'};
+  var trow=function(lbl,pid,map,unit){var pi=pid&&NET.byId[pid];return '<div class="etop">'+(pi?faceImg(pi.p):'<span class="rf nf"></span>')+'<div class="etn"><small>'+lbl+'</small><b>'+(pid?esc(pname(pid)):"–")+'</b></div><span class="etv">'+(pid?pl(map[pid],unit):"")+'</span></div>'};
   var h='<div class="ehero">'+(mi===0?'<img class="etro" src="badges/pl-trophy.png" alt="">':lcrest(NET.uid,64))+'<div class="epos">'+pos+'<sup>'+suf+'</sup></div><p class="eteam">'+esc(lname(NET.uid))+'</p>'+badge+'</div>'+
     '<div class="card ekpi"><div><b>'+me.p+'</b><span>Points</span></div><div><b>'+me.w+'-'+me.d+'-'+me.l+'</b><span>W-D-L</span></div><div><b>'+(gd>0?"+":"")+gd+'</b><span>Goal diff.</span></div></div>'+
     '<div class="card etbl">'+tb+'</div>'+
-    '<div class="etops">'+tbox("⚽ Top scorer",tg,st.g,"goal")+tbox("👟 Top assists",ta,st.a,"assist")+'</div>'+
+    '<div class="card etops">'+trow("⚽ Top scorer",tg,st.g,"goal")+trow("👟 Top assists",ta,st.a,"assist")+'</div>'+
     '<div id="sumlist"></div>'+
     '<button class="btn p wide go" data-act="simend" style="margin-top:16px">'+"See the final table"+'</button>';
   $("simbody").innerHTML='<div class="simdone'+(mi===0?" egold":"")+'">'+h+'</div>';
@@ -2613,10 +2618,10 @@ var CATI=Object.assign({"Champions":'<img src="badges/pl-trophy.png" alt="" widt
 function medal(i,em){if(em==="cup"&&i<3)return '<span class="md cup">'+CUP+'</span>';return i<3?'<span class="md">'+(i===0&&em?em:['🏆','🥈','🥉'][i])+'</span>':i+1}
 async function renderHofLive(){
   HOFTAB="pl";$("hseg").hidden=true;
-  if(!(HOFC&&HOFC.k===String(HOFRESP)+"|"+HOFPL&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
-  var pr,tr,hk=String(HOFRESP)+"|"+HOFPL;
+  if(!(HOFC&&HOFC.k===String(HOFRESP)+"|"+HOFPL+"|"+HOFMODE&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
+  var pr,tr,hk=String(HOFRESP)+"|"+HOFPL+"|"+HOFMODE;
   if(HOFC&&HOFC.k===hk&&Date.now()-HOFC.at<60000){pr=HOFC.pr;tr=HOFC.tr}
-  else{var rp=HOFRESP==="all"?null:HOFRESP;var pq=HOFPLR[HOFPL]||[null,null],ar={p_resp:rp,p_pmin:pq[0],p_pmax:pq[1]};pr=await NET.sb.rpc("hof_players_top",ar);tr=await NET.sb.rpc("hof_teams_top",ar);if(!pr.error&&!tr.error)HOFC={at:Date.now(),k:hk,pr:pr,tr:tr}}
+  else{var rp=HOFRESP==="all"?null:HOFRESP;var pq=HOFPLR[HOFPL]||[null,null],ar={p_resp:rp,p_pmin:pq[0],p_pmax:pq[1]};if(HOFMODE!=="all")ar.p_pace=HOFMODE;pr=await NET.sb.rpc("hof_players_top",ar);tr=await NET.sb.rpc("hof_teams_top",ar);if(!pr.error&&!tr.error)HOFC={at:Date.now(),k:hk,pr:pr,tr:tr}}
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
   var P=pr.data||[],T=tr.data||[];
   var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
@@ -2661,10 +2666,11 @@ async function renderHofLive(){
   C.push(["Champions",'<div class="card hcat"><h3><span class="ci">'+CATI["Champions"]+'</span>Champions</h3>'+cb+'</div>']);
   var ORD=["Champions","Most goals","Most assists","Most clean sheets","Most yellow cards","Most red cards","Most goals in a match","Longest winning streak","Most points in a season","Most team goals in a season","Fewest goals conceded","Best goal difference","Biggest win"];
   C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
-  var fl='<div class="hfil"><span class="hfl">Respins</span><div class="seg" id="hresp">'+["all",0,1,2,3].map(function(v){return '<button data-rs="'+v+'" class="'+(v===HOFRESP?"on":"")+'">'+(v==="all"?"All":v)+'</button>'}).join("")+'</div></div><div class="hfil"><span class="hfl">Players in game</span><div class="seg" id="hpl">'+["all","1","2","3","4","5"].map(function(v){return '<button data-pl="'+v+'" class="'+(v===HOFPL?"on":"")+'">'+(v==="all"?"All":v==="5"?"5+":v)+'</button>'}).join("")+'</div></div>';
+  var frow=function(lbl,attr,cur,opts){return '<span class="hfl">'+lbl+'</span><div class="seg hseg2" style="--n:'+opts.length+'">'+opts.map(function(o){return '<button '+attr+'="'+o[0]+'" class="'+(String(o[0])===String(cur)?"on":"")+'">'+o[1]+'</button>'}).join("")+'</div>'};
+  var fl='<div class="hfilt">'+frow("Game mode","data-hm",HOFMODE,[["all","All"],["full","Classic"],["quick","Quick"]])+frow("Respins","data-rs",HOFRESP,[["all","All"],[0,0],[1,1],[2,2],[3,3]])+frow("Players","data-pl",HOFPL,[["all","All"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5+"]])+'</div>';
   $("hbody").innerHTML=fl+C.map(function(c){return c[1]}).join("");
 }
-var HOFOPEN={},HOFCH=0,HOFW={},HOFRESP="all",HOFPL="all";
+var HOFOPEN={},HOFCH=0,HOFW={},HOFRESP="all",HOFPL="all",HOFMODE="all";
 var HOFPLR={all:[null,null],"1":[1,1],"2":[2,2],"3":[3,3],"4":[4,4],"5":[5,null]};
 function hofTeam(id){
   var x=HOFW[id];if(!x||!x.lineup)return;
@@ -2676,6 +2682,7 @@ function hofTeam(id){
 $("hsheet").addEventListener("click",function(e){if(e.target.closest("[data-cancel]")||e.target===$("hsheet"))$("hsheet").hidden=true});
 /* Hall of Fame: én klik-lytter for hele listen */
 $("hbody").addEventListener("click",function(e){
+  var hm=e.target.closest("[data-hm]");if(hm){HOFMODE=hm.dataset.hm;HOFCH=0;renderHofLive();return}
   var q=e.target.closest("[data-pl]");if(q){HOFPL=q.dataset.pl;HOFCH=0;renderHofLive();return}
   var b=e.target.closest("[data-rs]");if(b){HOFRESP=b.dataset.rs==="all"?"all":+b.dataset.rs;HOFCH=0;renderHofLive();return}
   b=e.target.closest("[data-ch]");if(b){hofTeam(b.dataset.ch);return}

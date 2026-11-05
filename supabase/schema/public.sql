@@ -104,7 +104,8 @@ create table public.hof_players (
   best_match_text text,
   created_at timestamp with time zone default now() not null,
   yellows integer default 0 not null,
-  respins integer
+  respins integer,
+  pace text
 );
 
 create table public.hof_teams (
@@ -133,7 +134,8 @@ create table public.hof_teams (
   created_at timestamp with time zone default now() not null,
   formation text,
   lineup jsonb,
-  respins integer
+  respins integer,
+  pace text
 );
 
 create table public.match_events (
@@ -646,13 +648,13 @@ begin
 end $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.hof_players_top(p_resp integer DEFAULT NULL::integer, p_pmin integer DEFAULT NULL::integer, p_pmax integer DEFAULT NULL::integer)
+CREATE OR REPLACE FUNCTION public.hof_players_top(p_resp integer DEFAULT NULL::integer, p_pmin integer DEFAULT NULL::integer, p_pmax integer DEFAULT NULL::integer, p_pace text DEFAULT NULL::text)
  RETURNS SETOF hof_players
  LANGUAGE sql
  STABLE
  SET search_path TO 'public', 'pg_temp'
 AS $function$
-  with b as (select * from hof_players hp where league = 'PL' and (p_resp is null or respins = p_resp)
+  with b as (select * from hof_players hp where league = 'PL' and (p_resp is null or respins = p_resp) and (p_pace is null or pace = p_pace)
       and (p_pmin is null and p_pmax is null or (select max(t.players) from hof_teams t where t.game_id = hp.game_id) between coalesce(p_pmin, 0) and coalesce(p_pmax, 1000))),
   sel as (
     select id from (select id, row_number() over (order by goals desc, created_at) rn from (select distinct on (player_id) * from b where goals > 0 order by player_id, goals desc) x) y where rn <= 5
@@ -666,13 +668,13 @@ AS $function$
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.hof_teams_top(p_resp integer DEFAULT NULL::integer, p_pmin integer DEFAULT NULL::integer, p_pmax integer DEFAULT NULL::integer)
+CREATE OR REPLACE FUNCTION public.hof_teams_top(p_resp integer DEFAULT NULL::integer, p_pmin integer DEFAULT NULL::integer, p_pmax integer DEFAULT NULL::integer, p_pace text DEFAULT NULL::text)
  RETURNS SETOF hof_teams
  LANGUAGE sql
  STABLE
  SET search_path TO 'public', 'pg_temp'
 AS $function$
-  with b as (select * from hof_teams where league = 'PL' and (p_resp is null or respins = p_resp)
+  with b as (select * from hof_teams where league = 'PL' and (p_resp is null or respins = p_resp) and (p_pace is null or pace = p_pace)
       and (p_pmin is null and p_pmax is null or players between coalesce(p_pmin, 0) and coalesce(p_pmax, 1000))),
   sel as (
     select id from b where champion
@@ -1267,8 +1269,8 @@ revoke all on function public.close_game(p_game uuid) from public, anon, authent
 revoke all on function public.create_game(p_league text, p_season text, p_max integer, p_timer integer, p_show boolean, p_pace text) from public, anon, authenticated; grant execute on function public.create_game(p_league text, p_season text, p_max integer, p_timer integer, p_show boolean, p_pace text) to authenticated;
 revoke all on function public.formation_slots(f text) from public, anon, authenticated;
 revoke all on function public.game_state(p_game uuid) from public, anon, authenticated; grant execute on function public.game_state(p_game uuid) to authenticated;
-revoke all on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer) from public, anon, authenticated; grant execute on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer) to authenticated;
-revoke all on function public.hof_teams_top(p_resp integer, p_pmin integer, p_pmax integer) from public, anon, authenticated; grant execute on function public.hof_teams_top(p_resp integer, p_pmin integer, p_pmax integer) to authenticated;
+revoke all on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) from public, anon, authenticated; grant execute on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) to authenticated;
+revoke all on function public.hof_teams_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) from public, anon, authenticated; grant execute on function public.hof_teams_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) to authenticated;
 revoke all on function public.is_member(g uuid) from public, anon, authenticated; grant execute on function public.is_member(g uuid) to authenticated;
 revoke all on function public.join_game(p_code text) from public, anon, authenticated; grant execute on function public.join_game(p_code text) to authenticated;
 revoke all on function public.kick_player(p_game uuid, p_user uuid) from public, anon, authenticated; grant execute on function public.kick_player(p_game uuid, p_user uuid) to authenticated;
