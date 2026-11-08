@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.7.0.0 (beta)">
+<meta name="app-version" content="0.7.1.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -635,6 +635,10 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .profsub{color:var(--mut);font-size:13px;margin-top:2px}
 .profact{display:flex;flex-direction:column;gap:10px;margin-top:22px}
 .lnkred{background:none;border:0;color:var(--red-text,#ff8fa8);text-decoration:underline;text-underline-offset:3px;font-size:13.5px;padding:10px;cursor:pointer}
+.avcols{margin:4px 0 4px}.avcols span{display:block;font-size:13px;color:var(--mut);margin-bottom:8px}
+.avcols div{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:300px}
+.avc{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:inset 0 0 0 2px #00000033}
+.avc.on{border-color:#fff}
 .warnbox{margin-top:12px;font-size:13px;line-height:1.4;color:#ffd98a;background:#f5c5421a;border:1px solid #f5c54244;border-radius:12px;padding:10px 12px}
 .guestnote{margin-top:8px;padding:11px 14px;background:var(--surf);border:1px solid var(--line);border-radius:16px;font-size:13px;color:var(--mut);text-align:center}
 .modal .row2{display:flex;gap:10px;margin-top:20px}
@@ -1064,6 +1068,7 @@ function rosterRow(k,team,who,ready,icon,extra){
 }
 $("flow").addEventListener("click",function(e){
   var t=e.target;
+  var avc=t.closest("[data-avc]");if(avc){avColor(avc.dataset.avc);return}
   var ctb=t.closest("[data-ctab]");if(ctb){F.ctab=ctb.dataset.ctab;renderFlow();return}
   var cb=t.closest("[data-crest]");if(cb){S.crest=+cb.dataset.crest;renderFlow();return}
   var c=t.closest(".sw");if(c){if(c.dataset.c2)S.color2=c.dataset.c2;else S.color=c.dataset.c;setMe();renderFlow();return}
@@ -1677,7 +1682,8 @@ function profileHtml(){
   return topBack("profback")+'<div class="prof"><div class="profhd"><span class="profav">'+avatarHtml(p,72)+'<label class="profcam" title="Change picture">📷<input type="file" id="avFile" accept="image/*" hidden></label></span>'+
     '<div><div class="profnm"><span>'+esc(p.manager_name||"")+'</span><button data-act="namechg" aria-label="Change manager name">✎</button></div>'+
     '<div class="profsub">'+(d?'Playing since '+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]+' '+d.getFullYear():'')+'</div></div></div>'+
-    (p.avatar_ver?'<button class="linkbtn" data-act="avdel" style="margin:-8px 0 0;padding:4px 0;text-align:left">Remove picture</button>':'')+
+    (p.avatar_ver?'<button class="linkbtn" data-act="avdel" style="margin:-8px 0 0;padding:4px 0;text-align:left">Remove picture</button>':
+      '<div class="avcols"><span>Background colour</span><div>'+AV_COLORS.map(function(c){return '<button class="avc'+(String(p.color).toLowerCase()===c?" on":"")+'" data-avc="'+c+'" style="background:'+c+'" aria-label="Colour '+c+'"></button>'}).join("")+'</div></div>')+
     '<div class="profact"><button class="btn wide" data-act="logout">Log out</button></div>'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px"><a class="lglinks" style="color:var(--mut);font-size:13px" href="privacy.html" target="_blank" rel="noopener">Privacy</a><button class="lnkred" data-act="delacct">Delete account</button></div></div>';
 }
@@ -1690,6 +1696,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.7.1.0","2026-11-08",{new:["Pick the background colour behind your initials on your profile, if you don't use a picture."]}],
   ["0.7.0.0","2026-11-08",{
     new:["Sign in with Google, or play as a guest. Guests can play everything, but their records and stats aren't saved.","Your own profile: choose a manager name, add a profile picture and see it in the top left corner.","Change your manager name once a month.","Delete your account at any time. Everything about you is removed instantly."],
     small:["Signed-in players' manager name is used automatically in games.","Privacy page with what is stored and why."]}],
@@ -1830,6 +1837,12 @@ document.addEventListener("change",async function(e){
     await authLoadProfile();renderFlow();
   }catch(x){netErr(x)}
 });
+async function avColor(c){
+  if(!AUTH.profile||AUTH.profile.color===c)return;var old=AUTH.profile.color;AUTH.profile.color=c;renderFlow(); /* vises med det samme */
+  if(DEMO)return;
+  try{var r0=await tmo(NET.sb.rpc("set_profile_color",{p_color:c}));if(r0.error)throw r0.error;cset("prof",AUTH.profile)}
+  catch(x){AUTH.profile.color=old;renderFlow();netErr(x)}
+}
 async function avRemove(){
   try{await NET.sb.storage.from("avatars").remove([NET.uid+".jpg"]);var r0=await NET.sb.rpc("set_avatar",{p_has:false});if(r0.error)throw r0.error;await authLoadProfile();renderFlow()}catch(x){netErr(x)}
 }
@@ -1865,6 +1878,7 @@ var NET={sb:null,uid:null,gid:null,game:null,players:[],ch:null,hb:null,poll:nul
    AUTH.stage: "boot" (ukendt), "login" (vælg Google/gæst), "setup" (første login: vælg navne), "ok".
    Gæster er anonyme Supabase-brugere som før; brugere har en række i profiles. */
 var G_CLIENT="836025622531-ai3csvpg4o6bj5bifg9ta2u5sfmjfbv2.apps.googleusercontent.com";
+var AV_COLORS=["#2f6bd9","#3949ab","#8e44ad","#c2185b","#c0392b","#d35400","#e67e22","#b8913a","#6d4c41","#16a085","#00897b","#2fa39a"];
 var AUTH={stage:"boot",guest:false,profile:null,view:null,gname:"",gfull:"",busy:false,err:""};
 function avatarUrl(pr){return pr&&pr.avatar_ver?SB_URL+"/storage/v1/object/public/avatars/"+pr.user_id+".jpg?v="+pr.avatar_ver:null}
 function avatarHtml(pr,sz){var u=avatarUrl(pr),n=(pr&&pr.manager_name||"?").trim();

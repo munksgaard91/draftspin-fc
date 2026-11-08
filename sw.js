@@ -1,5 +1,5 @@
 // Service worker: gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v110";
+var CACHE = "dsfc-shell-v111";
 var FACES = "dsfc-faces-v1"; // spillerbilleder, hentes af siden ved første start (se preloadFaces i index.html)
 var SCOPE = self.registration.scope;
 var BADGES = "ARS AVL BOU BRE BHA CHE COV CRY EVE FUL HUL IPS LEE LIV MCI MUN NEW NFO SUN TOT".split(" ");

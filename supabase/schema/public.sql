@@ -1140,6 +1140,20 @@ begin
 end $function$
 ;
 
+CREATE OR REPLACE FUNCTION public.set_profile_color(p_color text)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare pal text[] := array['#2f6bd9','#c0392b','#2fa39a','#b8913a','#8e44ad','#d35400','#16a085','#c2185b','#3949ab','#00897b','#6d4c41','#e67e22'];
+begin
+  if not (lower(p_color) = any(pal)) then raise exception 'Unknown colour'; end if;
+  update profiles set color = lower(p_color) where user_id = auth.uid();
+  if not found then raise exception 'You don''t have a profile'; end if;
+end $function$
+;
+
 CREATE OR REPLACE FUNCTION public.set_ready(p_game uuid, p_ready boolean)
  RETURNS void
  LANGUAGE plpgsql
@@ -1410,6 +1424,7 @@ revoke all on function public.set_avatar(p_has boolean) from public, anon, authe
 revoke all on function public.set_manager_name(p_name text) from public, anon, authenticated; grant execute on function public.set_manager_name(p_name text) to authenticated;
 revoke all on function public.set_match_speed(p_game uuid, p_ai numeric, p_hh numeric) from public, anon, authenticated; grant execute on function public.set_match_speed(p_game uuid, p_ai numeric, p_hh numeric) to authenticated;
 revoke all on function public.set_name(p_game uuid, p_name text) from public, anon, authenticated; grant execute on function public.set_name(p_game uuid, p_name text) to authenticated;
+revoke all on function public.set_profile_color(p_color text) from public, anon, authenticated; grant execute on function public.set_profile_color(p_color text) to authenticated;
 revoke all on function public.set_ready(p_game uuid, p_ready boolean) from public, anon, authenticated; grant execute on function public.set_ready(p_game uuid, p_ready boolean) to authenticated;
 revoke all on function public.slot_fit(p_pos text, p_slot text) from public, anon, authenticated; grant execute on function public.slot_fit(p_pos text, p_slot text) to authenticated;
 revoke all on function public.slot_ok(p_pos text, p_alts jsonb, p_slot text) from public, anon, authenticated;
