@@ -268,16 +268,24 @@ async function finalizeSeason(gameId) {
   const MAX_MISSED = 8;
   const humans = st.filter((x) => x.kind === "human" && ((gps.find((g) => g.user_id === x.user_id) || {}).missed_rounds || 0) < MAX_MISSED);
   const owner = (uid) => (gps.find((g) => g.user_id === uid) || {}).display_name || null;
+  // gæster (anonyme brugere) gemmes aldrig i Hall of Fame; "players" tæller stadig alle menneskehold (også gæster), og placeringen er den rigtige i tabellen
+  const allHumans = st.filter((x) => x.kind === "human").length;
+  const guest = new Set();
+  for (const h of humans) {
+    const r = await admin.auth.admin.getUserById(h.user_id);
+    if (!r.data || !r.data.user || r.data.user.is_anonymous) guest.add(h.user_id);
+  }
+  const savers = humans.filter((h) => !guest.has(h.user_id));
   const season = String(game.season).replace(/^(\d{4})\/\d{2}(\d{2})$/, "$1/$2");
   // mesterholdets opstilling gemmes med rekorden, så Hall of Fame kan vise holdet
-  const champ = humans.find((h) => pos[h.team_key] === 1);
+  const champ = savers.find((h) => pos[h.team_key] === 1);
   let champLineup = null;
   if (champ) {
     const slots = lu.filter((l) => l.team_key === champ.team_key).sort((a, b) => a.slot - b.slot);
     const pl = chk(await admin.from("players").select("id,name,short_name").in("id", slots.map((l) => l.player_id)));
     champLineup = slots.map((l) => { const p = pl.find((x) => x.id === l.player_id); return p ? { n: p.name, s: p.short_name || "" } : null; });
   }
-  const teamRows = humans.map((h) => {
+  const teamRows = savers.map((h) => {
     const mine = matches.filter((m) => m.played && (m.home_key === h.team_key || m.away_key === h.team_key)).sort((a, b) => a.round - b.round);
     let streak = 0, best = 0, bigM = 0, bigScore = null, bigText = null;
     for (const m of mine) {
@@ -286,10 +294,10 @@ async function finalizeSeason(gameId) {
       else streak = 0;
     }
     const s = t[h.team_key];
-    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: humans.length, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, respins: game.respins ?? 0, pace: game.pace ?? "full", formation: champ && champ.team_key === h.team_key ? h.formation : null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
+    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: allHumans, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, respins: game.respins ?? 0, pace: game.pace ?? "full", formation: champ && champ.team_key === h.team_key ? h.formation : null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
   });
   const own = {};
-  lu.forEach((l) => { const tm = humans.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });
+  lu.forEach((l) => { const tm = savers.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });
   const stats = {}, pm = {}, mById = new Map(matches.map((m) => [m.id, m]));
   const ens = (pid) => (stats[pid] = stats[pid] || { goals: 0, assists: 0, cs: 0, reds: 0, yellows: 0 });
   // en spiller kan stå på både et menneskehold og en AI-klub: tæl kun hændelser for det hold, der ejer ham
@@ -337,6 +345,18 @@ Deno.serve(async (req) => {
       const sims = [];
       for (let k = 0; k < 40; k++) { const r = E.simulateMatch({ xi: mk(0), shift: 0 }, { xi: mk(100), shift: 1 }, "selftest|" + k); sims.push(r.hg + "-" + r.ag + ":" + r.events.map((e) => e.m + e.type + e.s + (e.pid ?? "")).join(",")); }
       return json({ ok: true, fingerprint: await sha(parts), simulation: await sha(sims.join("|")) });
+    }
+    if (action === "delete_account") {
+      // sletter kontoen straks og permanent: Hall of Fame-rækker, profilbillede, profil og selve brugeren. Spil, man er med i, kører videre uden en.
+      const uid = u.user.id;
+      if (u.user.is_anonymous) throw new Fejl("Guests don't have an account");
+      chk(await admin.from("hof_players").delete().eq("user_id", uid));
+      chk(await admin.from("hof_teams").delete().eq("user_id", uid));
+      await admin.storage.from("avatars").remove([uid + ".jpg"]);
+      chk(await admin.from("profiles").delete().eq("user_id", uid));
+      const d = await admin.auth.admin.deleteUser(uid);
+      if (d.error) throw new Error(d.error.message);
+      return json({ ok: true });
     }
     let game = await getGame(game_id);
     const me = chk(await admin.from("game_players").select("*").eq("game_id", game_id).eq("user_id", u.user.id))[0];

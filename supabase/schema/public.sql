@@ -199,6 +199,16 @@ create table public.players (
   pen_rank smallint
 );
 
+create table public.profiles (
+  user_id uuid not null,
+  manager_name text not null,
+  full_name text not null,
+  color text not null,
+  avatar_ver integer,
+  name_changed_at timestamp with time zone,
+  created_at timestamp with time zone default now() not null
+);
+
 create table public.season_lineups (
   game_id uuid not null,
   team_key text not null,
@@ -267,6 +277,7 @@ alter table public.player_fit add constraint player_fit_pkey PRIMARY KEY (slot, 
 alter table public.players add constraint players_club_number_key UNIQUE (club, number);
 alter table public.players add constraint players_pkey PRIMARY KEY (id);
 alter table public.players add constraint players_pos_check CHECK ((pos = ANY (ARRAY['GK'::text, 'RB'::text, 'CB'::text, 'LB'::text, 'LWB'::text, 'RWB'::text, 'DM'::text, 'CM'::text, 'AM'::text, 'LW'::text, 'RW'::text, 'ST'::text])));
+alter table public.profiles add constraint profiles_pkey PRIMARY KEY (user_id);
 alter table public.season_lineups add constraint season_lineups_pkey PRIMARY KEY (game_id, team_key, slot);
 alter table public.season_lineups add constraint season_lineups_slot_check CHECK (((slot >= 1) AND (slot <= 11)));
 alter table public.season_secret add constraint season_secret_pkey PRIMARY KEY (game_id);
@@ -298,6 +309,17 @@ CREATE INDEX game_players_user_id_idx ON public.game_players USING btree (user_i
 CREATE INDEX match_events_game_id_match_id_idx ON public.match_events USING btree (game_id, match_id);
 CREATE INDEX matches_game_id_round_idx ON public.matches USING btree (game_id, round);
 CREATE INDEX players_club_idx ON public.players USING btree (club);
+CREATE UNIQUE INDEX profiles_manager_name_key ON public.profiles USING btree (lower(manager_name));
+
+-- ===== Views =====
+
+create or replace view public.profiles_public as
+ SELECT user_id,
+    manager_name,
+    color,
+    avatar_ver
+   FROM profiles;
+
 
 -- ===== Funktioner =====
 
@@ -340,6 +362,30 @@ AS $function$
     select pid, sl from best order by score desc, pid asc limit 3
   )
   select pid, sl from top3 order by random() limit 1
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public._check_manager_name(p text)
+ RETURNS text
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare n text := _clean_name(p);
+begin
+  if length(n) not between 2 and 16 then raise exception 'Your manager name must be 2 to 16 characters'; end if;
+  if n ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
+  if exists (select 1 from profiles where lower(manager_name) = lower(n) and user_id <> auth.uid()) then raise exception 'That manager name is taken'; end if;
+  return n;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public._clean_name(p text)
+ RETURNS text
+ LANGUAGE sql
+ IMMUTABLE
+AS $function$
+  select regexp_replace(trim(coalesce(p, '')), '\s+', ' ', 'g')
 $function$
 ;
 
@@ -460,6 +506,16 @@ begin
   if new.status = 'done' and old.status is distinct from 'done' then new.done_at := now(); end if;
   return new;
 end $function$
+;
+
+CREATE OR REPLACE FUNCTION public._is_guest()
+ RETURNS boolean
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+  select coalesce((select is_anonymous from auth.users where id = auth.uid()), true)
+$function$
 ;
 
 CREATE OR REPLACE FUNCTION public._maybe_begin(p_game uuid)
@@ -583,6 +639,24 @@ begin
   returning id into gid;
   insert into game_players (game_id, user_id) values (gid, uid);
   return json_build_object('id', gid, 'code', c);
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public.create_profile(p_manager text, p_full text)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare n text; f text := _clean_name(p_full);
+  pal text[] := array['#2f6bd9','#c0392b','#2fa39a','#b8913a','#8e44ad','#d35400','#16a085','#c2185b','#3949ab','#00897b','#6d4c41','#e67e22'];
+begin
+  if auth.uid() is null or _is_guest() then raise exception 'Sign in with Google first'; end if;
+  if exists (select 1 from profiles where user_id = auth.uid()) then raise exception 'You already have a profile'; end if;
+  n := _check_manager_name(p_manager);
+  if length(f) not between 2 and 60 then raise exception 'Please enter your full name'; end if;
+  if f ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
+  insert into profiles (user_id, manager_name, full_name, color) values (auth.uid(), n, f, pal[1 + floor(random() * array_length(pal, 1))::int]);
 end $function$
 ;
 
@@ -999,6 +1073,39 @@ END;
 $function$
 ;
 
+CREATE OR REPLACE FUNCTION public.set_avatar(p_has boolean)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+begin
+  update profiles set avatar_ver = case when p_has then coalesce(avatar_ver, 0) + 1 else null end where user_id = auth.uid();
+  if not found then raise exception 'You don''t have a profile'; end if;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public.set_manager_name(p_name text)
+ RETURNS timestamp with time zone
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare n text; last timestamptz; cur text;
+begin
+  select name_changed_at, manager_name into last, cur from profiles where user_id = auth.uid() for update;
+  if not found then raise exception 'You don''t have a profile'; end if;
+  n := _check_manager_name(p_name);
+  if n = cur then return last; end if;
+  if last is not null and last > now() - interval '30 days' then
+    raise exception 'You can change your name again on %', to_char(last + interval '30 days', 'FMDD Mon YYYY');
+  end if;
+  update profiles set manager_name = n, name_changed_at = now() where user_id = auth.uid();
+  update game_players gp set display_name = n from games g where g.id = gp.game_id and gp.user_id = auth.uid() and g.status <> 'closed';
+  return now();
+end $function$
+;
+
 CREATE OR REPLACE FUNCTION public.set_match_speed(p_game uuid, p_ai numeric, p_hh numeric)
  RETURNS void
  LANGUAGE plpgsql
@@ -1019,12 +1126,16 @@ CREATE OR REPLACE FUNCTION public.set_name(p_game uuid, p_name text)
  SECURITY DEFINER
  SET search_path TO 'public', 'pg_temp'
 AS $function$
+declare mn text;
 begin
   perform 1 from games where id = p_game and status = 'lobby' for update;
   if not found then raise exception 'The game isn''t in the lobby'; end if;
-  if length(trim(p_name)) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
-  if p_name ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
-  update game_players set display_name = trim(p_name) where game_id = p_game and user_id = auth.uid();
+  select manager_name into mn from profiles where user_id = auth.uid();
+  if mn is null then
+    if length(trim(p_name)) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
+    if p_name ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
+  end if;
+  update game_players set display_name = coalesce(mn, trim(p_name)) where game_id = p_game and user_id = auth.uid();
   if not found then raise exception 'You''re not in the game'; end if;
 end $function$
 ;
@@ -1156,7 +1267,7 @@ CREATE OR REPLACE FUNCTION public.update_team(p_game uuid, p_name text, p_c1 tex
  SECURITY DEFINER
  SET search_path TO 'public', 'pg_temp'
 AS $function$
-declare tg text := nullif(upper(trim(coalesce(p_tag, ''))), '');
+declare tg text := nullif(upper(trim(coalesce(p_tag, ''))), ''); mn text;
 begin
   perform 1 from games where id = p_game and status = 'lobby' for update;
   if not found then raise exception 'The game isn''t in the lobby'; end if;
@@ -1166,10 +1277,11 @@ begin
   if lower(p_c1) = lower(p_c2) then raise exception 'Choose two different colours'; end if;
   if length(trim(p_name)) not between 2 and 22 then raise exception 'Team name must be 2 to 22 characters'; end if;
   if tg is not null and tg !~ '^[A-ZÆØÅ0-9]{2,3}$' then raise exception 'The abbreviation must be 2 to 3 letters or numbers'; end if;
-  if p_display is not null and length(trim(p_display)) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
-  if p_name ~ '[<>]' or coalesce(p_display, '') ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
+  select manager_name into mn from profiles where user_id = auth.uid();
+  if mn is null and p_display is not null and length(trim(p_display)) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
+  if p_name ~ '[<>]' or (mn is null and coalesce(p_display, '') ~ '[<>]') then raise exception 'Names can''t contain < or >'; end if;
   update game_players set team_name = trim(p_name), color1 = lower(p_c1), color2 = lower(p_c2), crest = p_crest, formation = p_formation, crest_tag = tg, ready = false,
-    display_name = case when p_display is null then display_name else trim(p_display) end
+    display_name = coalesce(mn, case when p_display is null then display_name else trim(p_display) end)
   where game_id = p_game and user_id = auth.uid();
   if not found then raise exception 'You''re not in the game'; end if;
 end $function$
@@ -1194,6 +1306,7 @@ alter table public.match_events enable row level security;
 alter table public.matches enable row level security;
 alter table public.player_fit enable row level security;
 alter table public.players enable row level security;
+alter table public.profiles enable row level security;
 alter table public.season_lineups enable row level security;
 alter table public.season_secret enable row level security;
 alter table public.season_teams enable row level security;
@@ -1209,6 +1322,7 @@ create policy hof_teams_read on public.hof_teams as PERMISSIVE for SELECT to aut
 create policy match_events_read on public.match_events as PERMISSIVE for SELECT to authenticated using (is_member(game_id));
 create policy matches_read on public.matches as PERMISSIVE for SELECT to authenticated using (is_member(game_id));
 create policy players_read on public.players as PERMISSIVE for SELECT to anon, authenticated using (true);
+create policy profiles_own on public.profiles as PERMISSIVE for SELECT to authenticated using ((user_id = auth.uid()));
 create policy season_lineups_read on public.season_lineups as PERMISSIVE for SELECT to authenticated using (is_member(game_id));
 create policy season_teams_read on public.season_teams as PERMISSIVE for SELECT to authenticated using (is_member(game_id));
 
@@ -1243,6 +1357,8 @@ grant maintain, references, trigger, truncate on public.player_fit to service_ro
 grant maintain, references, select, trigger, truncate on public.players to anon;
 grant maintain, references, select, trigger, truncate on public.players to authenticated;
 grant maintain, references, select, trigger, truncate on public.players to service_role;
+grant select on public.profiles to authenticated;
+grant maintain, references, trigger, truncate on public.profiles to service_role;
 grant maintain, references, trigger, truncate on public.season_lineups to anon;
 grant maintain, references, select, trigger, truncate on public.season_lineups to authenticated;
 grant delete, insert, maintain, references, select, trigger, truncate, update on public.season_lineups to service_role;
@@ -1255,11 +1371,14 @@ grant delete, insert, maintain, references, select, trigger, truncate, update on
 
 revoke all on function public._begin_draft(p_game uuid) from public, anon, authenticated;
 revoke all on function public._best_pick(p_game uuid, p_user uuid, p_club text) from public, anon, authenticated;
+revoke all on function public._check_manager_name(p text) from public, anon, authenticated;
+revoke all on function public._clean_name(p text) from public, anon, authenticated; grant execute on function public._clean_name(p text) to public;
 revoke all on function public._cleanup_anon_users() from public, anon, authenticated;
 revoke all on function public._clubs_for(p_game uuid, p_user uuid) from public, anon, authenticated;
 revoke all on function public._cron_tick() from public, anon, authenticated;
 revoke all on function public._do_pick(g games, p_user uuid, p_player integer, p_slot integer) from public, anon, authenticated;
 revoke all on function public._games_done_at() from public, anon, authenticated; grant execute on function public._games_done_at() to public;
+revoke all on function public._is_guest() from public, anon, authenticated;
 revoke all on function public._maybe_begin(p_game uuid) from public, anon, authenticated;
 revoke all on function public._players_changed() from public, anon, authenticated;
 revoke all on function public._spin(g games) from public, anon, authenticated;
@@ -1267,6 +1386,7 @@ revoke all on function public.bump_missed(p_game uuid, p_round integer, p_users 
 revoke all on function public.claim_timeout(p_game uuid, p_force boolean) from public, anon, authenticated; grant execute on function public.claim_timeout(p_game uuid, p_force boolean) to authenticated;
 revoke all on function public.close_game(p_game uuid) from public, anon, authenticated; grant execute on function public.close_game(p_game uuid) to authenticated;
 revoke all on function public.create_game(p_league text, p_season text, p_max integer, p_timer integer, p_show boolean, p_pace text) from public, anon, authenticated; grant execute on function public.create_game(p_league text, p_season text, p_max integer, p_timer integer, p_show boolean, p_pace text) to authenticated;
+revoke all on function public.create_profile(p_manager text, p_full text) from public, anon, authenticated; grant execute on function public.create_profile(p_manager text, p_full text) to authenticated;
 revoke all on function public.formation_slots(f text) from public, anon, authenticated;
 revoke all on function public.game_state(p_game uuid) from public, anon, authenticated; grant execute on function public.game_state(p_game uuid) to authenticated;
 revoke all on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) from public, anon, authenticated; grant execute on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) to authenticated;
@@ -1286,6 +1406,8 @@ revoke all on function public.recount_match(p_match bigint, p_gk_h integer, p_gk
 revoke all on function public.refresh_player_fit() from public, anon, authenticated;
 revoke all on function public.respin(p_game uuid) from public, anon, authenticated; grant execute on function public.respin(p_game uuid) to authenticated;
 revoke all on function public.rls_auto_enable() from public, anon, authenticated;
+revoke all on function public.set_avatar(p_has boolean) from public, anon, authenticated; grant execute on function public.set_avatar(p_has boolean) to authenticated;
+revoke all on function public.set_manager_name(p_name text) from public, anon, authenticated; grant execute on function public.set_manager_name(p_name text) to authenticated;
 revoke all on function public.set_match_speed(p_game uuid, p_ai numeric, p_hh numeric) from public, anon, authenticated; grant execute on function public.set_match_speed(p_game uuid, p_ai numeric, p_hh numeric) to authenticated;
 revoke all on function public.set_name(p_game uuid, p_name text) from public, anon, authenticated; grant execute on function public.set_name(p_game uuid, p_name text) to authenticated;
 revoke all on function public.set_ready(p_game uuid, p_ready boolean) from public, anon, authenticated; grant execute on function public.set_ready(p_game uuid, p_ready boolean) to authenticated;

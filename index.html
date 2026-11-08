@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.6.1.2 (beta)">
+<meta name="app-version" content="0.7.0.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -166,6 +166,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='xMidYMid slice'%3E%3Cg fill='none' stroke='%2390a0bf' stroke-opacity='.055' stroke-width='2'%3E%3Crect x='20' y='20' width='360' height='760'/%3E%3Cpath d='M20 400H380'/%3E%3Ccircle cx='200' cy='400' r='64'/%3E%3Crect x='100' y='20' width='200' height='110'/%3E%3Crect x='150' y='20' width='100' height='44'/%3E%3Crect x='100' y='670' width='200' height='110'/%3E%3Crect x='150' y='736' width='100' height='44'/%3E%3C/g%3E%3C/svg%3E") center/cover no-repeat,
     repeating-linear-gradient(180deg,#ffffff03 0 72px,transparent 72px 144px)}
 .app{max-width:440px;margin:0 auto;padding-block:calc(14px + env(safe-area-inset-top,0px)) calc(92px + env(safe-area-inset-bottom,0px))}
+body.clean::before{background:none}
 body:has(#navwrap[hidden]) .app{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .app.pre{padding-bottom:48px}
 
@@ -610,6 +611,32 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .clv{padding:10px 0;border-top:1px solid var(--line)}.clv:first-child{border-top:0}
 .clh{display:flex;justify-content:space-between;align-items:baseline}.clh b{font:500 14px var(--mono)}.clh span{font-size:12px;color:var(--mut)}
 .clc{margin-top:8px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}.clc.new{color:var(--acc)}.clc.fix{color:#ff8fa8}.clc.ui{color:#9fd8ff}.clv ul{margin:3px 0 0;padding-left:18px}.clv li{font-size:13.5px;line-height:1.45;margin:3px 0;color:color-mix(in srgb,var(--text) 88%,var(--mut))}
+
+/* ---------- brugere: login, profil ---------- */
+.lgwrap{display:flex;flex-direction:column;align-items:center;text-align:center;min-height:calc(100svh - 120px);justify-content:center;gap:14px;padding-top:4vh}
+.lgbtns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.gbtn{color-scheme:light;min-height:46px;display:flex;justify-content:center;border-radius:99px}
+.lgfine{font-size:12.5px;color:var(--mut);line-height:1.45;margin:2px 0 0}
+.lglinks{margin-top:4px;font-size:12.5px}.lglinks a{color:var(--mut)}
+.mepill{position:fixed;top:calc(28px + env(safe-area-inset-top,0px));left:12px;z-index:6;display:flex;align-items:center;gap:8px;min-height:52px;padding:6px 12px 6px 8px;border-radius:10px;border:0;background:color-mix(in srgb,var(--bg) 88%,transparent);color:var(--text);font:600 13.5px var(--sans,inherit);cursor:pointer;text-align:left;max-width:46vw}
+.mepill .mpn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mepill.guest{flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:6px 10px;font:400 11.5px var(--sans,inherit);color:color-mix(in srgb,var(--mut) 70%,var(--text))}
+.mepill.guest b{color:var(--text);font-weight:600}.mepill.guest u{color:var(--text);text-underline-offset:3px}
+.av2{display:inline-grid;place-items:center;border-radius:50%;color:#fff;font-weight:600;flex:none;overflow:hidden;background-size:cover;background-position:center}
+.setup{max-width:420px;margin:0 auto;padding-top:6vh}
+.setup h1{font-size:26px;margin:0 0 6px}
+.setup .note{margin:6px 0 0}
+.prof{max-width:420px;margin:0 auto}
+.profhd{display:flex;align-items:center;gap:16px;margin:8px 0 18px}
+.profav{position:relative;flex:none}
+.profcam{position:absolute;right:-4px;bottom:-4px;width:28px;height:28px;border-radius:50%;background:var(--surf2);border:2px solid var(--bg);display:grid;place-items:center;font-size:13px;cursor:pointer;padding:0}
+.profnm{font-size:23px;font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.profnm button{background:none;border:0;color:var(--mut);font-size:17px;cursor:pointer;padding:2px 4px}
+.profsub{color:var(--mut);font-size:13px;margin-top:2px}
+.profact{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.lnkred{background:none;border:0;color:var(--red-text,#ff8fa8);text-decoration:underline;text-underline-offset:3px;font-size:13.5px;padding:10px;cursor:pointer}
+.warnbox{margin-top:12px;font-size:13px;line-height:1.4;color:#ffd98a;background:#f5c5421a;border:1px solid #f5c54244;border-radius:12px;padding:10px 12px}
+.guestnote{margin-top:8px;padding:11px 14px;background:var(--surf);border:1px solid var(--line);border-radius:16px;font-size:13px;color:var(--mut);text-align:center}
 .modal .row2{display:flex;gap:10px;margin-top:20px}
 .modal .row2 .btn{flex:1}
 .joinwrap{display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 140px);min-height:calc(100svh - 140px)}
@@ -845,9 +872,10 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 
 <div class="toast" id="toast" hidden></div>
 <div class="conn" id="conn" hidden></div>
-<div class="modal" id="gtestBox" hidden><div class="card"><h3>Google login test</h3><p class="note" style="margin:0 0 12px">Only a test. Your games on this phone are not touched, and you are signed out again right after.</p><div id="gtBtn" style="min-height:44px;display:flex;justify-content:center"></div><p class="note" id="gtMsg" style="margin:12px 0 0;word-break:break-word">Loading Google…</p><button class="linkbtn" id="gtClose">Close</button></div></div>
-<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="draft">Draft only</button><button class="btn" data-tm="gtest">Google login test</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
+<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="draft">Draft only</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
 <div class="modal" id="clBox" hidden><div class="card clcard"><h3 id="clT">What's new</h3><div class="cllist" id="clList"></div><button class="btn p wide" id="clOk" style="margin-top:14px">Got it</button></div></div>
+<div class="modal" id="nameBox" hidden><div class="card"><h3>Change manager name</h3><input class="inp" id="nmInp" maxlength="16" autocomplete="off" style="margin-top:10px"><p class="err" id="nmErr" hidden></p><div class="warnbox" id="nmWarn"></div><div class="row2"><button class="btn" id="nmNo">Cancel</button><button class="btn p" id="nmYes">Save name</button></div></div></div>
+<div class="modal" id="delBox" hidden><div class="card"><h3 id="delH">Delete account?</h3><p class="note" style="margin:0" id="delP"></p><div class="row2"><button class="btn" id="delNo">Cancel</button><button class="btn" id="delYes" style="color:var(--red-text,#ff8fa8)">Delete</button></div></div></div>
 <div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Leave the league?</h3><p class="note" style="margin:0" id="leaveP">Are you sure you want to leave the current league? If you're not done looking around, stay here.</p><div class="row2"><button class="btn" id="leaveYes">Leave</button><button class="btn p" id="leaveNo">Stay here</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
 <div class="sheet" id="hsheet" hidden></div>
@@ -995,7 +1023,13 @@ function navBtns(nextLabel,nextDis,noBack){
 function renderFlow(){
   if(G.started)return;
   document.documentElement.setAttribute("data-league",F.liga||"pl");
-  $("sbg").hidden=!(!role||stepsFor()[F.step]==="join")||$("s-hof").classList.contains("on"); /* ikke bag Hall of Fame, hvis startskærmen tegnes om (fx efter versionstjek) */
+  var authScr=!NET.gid&&(AUTH.stage==="login"||AUTH.stage==="setup"||AUTH.view==="profile");
+  $("sbg").hidden=authScr||!(!role||stepsFor()[F.step]==="join")||$("s-hof").classList.contains("on"); /* ikke bag Hall of Fame, hvis startskærmen tegnes om (fx efter versionstjek) */
+  document.body.classList.toggle("clean",authScr);
+  if(authScr){
+    $("flow").innerHTML=AUTH.view==="profile"&&AUTH.stage==="ok"?profileHtml():(AUTH.stage==="setup"?setupHtml():loginHtml());
+    if(AUTH.stage==="login")gisRender();
+    return}
   if(!role){$("flow").innerHTML=startHtml();return}
   if((stepsFor()[F.step]==="lobby"||stepsFor()[F.step]==="wait")&&!NET.game){$("flow").innerHTML="";return}
   var st=stepsFor()[F.step],h=progHtml();
@@ -1007,7 +1041,7 @@ function renderFlow(){
     var ct=F.ctab==="s"?"s":"p";
     h=leaveBack()+h;
     h+='<div class="kit holdprev"><span class="kitc">'+hcrest("me",52)+'</span><span class="kitname">'+esc(S.team.trim()||"My team")+'</span></div>'+
-      ('<label class="field"><span>Your name</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="E.g. Emil" autocomplete="off"></label>')+
+      (AUTH.profile?'':'<label class="field"><span>Your name</span><input class="inp" id="pname" value="'+esc(S.pname)+'" maxlength="16" placeholder="E.g. Emil" autocomplete="off"></label>')+
       '<div class="tagrow"><label class="field"><span>Team name</span><input class="inp" id="tname" value="'+esc(S.team)+'" maxlength="20" placeholder="E.g. Dream Team" autocomplete="off"></label><label class="field tagf"><span>Abbreviation</span><input class="inp" id="ttag" value="'+esc(S.tag||"")+'" maxlength="3" placeholder="'+esc(initials(S.team||"My team"))+'" autocomplete="off" autocapitalize="characters" spellcheck="false"></label></div>'+((S.tag||"").length===1?'<p class="note" style="margin:-4px 0 8px">The abbreviation needs 2 or 3 characters.</p>':"")+
       '<div class="seg" id="ctabs" style="margin-top:12px"><button data-ctab="p" class="'+(ct==="p"?"on":"")+'"><i class="dotc" style="background:'+S.color+'"></i> Primary colour</button><button data-ctab="s" class="'+(ct==="s"?"on":"")+'"><i class="dotc" style="background:'+S.color2+'"></i> Secondary colour</button></div>'+
       '<div class="sws" style="margin-top:10px">'+SWATCH.map(function(c){var p1=ct==="p";return '<button class="sw'+(c===(p1?S.color:S.color2)?" on":"")+'" style="background:'+c+'" '+(p1?'data-c':'data-c2')+'="'+c+'" aria-label="'+(p1?"Primary":"Secondary")+' colour: '+CNAME[c]+'" aria-pressed="'+(c===(p1?S.color:S.color2))+'"'+(c===(p1?S.color2:S.color)?' disabled':'')+'></button>'}).join("")+'</div>'+
@@ -1038,6 +1072,15 @@ $("flow").addEventListener("click",function(e){
   var a=b.dataset.act,st=stepsFor()[F.step];
   if(a==="hofopen"){HOFBACK="start";$("navwrap").hidden=true;$("sbg").hidden=true;go("hof");return}
   if(a==="update"){hardReload();return}
+  if(a==="guest"){authGuest();return}
+  if(a==="tologin"){AUTH.stage="login";AUTH.view=null;renderFlow();return}
+  if(a==="profile"){AUTH.view="profile";renderFlow();return}
+  if(a==="profback"){AUTH.view=null;renderFlow();return}
+  if(a==="logout"){authLogout();return}
+  if(a==="setupsave"){setupSave();return}
+  if(a==="namechg"){nameOpen();return}
+  if(a==="delacct"){delOpen(1);return}
+  if(a==="avdel"){avRemove();return}
   if(a==="whatsnew"){showChangelog(CHANGELOG);return}
   if(a==="vercheck"){
     b.textContent="Checking for updates...";
@@ -1610,6 +1653,34 @@ function bgInner(){
   }
   return cols;
 }
+
+function loginHtml(){
+  return cornerLogin(true)+'<div class="lgwrap"><img class="startlogo" src="'+PLLOGO+'" alt="Premier League"><div class="wm3">Premier League <span>Draft</span></div>'+
+    '<div class="lgbtns">'+(DEMO?'<div class="gbtn"><button class="btn wide" style="background:#131314;color:#e3e3e3;border-radius:99px">Continue with Google</button></div>':'<div class="gbtn" id="gbtn"></div>')+
+    '<p class="err" id="lgErr" hidden></p>'+
+    (hasGuestGame()?'<p class="note" style="margin:0">You have a guest game in progress. If you sign in with Google, you will leave it.</p>':'')+
+    '<button class="btn wide" data-act="guest">Play as guest</button>'+
+    '<p class="lgfine">As a guest you can play everything, but your records,<br>stats and Hall of Fame entries aren\'t saved.</p>'+
+    '<p class="lglinks"><a href="privacy.html" target="_blank" rel="noopener">Privacy</a></p></div></div>';
+}
+function setupHtml(){
+  return '<div class="setup"><h1>Create your manager</h1><p class="sub" style="margin:0 0 6px">Your manager name is what everyone sees.</p>'+
+    '<label class="field"><span>Manager name</span><input class="inp" id="suName" maxlength="16" autocomplete="off" value="'+esc(AUTH.gname)+'" placeholder="E.g. The Special One"></label>'+
+    '<label class="field"><span>Full name</span><input class="inp" id="suFull" maxlength="60" autocomplete="name" value="'+esc(AUTH.gfull)+'" placeholder="Your real name"></label>'+
+    '<p class="note">Your full name is only used so the admin knows who you are. Other players only see your manager name.</p>'+
+    (AUTH.err?'<p class="err">'+esc(AUTH.err)+'</p>':'')+
+    '<button class="btn p wide go" data-act="setupsave" style="margin-top:18px">Continue</button>'+
+    '<button class="linkbtn" data-act="logout">Use a different account</button></div>';
+}
+function profileHtml(){
+  var p=AUTH.profile||{},d=p.created_at?new Date(p.created_at):null;
+  return topBack("profback")+'<div class="prof"><div class="profhd"><span class="profav">'+avatarHtml(p,72)+'<label class="profcam" title="Change picture">📷<input type="file" id="avFile" accept="image/*" hidden></label></span>'+
+    '<div><div class="profnm"><span>'+esc(p.manager_name||"")+'</span><button data-act="namechg" aria-label="Change manager name">✎</button></div>'+
+    '<div class="profsub">'+(d?'Playing since '+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]+' '+d.getFullYear():'')+'</div></div></div>'+
+    (p.avatar_ver?'<button class="linkbtn" data-act="avdel" style="margin:-8px 0 0;padding:4px 0;text-align:left">Remove picture</button>':'')+
+    '<div class="profact"><button class="btn wide" data-act="logout">Log out</button></div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px"><a class="lglinks" style="color:var(--mut);font-size:13px" href="privacy.html" target="_blank" rel="noopener">Privacy</a><button class="lnkred" data-act="delacct">Delete account</button></div></div>';
+}
 function startHtml(){
   return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns"><button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button><p class="hsnote">All records and Hall of Fame stats will be reset after 1.0 release</p>')+(homeBanner());
 }
@@ -1619,6 +1690,9 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.7.0.0","2026-11-08",{
+    new:["Sign in with Google, or play as a guest. Guests can play everything, but their records and stats aren't saved.","Your own profile: choose a manager name, add a profile picture and see it in the top left corner.","Change your manager name once a month.","Delete your account at any time. Everything about you is removed instantly."],
+    small:["Signed-in players' manager name is used automatically in games.","Privacy page with what is stored and why."]}],
   ["0.6.1.2","2026-11-08",{small:["Behind-the-scenes preparation for signing in with Google."]}],
   ["0.6.1.1","2026-11-08",{ui:["What's new is now split into New features, Bug fixes, Design and Small changes."]}],
   ["0.6.1.0","2026-11-08",{new:["What's new: tap it in the top right corner to see what has changed. After an update it shows up once by itself."]}],
@@ -1657,7 +1731,12 @@ function clAfterUpdate(){try{
 }catch(e){}}
 
 var NEWV="",VEROK=false;
-function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Get the latest update</button>':(VEROK?'<button class="verok verbtn" data-act="vercheck">You\'re on the latest version</button>':''))+'<button class="verok verbtn" data-act="whatsnew">What\'s new</button></div>'}
+function mePill(){
+  if(AUTH.stage!=="ok")return "";
+  if(AUTH.profile)return '<button class="mepill" data-act="profile">'+avatarHtml(AUTH.profile,32)+'<span class="mpn">'+esc(AUTH.profile.manager_name)+'</span></button>';
+  return '<button class="mepill guest" data-act="tologin"><span>Playing as <b>guest</b></span><u>Log in with Google</u></button>';
+}
+function cornerLogin(noPill){return (noPill?'':mePill())+'<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Get the latest update</button>':(VEROK?'<button class="verok verbtn" data-act="vercheck">You\'re on the latest version</button>':''))+'<button class="verok verbtn" data-act="whatsnew">What\'s new</button></div>'}
 /* opdatering: hent altid friskt (omgår cache), og tjek ved start og når appen vækkes, om der er en nyere version */
 function hardReload(){try{location.replace(location.pathname+"?u="+Date.now())}catch(e){location.reload()}}
 function showUpdate(v){NEWV=v;if(!role&&!G.started)renderFlow()}
@@ -1704,6 +1783,56 @@ function askLeave(ns){
 }
 $("navHome").addEventListener("click",function(){askLeave(false)});
 $("draftLeave").addEventListener("click",function(){askLeave(false)});
+
+async function setupSave(){
+  if(AUTH.busy)return;var n=($("suName")||{}).value||"",f=($("suFull")||{}).value||"";AUTH.gname=n;AUTH.gfull=f;
+  AUTH.busy=true;AUTH.err="";
+  try{var r0=await tmo(NET.sb.rpc("create_profile",{p_manager:n,p_full:f}));if(r0.error)throw r0.error;await authLoadProfile()}
+  catch(e){AUTH.err=(e&&e.message)||String(e)}finally{AUTH.busy=false}
+  renderFlow();
+}
+function nameOpen(){
+  var p=AUTH.profile||{},last=p.name_changed_at?new Date(p.name_changed_at):null,next=last?new Date(last.getTime()+30*864e5):null,locked=next&&next>new Date();
+  var fd=function(d){return d.getDate()+" "+["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]};
+  $("nmInp").value=p.manager_name||"";$("nmInp").disabled=!!locked;$("nmErr").hidden=true;$("nmYes").disabled=!!locked;
+  $("nmWarn").textContent=locked?"You can only change your name once a month. You can change it again on "+fd(next)+".":"⚠️ You can only change your manager name once a month. After this change, the next one will be possible on "+fd(new Date(Date.now()+30*864e5))+".";
+  $("nameBox").hidden=false;
+}
+$("nmNo").addEventListener("click",function(){$("nameBox").hidden=true});
+$("nmYes").addEventListener("click",async function(){
+  var b=this;if(b.disabled)return;b.disabled=true;
+  try{var r0=await tmo(NET.sb.rpc("set_manager_name",{p_name:$("nmInp").value}));if(r0.error)throw r0.error;await authLoadProfile();$("nameBox").hidden=true;renderFlow()}
+  catch(e){$("nmErr").textContent=(e&&e.message)||String(e);$("nmErr").hidden=false}finally{b.disabled=false}
+});
+var DELSTEP=0;
+function delOpen(n){DELSTEP=n;$("delH").textContent=n===1?"Delete account?":"Are you sure?";
+  $("delP").textContent=n===1?"Your profile, picture, records and statistics will be deleted permanently and instantly.":"This can't be undone. Everything about you is removed from PL Draft right away.";
+  $("delYes").textContent=n===1?"Continue":"Delete account";$("delBox").hidden=false}
+$("delNo").addEventListener("click",function(){$("delBox").hidden=true});
+$("delYes").addEventListener("click",async function(){
+  if(DELSTEP===1){delOpen(2);return}
+  var b=this;b.disabled=true;
+  try{await callEngine("delete_account");$("delBox").hidden=true;toast("Your account has been deleted.",3500);await authLogout()}
+  catch(e){netErr(e)}finally{b.disabled=false}
+});
+/* profilbillede: beskæres til et kvadrat, gøres 256 px og gemmes som jpg (ca. 20-40 KB) */
+document.addEventListener("change",async function(e){
+  if(e.target.id!=="avFile"||!e.target.files||!e.target.files[0])return;
+  var f=e.target.files[0];
+  try{
+    var url=URL.createObjectURL(f),img=new Image();
+    await new Promise(function(res,rej){img.onload=res;img.onerror=function(){rej(new Error("That image couldn't be read"))};img.src=url});
+    var S2=256,c=document.createElement("canvas");c.width=c.height=S2;var x=c.getContext("2d"),m=Math.min(img.naturalWidth,img.naturalHeight);
+    x.drawImage(img,(img.naturalWidth-m)/2,(img.naturalHeight-m)/2,m,m,0,0,S2,S2);URL.revokeObjectURL(url);
+    var blob=await new Promise(function(res){c.toBlob(res,"image/jpeg",.85)});
+    var up=await NET.sb.storage.from("avatars").upload(NET.uid+".jpg",blob,{upsert:true,contentType:"image/jpeg",cacheControl:"3600"});if(up.error)throw up.error;
+    var r0=await NET.sb.rpc("set_avatar",{p_has:true});if(r0.error)throw r0.error;
+    await authLoadProfile();renderFlow();
+  }catch(x){netErr(x)}
+});
+async function avRemove(){
+  try{await NET.sb.storage.from("avatars").remove([NET.uid+".jpg"]);var r0=await NET.sb.rpc("set_avatar",{p_has:false});if(r0.error)throw r0.error;await authLoadProfile();renderFlow()}catch(x){netErr(x)}
+}
 $("leaveNo").addEventListener("click",function(){$("leaveBox").hidden=true});
 $("clOk").addEventListener("click",function(){$("clBox").hidden=true});
 $("clBox").addEventListener("click",function(e){if(e.target===$("clBox"))$("clBox").hidden=true});
@@ -1731,6 +1860,71 @@ function toast(t,ms){var e=$("toast");e.textContent=t;e.hidden=false;clearTimeou
 var SB_URL="https://apagcfedizgjnnuefzfo.supabase.co",SB_KEY="sb_publishable_WhuPfaDfcTcZJhWwAcgvhg_YyhNG4lf";
 var QUICK_FIRST=19;
 var NET={sb:null,uid:null,gid:null,game:null,players:[],ch:null,hb:null,poll:null,ready:null,draftShown:false};
+
+/* ---------- brugere (v0.7): Google-login eller gæst ----------
+   AUTH.stage: "boot" (ukendt), "login" (vælg Google/gæst), "setup" (første login: vælg navne), "ok".
+   Gæster er anonyme Supabase-brugere som før; brugere har en række i profiles. */
+var G_CLIENT="836025622531-ai3csvpg4o6bj5bifg9ta2u5sfmjfbv2.apps.googleusercontent.com";
+var AUTH={stage:"boot",guest:false,profile:null,view:null,gname:"",gfull:"",busy:false,err:""};
+function avatarUrl(pr){return pr&&pr.avatar_ver?SB_URL+"/storage/v1/object/public/avatars/"+pr.user_id+".jpg?v="+pr.avatar_ver:null}
+function avatarHtml(pr,sz){var u=avatarUrl(pr),n=(pr&&pr.manager_name||"?").trim();
+  return '<span class="av2" style="width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz*.42)+'px;background-color:'+(hexOk(pr&&pr.color)?pr.color:"#3b4a6b")+(u?';background-image:url(\''+u+'\')':'')+'">'+(u?'':esc(n.charAt(0).toUpperCase()))+'</span>'}
+function guestMode(){try{return localStorage.getItem("dsfc-mode")==="guest"}catch(e){return false}}
+function setMode(m){try{if(m)localStorage.setItem("dsfc-mode",m);else localStorage.removeItem("dsfc-mode")}catch(e){}}
+async function authLoadProfile(){
+  var r0=await tmo(NET.sb.from("profiles").select("user_id,manager_name,full_name,color,avatar_ver,name_changed_at,created_at").eq("user_id",NET.uid));
+  if(r0.error)throw r0.error;
+  AUTH.profile=(r0.data||[])[0]||null;AUTH.stage=AUTH.profile?"ok":"setup";
+  if(AUTH.profile){S.pname=AUTH.profile.manager_name;cset("prof",AUTH.profile)}
+}
+/* Googles knap (popup, uden at forlade appen). Nonce: Google får hashen, Supabase den rå værdi. */
+var GIS_P=null;
+function gisLoad(){if(window.google&&google.accounts)return Promise.resolve();if(!GIS_P)GIS_P=new Promise(function(res,rej){var sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.onload=res;sc.onerror=function(){GIS_P=null;rej(new Error("Couldn't load Google sign-in"))};document.head.appendChild(sc)});return GIS_P}
+async function gisRender(){
+  var el=document.getElementById("gbtn");if(!el||DEMO)return;
+  try{
+    await gisLoad();
+    var raw=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
+    var hb=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
+    var hashed=Array.from(new Uint8Array(hb)).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
+    google.accounts.id.initialize({client_id:G_CLIENT,nonce:hashed,ux_mode:"popup",itp_support:true,callback:function(resp){authGoogle(resp.credential,raw)}});
+    el=document.getElementById("gbtn");if(!el)return;el.innerHTML="";
+    google.accounts.id.renderButton(el,{theme:"filled_black",size:"large",shape:"pill",text:"continue_with",width:Math.min(400,el.offsetWidth||320)});
+  }catch(e){var m=document.getElementById("lgErr");if(m){m.textContent=e.message;m.hidden=false}}
+}
+var GIS_W=0;window.addEventListener("resize",function(){clearTimeout(GIS_W);GIS_W=setTimeout(function(){if(document.getElementById("gbtn"))gisRender()},250)});
+async function authGoogle(token,raw){
+  if(AUTH.busy)return;AUTH.busy=true;
+  try{
+    var r0=await tmo(NET.sb.auth.signInWithIdToken({provider:"google",token:token,nonce:raw}));
+    if(r0.error)throw r0.error;
+    var u=r0.data.user||{},md=u.user_metadata||{};
+    /* nyt bruger-id: et evt. gæstespil hører til gæsten og forlades */
+    NET.gid=null;try{localStorage.removeItem("dsfc-gid")}catch(x){}
+    NET.uid=u.id;cset("uid",NET.uid);AUTH.guest=false;setMode("user");
+    AUTH.gfull=md.full_name||md.name||"";AUTH.gname=(md.given_name||AUTH.gfull.split(" ")[0]||"").slice(0,16);
+    await authLoadProfile();AUTH.view=null;
+  }catch(e){netErr(e)}finally{AUTH.busy=false}
+  renderFlow();
+}
+async function authGuest(){
+  if(AUTH.busy)return;AUTH.busy=true;
+  try{
+    var s0=await NET.sb.auth.getSession(),sess=s0.data&&s0.data.session;
+    if(!sess||!sess.user.is_anonymous){
+      if(!NET.signP)NET.signP=NET.sb.auth.signInAnonymously().finally(function(){NET.signP=null});
+      var r0=await NET.signP;if(r0.error)throw r0.error;sess=r0.data.session}
+    NET.uid=sess.user.id;cset("uid",NET.uid);AUTH.guest=true;AUTH.profile=null;AUTH.stage="ok";setMode("guest");
+  }catch(e){netErr(e)}finally{AUTH.busy=false}
+  renderFlow();
+}
+function hasGuestGame(){try{return AUTH.guest&&!!localStorage.getItem("dsfc-gid")}catch(e){return false}}
+async function authLogout(){
+  try{await NET.sb.auth.signOut()}catch(e){}
+  AUTH.profile=null;AUTH.guest=false;AUTH.view=null;AUTH.stage="login";setMode(null);
+  NET.uid=null;NET.gid=null;try{localStorage.removeItem("dsfc-gid");localStorage.removeItem("dsfc-c-prof")}catch(x){}
+  goStart();
+}
 function netErr(e){var m=(e&&e.message)||String(e);if(/^timeout$/i.test(m))m="Slow connection. Please try again.";toast(m,4200)}
 /* lokalt lager: sidste kendte tilstand, så appen kan vise den med det samme uden forbindelse */
 function cset(k,v){try{localStorage.setItem("dsfc-c-"+k,JSON.stringify(v))}catch(e){try{Object.keys(localStorage).forEach(function(x){if(x.indexOf("dsfc-c-g")===0||x.indexOf("dsfc-c-s")===0)localStorage.removeItem(x)})}catch(x){}}}
@@ -1742,13 +1936,16 @@ function liveInit(){
   NET.ready=(async function(){
     try{
       var s0=await NET.sb.auth.getSession(),sess=s0.data&&s0.data.session;
-      if(!sess){
-        if(!NET.signP)NET.signP=NET.sb.auth.signInAnonymously().finally(function(){NET.signP=null});
-        var r0=await NET.signP;if(r0.error)throw r0.error;sess=r0.data.session}
-      NET.uid=sess.user.id;cset("uid",NET.uid);
+      if(DEMO){var dc=DEMO_SCREENS[DEMO.screen]||{};NET.uid=sess.user.id;AUTH.guest=!!dc.guest;
+        AUTH.profile=AUTH.guest?null:{user_id:NET.uid,manager_name:DEMO.mem["dsfc-name"]||"Alex",full_name:"Alex Demo",color:"#2f6bd9",avatar_ver:null,name_changed_at:null,created_at:"2026-11-01T12:00:00Z"};
+        if(AUTH.profile)S.pname=AUTH.profile.manager_name;AUTH.stage=dc.auth||"ok";AUTH.gname="Alex";AUTH.gfull="Alex Demo";if(dc.auth==="profile"){AUTH.stage="ok";AUTH.view="profile"}return}
+      if(!sess){NET.uid=null;AUTH.stage="login";return}
+      NET.uid=sess.user.id;cset("uid",NET.uid);AUTH.guest=!!sess.user.is_anonymous;
+      if(AUTH.guest){AUTH.profile=null;AUTH.stage=guestMode()?"ok":"login"}
+      else{var md=sess.user.user_metadata||{};AUTH.gfull=md.full_name||md.name||"";AUTH.gname=(md.given_name||AUTH.gfull.split(" ")[0]||"").slice(0,16);await authLoadProfile()}
     }catch(e){
       var u=cget("uid");if(!u)throw e;
-      NET.uid=u;
+      NET.uid=u;AUTH.profile=cget("prof");AUTH.guest=!AUTH.profile;AUTH.stage="ok";if(AUTH.profile)S.pname=AUTH.profile.manager_name;
     }
   })();
   return NET.ready;
@@ -1844,7 +2041,7 @@ function liveEnter(){
   var g=NET.game,me=NET.players.filter(function(p){return p.user_id===NET.uid})[0];
   role=g.admin_id===NET.uid?"admin":"player";
   F.code=g.code;F.max=g.max_players;F.timer=g.timer_seconds;F.showR=g.show_ratings;
-  if(me&&me.display_name)S.pname=me.display_name;
+  if(AUTH.profile)S.pname=AUTH.profile.manager_name;else if(me&&me.display_name)S.pname=me.display_name;
   if(me&&me.team_name){S.tag=me.crest_tag||"";S.team=me.team_name;S.color=me.color1;S.color2=me.color2;S.crest=(me.crest||1)-1;S.form=me.formation;setMe()}
   if(g.next_game_id&&g.status==="done"){liveGoNext(g.next_game_id);return}
   if(g.status==="draft"){liveDraftApply();return}
@@ -2227,7 +2424,8 @@ function liveSimDone(lbl){
     '<div id="sumlist"></div>'+
     '<button class="btn p wide go" data-act="simend" style="margin-top:16px">'+"See the final table"+'</button>';
   $("simbody").innerHTML='<div class="simdone'+(mi===0?" egold":"")+'">'+h+'</div>';
-  sumRecords();
+  if(AUTH.guest){var sl=document.getElementById("sumlist");if(sl)sl.innerHTML='<div class="guestnote">Playing as guest: records aren\'t saved. Log in with Google to save them next time.</div>'}
+  else sumRecords();
 }
 async function sumRecords(){
   var gid=NET.gid;
@@ -2986,14 +3184,16 @@ async function liveBoot2(){
   if(!pre)goStart();else{$("app").classList.add("pre");$("navwrap").hidden=true;go("flow");renderFlow()}
   swInit(); /* service worker registreres én gang, tidligt */
   await spRun(function(){return liveInit()},"Connecting…",30);
+  if(!G.started)renderFlow();
   await spRun(function(){livePlayers();return NET.pl},"Loading players…",70);
   try{await preloadFaces()}catch(e){}
   var gid=null;try{gid=localStorage.getItem("dsfc-gid")}catch(x){}
-  if(gid&&!pre){
+  if(gid&&!pre&&NET.uid){
     NET.gid=gid;
     try{
       await spRun(function(){return liveLoad()},"Checking your game…",92);
       if(NET.game&&NET.game.status!=="closed"&&NET.players.some(function(p){return p.user_id===NET.uid})){
+        if(AUTH.guest&&AUTH.stage==="login"){setMode("guest");AUTH.stage="ok"}
         liveSub();liveEnter();
         if(NET.fromCache){NET.fromCache=false;connFail=1;liveConn(false)}
         return;
@@ -3022,34 +3222,8 @@ function liveWake(){if(NET.gid&&!document.hidden){
   $("testBox").addEventListener("click",function(e){
     var b=e.target.closest("[data-tm]");
     if(!b){if(e.target===$("testBox"))$("testBox").hidden=true;return}
-    $("testBox").hidden=true;if(b.dataset.tm==="gtest"){gTest();return}if(b.dataset.tm!=="no")startTestGame(b.dataset.tm);
+    $("testBox").hidden=true;if(b.dataset.tm!=="no")startTestGame(b.dataset.tm);
   });
-  /* Google-login-test (spike): egen Supabase-klient uden gemt session, så den rigtige gæstesession og dens spil aldrig røres */
-  var G_CLIENT="836025622531-ai3csvpg4o6bj5bifg9ta2u5sfmjfbv2.apps.googleusercontent.com";
-  $("gtClose").addEventListener("click",function(){$("gtestBox").hidden=true});
-  async function gTest(){
-    var box=$("gtestBox"),msg=$("gtMsg");box.hidden=false;msg.textContent="Loading Google…";$("gtBtn").innerHTML="";
-    var mode=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone?"home screen app":"browser";
-    try{
-      if(!window.google||!google.accounts){await new Promise(function(res,rej){var sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.onload=res;sc.onerror=function(){rej(new Error("Couldn't load Google"))};document.head.appendChild(sc)})}
-      var raw=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
-      var hb=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
-      var hashed=Array.from(new Uint8Array(hb)).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
-      var tc=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false,storageKey:"dsfc-gtest"}});
-      google.accounts.id.initialize({client_id:G_CLIENT,nonce:hashed,ux_mode:"popup",itp_support:true,callback:async function(resp){
-        msg.textContent="Signing in…";
-        try{
-          var r0=await tc.auth.signInWithIdToken({provider:"google",token:resp.credential,nonce:raw});
-          if(r0.error)throw r0.error;
-          var u=r0.data.user||{},md=u.user_metadata||{};
-          msg.innerHTML="✅ It works ("+mode+").<br>Signed in as <b>"+esc(md.full_name||md.name||"?")+"</b><br>"+esc(u.email||"");
-          await tc.auth.signOut().catch(function(){});
-        }catch(e){msg.textContent="❌ Supabase: "+(e.message||e)+" ("+mode+")"}
-      }});
-      google.accounts.id.renderButton($("gtBtn"),{theme:"filled_black",size:"large",shape:"pill",text:"continue_with",width:260});
-      msg.textContent="Tap the button ("+mode+").";
-    }catch(e){msg.textContent="❌ "+(e.message||e)+" ("+mode+")"}
-  }
   var rnd=function(a){return a[Math.floor(Math.random()*a.length)]};
   async function startTestGame(mode){
     if(NET.creating)return;NET.creating=true;
@@ -3118,7 +3292,12 @@ var DEMO_SCREENS={
   "end-mid":{t:"Season over: top half",st:"done",end:2},
   "end-down":{t:"Season over: relegated",st:"done",end:3},
   hof:{t:"Hall of Fame",hof:1},
-  "hof-empty":{t:"Hall of Fame (empty)",hof:0}
+  "hof-empty":{t:"Hall of Fame (empty)",hof:0},
+  login:{t:"Login (first screen)",auth:"login"},
+  setup:{t:"First login: create your manager",auth:"setup"},
+  profile:{t:"Profile",auth:"profile"},
+  guest:{t:"Start screen as guest",guest:1},
+  "end-guest":{t:"Season over as guest",st:"done",end:1,guest:1}
 };
 function demoClone(x){return x==null?x:JSON.parse(JSON.stringify(x))}
 function demoState(fx,cfg){

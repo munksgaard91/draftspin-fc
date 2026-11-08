@@ -245,7 +245,8 @@ def verify(users, gid, label):
     log(f"   mål/kamp {tg:.2f}, gule {yc:.2f}, røde {rc:.2f}, hændelser {len(evs)}")
     # hall of fame
     hof = adm.sel("hof_teams", f"select=team_name,pos,points&game_id=eq.{gid}")
-    check(f"{label}: Highscore-rækker = antal hold", len(hof) == len(users), f"{len(hof)} af {len(users)}")
+    # v0.7: bots er gæster (anonyme brugere), og gæster gemmes aldrig i Hall of Fame
+    check(f"{label}: ingen Highscore-rækker for gæster", len(hof) == 0, f"{len(hof)} rækker")
     # hemmeligt
     s, r = http("GET", f"/rest/v1/season_secret?game_id=eq.{gid}", adm.tok)
     check(f"{label}: season_secret ikke læsbar", s in (401, 403) or r == [] , f"{s} {str(r)[:80]}")

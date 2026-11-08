@@ -21,7 +21,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.6.1.2 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.7.0.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 - Changelog: tilføj en post øverst i `CHANGELOG` i `index.html` ved HVER versionsændring, på engelsk og kun med det, spillerne kan mærke. Del op i `new` (New features), `fix` (Bug fixes), `ui` (Design) og `small` (Small changes), og skriv alt i et sprog, alle forstår (intet teknisk). Den vises under "What's new" i hjørnet og som popup én gang efter en opdatering.
 
 ## Motoren
@@ -71,3 +71,11 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 ## Hall of Fame-filtre (2026-11-05)
 - Tre filtre, alle starter på All: Game mode (`pace`: full/quick), Respins og Players. `hof_players_top`/`hof_teams_top(p_resp, p_pmin, p_pmax, p_pace)` (migration 070). Engine skriver `pace` på hof-rækkerne. Rækker fra slettede spil har `pace` null og vises kun under All.
 - RPC'erne kan kun kaldes som `authenticated`, så `--read-only` CLI kan ikke teste dem; test i appen.
+
+## Brugere (v0.7, 2026-11-08)
+- Login med Google via Googles egen knap (popup, `signInWithIdToken` med nonce) eller som gæst (anonym Supabase-bruger som før). Client ID står i `G_CLIENT` i index.html (offentligt). Google-opsætningen står som In production uden logo; privatlivspolitikken ligger i `privacy.html`.
+- `AUTH.stage`: "login" (første skærm), "setup" (første login: managernavn og fulde navn), "ok". `AUTH.view="profile"` er profilsiden. Gæstevalget huskes i `dsfc-mode`.
+- Migration 071: `profiles` (managernavn unikt, fulde navn kun for brugeren selv; andre læser `profiles_public` uden fulde navn), `create_profile`, `set_manager_name` (maks. 1 gang pr. 30 dage, første valg tæller ikke), `set_avatar`, bucket `avatars` (`<uid>.jpg`, kun egen fil, maks. 256 KB). `update_team`/`set_name` bruger altid managernavnet for brugere.
+- Engine: gæster gemmes aldrig i Hall of Fame (`players` tæller stadig alle menneskehold, og placeringen er den rigtige i tabellen). `delete_account` sletter hof-rækker, billede, profil og brugeren med det samme.
+- Bots er gæster, så `scripts/bots.py` forventer 0 Hall of Fame-rækker.
+- Managers-fanen og profilstatistik venter: Rasmus har en anden idé. Spørg, før det bygges.
