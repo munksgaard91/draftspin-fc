@@ -366,6 +366,10 @@ Deno.serve(async (req) => {
       // runde 38: alle har bekræftet, så sæsonen afsluttes (sidste straffe afgøres, rekorder gemmes, status done)
       if (atEnd) await finishSeason(game, await ctxFor(game));
       else await runTo(game, game.current_round + 1);
+    } else if (action === "repair") {
+      // en runde, der står halvfærdig (runden flyttet, men kampene ikke gemt, fx efter en afbrudt kørsel), spilles færdig. Idempotent: spillede kampe røres ikke.
+      if (game.status !== "season" || game.current_round < 1) throw new Fejl("The season isn't in progress");
+      await runTo(game, game.current_round);
     } else if (action === "finish") {
       // alle i spillet må bede om resten af et hurtigt spil; kørslen er idempotent (runden flyttes kun af én ad gangen)
       if (game.pace !== "quick") throw new Fejl("Quick games only");
