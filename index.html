@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.6.0.1 (beta)">
+<meta name="app-version" content="0.6.0.2 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2019,11 +2019,7 @@ async function liveSeasonLoadInc(r0,r1){
   var s0=NET.season;
   s0.matches=s0.matches.filter(function(x){return !set[x.id]}).concat(m.data).sort(function(a,b){return a.id-b.id});
   s0.events=s0.events.filter(function(x){return !set[x.match_id]}).concat(ev.data).sort(function(a,b){return a.id-b.id});
-  NET.othC=null;cset("s",{gid:gid,season:s0});
-  /* engine skriver hændelser før kampen markeres som spillet; fanger vi midt imellem, så hent igen om lidt, så tillægstid og resultat kommer med */
-  var hasEv={};ev.data.forEach(function(e){hasEv[e.match_id]=1});
-  if(m.data.some(function(x){return !x.played&&hasEv[x.id]}))setTimeout(function(){if(NET.gid===gid&&NET.seasonKey){NET.seasonKey="season|retry";liveChangedSoon()}},1500);
-  return true;
+  NET.othC=null;cset("s",{gid:gid,season:s0});return true;
 }
 async function callEngine(action,extra){
   var body={action:action,game_id:NET.gid};if(extra)for(var k in extra)body[k]=extra[k];
@@ -2053,6 +2049,18 @@ async function liveSeasonApply(){
       if(NET.gid!==gid)return;
       if(!ok){liveSimWaiting("The draft is finished. The season is being simulated...");return}
       NET.seasonKey=key;NET.seasonRound=g.current_round;
+    }
+    /* engine flytter runden FØR rundens kampe er gemt. Start aldrig en runde, før alle dens kampe står som spillet (så er hændelser og tillægstid også gemt);
+       hent igen om lidt. Står runden halvfærdig i over 12 s (afbrudt kørsel), bedes serveren gøre den færdig. */
+    if(!quick&&g.status==="season"&&g.current_round>=1){
+      var rm=NET.season.matches.filter(function(x){return x.round===g.current_round});
+      if(rm.length&&rm.some(function(x){return !x.played})){
+        NET.seasonKey="season|retry";NET.rWait=NET.rWait||Date.now();
+        if(Date.now()-NET.rWait>12000&&Date.now()-(NET.repAt||0)>20000){NET.repAt=Date.now();callEngine("repair").catch(function(){})}
+        setTimeout(function(){if(NET.gid===gid)liveChangedSoon()},1200);
+        return;
+      }
+      NET.rWait=0;
     }
     if(!NET.seasonOn){NET.seasonOn=true;liveSeasonStart();return}
     liveSeasonRender();NET.seasonErr=0;
