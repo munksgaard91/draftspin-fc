@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.6.0.0 (beta)">
+<meta name="app-version" content="0.6.0.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1358,7 +1358,8 @@ $("sqTabs").addEventListener("click",function(e){var b=e.target.closest("[data-v
 
 /* ---------- kamp ---------- */
 function clockTxt(m){return m<=90?m+"'":"90+"+(m-90)+"'"}
-function mEnd(m){return 90+((m&&m.added_time)||4)}
+/* kampens slutminut: 90 + tillægstid, men aldrig før kampens sidste hændelse (mangler tillægstiden i klientens kopi, hang kampen før på et mål i fx 95. minut) */
+function mEnd(m){var e=90+((m&&m.added_time)||4);if(m&&NET.season&&NET.season.events)NET.season.events.forEach(function(x){if(x.match_id===m.id&&x.minute>e)e=x.minute});return e}
 function evRow(e,hs,as){
   var home=(e.s==="me")===(NET.myHome!==false);
   if(e.t==="sys")return '<div class="ev sys fade'+(e.ft?" ft":"")+'"><span class="pc"><b>'+(e.ft?"FT":"HT")+'</b></span><span class="ds">'+hs+' - '+as+'</span></div>';
@@ -2018,7 +2019,11 @@ async function liveSeasonLoadInc(r0,r1){
   var s0=NET.season;
   s0.matches=s0.matches.filter(function(x){return !set[x.id]}).concat(m.data).sort(function(a,b){return a.id-b.id});
   s0.events=s0.events.filter(function(x){return !set[x.match_id]}).concat(ev.data).sort(function(a,b){return a.id-b.id});
-  NET.othC=null;cset("s",{gid:gid,season:s0});return true;
+  NET.othC=null;cset("s",{gid:gid,season:s0});
+  /* engine skriver hændelser før kampen markeres som spillet; fanger vi midt imellem, så hent igen om lidt, så tillægstid og resultat kommer med */
+  var hasEv={};ev.data.forEach(function(e){hasEv[e.match_id]=1});
+  if(m.data.some(function(x){return !x.played&&hasEv[x.id]}))setTimeout(function(){if(NET.gid===gid&&NET.seasonKey){NET.seasonKey="season|retry";liveChangedSoon()}},1500);
+  return true;
 }
 async function callEngine(action,extra){
   var body={action:action,game_id:NET.gid};if(extra)for(var k in extra)body[k]=extra[k];
