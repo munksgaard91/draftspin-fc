@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.6.0.2 (beta)">
+<meta name="app-version" content="0.6.1.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -605,6 +605,11 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .modal{position:fixed;inset:0;z-index:30;background:#000000b3;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px max(16px,env(safe-area-inset-right,0px))}
 .modal .card{width:100%;max-width:400px;border:1px solid var(--line);box-shadow:0 24px 60px -20px #000c}
 .modal h3{font-size:19px;font-weight:600;margin:0 0 6px}
+.clcard{max-height:min(78vh,640px);display:flex;flex-direction:column}
+.cllist{overflow-y:auto;margin:4px -4px 0;padding:0 4px;-webkit-overflow-scrolling:touch}
+.clv{padding:10px 0;border-top:1px solid var(--line)}.clv:first-child{border-top:0}
+.clh{display:flex;justify-content:space-between;align-items:baseline}.clh b{font:500 14px var(--mono)}.clh span{font-size:12px;color:var(--mut)}
+.clv ul{margin:6px 0 0;padding-left:18px}.clv li{font-size:13.5px;line-height:1.45;margin:3px 0;color:color-mix(in srgb,var(--text) 88%,var(--mut))}
 .modal .row2{display:flex;gap:10px;margin-top:20px}
 .modal .row2 .btn{flex:1}
 .joinwrap{display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 140px);min-height:calc(100svh - 140px)}
@@ -841,6 +846,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 <div class="toast" id="toast" hidden></div>
 <div class="conn" id="conn" hidden></div>
 <div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="draft">Draft only</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
+<div class="modal" id="clBox" hidden><div class="card clcard"><h3 id="clT">What's new</h3><div class="cllist" id="clList"></div><button class="btn p wide" id="clOk" style="margin-top:14px">Got it</button></div></div>
 <div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Leave the league?</h3><p class="note" style="margin:0" id="leaveP">Are you sure you want to leave the current league? If you're not done looking around, stay here.</p><div class="row2"><button class="btn" id="leaveYes">Leave</button><button class="btn p" id="leaveNo">Stay here</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
 <div class="sheet" id="hsheet" hidden></div>
@@ -1031,6 +1037,7 @@ $("flow").addEventListener("click",function(e){
   var a=b.dataset.act,st=stepsFor()[F.step];
   if(a==="hofopen"){HOFBACK="start";$("navwrap").hidden=true;$("sbg").hidden=true;go("hof");return}
   if(a==="update"){hardReload();return}
+  if(a==="whatsnew"){showChangelog(CHANGELOG);return}
   if(a==="vercheck"){
     b.textContent="Checking for updates...";
     var fin=function(){hardReload()};
@@ -1609,8 +1616,36 @@ function startHtml(){
 /* valgfrit login: lille knap på forsiden */
 /* Version: 2.MINOR.PATCH. MINOR = ny funktion eller samlet batch af ændringer, PATCH = rettelser. Det store tal skiftes kun efter aftale med Rasmus. */
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
+/* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
+var CHANGELOG=[
+  ["0.6.1.0","2026-11-08",["What's new: tap it in the top corner to see the changelog. After an update it pops up once."]],
+  ["0.6.0.2","2026-11-08",["A new round only starts when all its matches are fully saved, so a match can no longer start with missing goals or freeze."]],
+  ["0.6.0.1","2026-11-08",["Fixed: a match could freeze at full time when a goal was scored deep into added time."]],
+  ["0.6.0.0","2026-11-05",["New season-over screen: your final position, points, W-D-L, goal difference and the table around you with European places.","Your top scorer and top assister with faces.","Lobby shows how many are ready and everyone's formation.","Hall of Fame filters: Game mode (Classic/Quick), Respins and Players, all neatly aligned.","Back button in the same place at the top of every screen."]],
+  ["0.5.7","2026-11-05",["Your team shows each player's season goals and assists, updated live during the match.","Player faces and shirt numbers on the match line-up, full names."]],
+  ["0.5.6","2026-11-05",["'X scores' in the match timeline.","The AI keeper's name is hidden at penalties (AI players are anonymous).","Note on the start screen: records and Hall of Fame reset at 1.0."]],
+  ["0.5.5","2026-11-05",["More reliable syncing between phones: timeouts, faster round loading and cheaper live results."]],
+  ["0.5.4","2026-11-05",["Penalty outcomes stay hidden until they are taken.","The season only closes when everyone has confirmed round 38.","An interrupted season start resumes by itself."]],
+  ["0.5.3","2026-10-24",["Interactive penalties: pick the taker and the corner.","New match engine: balance rule, wing-backs, assists, own goals and random added time.","Four new formations.","xG under the score.","Goal celebrations in team colours.","FotMob-style match view: scoreboard, match facts and results elsewhere.","Faces in Awards and Stats."]],
+  ["0.5.0","2026-10-21",["Hall of Fame: champion line-ups with faces and a filter on number of players.","Coloured player silhouettes in the lobby.","'Your season in three matches' on the season-over screen."]],
+  ["0.4.0","2026-10-21",["Player ratings based on a new database.","Player faces in the draft."]],
+  ["0.3","2026-10-21",["Premier League colours and new start screen.","Live results elsewhere with a pulsing live dot.","Ready count in the Next match button.","Multiplayer match speed and collapsible game rules.","Smoother draft with a news bar for the latest pick."]]
+];
+function clHtml(list){return list.map(function(c){var d=new Date(c[1]+"T12:00:00");return '<div class="clv"><div class="clh"><b>v'+esc(c[0])+'</b><span>'+d.getDate()+' '+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]+' '+d.getFullYear()+'</span></div><ul>'+c[2].map(function(t){return '<li>'+esc(t)+'</li>'}).join("")+'</ul></div>'}).join("")}
+function verN(v){return String(v).replace(/[^0-9.]/g,"").split(".").map(Number)}
+function verGt(a,b){var x=verN(a),y=verN(b);for(var i=0;i<Math.max(x.length,y.length);i++){var p=x[i]||0,q=y[i]||0;if(p!==q)return p>q}return false}
+function showChangelog(list,title){var b=$("clBox");$("clT").textContent=title||"What's new";$("clList").innerHTML=clHtml(list);b.hidden=false}
+/* popup én gang efter en opdatering (ikke ved allerførste start) */
+function clAfterUpdate(){try{
+  var seen=localStorage.getItem("dsfc-seenver"),cur=APP_VERSION.replace(/\s*\(.*\)/,"");
+  localStorage.setItem("dsfc-seenver",cur);
+  if(!seen||seen===cur||DEMO)return;
+  var nw=CHANGELOG.filter(function(c){return verGt(c[0],seen)&&!verGt(c[0],cur)}).slice(0,3);
+  if(nw.length)setTimeout(function(){showChangelog(nw,"Updated to v"+cur)},900);
+}catch(e){}}
+
 var NEWV="",VEROK=false;
-function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Get the latest update</button>':(VEROK?'<button class="verok verbtn" data-act="vercheck">You\'re on the latest version</button>':''))+'</div>'}
+function cornerLogin(){return '<div class="verbox"><span class="ver">v'+APP_VERSION+'</span>'+(NEWV?'<button class="updbtn" data-act="update">Get the latest update</button>':(VEROK?'<button class="verok verbtn" data-act="vercheck">You\'re on the latest version</button>':''))+'<button class="verok verbtn" data-act="whatsnew">What\'s new</button></div>'}
 /* opdatering: hent altid friskt (omgår cache), og tjek ved start og når appen vækkes, om der er en nyere version */
 function hardReload(){try{location.replace(location.pathname+"?u="+Date.now())}catch(e){location.reload()}}
 function showUpdate(v){NEWV=v;if(!role&&!G.started)renderFlow()}
@@ -1658,6 +1693,8 @@ function askLeave(ns){
 $("navHome").addEventListener("click",function(){askLeave(false)});
 $("draftLeave").addEventListener("click",function(){askLeave(false)});
 $("leaveNo").addEventListener("click",function(){$("leaveBox").hidden=true});
+$("clOk").addEventListener("click",function(){$("clBox").hidden=true});
+$("clBox").addEventListener("click",function(e){if(e.target===$("clBox"))$("clBox").hidden=true});
 $("leaveBox").addEventListener("click",function(e){if(e.target===$("leaveBox"))$("leaveBox").hidden=true});
 $("leaveYes").addEventListener("click",function(){$("leaveBox").hidden=true;var a=leaveAct;leaveAct=null;if(a)a();else liveLeave()});
 $("hofBack").addEventListener("click",function(){var w=HOFBACK;HOFBACK=null;if(w==="end")go("end");else goStart()});
@@ -2924,6 +2961,7 @@ async function spDone(){
   clearInterval(SP.iv);var e=$("splash");if(!e)return;
   var f=$("spfill");if(f)f.style.width="100%";
   e.classList.add("out");setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e)},450);
+  clAfterUpdate();
 }
 async function liveBoot(){
   spStart();
