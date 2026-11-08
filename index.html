@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.6.1.0 (beta)">
+<meta name="app-version" content="0.6.1.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -609,7 +609,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .cllist{overflow-y:auto;margin:4px -4px 0;padding:0 4px;-webkit-overflow-scrolling:touch}
 .clv{padding:10px 0;border-top:1px solid var(--line)}.clv:first-child{border-top:0}
 .clh{display:flex;justify-content:space-between;align-items:baseline}.clh b{font:500 14px var(--mono)}.clh span{font-size:12px;color:var(--mut)}
-.clv ul{margin:6px 0 0;padding-left:18px}.clv li{font-size:13.5px;line-height:1.45;margin:3px 0;color:color-mix(in srgb,var(--text) 88%,var(--mut))}
+.clc{margin-top:8px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}.clc.new{color:var(--acc)}.clc.fix{color:#ff8fa8}.clc.ui{color:#9fd8ff}.clv ul{margin:3px 0 0;padding-left:18px}.clv li{font-size:13.5px;line-height:1.45;margin:3px 0;color:color-mix(in srgb,var(--text) 88%,var(--mut))}
 .modal .row2{display:flex;gap:10px;margin-top:20px}
 .modal .row2 .btn{flex:1}
 .joinwrap{display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 140px);min-height:calc(100svh - 140px)}
@@ -1618,20 +1618,30 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
-  ["0.6.1.0","2026-11-08",["What's new: tap it in the top corner to see the changelog. After an update it pops up once."]],
-  ["0.6.0.2","2026-11-08",["A new round only starts when all its matches are fully saved, so a match can no longer start with missing goals or freeze."]],
-  ["0.6.0.1","2026-11-08",["Fixed: a match could freeze at full time when a goal was scored deep into added time."]],
-  ["0.6.0.0","2026-11-05",["New season-over screen: your final position, points, W-D-L, goal difference and the table around you with European places.","Your top scorer and top assister with faces.","Lobby shows how many are ready and everyone's formation.","Hall of Fame filters: Game mode (Classic/Quick), Respins and Players, all neatly aligned.","Back button in the same place at the top of every screen."]],
-  ["0.5.7","2026-11-05",["Your team shows each player's season goals and assists, updated live during the match.","Player faces and shirt numbers on the match line-up, full names."]],
-  ["0.5.6","2026-11-05",["'X scores' in the match timeline.","The AI keeper's name is hidden at penalties (AI players are anonymous).","Note on the start screen: records and Hall of Fame reset at 1.0."]],
-  ["0.5.5","2026-11-05",["More reliable syncing between phones: timeouts, faster round loading and cheaper live results."]],
-  ["0.5.4","2026-11-05",["Penalty outcomes stay hidden until they are taken.","The season only closes when everyone has confirmed round 38.","An interrupted season start resumes by itself."]],
-  ["0.5.3","2026-10-24",["Interactive penalties: pick the taker and the corner.","New match engine: balance rule, wing-backs, assists, own goals and random added time.","Four new formations.","xG under the score.","Goal celebrations in team colours.","FotMob-style match view: scoreboard, match facts and results elsewhere.","Faces in Awards and Stats."]],
-  ["0.5.0","2026-10-21",["Hall of Fame: champion line-ups with faces and a filter on number of players.","Coloured player silhouettes in the lobby.","'Your season in three matches' on the season-over screen."]],
-  ["0.4.0","2026-10-21",["Player ratings based on a new database.","Player faces in the draft."]],
-  ["0.3","2026-10-21",["Premier League colours and new start screen.","Live results elsewhere with a pulsing live dot.","Ready count in the Next match button.","Multiplayer match speed and collapsible game rules.","Smoother draft with a news bar for the latest pick."]]
+  ["0.6.1.1","2026-11-08",{ui:["What's new is now split into New features, Bug fixes, Design and Small changes."]}],
+  ["0.6.1.0","2026-11-08",{new:["What's new: tap it in the top right corner to see what has changed. After an update it shows up once by itself."]}],
+  ["0.6.0.2","2026-11-08",{fix:["A new round could start before all its results were ready, so a match might show too few goals or freeze. The app now waits until everything is ready."]}],
+  ["0.6.0.1","2026-11-08",{fix:["A match could freeze at full time if a goal was scored late in added time."]}],
+  ["0.6.0.0","2026-11-05",{
+    new:["New season-over screen: your final position, points, wins/draws/losses, goal difference and the table around you, with European places marked.","Your top scorer and top assister of the season, with faces.","Hall of Fame can be filtered by game mode: Classic or Quick game."],
+    ui:["The waiting screen before the draft shows how many are ready and everyone's formation.","Hall of Fame filters are lined up neatly.","The Back button is in the same place at the top of every screen."]}],
+  ["0.5.7","2026-11-05",{new:["Your team shows each player's goals and assists this season, updated live during the match."],ui:["Player faces and shirt numbers on the match line-up, and full names that are no longer cut off."]}],
+  ["0.5.6","2026-11-05",{small:["The timeline says 'Man City scores' instead of 'scorer'.","At penalties against an AI club the keeper's name is hidden, as AI players are anonymous.","A note on the start screen: records and Hall of Fame will be reset at version 1.0."]}],
+  ["0.5.5","2026-11-05",{fix:["Games stay in step between phones more reliably, even on a weak connection, and rounds load faster."]}],
+  ["0.5.4","2026-11-05",{fix:["Nobody can see in advance whether a penalty will go in.","The season only ends when everyone has confirmed the last round.","If starting a season is interrupted, it carries on by itself."]}],
+  ["0.5.3","2026-10-24",{
+    new:["Penalties: you pick the taker and the corner yourself.","Four new formations.","Expected goals (xG) under the score."],
+    small:["Matches are more realistic: wing-backs, assists, own goals and varying added time."],
+    ui:["Goal celebration in your team colours.","Match screen in FotMob style: scoreboard, match facts and results from the other matches.","Player faces in Awards and Stats."]}],
+  ["0.5.0","2026-10-21",{new:["Hall of Fame shows the champion's line-up with faces and can be filtered by number of players.","'Your season in three matches' on the season-over screen."],ui:["Coloured player figures in the lobby."]}],
+  ["0.4.0","2026-10-21",{new:["Player faces in the draft."],small:["Player strengths are based on a new and more accurate database."]}],
+  ["0.3","2026-10-21",{
+    new:["Results from the other matches tick along live.","Choose match speed in multiplayer."],
+    ui:["Premier League colours and a new start screen.","The Next match button shows how many are ready.","Game rules can be folded away."],
+    fix:["The draft no longer flickers and jumps when picks come in quickly."]}]
 ];
-function clHtml(list){return list.map(function(c){var d=new Date(c[1]+"T12:00:00");return '<div class="clv"><div class="clh"><b>v'+esc(c[0])+'</b><span>'+d.getDate()+' '+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]+' '+d.getFullYear()+'</span></div><ul>'+c[2].map(function(t){return '<li>'+esc(t)+'</li>'}).join("")+'</ul></div>'}).join("")}
+var CLCAT=[["new","New features"],["fix","Bug fixes"],["ui","Design"],["small","Small changes"]];
+function clHtml(list){return list.map(function(c){var d=new Date(c[1]+"T12:00:00");return '<div class="clv"><div class="clh"><b>v'+esc(c[0])+'</b><span>'+d.getDate()+' '+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]+' '+d.getFullYear()+'</span></div>'+CLCAT.map(function(k){var l=c[2][k[0]];return l&&l.length?'<div class="clc '+k[0]+'">'+k[1]+'</div><ul>'+l.map(function(t){return '<li>'+esc(t)+'</li>'}).join("")+'</ul>':''}).join("")+'</div>'}).join("")}
 function verN(v){return String(v).replace(/[^0-9.]/g,"").split(".").map(Number)}
 function verGt(a,b){var x=verN(a),y=verN(b);for(var i=0;i<Math.max(x.length,y.length);i++){var p=x[i]||0,q=y[i]||0;if(p!==q)return p>q}return false}
 function showChangelog(list,title){var b=$("clBox");$("clT").textContent=title||"What's new";$("clList").innerHTML=clHtml(list);b.hidden=false}

@@ -21,8 +21,8 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.6.1.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
-- Changelog: tilføj en post øverst i `CHANGELOG` i `index.html` ved HVER versionsændring, på engelsk og kun med det, spillerne kan mærke. Den vises under "What's new" i hjørnet og som popup én gang efter en opdatering.
+`<meta name="app-version" content="0.6.1.1 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+- Changelog: tilføj en post øverst i `CHANGELOG` i `index.html` ved HVER versionsændring, på engelsk og kun med det, spillerne kan mærke. Del op i `new` (New features), `fix` (Bug fixes), `ui` (Design) og `small` (Small changes), og skriv alt i et sprog, alle forstår (intet teknisk). Den vises under "What's new" i hjørnet og som popup én gang efter en opdatering.
 
 ## Motoren
 
