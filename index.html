@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.6.1.1 (beta)">
+<meta name="app-version" content="0.6.1.2 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -845,7 +845,8 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 
 <div class="toast" id="toast" hidden></div>
 <div class="conn" id="conn" hidden></div>
-<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="draft">Draft only</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
+<div class="modal" id="gtestBox" hidden><div class="card"><h3>Google login test</h3><p class="note" style="margin:0 0 12px">Only a test. Your games on this phone are not touched, and you are signed out again right after.</p><div id="gtBtn" style="min-height:44px;display:flex;justify-content:center"></div><p class="note" id="gtMsg" style="margin:12px 0 0;word-break:break-word">Loading Google…</p><button class="linkbtn" id="gtClose">Close</button></div></div>
+<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="draft">Draft only</button><button class="btn" data-tm="gtest">Google login test</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
 <div class="modal" id="clBox" hidden><div class="card clcard"><h3 id="clT">What's new</h3><div class="cllist" id="clList"></div><button class="btn p wide" id="clOk" style="margin-top:14px">Got it</button></div></div>
 <div class="modal" id="leaveBox" hidden><div class="card"><h3 id="leaveH">Leave the league?</h3><p class="note" style="margin:0" id="leaveP">Are you sure you want to leave the current league? If you're not done looking around, stay here.</p><div class="row2"><button class="btn" id="leaveYes">Leave</button><button class="btn p" id="leaveNo">Stay here</button></div></div></div>
 <div class="sheet" id="sheet" hidden></div>
@@ -1618,6 +1619,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.6.1.2","2026-11-08",{small:["Behind-the-scenes preparation for signing in with Google."]}],
   ["0.6.1.1","2026-11-08",{ui:["What's new is now split into New features, Bug fixes, Design and Small changes."]}],
   ["0.6.1.0","2026-11-08",{new:["What's new: tap it in the top right corner to see what has changed. After an update it shows up once by itself."]}],
   ["0.6.0.2","2026-11-08",{fix:["A new round could start before all its results were ready, so a match might show too few goals or freeze. The app now waits until everything is ready."]}],
@@ -3020,8 +3022,34 @@ function liveWake(){if(NET.gid&&!document.hidden){
   $("testBox").addEventListener("click",function(e){
     var b=e.target.closest("[data-tm]");
     if(!b){if(e.target===$("testBox"))$("testBox").hidden=true;return}
-    $("testBox").hidden=true;if(b.dataset.tm!=="no")startTestGame(b.dataset.tm);
+    $("testBox").hidden=true;if(b.dataset.tm==="gtest"){gTest();return}if(b.dataset.tm!=="no")startTestGame(b.dataset.tm);
   });
+  /* Google-login-test (spike): egen Supabase-klient uden gemt session, så den rigtige gæstesession og dens spil aldrig røres */
+  var G_CLIENT="836025622531-ai3csvpg4o6bj5bifg9ta2u5sfmjfbv2.apps.googleusercontent.com";
+  $("gtClose").addEventListener("click",function(){$("gtestBox").hidden=true});
+  async function gTest(){
+    var box=$("gtestBox"),msg=$("gtMsg");box.hidden=false;msg.textContent="Loading Google…";$("gtBtn").innerHTML="";
+    var mode=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone?"home screen app":"browser";
+    try{
+      if(!window.google||!google.accounts){await new Promise(function(res,rej){var sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.onload=res;sc.onerror=function(){rej(new Error("Couldn't load Google"))};document.head.appendChild(sc)})}
+      var raw=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
+      var hb=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
+      var hashed=Array.from(new Uint8Array(hb)).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
+      var tc=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false,storageKey:"dsfc-gtest"}});
+      google.accounts.id.initialize({client_id:G_CLIENT,nonce:hashed,ux_mode:"popup",itp_support:true,callback:async function(resp){
+        msg.textContent="Signing in…";
+        try{
+          var r0=await tc.auth.signInWithIdToken({provider:"google",token:resp.credential,nonce:raw});
+          if(r0.error)throw r0.error;
+          var u=r0.data.user||{},md=u.user_metadata||{};
+          msg.innerHTML="✅ It works ("+mode+").<br>Signed in as <b>"+esc(md.full_name||md.name||"?")+"</b><br>"+esc(u.email||"");
+          await tc.auth.signOut().catch(function(){});
+        }catch(e){msg.textContent="❌ Supabase: "+(e.message||e)+" ("+mode+")"}
+      }});
+      google.accounts.id.renderButton($("gtBtn"),{theme:"filled_black",size:"large",shape:"pill",text:"continue_with",width:260});
+      msg.textContent="Tap the button ("+mode+").";
+    }catch(e){msg.textContent="❌ "+(e.message||e)+" ("+mode+")"}
+  }
   var rnd=function(a){return a[Math.floor(Math.random()*a.length)]};
   async function startTestGame(mode){
     if(NET.creating)return;NET.creating=true;
