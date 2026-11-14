@@ -1,0 +1,5422 @@
+[
+{
+"id": 1,
+"name": "David Raya",
+"club": "ARS",
+"rating": 160,
+"rating_base": 160,
+"pa": 162,
+"face_id": 29111433,
+"fm_uid": 29111430
+},
+{
+"id": 2,
+"name": "William Saliba",
+"club": "ARS",
+"rating": 176,
+"rating_base": 176,
+"pa": 184,
+"face_id": 49039004,
+"fm_uid": 49039003
+},
+{
+"id": 3,
+"name": "Cristhian Mosquera",
+"club": "ARS",
+"rating": 146,
+"rating_base": 145,
+"pa": 169,
+"face_id": 2000030816,
+"fm_uid": 2000030793
+},
+{
+"id": 4,
+"name": "Ben White",
+"club": "ARS",
+"rating": 155,
+"rating_base": 155,
+"pa": 162,
+"face_id": 29141472,
+"fm_uid": 29141400
+},
+{
+"id": 5,
+"name": "Piero Hincapié",
+"club": "ARS",
+"rating": 152,
+"rating_base": 152,
+"pa": 168,
+"face_id": 86066853,
+"fm_uid": 86066852
+},
+{
+"id": 6,
+"name": "Gabriel Magalhães",
+"club": "ARS",
+"rating": 170,
+"rating_base": 170,
+"pa": 174,
+"face_id": 19242094,
+"fm_uid": 19242091
+},
+{
+"id": 7,
+"name": "Bukayo Saka",
+"club": "ARS",
+"rating": 181,
+"rating_base": 181,
+"pa": 188,
+"face_id": 28122642,
+"fm_uid": 28122616
+},
+{
+"id": 8,
+"name": "Martin Ødegaard",
+"club": "ARS",
+"rating": 176,
+"rating_base": 176,
+"pa": 180,
+"face_id": 53095137,
+"fm_uid": 53094972
+},
+{
+"id": 9,
+"name": "Eberechi Eze",
+"club": "ARS",
+"rating": 155,
+"rating_base": 155,
+"pa": 160,
+"face_id": 29156522,
+"fm_uid": 29156498
+},
+{
+"id": 10,
+"name": "Jurriën Timber",
+"club": "ARS",
+"rating": 158,
+"rating_base": 158,
+"pa": 168,
+"face_id": 37063644,
+"fm_uid": 37063421
+},
+{
+"id": 11,
+"name": "Kepa Arrizabalaga",
+"club": "ARS",
+"rating": 145,
+"rating_base": 145,
+"pa": 160,
+"face_id": 67157624,
+"fm_uid": 67157618
+},
+{
+"id": 12,
+"name": "Viktor Gyökeres",
+"club": "ARS",
+"rating": 153,
+"rating_base": 153,
+"pa": 168,
+"face_id": 93070271,
+"fm_uid": 93070268
+},
+{
+"id": 13,
+"name": "Ezri Konsa",
+"club": "ARS",
+"rating": 150,
+"rating_base": 150,
+"pa": 155,
+"face_id": 29141827,
+"fm_uid": 29141826
+},
+{
+"id": 14,
+"name": "Christos Tzolis",
+"club": "ARS",
+"rating": 135,
+"rating_base": 135,
+"pa": 148,
+"face_id": 36152916,
+"fm_uid": 36152908
+},
+{
+"id": 15,
+"name": "Noni Madueke",
+"club": "ARS",
+"rating": 154,
+"rating_base": 154,
+"pa": 165,
+"face_id": 37076092,
+"fm_uid": 37076007
+},
+{
+"id": 16,
+"name": "Mikel Merino",
+"club": "ARS",
+"rating": 154,
+"rating_base": 154,
+"pa": 159,
+"face_id": 67211760,
+"fm_uid": 67211745
+},
+{
+"id": 17,
+"name": "Kai Havertz",
+"club": "ARS",
+"rating": 157,
+"rating_base": 157,
+"pa": 180,
+"face_id": 91151081,
+"fm_uid": 91151080
+},
+{
+"id": 18,
+"name": "Illan Meslier",
+"club": "ARS",
+"rating": 124,
+"rating_base": 124,
+"pa": 143,
+"face_id": 49040115,
+"fm_uid": 49040114
+},
+{
+"id": 19,
+"name": "Riccardo Calafiori",
+"club": "ARS",
+"rating": 155,
+"rating_base": 155,
+"pa": 169,
+"face_id": 43424738,
+"fm_uid": 43424736
+},
+{
+"id": 20,
+"name": "Martín Zubimendi",
+"club": "ARS",
+"rating": 161,
+"rating_base": 161,
+"pa": 164,
+"face_id": 67246385,
+"fm_uid": 67246383
+},
+{
+"id": 21,
+"name": "Bruno Guimarães",
+"club": "ARS",
+"rating": 168,
+"rating_base": 168,
+"pa": 170,
+"face_id": 19297055,
+"fm_uid": 19297054
+},
+{
+"id": 22,
+"name": "Declan Rice",
+"club": "ARS",
+"rating": 182,
+"rating_base": 182,
+"pa": 184,
+"face_id": 28106491,
+"fm_uid": 28106490
+},
+{
+"id": 23,
+"name": "Myles Lewis-Skelly",
+"club": "ARS",
+"rating": 149,
+"rating_base": 145,
+"pa": 172,
+"face_id": 2000283274,
+"fm_uid": 2000283271
+},
+{
+"id": 24,
+"name": "Max Dowman",
+"club": "ARS",
+"rating": 146,
+"rating_base": 138,
+"pa": 190,
+"face_id": null,
+"fm_uid": 2002042502
+},
+{
+"id": 25,
+"name": "Zion Suzuki",
+"club": "AVL",
+"rating": 136,
+"rating_base": 135,
+"pa": 152,
+"face_id": 45112276,
+"fm_uid": 45112274
+},
+{
+"id": 26,
+"name": "Matty Cash",
+"club": "AVL",
+"rating": 148,
+"rating_base": 148,
+"pa": 150,
+"face_id": 29147447,
+"fm_uid": 29147289
+},
+{
+"id": 27,
+"name": "Victor Lindelof",
+"club": "AVL",
+"rating": 144,
+"rating_base": 144,
+"pa": 150,
+"face_id": 93023425,
+"fm_uid": 93023303
+},
+{
+"id": 28,
+"name": "Taylor Harwood-Bellis",
+"club": "AVL",
+"rating": 128,
+"rating_base": 128,
+"pa": 150,
+"face_id": 28120046,
+"fm_uid": 28120045
+},
+{
+"id": 29,
+"name": "Tyrone Mings",
+"club": "AVL",
+"rating": 143,
+"rating_base": 143,
+"pa": 145,
+"face_id": 29074544,
+"fm_uid": 29074541
+},
+{
+"id": 30,
+"name": "Ross Barkley",
+"club": "AVL",
+"rating": 143,
+"rating_base": 143,
+"pa": 159,
+"face_id": 28058224,
+"fm_uid": 28058161
+},
+{
+"id": 31,
+"name": "John McGinn",
+"club": "AVL",
+"rating": 147,
+"rating_base": 147,
+"pa": 155,
+"face_id": 61043070,
+"fm_uid": 61043007
+},
+{
+"id": 32,
+"name": "Boubacar Kamara",
+"club": "AVL",
+"rating": 159,
+"rating_base": 159,
+"pa": 165,
+"face_id": 48043084,
+"fm_uid": 48043020
+},
+{
+"id": 33,
+"name": "Emiliano Buendia",
+"club": "AVL",
+"rating": 144,
+"rating_base": 144,
+"pa": 155,
+"face_id": 67201783,
+"fm_uid": 67201744
+},
+{
+"id": 34,
+"name": "Nicolas Jackson",
+"club": "AVL",
+"rating": 145,
+"rating_base": 145,
+"pa": 162,
+"face_id": 12087972,
+"fm_uid": 12087954
+},
+{
+"id": 35,
+"name": "Matteo Ruggeri",
+"club": "AVL",
+"rating": 145,
+"rating_base": 145,
+"pa": 157,
+"face_id": 43425834,
+"fm_uid": 43425831
+},
+{
+"id": 36,
+"name": "Pau Torres",
+"club": "AVL",
+"rating": 149,
+"rating_base": 149,
+"pa": 167,
+"face_id": 67217522,
+"fm_uid": 67217514
+},
+{
+"id": 37,
+"name": "Alejandro Garnacho",
+"club": "AVL",
+"rating": 146,
+"rating_base": 145,
+"pa": 170,
+"face_id": 2000035036,
+"fm_uid": 2000035029
+},
+{
+"id": 38,
+"name": "Tammy Abraham",
+"club": "AVL",
+"rating": 140,
+"rating_base": 140,
+"pa": 155,
+"face_id": 28097985,
+"fm_uid": 28097983
+},
+{
+"id": 39,
+"name": "Ibrahim Mbaye",
+"club": "AVL",
+"rating": 132,
+"rating_base": 124,
+"pa": 168,
+"face_id": 2000385919,
+"fm_uid": 2000385912
+},
+{
+"id": 40,
+"name": "Ian Maatsen",
+"club": "AVL",
+"rating": 147,
+"rating_base": 147,
+"pa": 160,
+"face_id": 28121372,
+"fm_uid": 28121371
+},
+{
+"id": 41,
+"name": "Amadou Onana",
+"club": "AVL",
+"rating": 150,
+"rating_base": 150,
+"pa": 160,
+"face_id": 91207274,
+"fm_uid": 91207265
+},
+{
+"id": 42,
+"name": "Lamare Bogarde",
+"club": "AVL",
+"rating": 125,
+"rating_base": 125,
+"pa": 145,
+"face_id": 37085322,
+"fm_uid": 37085285
+},
+{
+"id": 43,
+"name": "Leon Goretzka",
+"club": "AVL",
+"rating": 153,
+"rating_base": 153,
+"pa": 170,
+"face_id": 91104807,
+"fm_uid": 91104804
+},
+{
+"id": 44,
+"name": "Aaron Wan-Bissaka",
+"club": "AVL",
+"rating": 138,
+"rating_base": 138,
+"pa": 150,
+"face_id": 28100123,
+"fm_uid": 28100045
+},
+{
+"id": 45,
+"name": "Joao Gomes",
+"club": "AVL",
+"rating": 138,
+"rating_base": 138,
+"pa": 163,
+"face_id": 19371031,
+"fm_uid": 19371030
+},
+{
+"id": 46,
+"name": "Brian Madjo",
+"club": "AVL",
+"rating": 101,
+"rating_base": 95,
+"pa": 145,
+"face_id": 2000466272,
+"fm_uid": 2000466263
+},
+{
+"id": 47,
+"name": "Marco Bizot",
+"club": "AVL",
+"rating": 140,
+"rating_base": 140,
+"pa": 142,
+"face_id": 37005659,
+"fm_uid": 37005653
+},
+{
+"id": 48,
+"name": "Johan Manzambi",
+"club": "AVL",
+"rating": 138,
+"rating_base": 136,
+"pa": 165,
+"face_id": 2000245263,
+"fm_uid": 2000245249
+},
+{
+"id": 536,
+"name": "Alysson",
+"club": "AVL",
+"rating": 116,
+"rating_base": 115,
+"pa": 130,
+"face_id": 2000277689,
+"fm_uid": 2000277687
+},
+{
+"id": 49,
+"name": "Modou Keba Cisse",
+"club": "AVL",
+"rating": 109,
+"rating_base": 109,
+"pa": 132,
+"face_id": 2000378873,
+"fm_uid": 2000378872
+},
+{
+"id": 50,
+"name": "George Hemmings",
+"club": "AVL",
+"rating": 70,
+"rating_base": 70,
+"pa": 138,
+"face_id": 2000442835,
+"fm_uid": 2000442827
+},
+{
+"id": 107,
+"name": "Bart Verbruggen",
+"club": "BHA",
+"rating": 145,
+"rating_base": 145,
+"pa": 165,
+"face_id": 37076355,
+"fm_uid": 37076346
+},
+{
+"id": 108,
+"name": "Jaouen Hadjam",
+"club": "BHA",
+"rating": 123,
+"rating_base": 123,
+"pa": 141,
+"face_id": 2000006105,
+"fm_uid": 2000006104
+},
+{
+"id": 109,
+"name": "Pascal Struijk",
+"club": "BHA",
+"rating": 140,
+"rating_base": 140,
+"pa": 141,
+"face_id": 37059452,
+"fm_uid": 37059447
+},
+{
+"id": 110,
+"name": "Lewis Dunk",
+"club": "BHA",
+"rating": 147,
+"rating_base": 147,
+"pa": 154,
+"face_id": 29036189,
+"fm_uid": 29034283
+},
+{
+"id": 111,
+"name": "Kaoru Mitoma",
+"club": "BHA",
+"rating": 156,
+"rating_base": 156,
+"pa": 160,
+"face_id": 45111891,
+"fm_uid": 45111874
+},
+{
+"id": 112,
+"name": "Jack Hinshelwood",
+"club": "BHA",
+"rating": 138,
+"rating_base": 137,
+"pa": 160,
+"face_id": 2000124287,
+"fm_uid": 2000124286
+},
+{
+"id": 113,
+"name": "Stefanos Tzimas",
+"club": "BHA",
+"rating": 131,
+"rating_base": 130,
+"pa": 156,
+"face_id": 2000227373,
+"fm_uid": 2000227372
+},
+{
+"id": 114,
+"name": "Georginio Rutter",
+"club": "BHA",
+"rating": 144,
+"rating_base": 144,
+"pa": 161,
+"face_id": 49048380,
+"fm_uid": 49048374
+},
+{
+"id": 115,
+"name": "Yankuba Minteh",
+"club": "BHA",
+"rating": 146,
+"rating_base": 145,
+"pa": 170,
+"face_id": 2000195626,
+"fm_uid": 2000195620
+},
+{
+"id": 116,
+"name": "Promise David",
+"club": "BHA",
+"rating": 129,
+"rating_base": 129,
+"pa": 133,
+"face_id": 2000159861,
+"fm_uid": 2000159859
+},
+{
+"id": 117,
+"name": "Pascal Gross",
+"club": "BHA",
+"rating": 153,
+"rating_base": 153,
+"pa": 155,
+"face_id": 92017376,
+"fm_uid": 92017375
+},
+{
+"id": 118,
+"name": "Chema Andres",
+"club": "BHA",
+"rating": 132,
+"rating_base": 130,
+"pa": 165,
+"face_id": 2000220048,
+"fm_uid": 2000220037
+},
+{
+"id": 119,
+"name": "Ibrahim Osman",
+"club": "BHA",
+"rating": 133,
+"rating_base": 133,
+"pa": 147,
+"face_id": 2000250907,
+"fm_uid": 2000250905
+},
+{
+"id": 120,
+"name": "Charalampos Kostoulas",
+"club": "BHA",
+"rating": 128,
+"rating_base": 125,
+"pa": 155,
+"face_id": 2000273847,
+"fm_uid": 2000273844
+},
+{
+"id": 121,
+"name": "Costinha",
+"club": "BHA",
+"rating": 125,
+"rating_base": 125,
+"pa": 135,
+"face_id": 83244144,
+"fm_uid": 83243845
+},
+{
+"id": 122,
+"name": "Olivier Boscagli",
+"club": "BHA",
+"rating": 144,
+"rating_base": 144,
+"pa": 145,
+"face_id": 48031641,
+"fm_uid": 48031634
+},
+{
+"id": 123,
+"name": "Jason Steele",
+"club": "BHA",
+"rating": 141,
+"rating_base": 141,
+"pa": 145,
+"face_id": 5108155,
+"fm_uid": 5108119
+},
+{
+"id": 124,
+"name": "Ferdi Kadioglu",
+"club": "BHA",
+"rating": 145,
+"rating_base": 145,
+"pa": 153,
+"face_id": 37060600,
+"fm_uid": 37060598
+},
+{
+"id": 125,
+"name": "Diego Gomez",
+"club": "BHA",
+"rating": 137,
+"rating_base": 137,
+"pa": 155,
+"face_id": 2000036372,
+"fm_uid": 2000036366
+},
+{
+"id": 126,
+"name": "Yasin Ayari",
+"club": "BHA",
+"rating": 140,
+"rating_base": 140,
+"pa": 160,
+"face_id": 93142470,
+"fm_uid": 93142400
+},
+{
+"id": 127,
+"name": "Mats Wieffer",
+"club": "BHA",
+"rating": 144,
+"rating_base": 144,
+"pa": 150,
+"face_id": 37071145,
+"fm_uid": 37071126
+},
+{
+"id": 128,
+"name": "Evan Ferguson",
+"club": "BHA",
+"rating": 139,
+"rating_base": 139,
+"pa": 155,
+"face_id": 2000120742,
+"fm_uid": 2000120703
+},
+{
+"id": 129,
+"name": "Maxim De Cuyper",
+"club": "BHA",
+"rating": 136,
+"rating_base": 136,
+"pa": 142,
+"face_id": 18110473,
+"fm_uid": 18110463
+},
+{
+"id": 130,
+"name": "Michael Svoboda",
+"club": "BHA",
+"rating": 124,
+"rating_base": 124,
+"pa": 132,
+"face_id": 16195051,
+"fm_uid": 16194700
+},
+{
+"id": 131,
+"name": "Matt O'Riley",
+"club": "BHA",
+"rating": 141,
+"rating_base": 141,
+"pa": 160,
+"face_id": 29186052,
+"fm_uid": 29185972
+},
+{
+"id": 132,
+"name": "Malick Yalcouye",
+"club": "BHA",
+"rating": 124,
+"rating_base": 122,
+"pa": 135,
+"face_id": 12095038,
+"fm_uid": 12095035
+},
+{
+"id": 133,
+"name": "Zadok Yohanna",
+"club": "BHA",
+"rating": 123,
+"rating_base": 120,
+"pa": 155,
+"face_id": null,
+"fm_uid": 2000471415
+},
+{
+"id": 134,
+"name": "Tom McGill",
+"club": "BHA",
+"rating": 97,
+"rating_base": 97,
+"pa": 125,
+"face_id": 29174499,
+"fm_uid": 29174476
+},
+{
+"id": 135,
+"name": "Femi Azeez",
+"club": "BHA",
+"rating": 120,
+"rating_base": 120,
+"pa": 125,
+"face_id": 31042298,
+"fm_uid": 31042288
+},
+{
+"id": 136,
+"name": "Luka Vuskovic",
+"club": "BHA",
+"rating": 144,
+"rating_base": 140,
+"pa": 160,
+"face_id": 2000262919,
+"fm_uid": 2000262918
+},
+{
+"id": 137,
+"name": "Nehemiah Oriola",
+"club": "BHA",
+"rating": 90,
+"rating_base": 90,
+"pa": 133,
+"face_id": 2000315332,
+"fm_uid": 2000315331
+},
+{
+"id": 51,
+"name": "Djordje Petrovic",
+"club": "BOU",
+"rating": 143,
+"rating_base": 143,
+"pa": 152,
+"face_id": 62216198,
+"fm_uid": 62216187
+},
+{
+"id": 52,
+"name": "Julian Araujo",
+"club": "BOU",
+"rating": 128,
+"rating_base": 128,
+"pa": 148,
+"face_id": 72053642,
+"fm_uid": 72053592
+},
+{
+"id": 53,
+"name": "Adrien Truffert",
+"club": "BOU",
+"rating": 145,
+"rating_base": 145,
+"pa": 153,
+"face_id": 49050736,
+"fm_uid": 49050532
+},
+{
+"id": 54,
+"name": "Lewis Cook",
+"club": "BOU",
+"rating": 146,
+"rating_base": 146,
+"pa": 155,
+"face_id": 29127852,
+"fm_uid": 29127829
+},
+{
+"id": 55,
+"name": "James Hill",
+"club": "BOU",
+"rating": 132,
+"rating_base": 132,
+"pa": 145,
+"face_id": 29217706,
+"fm_uid": 29217703
+},
+{
+"id": 56,
+"name": "Julio Soler",
+"club": "BOU",
+"rating": 124,
+"rating_base": 124,
+"pa": 149,
+"face_id": 2000142045,
+"fm_uid": 2000142038
+},
+{
+"id": 57,
+"name": "David Brooks",
+"club": "BOU",
+"rating": 137,
+"rating_base": 137,
+"pa": 153,
+"face_id": 28095352,
+"fm_uid": 28095350
+},
+{
+"id": 58,
+"name": "Alex Scott",
+"club": "BOU",
+"rating": 145,
+"rating_base": 145,
+"pa": 164,
+"face_id": 95079228,
+"fm_uid": 95079151
+},
+{
+"id": 59,
+"name": "Evanilson",
+"club": "BOU",
+"rating": 147,
+"rating_base": 147,
+"pa": 152,
+"face_id": 19342183,
+"fm_uid": 19341620
+},
+{
+"id": 60,
+"name": "Ryan Christie",
+"club": "BOU",
+"rating": 144,
+"rating_base": 144,
+"pa": 145,
+"face_id": 61042900,
+"fm_uid": 61042878
+},
+{
+"id": 61,
+"name": "Ben Gannon-Doak",
+"club": "BOU",
+"rating": 134,
+"rating_base": 134,
+"pa": 170,
+"face_id": 2000164850,
+"fm_uid": 2000138755
+},
+{
+"id": 62,
+"name": "Tyler Adams",
+"club": "BOU",
+"rating": 151,
+"rating_base": 151,
+"pa": 151,
+"face_id": 72044918,
+"fm_uid": 72044912
+},
+{
+"id": 63,
+"name": "Antonio Silva",
+"club": "BOU",
+"rating": 141,
+"rating_base": 141,
+"pa": 154,
+"face_id": 83320135,
+"fm_uid": 83320134
+},
+{
+"id": 64,
+"name": "Adam Smith",
+"club": "BOU",
+"rating": 136,
+"rating_base": 136,
+"pa": 136,
+"face_id": 28011401,
+"fm_uid": 28011400
+},
+{
+"id": 65,
+"name": "Marcus Tavernier",
+"club": "BOU",
+"rating": 143,
+"rating_base": 143,
+"pa": 145,
+"face_id": 29162667,
+"fm_uid": 29162663
+},
+{
+"id": 66,
+"name": "Fraser Forster",
+"club": "BOU",
+"rating": 126,
+"rating_base": 126,
+"pa": 150,
+"face_id": 5128263,
+"fm_uid": 5128259
+},
+{
+"id": 67,
+"name": "Bafode Diakite",
+"club": "BOU",
+"rating": 138,
+"rating_base": 138,
+"pa": 151,
+"face_id": 49038967,
+"fm_uid": 49038965
+},
+{
+"id": 68,
+"name": "Justin Kluivert",
+"club": "BOU",
+"rating": 148,
+"rating_base": 148,
+"pa": 155,
+"face_id": 37055841,
+"fm_uid": 37055838
+},
+{
+"id": 69,
+"name": "Michele Di Gregorio",
+"club": "BOU",
+"rating": 149,
+"rating_base": 149,
+"pa": 152,
+"face_id": 43161669,
+"fm_uid": 43161661
+},
+{
+"id": 70,
+"name": "Amine Adli",
+"club": "BOU",
+"rating": 141,
+"rating_base": 141,
+"pa": 150,
+"face_id": 49037698,
+"fm_uid": 49037694
+},
+{
+"id": 71,
+"name": "Junior Kroupi",
+"club": "BOU",
+"rating": 135,
+"rating_base": 132,
+"pa": 176,
+"face_id": 2000181790,
+"fm_uid": 2000181784
+},
+{
+"id": 72,
+"name": "Juanlu Sanchez",
+"club": "BOU",
+"rating": 142,
+"rating_base": 141,
+"pa": 159,
+"face_id": 2000027530,
+"fm_uid": 2000027527
+},
+{
+"id": 73,
+"name": "Alex Toth",
+"club": "BOU",
+"rating": 116,
+"rating_base": 116,
+"pa": 142,
+"face_id": 2000186151,
+"fm_uid": 2000186138
+},
+{
+"id": 74,
+"name": "Max Aarons",
+"club": "BOU",
+"rating": 124,
+"rating_base": 124,
+"pa": 160,
+"face_id": 29173977,
+"fm_uid": 29173778
+},
+{
+"id": 75,
+"name": "Daniel Jebbison",
+"club": "BOU",
+"rating": 114,
+"rating_base": 114,
+"pa": 130,
+"face_id": 28128172,
+"fm_uid": 28128171
+},
+{
+"id": 76,
+"name": "Alvaro Rodriguez",
+"club": "BOU",
+"rating": 131,
+"rating_base": 130,
+"pa": 155,
+"face_id": 2000218258,
+"fm_uid": 2000218254
+},
+{
+"id": 77,
+"name": "Rayan",
+"club": "BOU",
+"rating": 135,
+"rating_base": 131,
+"pa": 165,
+"face_id": 2000218544,
+"fm_uid": 2000218543
+},
+{
+"id": 78,
+"name": "Veljko Milosavljevic",
+"club": "BOU",
+"rating": 128,
+"rating_base": 126,
+"pa": 151,
+"face_id": 2000288469,
+"fm_uid": 2000288465
+},
+{
+"id": 79,
+"name": "Ben Winterburn",
+"club": "BOU",
+"rating": 93,
+"rating_base": 93,
+"pa": 119,
+"face_id": 2000138756,
+"fm_uid": 2000138755
+},
+{
+"id": 80,
+"name": "Caoimhin Kelleher",
+"club": "BRE",
+"rating": 145,
+"rating_base": 145,
+"pa": 158,
+"face_id": 28104130,
+"fm_uid": 28104129
+},
+{
+"id": 81,
+"name": "Aaron Hickey",
+"club": "BRE",
+"rating": 141,
+"rating_base": 141,
+"pa": 165,
+"face_id": 61089387,
+"fm_uid": 61089335
+},
+{
+"id": 82,
+"name": "Rico Henry",
+"club": "BRE",
+"rating": 142,
+"rating_base": 142,
+"pa": 150,
+"face_id": 29129073,
+"fm_uid": 29129043
+},
+{
+"id": 83,
+"name": "Sepp van den Berg",
+"club": "BRE",
+"rating": 143,
+"rating_base": 143,
+"pa": 156,
+"face_id": 37074900,
+"fm_uid": 37074626
+},
+{
+"id": 84,
+"name": "Yehor Yarmoliuk",
+"club": "BRE",
+"rating": 142,
+"rating_base": 141,
+"pa": 165,
+"face_id": 71110357,
+"fm_uid": 71110355
+},
+{
+"id": 85,
+"name": "Kevin Schade",
+"club": "BRE",
+"rating": 144,
+"rating_base": 144,
+"pa": 159,
+"face_id": 91208050,
+"fm_uid": 91208046
+},
+{
+"id": 86,
+"name": "Mathias Jensen",
+"club": "BRE",
+"rating": 142,
+"rating_base": 142,
+"pa": 145,
+"face_id": 27088231,
+"fm_uid": 27088228
+},
+{
+"id": 87,
+"name": "Igor Thiago",
+"club": "BRE",
+"rating": 145,
+"rating_base": 145,
+"pa": 155,
+"face_id": 19409389,
+"fm_uid": 19409388
+},
+{
+"id": 537,
+"name": "Josh Dasilva",
+"club": "BRE",
+"rating": 125,
+"rating_base": 125,
+"pa": 146,
+"face_id": 28106685,
+"fm_uid": 28106684
+},
+{
+"id": 88,
+"name": "Dango Ouattara",
+"club": "BRE",
+"rating": 142,
+"rating_base": 142,
+"pa": 152,
+"face_id": 12091814,
+"fm_uid": 12091813
+},
+{
+"id": 89,
+"name": "Hakon Valdimarsson",
+"club": "BRE",
+"rating": 134,
+"rating_base": 134,
+"pa": 148,
+"face_id": 39053746,
+"fm_uid": 39053701
+},
+{
+"id": 90,
+"name": "Callum Wilson",
+"club": "BRE",
+"rating": 136,
+"rating_base": 136,
+"pa": 155,
+"face_id": 28030268,
+"fm_uid": 28030263
+},
+{
+"id": 91,
+"name": "Fabio Carvalho",
+"club": "BRE",
+"rating": 137,
+"rating_base": 136,
+"pa": 159,
+"face_id": 28122195,
+"fm_uid": 28122194
+},
+{
+"id": 92,
+"name": "Antoni Milambo",
+"club": "BRE",
+"rating": 134,
+"rating_base": 133,
+"pa": 152,
+"face_id": 2000054475,
+"fm_uid": 2000054457
+},
+{
+"id": 93,
+"name": "Mamadou Sangare",
+"club": "BRE",
+"rating": 136,
+"rating_base": 136,
+"pa": 150,
+"face_id": 2000032708,
+"fm_uid": 2000032706
+},
+{
+"id": 94,
+"name": "Jaidon Anthony",
+"club": "BRE",
+"rating": 127,
+"rating_base": 127,
+"pa": 146,
+"face_id": 28112512,
+"fm_uid": 28112457
+},
+{
+"id": 95,
+"name": "Kristoffer Ajer",
+"club": "BRE",
+"rating": 139,
+"rating_base": 139,
+"pa": 151,
+"face_id": 53110135,
+"fm_uid": 53110134
+},
+{
+"id": 96,
+"name": "Nathan Collins",
+"club": "BRE",
+"rating": 143,
+"rating_base": 143,
+"pa": 155,
+"face_id": 28117372,
+"fm_uid": 28117365
+},
+{
+"id": 97,
+"name": "Keane Lewis-Potter",
+"club": "BRE",
+"rating": 141,
+"rating_base": 141,
+"pa": 151,
+"face_id": 28113414,
+"fm_uid": 28113412
+},
+{
+"id": 98,
+"name": "Mikkel Damsgaard",
+"club": "BRE",
+"rating": 143,
+"rating_base": 143,
+"pa": 158,
+"face_id": 27128917,
+"fm_uid": 27128916
+},
+{
+"id": 99,
+"name": "El Hadji Malick Diouf",
+"club": "BRE",
+"rating": 136,
+"rating_base": 135,
+"pa": 159,
+"face_id": 2000262615,
+"fm_uid": 2000262551
+},
+{
+"id": 100,
+"name": "Vitaly Janelt",
+"club": "BRE",
+"rating": 140,
+"rating_base": 140,
+"pa": 153,
+"face_id": 91143519,
+"fm_uid": 91143512
+},
+{
+"id": 101,
+"name": "Ellery Balcombe",
+"club": "BRE",
+"rating": 103,
+"rating_base": 103,
+"pa": 130,
+"face_id": 29174476,
+"fm_uid": 29174451
+},
+{
+"id": 102,
+"name": "Michael Kayode",
+"club": "BRE",
+"rating": 145,
+"rating_base": 143,
+"pa": 168,
+"face_id": 2000023588,
+"fm_uid": 2000023580
+},
+{
+"id": 103,
+"name": "Kim Ji-Soo",
+"club": "BRE",
+"rating": 116,
+"rating_base": 116,
+"pa": 142,
+"face_id": 2000205527,
+"fm_uid": 2000205526
+},
+{
+"id": 104,
+"name": "Gustavo Nunes",
+"club": "BRE",
+"rating": 122,
+"rating_base": 122,
+"pa": 152,
+"face_id": 2000256293,
+"fm_uid": 2000256285
+},
+{
+"id": 105,
+"name": "Jannik Schuster",
+"club": "BRE",
+"rating": 120,
+"rating_base": 119,
+"pa": 150,
+"face_id": null,
+"fm_uid": 2000175446
+},
+{
+"id": 106,
+"name": "Benjamin Fredrick",
+"club": "BRE",
+"rating": 102,
+"rating_base": 102,
+"pa": 123,
+"face_id": 2000231612,
+"fm_uid": 2000231611
+},
+{
+"id": 138,
+"name": "Emiliano Martínez",
+"club": "CHE",
+"rating": 157,
+"rating_base": 157,
+"pa": 165,
+"face_id": 14020367,
+"fm_uid": 14019893
+},
+{
+"id": 139,
+"name": "Marco Palestra",
+"club": "CHE",
+"rating": 132,
+"rating_base": 131,
+"pa": 146,
+"face_id": 2000136198,
+"fm_uid": 2000136195
+},
+{
+"id": 140,
+"name": "Wesley Fofana",
+"club": "CHE",
+"rating": 160,
+"rating_base": 160,
+"pa": 180,
+"face_id": 49037900,
+"fm_uid": 49037897
+},
+{
+"id": 141,
+"name": "Valentín Barco",
+"club": "CHE",
+"rating": 139,
+"rating_base": 137,
+"pa": 164,
+"face_id": 2000033291,
+"fm_uid": 2000033284
+},
+{
+"id": 142,
+"name": "Maxence Lacroix",
+"club": "CHE",
+"rating": 146,
+"rating_base": 146,
+"pa": 156,
+"face_id": 49038271,
+"fm_uid": 49038255
+},
+{
+"id": 143,
+"name": "Levi Colwill",
+"club": "CHE",
+"rating": 156,
+"rating_base": 155,
+"pa": 170,
+"face_id": 28124573,
+"fm_uid": 28124572
+},
+{
+"id": 144,
+"name": "Pedro Neto",
+"club": "CHE",
+"rating": 144,
+"rating_base": 144,
+"pa": 164,
+"face_id": 29179717,
+"fm_uid": 29179656
+},
+{
+"id": 145,
+"name": "João Pedro",
+"club": "CHE",
+"rating": 149,
+"rating_base": 149,
+"pa": 165,
+"face_id": 19371552,
+"fm_uid": 19371428
+},
+{
+"id": 146,
+"name": "Cole Palmer",
+"club": "CHE",
+"rating": 173,
+"rating_base": 173,
+"pa": 173,
+"face_id": 28120042,
+"fm_uid": 28120041
+},
+{
+"id": 147,
+"name": "Jamie Gittens",
+"club": "CHE",
+"rating": 142,
+"rating_base": 140,
+"pa": 168,
+"face_id": 2000015300,
+"fm_uid": 2000015298
+},
+{
+"id": 148,
+"name": "Jordan Henderson",
+"club": "CHE",
+"rating": 144,
+"rating_base": 144,
+"pa": 165,
+"face_id": 28005568,
+"fm_uid": 28005566
+},
+{
+"id": 149,
+"name": "Morgan Rogers",
+"club": "CHE",
+"rating": 156,
+"rating_base": 155,
+"pa": 170,
+"face_id": 28115996,
+"fm_uid": 28115992
+},
+{
+"id": 150,
+"name": "Danny Welbeck",
+"club": "CHE",
+"rating": 146,
+"rating_base": 146,
+"pa": 160,
+"face_id": 28010491,
+"fm_uid": 28010490
+},
+{
+"id": 151,
+"name": "Jorrel Hato",
+"club": "CHE",
+"rating": 143,
+"rating_base": 141,
+"pa": 169,
+"face_id": 2000105654,
+"fm_uid": 2000105653
+},
+{
+"id": 152,
+"name": "Emmanuel Emegha",
+"club": "CHE",
+"rating": 135,
+"rating_base": 135,
+"pa": 153,
+"face_id": 37088234,
+"fm_uid": 37088233
+},
+{
+"id": 153,
+"name": "Geovany Quenda",
+"club": "CHE",
+"rating": 140,
+"rating_base": 137,
+"pa": 169,
+"face_id": 2000274379,
+"fm_uid": 2000274374
+},
+{
+"id": 154,
+"name": "Reece James",
+"club": "CHE",
+"rating": 173,
+"rating_base": 173,
+"pa": 173,
+"face_id": 28108035,
+"fm_uid": 28108034
+},
+{
+"id": 155,
+"name": "Moisés Caicedo",
+"club": "CHE",
+"rating": 168,
+"rating_base": 168,
+"pa": 185,
+"face_id": 86078360,
+"fm_uid": 86078359
+},
+{
+"id": 156,
+"name": "Malo Gusto",
+"club": "CHE",
+"rating": 142,
+"rating_base": 142,
+"pa": 153,
+"face_id": 49056280,
+"fm_uid": 49056279
+},
+{
+"id": 157,
+"name": "Teddy Sharman-Lowe",
+"club": "CHE",
+"rating": 105,
+"rating_base": 105,
+"pa": 129,
+"face_id": 29235575,
+"fm_uid": 29235542
+},
+{
+"id": 158,
+"name": "Pep Chavarría",
+"club": "CHE",
+"rating": 139,
+"rating_base": 139,
+"pa": 139,
+"face_id": 67277695,
+"fm_uid": 67277694
+},
+{
+"id": 159,
+"name": "Aarón Anselmino",
+"club": "CHE",
+"rating": 137,
+"rating_base": 135,
+"pa": 160,
+"face_id": 2000122572,
+"fm_uid": 2000122571
+},
+{
+"id": 160,
+"name": "Mahdi Nicoll-Jazuli",
+"club": "CHE",
+"rating": 94,
+"rating_base": 90,
+"pa": 159,
+"face_id": null,
+"fm_uid": 2002042649
+},
+{
+"id": 161,
+"name": "Josh Acheampong",
+"club": "CHE",
+"rating": 136,
+"rating_base": 134,
+"pa": 151,
+"face_id": 2000184611,
+"fm_uid": 2000184608
+},
+{
+"id": 162,
+"name": "Mike Penders",
+"club": "CHE",
+"rating": 130,
+"rating_base": 129,
+"pa": 157,
+"face_id": 2000102877,
+"fm_uid": 2000102872
+},
+{
+"id": 163,
+"name": "Estêvão",
+"club": "CHE",
+"rating": 145,
+"rating_base": 138,
+"pa": 175,
+"face_id": 2000263999,
+"fm_uid": 2000263998
+},
+{
+"id": 164,
+"name": "Gabriel Slonina",
+"club": "CHE",
+"rating": 102,
+"rating_base": 102,
+"pa": 123,
+"face_id": 72053584,
+"fm_uid": 72053512
+},
+{
+"id": 165,
+"name": "Roméo Lavia",
+"club": "CHE",
+"rating": 140,
+"rating_base": 140,
+"pa": 159,
+"face_id": 18115012,
+"fm_uid": 18115011
+},
+{
+"id": 166,
+"name": "Ethan Pinnock",
+"club": "COV",
+"rating": 135,
+"rating_base": 135,
+"pa": 140,
+"face_id": 89040516,
+"fm_uid": 89040304
+},
+{
+"id": 167,
+"name": "Jay Dasilva",
+"club": "COV",
+"rating": 119,
+"rating_base": 119,
+"pa": 135,
+"face_id": 29125192,
+"fm_uid": 29125191
+},
+{
+"id": 168,
+"name": "Bobby Thomas",
+"club": "COV",
+"rating": 131,
+"rating_base": 131,
+"pa": 136,
+"face_id": 28116346,
+"fm_uid": 28116345
+},
+{
+"id": 169,
+"name": "Jack Rudoni",
+"club": "COV",
+"rating": 130,
+"rating_base": 130,
+"pa": 140,
+"face_id": 29191145,
+"fm_uid": 29191139
+},
+{
+"id": 170,
+"name": "Matt Grimes",
+"club": "COV",
+"rating": 128,
+"rating_base": 128,
+"pa": 135,
+"face_id": 29086056,
+"fm_uid": 29086052
+},
+{
+"id": 171,
+"name": "Tatsuhiro Sakamoto",
+"club": "COV",
+"rating": 127,
+"rating_base": 127,
+"pa": 132,
+"face_id": 45116614,
+"fm_uid": 45116604
+},
+{
+"id": 172,
+"name": "Caleb Yirenkyi",
+"club": "COV",
+"rating": 132,
+"rating_base": 130,
+"pa": 155,
+"face_id": 2000339863,
+"fm_uid": 2000339859
+},
+{
+"id": 173,
+"name": "Ellis Simms",
+"club": "COV",
+"rating": 119,
+"rating_base": 119,
+"pa": 137,
+"face_id": 28116394,
+"fm_uid": 28116391
+},
+{
+"id": 174,
+"name": "Ephron Mason-Clark",
+"club": "COV",
+"rating": 124,
+"rating_base": 124,
+"pa": 132,
+"face_id": 29163836,
+"fm_uid": 29163834
+},
+{
+"id": 175,
+"name": "Haji Wright",
+"club": "COV",
+"rating": 130,
+"rating_base": 130,
+"pa": 138,
+"face_id": 20034959,
+"fm_uid": 20032912
+},
+{
+"id": 176,
+"name": "Stephen Mfuni",
+"club": "COV",
+"rating": 111,
+"rating_base": 111,
+"pa": 150,
+"face_id": 2000404708,
+"fm_uid": 2000404707
+},
+{
+"id": 177,
+"name": "Ben Wilson",
+"club": "COV",
+"rating": 113,
+"rating_base": 113,
+"pa": 122,
+"face_id": 28028347,
+"fm_uid": 28028344
+},
+{
+"id": 178,
+"name": "Taiwo Awoniyi",
+"club": "COV",
+"rating": 135,
+"rating_base": 135,
+"pa": 145,
+"face_id": 13136629,
+"fm_uid": 13136627
+},
+{
+"id": 179,
+"name": "Frank Onyeka",
+"club": "COV",
+"rating": 131,
+"rating_base": 131,
+"pa": 142,
+"face_id": 27129125,
+"fm_uid": 27129074
+},
+{
+"id": 180,
+"name": "Loum Tchaouna",
+"club": "COV",
+"rating": 134,
+"rating_base": 134,
+"pa": 150,
+"face_id": 2000006108,
+"fm_uid": 2000006107
+},
+{
+"id": 181,
+"name": "Carl Rushworth",
+"club": "COV",
+"rating": 127,
+"rating_base": 127,
+"pa": 154,
+"face_id": 89065344,
+"fm_uid": 89064940
+},
+{
+"id": 182,
+"name": "Kaine Kesler-Hayden",
+"club": "COV",
+"rating": 119,
+"rating_base": 119,
+"pa": 136,
+"face_id": 28127068,
+"fm_uid": 28127067
+},
+{
+"id": 183,
+"name": "Jake Bidwell",
+"club": "COV",
+"rating": 116,
+"rating_base": 116,
+"pa": 130,
+"face_id": 28047408,
+"fm_uid": 28047407
+},
+{
+"id": 184,
+"name": "Joel Latibeaudiere",
+"club": "COV",
+"rating": 117,
+"rating_base": 117,
+"pa": 133,
+"face_id": 28108493,
+"fm_uid": 28108492
+},
+{
+"id": 185,
+"name": "Brandon Thomas-Asante",
+"club": "COV",
+"rating": 119,
+"rating_base": 119,
+"pa": 125,
+"face_id": 29162985,
+"fm_uid": 29162935
+},
+{
+"id": 186,
+"name": "Aurele Amenda",
+"club": "COV",
+"rating": 130,
+"rating_base": 130,
+"pa": 146,
+"face_id": 84161623,
+"fm_uid": 84161618
+},
+{
+"id": 187,
+"name": "Dan Bentley",
+"club": "COV",
+"rating": 115,
+"rating_base": 115,
+"pa": 135,
+"face_id": 29060276,
+"fm_uid": 29060120
+},
+{
+"id": 188,
+"name": "Luke Woolfenden",
+"club": "COV",
+"rating": 125,
+"rating_base": 125,
+"pa": 135,
+"face_id": 29156431,
+"fm_uid": 29156430
+},
+{
+"id": 189,
+"name": "Milan van Ewijk",
+"club": "COV",
+"rating": 129,
+"rating_base": 129,
+"pa": 143,
+"face_id": 37075765,
+"fm_uid": 37075484
+},
+{
+"id": 190,
+"name": "Josh Eccles",
+"club": "COV",
+"rating": 117,
+"rating_base": 117,
+"pa": 135,
+"face_id": 29177676,
+"fm_uid": 29177672
+},
+{
+"id": 191,
+"name": "Victor Torp",
+"club": "COV",
+"rating": 127,
+"rating_base": 127,
+"pa": 132,
+"face_id": 27118876,
+"fm_uid": 27118875
+},
+{
+"id": 192,
+"name": "Yann Gboho",
+"club": "COV",
+"rating": 132,
+"rating_base": 132,
+"pa": 136,
+"face_id": null,
+"fm_uid": 49038960
+},
+{
+"id": 193,
+"name": "Gustavo Hamer",
+"club": "COV",
+"rating": 132,
+"rating_base": 132,
+"pa": 137,
+"face_id": 37050681,
+"fm_uid": 37050680
+},
+{
+"id": 194,
+"name": "Sidiki Cherif",
+"club": "COV",
+"rating": 124,
+"rating_base": 122,
+"pa": 166,
+"face_id": 2000271175,
+"fm_uid": 2000271171
+},
+{
+"id": 195,
+"name": "Dean Henderson",
+"club": "CRY",
+"rating": 147,
+"rating_base": 147,
+"pa": 155,
+"face_id": 29125334,
+"fm_uid": 29125333
+},
+{
+"id": 196,
+"name": "Tyrick Mitchell",
+"club": "CRY",
+"rating": 145,
+"rating_base": 145,
+"pa": 151,
+"face_id": 28111507,
+"fm_uid": 28111503
+},
+{
+"id": 197,
+"name": "Chadi Riad",
+"club": "CRY",
+"rating": 130,
+"rating_base": 129,
+"pa": 169,
+"face_id": 2000058232,
+"fm_uid": 2000058202
+},
+{
+"id": 198,
+"name": "Axel Disasi",
+"club": "CRY",
+"rating": 146,
+"rating_base": 146,
+"pa": 157,
+"face_id": 48037291,
+"fm_uid": 48037283
+},
+{
+"id": 199,
+"name": "Jaydee Canvot",
+"club": "CRY",
+"rating": 131,
+"rating_base": 126,
+"pa": 155,
+"face_id": 2000187623,
+"fm_uid": 2000187622
+},
+{
+"id": 200,
+"name": "Ismaila Sarr",
+"club": "CRY",
+"rating": 148,
+"rating_base": 148,
+"pa": 150,
+"face_id": 48042766,
+"fm_uid": 48042763
+},
+{
+"id": 201,
+"name": "Jefferson Lerma",
+"club": "CRY",
+"rating": 138,
+"rating_base": 138,
+"pa": 148,
+"face_id": 76038475,
+"fm_uid": 76038469
+},
+{
+"id": 202,
+"name": "Eddie Nketiah",
+"club": "CRY",
+"rating": 138,
+"rating_base": 138,
+"pa": 155,
+"face_id": 28106687,
+"fm_uid": 28106685
+},
+{
+"id": 203,
+"name": "Yeremy Pino",
+"club": "CRY",
+"rating": 142,
+"rating_base": 142,
+"pa": 165,
+"face_id": 67295650,
+"fm_uid": 67295649
+},
+{
+"id": 204,
+"name": "Dwight McNeil",
+"club": "CRY",
+"rating": 136,
+"rating_base": 136,
+"pa": 145,
+"face_id": 28110488,
+"fm_uid": 28110485
+},
+{
+"id": 205,
+"name": "Zavier Gozo",
+"club": "CRY",
+"rating": 115,
+"rating_base": 115,
+"pa": 140,
+"face_id": null,
+"fm_uid": 2000239544
+},
+{
+"id": 206,
+"name": "Jean-Philippe Mateta",
+"club": "CRY",
+"rating": 146,
+"rating_base": 146,
+"pa": 150,
+"face_id": 49034219,
+"fm_uid": 49034179
+},
+{
+"id": 207,
+"name": "Takehiro Tomiyasu",
+"club": "CRY",
+"rating": 144,
+"rating_base": 144,
+"pa": 150,
+"face_id": 45095490,
+"fm_uid": 45095441
+},
+{
+"id": 208,
+"name": "Daichi Kamada",
+"club": "CRY",
+"rating": 139,
+"rating_base": 139,
+"pa": 150,
+"face_id": 45092714,
+"fm_uid": 45092697
+},
+{
+"id": 209,
+"name": "Will Hughes",
+"club": "CRY",
+"rating": 133,
+"rating_base": 133,
+"pa": 155,
+"face_id": 29086005,
+"fm_uid": 29085957
+},
+{
+"id": 210,
+"name": "Adam Wharton",
+"club": "CRY",
+"rating": 148,
+"rating_base": 147,
+"pa": 174,
+"face_id": 2000053516,
+"fm_uid": 2000053514
+},
+{
+"id": 211,
+"name": "Honest Ahanor",
+"club": "CRY",
+"rating": 130,
+"rating_base": 125,
+"pa": 141,
+"face_id": 2000400123,
+"fm_uid": 2000400119
+},
+{
+"id": 212,
+"name": "Jorgen Strand Larsen",
+"club": "CRY",
+"rating": 141,
+"rating_base": 141,
+"pa": 150,
+"face_id": 53143395,
+"fm_uid": 53143309
+},
+{
+"id": 213,
+"name": "Quinten Timber",
+"club": "CRY",
+"rating": 146,
+"rating_base": 146,
+"pa": 156,
+"face_id": 37060952,
+"fm_uid": 37060951
+},
+{
+"id": 214,
+"name": "Dario Osorio",
+"club": "CRY",
+"rating": 122,
+"rating_base": 122,
+"pa": 142,
+"face_id": 2000129380,
+"fm_uid": 2000129379
+},
+{
+"id": 215,
+"name": "Anan Khalaili",
+"club": "CRY",
+"rating": 124,
+"rating_base": 124,
+"pa": 147,
+"face_id": 2000231531,
+"fm_uid": 2000231529
+},
+{
+"id": 216,
+"name": "Chris Richards",
+"club": "CRY",
+"rating": 142,
+"rating_base": 142,
+"pa": 150,
+"face_id": 72051563,
+"fm_uid": 72051281
+},
+{
+"id": 217,
+"name": "Cheick Doucoure",
+"club": "CRY",
+"rating": 139,
+"rating_base": 139,
+"pa": 158,
+"face_id": 13194021,
+"fm_uid": 13194018
+},
+{
+"id": 218,
+"name": "Evann Guessand",
+"club": "CRY",
+"rating": 144,
+"rating_base": 144,
+"pa": 150,
+"face_id": 49041006,
+"fm_uid": 49040845
+},
+{
+"id": 219,
+"name": "Oscar Mingueza",
+"club": "CRY",
+"rating": 148,
+"rating_base": 148,
+"pa": 150,
+"face_id": 67245413,
+"fm_uid": 67245412
+},
+{
+"id": 220,
+"name": "Remi Matthews",
+"club": "CRY",
+"rating": 98,
+"rating_base": 98,
+"pa": 128,
+"face_id": 29068437,
+"fm_uid": 29068373
+},
+{
+"id": 221,
+"name": "Ben Chilwell",
+"club": "CRY",
+"rating": 142,
+"rating_base": 142,
+"pa": 165,
+"face_id": 29128536,
+"fm_uid": 29128510
+},
+{
+"id": 222,
+"name": "Walter Benitez",
+"club": "CRY",
+"rating": 138,
+"rating_base": 138,
+"pa": 154,
+"face_id": 14035968,
+"fm_uid": 14035817
+},
+{
+"id": 223,
+"name": "Jordan Pickford",
+"club": "EVE",
+"rating": 156,
+"rating_base": 156,
+"pa": 156,
+"face_id": 28054565,
+"fm_uid": 28054484
+},
+{
+"id": 224,
+"name": "Ainsley Maitland-Niles",
+"club": "EVE",
+"rating": 138,
+"rating_base": 138,
+"pa": 145,
+"face_id": 28095584,
+"fm_uid": 28095582
+},
+{
+"id": 225,
+"name": "Jarrad Branthwaite",
+"club": "EVE",
+"rating": 149,
+"rating_base": 149,
+"pa": 160,
+"face_id": 29226000,
+"fm_uid": 29225910
+},
+{
+"id": 226,
+"name": "Michael Keane",
+"club": "EVE",
+"rating": 135,
+"rating_base": 135,
+"pa": 146,
+"face_id": 28047558,
+"fm_uid": 28047507
+},
+{
+"id": 227,
+"name": "James Tarkowski",
+"club": "EVE",
+"rating": 138,
+"rating_base": 138,
+"pa": 150,
+"face_id": 29055569,
+"fm_uid": 29055158
+},
+{
+"id": 228,
+"name": "Kiernan Dewsbury-Hall",
+"club": "EVE",
+"rating": 145,
+"rating_base": 145,
+"pa": 165,
+"face_id": 28106342,
+"fm_uid": 28106291
+},
+{
+"id": 229,
+"name": "Jack Grealish",
+"club": "EVE",
+"rating": 150,
+"rating_base": 150,
+"pa": 175,
+"face_id": 28067800,
+"fm_uid": 28067795
+},
+{
+"id": 230,
+"name": "Thierno Barry",
+"club": "EVE",
+"rating": 135,
+"rating_base": 135,
+"pa": 150,
+"face_id": 2000127926,
+"fm_uid": 2000127924
+},
+{
+"id": 231,
+"name": "Mark Travers",
+"club": "EVE",
+"rating": 133,
+"rating_base": 133,
+"pa": 145,
+"face_id": 52080573,
+"fm_uid": 52080549
+},
+{
+"id": 232,
+"name": "Jake O'Brien",
+"club": "EVE",
+"rating": 142,
+"rating_base": 142,
+"pa": 150,
+"face_id": 52101552,
+"fm_uid": 52101510
+},
+{
+"id": 233,
+"name": "Vitalii Mykolenko",
+"club": "EVE",
+"rating": 134,
+"rating_base": 134,
+"pa": 150,
+"face_id": 71104595,
+"fm_uid": 71104593
+},
+{
+"id": 234,
+"name": "Tyrique George",
+"club": "EVE",
+"rating": 116,
+"rating_base": 116,
+"pa": 157,
+"face_id": 2000184619,
+"fm_uid": 2000184617
+},
+{
+"id": 235,
+"name": "Tyler Dibling",
+"club": "EVE",
+"rating": 139,
+"rating_base": 136,
+"pa": 174,
+"face_id": 2000198043,
+"fm_uid": 2000198042
+},
+{
+"id": 236,
+"name": "Brennan Johnson",
+"club": "EVE",
+"rating": 140,
+"rating_base": 140,
+"pa": 155,
+"face_id": 29189400,
+"fm_uid": 29189395
+},
+{
+"id": 237,
+"name": "Christian Norgaard",
+"club": "EVE",
+"rating": 145,
+"rating_base": 145,
+"pa": 146,
+"face_id": 27039017,
+"fm_uid": 27036377
+},
+{
+"id": 238,
+"name": "Charly Alcaraz",
+"club": "EVE",
+"rating": 139,
+"rating_base": 139,
+"pa": 155,
+"face_id": 14238164,
+"fm_uid": 14238025
+},
+{
+"id": 239,
+"name": "Hayden Hackney",
+"club": "EVE",
+"rating": 134,
+"rating_base": 134,
+"pa": 145,
+"face_id": 29218024,
+"fm_uid": 29218023
+},
+{
+"id": 240,
+"name": "Tom King",
+"club": "EVE",
+"rating": 84,
+"rating_base": 84,
+"pa": 120,
+"face_id": 29087448,
+"fm_uid": 29087417
+},
+{
+"id": 241,
+"name": "Merlin Rohl",
+"club": "EVE",
+"rating": 135,
+"rating_base": 135,
+"pa": 155,
+"face_id": 91204520,
+"fm_uid": 91204486
+},
+{
+"id": 242,
+"name": "James Garner",
+"club": "EVE",
+"rating": 147,
+"rating_base": 147,
+"pa": 160,
+"face_id": 28115831,
+"fm_uid": 28115830
+},
+{
+"id": 243,
+"name": "Harrison Armstrong",
+"club": "EVE",
+"rating": 122,
+"rating_base": 122,
+"pa": 136,
+"face_id": 2000288697,
+"fm_uid": 2000288696
+},
+{
+"id": 244,
+"name": "Bernd Leno",
+"club": "FUL",
+"rating": 144,
+"rating_base": 144,
+"pa": 163,
+"face_id": 92012109,
+"fm_uid": 92012108
+},
+{
+"id": 245,
+"name": "Kenny Tete",
+"club": "FUL",
+"rating": 142,
+"rating_base": 142,
+"pa": 142,
+"face_id": 37039829,
+"fm_uid": 37039748
+},
+{
+"id": 246,
+"name": "Calvin Bassey",
+"club": "FUL",
+"rating": 146,
+"rating_base": 146,
+"pa": 149,
+"face_id": 28111079,
+"fm_uid": 28111078
+},
+{
+"id": 247,
+"name": "Jorge Cuenca",
+"club": "FUL",
+"rating": 138,
+"rating_base": 138,
+"pa": 150,
+"face_id": 67248170,
+"fm_uid": 67248166
+},
+{
+"id": 248,
+"name": "Joachim Andersen",
+"club": "FUL",
+"rating": 146,
+"rating_base": 146,
+"pa": 151,
+"face_id": 27069975,
+"fm_uid": 27069968
+},
+{
+"id": 249,
+"name": "Harrison Reed",
+"club": "FUL",
+"rating": 130,
+"rating_base": 130,
+"pa": 145,
+"face_id": 29076104,
+"fm_uid": 29076103
+},
+{
+"id": 250,
+"name": "Gonzalo Garcia",
+"club": "FUL",
+"rating": 140,
+"rating_base": 140,
+"pa": 160,
+"face_id": 2000143029,
+"fm_uid": 2000143020
+},
+{
+"id": 251,
+"name": "Cesar Palacios",
+"club": "FUL",
+"rating": 124,
+"rating_base": 123,
+"pa": 148,
+"face_id": 2000217846,
+"fm_uid": 2000217837
+},
+{
+"id": 252,
+"name": "Rodrigo Muniz",
+"club": "FUL",
+"rating": 136,
+"rating_base": 136,
+"pa": 145,
+"face_id": 19352610,
+"fm_uid": 19352598
+},
+{
+"id": 253,
+"name": "Tom Cairney",
+"club": "FUL",
+"rating": 134,
+"rating_base": 134,
+"pa": 135,
+"face_id": 28025033,
+"fm_uid": 28024848
+},
+{
+"id": 254,
+"name": "Kevin",
+"club": "FUL",
+"rating": 142,
+"rating_base": 142,
+"pa": 160,
+"face_id": 2000031901,
+"fm_uid": 2000031893
+},
+{
+"id": 255,
+"name": "Oscar Bobb",
+"club": "FUL",
+"rating": 139,
+"rating_base": 138,
+"pa": 160,
+"face_id": 28126241,
+"fm_uid": 28126240
+},
+{
+"id": 256,
+"name": "Hugo Larsson",
+"club": "FUL",
+"rating": 135,
+"rating_base": 134,
+"pa": 160,
+"face_id": 2000019708,
+"fm_uid": 2000019698
+},
+{
+"id": 257,
+"name": "Sander Berge",
+"club": "FUL",
+"rating": 141,
+"rating_base": 141,
+"pa": 160,
+"face_id": 53101282,
+"fm_uid": 53100298
+},
+{
+"id": 258,
+"name": "Alex Iwobi",
+"club": "FUL",
+"rating": 144,
+"rating_base": 144,
+"pa": 155,
+"face_id": 28084930,
+"fm_uid": 28084928
+},
+{
+"id": 259,
+"name": "Jonah Kusi-Asare",
+"club": "FUL",
+"rating": 107,
+"rating_base": 104,
+"pa": 139,
+"face_id": 2000251820,
+"fm_uid": 2000251819
+},
+{
+"id": 260,
+"name": "Shea Charles",
+"club": "FUL",
+"rating": 129,
+"rating_base": 128,
+"pa": 160,
+"face_id": 2000027898,
+"fm_uid": 2000027892
+},
+{
+"id": 261,
+"name": "Manuel Angel",
+"club": "FUL",
+"rating": 126,
+"rating_base": 125,
+"pa": 153,
+"face_id": null,
+"fm_uid": 2000146331
+},
+{
+"id": 262,
+"name": "Timothy Castagne",
+"club": "FUL",
+"rating": 138,
+"rating_base": 138,
+"pa": 152,
+"face_id": 18074558,
+"fm_uid": 18073919
+},
+{
+"id": 263,
+"name": "David Affengruber",
+"club": "FUL",
+"rating": 133,
+"rating_base": 133,
+"pa": 152,
+"face_id": 16202375,
+"fm_uid": 16202374
+},
+{
+"id": 538,
+"name": "Benjamin Lecomte",
+"club": "FUL",
+"rating": 128,
+"rating_base": 128,
+"pa": 141,
+"face_id": 85041077,
+"fm_uid": null
+},
+{
+"id": 264,
+"name": "Josh King",
+"club": "FUL",
+"rating": 138,
+"rating_base": 134,
+"pa": 168,
+"face_id": 2000276594,
+"fm_uid": 2000276593
+},
+{
+"id": 265,
+"name": "Ryan Sessegnon",
+"club": "FUL",
+"rating": 144,
+"rating_base": 144,
+"pa": 147,
+"face_id": 29165656,
+"fm_uid": 29165599
+},
+{
+"id": 266,
+"name": "Emile Smith Rowe",
+"club": "FUL",
+"rating": 146,
+"rating_base": 146,
+"pa": 154,
+"face_id": 28109599,
+"fm_uid": 28109598
+},
+{
+"id": 267,
+"name": "Antonee Robinson",
+"club": "FUL",
+"rating": 150,
+"rating_base": 150,
+"pa": 150,
+"face_id": 29125265,
+"fm_uid": 29125264
+},
+{
+"id": 268,
+"name": "Macaulay Zepa",
+"club": "FUL",
+"rating": 76,
+"rating_base": 75,
+"pa": 149,
+"face_id": 2000495413,
+"fm_uid": 2000495411
+},
+{
+"id": 270,
+"name": "Jack Butland",
+"club": "HUL",
+"rating": 130,
+"rating_base": 130,
+"pa": 161,
+"face_id": 28044979,
+"fm_uid": 28044977
+},
+{
+"id": 271,
+"name": "Lewie Coyle",
+"club": "HUL",
+"rating": 113,
+"rating_base": 113,
+"pa": 135,
+"face_id": 29113877,
+"fm_uid": 29113873
+},
+{
+"id": 272,
+"name": "Ryan Giles",
+"club": "HUL",
+"rating": 120,
+"rating_base": 120,
+"pa": 135,
+"face_id": 29175223,
+"fm_uid": 29175220
+},
+{
+"id": 273,
+"name": "Charlie Hughes",
+"club": "HUL",
+"rating": 123,
+"rating_base": 122,
+"pa": 155,
+"face_id": 2000050618,
+"fm_uid": 2000050609
+},
+{
+"id": 274,
+"name": "Hidemasa Morita",
+"club": "HUL",
+"rating": 142,
+"rating_base": 142,
+"pa": 146,
+"face_id": 45109174,
+"fm_uid": 45109093
+},
+{
+"id": 275,
+"name": "Semi Ajayi",
+"club": "HUL",
+"rating": 116,
+"rating_base": 116,
+"pa": 135,
+"face_id": 29067784,
+"fm_uid": 29067601
+},
+{
+"id": 276,
+"name": "Sorba Thomas",
+"club": "HUL",
+"rating": 127,
+"rating_base": 127,
+"pa": 140,
+"face_id": 95040497,
+"fm_uid": 95040414
+},
+{
+"id": 277,
+"name": "Eliot Matazo",
+"club": "HUL",
+"rating": 119,
+"rating_base": 119,
+"pa": 142,
+"face_id": 18107444,
+"fm_uid": 18107443
+},
+{
+"id": 278,
+"name": "Oliver McBurnie",
+"club": "HUL",
+"rating": 133,
+"rating_base": 133,
+"pa": 134,
+"face_id": 29108066,
+"fm_uid": 29107905
+},
+{
+"id": 279,
+"name": "Mohamed Belloumi",
+"club": "HUL",
+"rating": 132,
+"rating_base": 132,
+"pa": 143,
+"face_id": 2000184286,
+"fm_uid": 2000184285
+},
+{
+"id": 280,
+"name": "Joe Gelhardt",
+"club": "HUL",
+"rating": 127,
+"rating_base": 127,
+"pa": 140,
+"face_id": 222724,
+"fm_uid": 222292
+},
+{
+"id": 281,
+"name": "Dillon Phillips",
+"club": "HUL",
+"rating": 105,
+"rating_base": 105,
+"pa": 120,
+"face_id": 29077899,
+"fm_uid": 29077766
+},
+{
+"id": 282,
+"name": "Jens Hjerto-Dahl",
+"club": "HUL",
+"rating": 115,
+"rating_base": 115,
+"pa": 135,
+"face_id": 2000170106,
+"fm_uid": 2000170102
+},
+{
+"id": 283,
+"name": "John Egan",
+"club": "HUL",
+"rating": 114,
+"rating_base": 114,
+"pa": 138,
+"face_id": 28044428,
+"fm_uid": 28044109
+},
+{
+"id": 284,
+"name": "Paddy McNair",
+"club": "HUL",
+"rating": 121,
+"rating_base": 121,
+"pa": 145,
+"face_id": 28068190,
+"fm_uid": 28068189
+},
+{
+"id": 285,
+"name": "Brooke Norton-Cuffy",
+"club": "HUL",
+"rating": 132,
+"rating_base": 131,
+"pa": 155,
+"face_id": 2000047226,
+"fm_uid": 2000047224
+},
+{
+"id": 286,
+"name": "Konstantinos Tzolakis",
+"club": "HUL",
+"rating": 135,
+"rating_base": 135,
+"pa": 155,
+"face_id": 36149384,
+"fm_uid": 36149211
+},
+{
+"id": 287,
+"name": "Elliot Stroud",
+"club": "HUL",
+"rating": 125,
+"rating_base": 125,
+"pa": 135,
+"face_id": 93144119,
+"fm_uid": 93144073
+},
+{
+"id": 288,
+"name": "Lucas Herrington",
+"club": "HUL",
+"rating": 95,
+"rating_base": 92,
+"pa": 125,
+"face_id": 2000263936,
+"fm_uid": 2000263934
+},
+{
+"id": 289,
+"name": "Matt Targett",
+"club": "HUL",
+"rating": 127,
+"rating_base": 127,
+"pa": 140,
+"face_id": 28084863,
+"fm_uid": 28084830
+},
+{
+"id": 290,
+"name": "Matt Crooks",
+"club": "HUL",
+"rating": 117,
+"rating_base": 117,
+"pa": 128,
+"face_id": 29071649,
+"fm_uid": 29071195
+},
+{
+"id": 291,
+"name": "Regan Slater",
+"club": "HUL",
+"rating": 115,
+"rating_base": 115,
+"pa": 135,
+"face_id": 29180952,
+"fm_uid": 29180838
+},
+{
+"id": 292,
+"name": "Ilyas Ansah",
+"club": "HUL",
+"rating": 127,
+"rating_base": 126,
+"pa": 150,
+"face_id": 2000196762,
+"fm_uid": 2000196759
+},
+{
+"id": 293,
+"name": "Lucas Gourna-Douath",
+"club": "HUL",
+"rating": 118,
+"rating_base": 117,
+"pa": 157,
+"face_id": 49056367,
+"fm_uid": 49056366
+},
+{
+"id": 294,
+"name": "Nobel Mendy",
+"club": "HUL",
+"rating": 126,
+"rating_base": 125,
+"pa": 161,
+"face_id": 2000138305,
+"fm_uid": 2000138297
+},
+{
+"id": 295,
+"name": "Abdulkadir Omur",
+"club": "HUL",
+"rating": 115,
+"rating_base": 115,
+"pa": 140,
+"face_id": 70099762,
+"fm_uid": 70099705
+},
+{
+"id": 541,
+"name": "Christos Mouzakitis",
+"club": "HUL",
+"rating": 127,
+"rating_base": 125,
+"pa": 160,
+"face_id": 2000273835,
+"fm_uid": 2000273793
+},
+{
+"id": 296,
+"name": "Tim Iroegbunam",
+"club": "HUL",
+"rating": 135,
+"rating_base": 135,
+"pa": 145,
+"face_id": 292380027,
+"fm_uid": 292380025
+},
+{
+"id": 542,
+"name": "Robinio Vaz",
+"club": "HUL",
+"rating": 116,
+"rating_base": 114,
+"pa": 145,
+"face_id": 2000290881,
+"fm_uid": 2000290799
+},
+{
+"id": 297,
+"name": "Mohamed-Ali Cho",
+"club": "HUL",
+"rating": 130,
+"rating_base": 130,
+"pa": 150,
+"face_id": 2000006280,
+"fm_uid": 2000006279
+},
+{
+"id": 298,
+"name": "Alex Palmer",
+"club": "IPS",
+"rating": 127,
+"rating_base": 127,
+"pa": 130,
+"face_id": 28096363,
+"fm_uid": 28096344
+},
+{
+"id": 299,
+"name": "Darnell Furlong",
+"club": "IPS",
+"rating": 126,
+"rating_base": 126,
+"pa": 136,
+"face_id": 28086267,
+"fm_uid": 28086156
+},
+{
+"id": 300,
+"name": "Leif Davis",
+"club": "IPS",
+"rating": 133,
+"rating_base": 133,
+"pa": 143,
+"face_id": 29175587,
+"fm_uid": 29175561
+},
+{
+"id": 301,
+"name": "Cedric Kipre",
+"club": "IPS",
+"rating": 131,
+"rating_base": 131,
+"pa": 133,
+"face_id": 28100212,
+"fm_uid": 28100209
+},
+{
+"id": 302,
+"name": "Azor Matusiwa",
+"club": "IPS",
+"rating": 135,
+"rating_base": 135,
+"pa": 140,
+"face_id": 37053977,
+"fm_uid": 37053976
+},
+{
+"id": 303,
+"name": "Issa Diop",
+"club": "IPS",
+"rating": 129,
+"rating_base": 129,
+"pa": 135,
+"face_id": 85140415,
+"fm_uid": 85140375
+},
+{
+"id": 304,
+"name": "Abdul Fatawu",
+"club": "IPS",
+"rating": 132,
+"rating_base": 131,
+"pa": 160,
+"face_id": 13211267,
+"fm_uid": 13211258
+},
+{
+"id": 305,
+"name": "Sindre Egeli",
+"club": "IPS",
+"rating": 123,
+"rating_base": 123,
+"pa": 169,
+"face_id": 2000193842,
+"fm_uid": 2000193833
+},
+{
+"id": 306,
+"name": "Zian Flemming",
+"club": "IPS",
+"rating": 129,
+"rating_base": 129,
+"pa": 140,
+"face_id": 37055848,
+"fm_uid": 37055847
+},
+{
+"id": 307,
+"name": "Julio Enciso",
+"club": "IPS",
+"rating": 140,
+"rating_base": 139,
+"pa": 162,
+"face_id": 79034187,
+"fm_uid": 79033991
+},
+{
+"id": 308,
+"name": "Jaden Philogene",
+"club": "IPS",
+"rating": 135,
+"rating_base": 135,
+"pa": 149,
+"face_id": 28127066,
+"fm_uid": 28127065
+},
+{
+"id": 309,
+"name": "Florentino",
+"club": "IPS",
+"rating": 140,
+"rating_base": 140,
+"pa": 145,
+"face_id": 83169817,
+"fm_uid": 83169814
+},
+{
+"id": 310,
+"name": "Jack Taylor",
+"club": "IPS",
+"rating": 124,
+"rating_base": 124,
+"pa": 135,
+"face_id": 95031615,
+"fm_uid": 95031504
+},
+{
+"id": 311,
+"name": "Emersonn",
+"club": "IPS",
+"rating": 121,
+"rating_base": 121,
+"pa": 146,
+"face_id": 19409149,
+"fm_uid": 19409145
+},
+{
+"id": 312,
+"name": "Kasey McAteer",
+"club": "IPS",
+"rating": 126,
+"rating_base": 126,
+"pa": 150,
+"face_id": 28122215,
+"fm_uid": 28122209
+},
+{
+"id": 313,
+"name": "Sasa Lukic",
+"club": "IPS",
+"rating": 140,
+"rating_base": 140,
+"pa": 150,
+"face_id": 62124117,
+"fm_uid": 62124086
+},
+{
+"id": 314,
+"name": "Jacob Greaves",
+"club": "IPS",
+"rating": 129,
+"rating_base": 129,
+"pa": 148,
+"face_id": 28113416,
+"fm_uid": 28113414
+},
+{
+"id": 315,
+"name": "Exequiel Palacios",
+"club": "IPS",
+"rating": 156,
+"rating_base": 156,
+"pa": 160,
+"face_id": 14110846,
+"fm_uid": 14110845
+},
+{
+"id": 316,
+"name": "Dara O'Shea",
+"club": "IPS",
+"rating": 133,
+"rating_base": 133,
+"pa": 140,
+"face_id": 28106528,
+"fm_uid": 28106526
+},
+{
+"id": 317,
+"name": "David Button",
+"club": "IPS",
+"rating": 86,
+"rating_base": 86,
+"pa": 135,
+"face_id": 28000463,
+"fm_uid": 28000462
+},
+{
+"id": 318,
+"name": "Christian Walton",
+"club": "IPS",
+"rating": 128,
+"rating_base": 128,
+"pa": 133,
+"face_id": 29091453,
+"fm_uid": 29091260
+},
+{
+"id": 319,
+"name": "Chuba Akpom",
+"club": "IPS",
+"rating": 126,
+"rating_base": 126,
+"pa": 134,
+"face_id": 28084927,
+"fm_uid": 28084880
+},
+{
+"id": 320,
+"name": "Marcelino Nunez",
+"club": "IPS",
+"rating": 130,
+"rating_base": 130,
+"pa": 144,
+"face_id": 75045691,
+"fm_uid": 75045574
+},
+{
+"id": 321,
+"name": "Anis Mehmeti",
+"club": "IPS",
+"rating": 129,
+"rating_base": 129,
+"pa": 132,
+"face_id": 29193606,
+"fm_uid": 29193605
+},
+{
+"id": 322,
+"name": "Kjell Scherpen",
+"club": "IPS",
+"rating": 126,
+"rating_base": 126,
+"pa": 143,
+"face_id": 37065875,
+"fm_uid": 37065803
+},
+{
+"id": 323,
+"name": "Daizen Maeda",
+"club": "IPS",
+"rating": 137,
+"rating_base": 137,
+"pa": 139,
+"face_id": 45101691,
+"fm_uid": 45101597
+},
+{
+"id": 324,
+"name": "Abdoul Ouattara",
+"club": "IPS",
+"rating": 120,
+"rating_base": 120,
+"pa": 132,
+"face_id": 2000205547,
+"fm_uid": 2000205545
+},
+{
+"id": 325,
+"name": "Jack Clarke",
+"club": "IPS",
+"rating": 130,
+"rating_base": 130,
+"pa": 143,
+"face_id": 29186418,
+"fm_uid": 29186417
+},
+{
+"id": 326,
+"name": "James Trafford",
+"club": "LEE",
+"rating": 138,
+"rating_base": 138,
+"pa": 154,
+"face_id": 28126242,
+"fm_uid": 28126241
+},
+{
+"id": 327,
+"name": "Jayden Bogle",
+"club": "LEE",
+"rating": 138,
+"rating_base": 138,
+"pa": 141,
+"face_id": 29179807,
+"fm_uid": 29179790
+},
+{
+"id": 328,
+"name": "Gabriel Gudmundsson",
+"club": "LEE",
+"rating": 140,
+"rating_base": 140,
+"pa": 141,
+"face_id": 93065006,
+"fm_uid": 93064996
+},
+{
+"id": 329,
+"name": "Ethan Ampadu",
+"club": "LEE",
+"rating": 141,
+"rating_base": 141,
+"pa": 145,
+"face_id": 29175064,
+"fm_uid": 29175037
+},
+{
+"id": 330,
+"name": "Tarik Muharemovic",
+"club": "LEE",
+"rating": 131,
+"rating_base": 131,
+"pa": 151,
+"face_id": 16337326,
+"fm_uid": 16337312
+},
+{
+"id": 331,
+"name": "Joe Rodon",
+"club": "LEE",
+"rating": 139,
+"rating_base": 139,
+"pa": 139,
+"face_id": 28100477,
+"fm_uid": 28100476
+},
+{
+"id": 332,
+"name": "Daniel James",
+"club": "LEE",
+"rating": 128,
+"rating_base": 128,
+"pa": 149,
+"face_id": 28094856,
+"fm_uid": 28094854
+},
+{
+"id": 333,
+"name": "Sean Longstaff",
+"club": "LEE",
+"rating": 137,
+"rating_base": 137,
+"pa": 142,
+"face_id": 28100360,
+"fm_uid": 28100358
+},
+{
+"id": 334,
+"name": "Dominic Calvert-Lewin",
+"club": "LEE",
+"rating": 140,
+"rating_base": 140,
+"pa": 163,
+"face_id": 29123128,
+"fm_uid": 29123126
+},
+{
+"id": 335,
+"name": "Harry Wilson",
+"club": "LEE",
+"rating": 144,
+"rating_base": 144,
+"pa": 144,
+"face_id": 28094949,
+"fm_uid": 28094948
+},
+{
+"id": 336,
+"name": "Brenden Aaronson",
+"club": "LEE",
+"rating": 133,
+"rating_base": 133,
+"pa": 146,
+"face_id": 20046423,
+"fm_uid": 20046415
+},
+{
+"id": 337,
+"name": "Lukas Nmecha",
+"club": "LEE",
+"rating": 130,
+"rating_base": 130,
+"pa": 142,
+"face_id": 28106360,
+"fm_uid": 28106358
+},
+{
+"id": 338,
+"name": "Jaka Bijol",
+"club": "LEE",
+"rating": 145,
+"rating_base": 145,
+"pa": 146,
+"face_id": 62215974,
+"fm_uid": 62215889
+},
+{
+"id": 339,
+"name": "Michael Zetterer",
+"club": "LEE",
+"rating": 134,
+"rating_base": 134,
+"pa": 138,
+"face_id": 92065694,
+"fm_uid": 92065575
+},
+{
+"id": 340,
+"name": "Anton Stach",
+"club": "LEE",
+"rating": 147,
+"rating_base": 147,
+"pa": 147,
+"face_id": 91194540,
+"fm_uid": 91194535
+},
+{
+"id": 341,
+"name": "Noah Okafor",
+"club": "LEE",
+"rating": 138,
+"rating_base": 138,
+"pa": 146,
+"face_id": 98040226,
+"fm_uid": 98040210
+},
+{
+"id": 342,
+"name": "Ao Tanaka",
+"club": "LEE",
+"rating": 140,
+"rating_base": 140,
+"pa": 140,
+"face_id": 45104245,
+"fm_uid": 45104230
+},
+{
+"id": 343,
+"name": "Jean-Matteo Bahoya",
+"club": "LEE",
+"rating": 131,
+"rating_base": 130,
+"pa": 158,
+"face_id": 2000113245,
+"fm_uid": 2000113241
+},
+{
+"id": 344,
+"name": "James Justin",
+"club": "LEE",
+"rating": 133,
+"rating_base": 133,
+"pa": 145,
+"face_id": 29140167,
+"fm_uid": 29140165
+},
+{
+"id": 345,
+"name": "Melvin Bard",
+"club": "LEE",
+"rating": 142,
+"rating_base": 142,
+"pa": 155,
+"face_id": 49041157,
+"fm_uid": 49041156
+},
+{
+"id": 346,
+"name": "Nico Elvedi",
+"club": "LEE",
+"rating": 136,
+"rating_base": 136,
+"pa": 140,
+"face_id": 98033057,
+"fm_uid": 98033032
+},
+{
+"id": 347,
+"name": "Ilia Gruev",
+"club": "LEE",
+"rating": 129,
+"rating_base": 129,
+"pa": 132,
+"face_id": 92086318,
+"fm_uid": 92086280
+},
+{
+"id": 348,
+"name": "Alfie Cresswell",
+"club": "LEE",
+"rating": 92,
+"rating_base": 92,
+"pa": 127,
+"face_id": 2000299857,
+"fm_uid": 2000299856
+},
+{
+"id": 349,
+"name": "Jayden Lienou",
+"club": "LEE",
+"rating": 81,
+"rating_base": 81,
+"pa": 111,
+"face_id": 2000437634,
+"fm_uid": 2000437631
+},
+{
+"id": 350,
+"name": "Alisson Becker",
+"club": "LIV",
+"rating": 177,
+"rating_base": 177,
+"pa": 182,
+"face_id": 19058734,
+"fm_uid": 19058671
+},
+{
+"id": 351,
+"name": "Joe Gomez",
+"club": "LIV",
+"rating": 149,
+"rating_base": 149,
+"pa": 160,
+"face_id": 29115800,
+"fm_uid": 29115764
+},
+{
+"id": 352,
+"name": "Wataru Endo",
+"club": "LIV",
+"rating": 148,
+"rating_base": 148,
+"pa": 151,
+"face_id": 45030953,
+"fm_uid": 45030937
+},
+{
+"id": 353,
+"name": "Virgil van Dijk",
+"club": "LIV",
+"rating": 179,
+"rating_base": 179,
+"pa": 185,
+"face_id": 37024025,
+"fm_uid": 37022427
+},
+{
+"id": 354,
+"name": "Jérémy Jacquet",
+"club": "LIV",
+"rating": 138,
+"rating_base": 135,
+"pa": 178,
+"face_id": 2000094886,
+"fm_uid": 2000094885
+},
+{
+"id": 355,
+"name": "Milos Kerkez",
+"club": "LIV",
+"rating": 153,
+"rating_base": 152,
+"pa": 173,
+"face_id": 2000011147,
+"fm_uid": 2000011135
+},
+{
+"id": 356,
+"name": "Florian Wirtz",
+"club": "LIV",
+"rating": 170,
+"rating_base": 170,
+"pa": 188,
+"face_id": 91193048,
+"fm_uid": 91190772
+},
+{
+"id": 357,
+"name": "Dominik Szoboszlai",
+"club": "LIV",
+"rating": 159,
+"rating_base": 159,
+"pa": 170,
+"face_id": 16202373,
+"fm_uid": 16202330
+},
+{
+"id": 358,
+"name": "Alexander Isak",
+"club": "LIV",
+"rating": 169,
+"rating_base": 169,
+"pa": 180,
+"face_id": 93070286,
+"fm_uid": 93070285
+},
+{
+"id": 359,
+"name": "Alexis Mac Allister",
+"club": "LIV",
+"rating": 159,
+"rating_base": 159,
+"pa": 169,
+"face_id": 14157184,
+"fm_uid": 14157129
+},
+{
+"id": 360,
+"name": "Conor Bradley",
+"club": "LIV",
+"rating": 149,
+"rating_base": 148,
+"pa": 165,
+"face_id": 28127166,
+"fm_uid": 28127165
+},
+{
+"id": 361,
+"name": "Federico Chiesa",
+"club": "LIV",
+"rating": 153,
+"rating_base": 153,
+"pa": 165,
+"face_id": 43161651,
+"fm_uid": 43161628
+},
+{
+"id": 362,
+"name": "Giovanni Leoni",
+"club": "LIV",
+"rating": 130,
+"rating_base": 125,
+"pa": 151,
+"face_id": 2000259904,
+"fm_uid": 2000259900
+},
+{
+"id": 363,
+"name": "Cody Gakpo",
+"club": "LIV",
+"rating": 155,
+"rating_base": 155,
+"pa": 164,
+"face_id": 37062185,
+"fm_uid": 37062161
+},
+{
+"id": 364,
+"name": "Kostas Tsimikas",
+"club": "LIV",
+"rating": 144,
+"rating_base": 144,
+"pa": 159,
+"face_id": 36096824,
+"fm_uid": 36096701
+},
+{
+"id": 365,
+"name": "Hugo Ekitike",
+"club": "LIV",
+"rating": 157,
+"rating_base": 157,
+"pa": 174,
+"face_id": 49062667,
+"fm_uid": 49062660
+},
+{
+"id": 366,
+"name": "Víctor Muñoz",
+"club": "LIV",
+"rating": 139,
+"rating_base": 138,
+"pa": 155,
+"face_id": 2000126470,
+"fm_uid": 2000126469
+},
+{
+"id": 367,
+"name": "Giorgi Mamardashvili",
+"club": "LIV",
+"rating": 156,
+"rating_base": 156,
+"pa": 170,
+"face_id": 59138294,
+"fm_uid": 59138223
+},
+{
+"id": 368,
+"name": "Freddie Woodman",
+"club": "LIV",
+"rating": 113,
+"rating_base": 113,
+"pa": 145,
+"face_id": 28091347,
+"fm_uid": 28090967
+},
+{
+"id": 369,
+"name": "Bradley Barcola",
+"club": "LIV",
+"rating": 158,
+"rating_base": 158,
+"pa": 169,
+"face_id": 49056282,
+"fm_uid": 49056280
+},
+{
+"id": 370,
+"name": "Jeremie Frimpong",
+"club": "LIV",
+"rating": 155,
+"rating_base": 155,
+"pa": 164,
+"face_id": 28113828,
+"fm_uid": 28113827
+},
+{
+"id": 371,
+"name": "Ronald Araújo",
+"club": "LIV",
+"rating": 150,
+"rating_base": 150,
+"pa": 175,
+"face_id": 78085068,
+"fm_uid": 78084870
+},
+{
+"id": 372,
+"name": "Ryan Gravenberch",
+"club": "LIV",
+"rating": 158,
+"rating_base": 158,
+"pa": 169,
+"face_id": 37071197,
+"fm_uid": 37071196
+},
+{
+"id": 373,
+"name": "Trey Nyoni",
+"club": "LIV",
+"rating": 126,
+"rating_base": 123,
+"pa": 154,
+"face_id": 2000261214,
+"fm_uid": 2000261213
+},
+{
+"id": 539,
+"name": "Luke Chambers",
+"club": "LIV",
+"rating": 116,
+"rating_base": 116,
+"pa": 118,
+"face_id": 2000049215,
+"fm_uid": 2000049214
+},
+{
+"id": 374,
+"name": "James McConnell",
+"club": "LIV",
+"rating": 117,
+"rating_base": 116,
+"pa": 148,
+"face_id": 2000108364,
+"fm_uid": 2000108362
+},
+{
+"id": 375,
+"name": "Vítězslav Jaroš",
+"club": "LIV",
+"rating": 130,
+"rating_base": 130,
+"pa": 146,
+"face_id": 28116414,
+"fm_uid": 28116395
+},
+{
+"id": 376,
+"name": "Lewis Koumas",
+"club": "LIV",
+"rating": 115,
+"rating_base": 113,
+"pa": 123,
+"face_id": 2000191802,
+"fm_uid": 2000191792
+},
+{
+"id": 377,
+"name": "Rio Ngumoha",
+"club": "LIV",
+"rating": 135,
+"rating_base": 127,
+"pa": 151,
+"face_id": 2000399897,
+"fm_uid": 2000399893
+},
+{
+"id": 378,
+"name": "Jayden Danns",
+"club": "LIV",
+"rating": 124,
+"rating_base": 121,
+"pa": 165,
+"face_id": 2000191846,
+"fm_uid": 2000191843
+},
+{
+"id": 379,
+"name": "Harvey Davies",
+"club": "LIV",
+"rating": 90,
+"rating_base": 90,
+"pa": 122,
+"face_id": 2000049216,
+"fm_uid": 2000049215
+},
+{
+"id": 380,
+"name": "Gianluigi Donnarumma",
+"club": "MCI",
+"rating": 170,
+"rating_base": 170,
+"pa": 170,
+"face_id": 43252073,
+"fm_uid": 43231496
+},
+{
+"id": 381,
+"name": "Rúben Dias",
+"club": "MCI",
+"rating": 168,
+"rating_base": 168,
+"pa": 177,
+"face_id": 55070299,
+"fm_uid": 55070298
+},
+{
+"id": 382,
+"name": "Elliot Anderson",
+"club": "MCI",
+"rating": 150,
+"rating_base": 150,
+"pa": 165,
+"face_id": 28127254,
+"fm_uid": 28127221
+},
+{
+"id": 383,
+"name": "Marc Guéhi",
+"club": "MCI",
+"rating": 165,
+"rating_base": 165,
+"pa": 168,
+"face_id": 28108033,
+"fm_uid": 28108032
+},
+{
+"id": 384,
+"name": "Iliman Ndiaye",
+"club": "MCI",
+"rating": 155,
+"rating_base": 155,
+"pa": 160,
+"face_id": 89063107,
+"fm_uid": 89063073
+},
+{
+"id": 385,
+"name": "Mateo Kovačić",
+"club": "MCI",
+"rating": 151,
+"rating_base": 151,
+"pa": 172,
+"face_id": 24016925,
+"fm_uid": 24016924
+},
+{
+"id": 386,
+"name": "Erling Haaland",
+"club": "MCI",
+"rating": 184,
+"rating_base": 184,
+"pa": 195,
+"face_id": 29179241,
+"fm_uid": 29179240
+},
+{
+"id": 387,
+"name": "Rayan Cherki",
+"club": "MCI",
+"rating": 161,
+"rating_base": 160,
+"pa": 174,
+"face_id": 49056279,
+"fm_uid": 49056278
+},
+{
+"id": 388,
+"name": "Jérémy Doku",
+"club": "MCI",
+"rating": 166,
+"rating_base": 166,
+"pa": 175,
+"face_id": 18106083,
+"fm_uid": 18106073
+},
+{
+"id": 545,
+"name": "Jeremy Monga",
+"club": "MCI",
+"rating": 126,
+"rating_base": 123,
+"pa": 167,
+"face_id": 2000474101,
+"fm_uid": 2000474063
+},
+{
+"id": 389,
+"name": "Marcus Bettinelli",
+"club": "MCI",
+"rating": 117,
+"rating_base": 117,
+"pa": 130,
+"face_id": 28021778,
+"fm_uid": 28020677
+},
+{
+"id": 390,
+"name": "Enzo Fernández",
+"club": "MCI",
+"rating": 168,
+"rating_base": 168,
+"pa": 174,
+"face_id": 14229525,
+"fm_uid": 14229518
+},
+{
+"id": 391,
+"name": "Rayan Aït-Nouri",
+"club": "MCI",
+"rating": 141,
+"rating_base": 141,
+"pa": 153,
+"face_id": 49047581,
+"fm_uid": 49047563
+},
+{
+"id": 392,
+"name": "Vitor Reis",
+"club": "MCI",
+"rating": 126,
+"rating_base": 124,
+"pa": 141,
+"face_id": 2000221609,
+"fm_uid": 2000221582
+},
+{
+"id": 393,
+"name": "Joško Gvardiol",
+"club": "MCI",
+"rating": 159,
+"rating_base": 159,
+"pa": 180,
+"face_id": 24060473,
+"fm_uid": 24060472
+},
+{
+"id": 394,
+"name": "Matheus Nunes",
+"club": "MCI",
+"rating": 157,
+"rating_base": 157,
+"pa": 157,
+"face_id": 83188780,
+"fm_uid": 83187314
+},
+{
+"id": 395,
+"name": "Gerónimo Rulli",
+"club": "MCI",
+"rating": 142,
+"rating_base": 142,
+"pa": 159,
+"face_id": 14030119,
+"fm_uid": 14029886
+},
+{
+"id": 396,
+"name": "Ayyoub Bouaddi",
+"club": "MCI",
+"rating": 138,
+"rating_base": 130,
+"pa": 185,
+"face_id": 2000381365,
+"fm_uid": 2000381360
+},
+{
+"id": 397,
+"name": "Nico O'Reilly",
+"club": "MCI",
+"rating": 150,
+"rating_base": 149,
+"pa": 165,
+"face_id": 2000101285,
+"fm_uid": 2000101281
+},
+{
+"id": 398,
+"name": "Allan",
+"club": "MCI",
+"rating": 126,
+"rating_base": 126,
+"pa": 147,
+"face_id": 2000221411,
+"fm_uid": 2000221402
+},
+{
+"id": 399,
+"name": "Antoine Semenyo",
+"club": "MCI",
+"rating": 158,
+"rating_base": 158,
+"pa": 161,
+"face_id": 29194724,
+"fm_uid": 29194719
+},
+{
+"id": 400,
+"name": "Abdukodir Khusanov",
+"club": "MCI",
+"rating": 152,
+"rating_base": 150,
+"pa": 173,
+"face_id": 2000168014,
+"fm_uid": 2000168013
+},
+{
+"id": 401,
+"name": "Phil Foden",
+"club": "MCI",
+"rating": 169,
+"rating_base": 169,
+"pa": 180,
+"face_id": 28108494,
+"fm_uid": 28108493
+},
+{
+"id": 402,
+"name": "Ryan McAidoo",
+"club": "MCI",
+"rating": 107,
+"rating_base": 107,
+"pa": 159,
+"face_id": 2000416598,
+"fm_uid": 2000416594
+},
+{
+"id": 403,
+"name": "Kaden Braithwaite",
+"club": "MCI",
+"rating": 78,
+"rating_base": 78,
+"pa": 121,
+"face_id": 2000415453,
+"fm_uid": 2000415187
+},
+{
+"id": 404,
+"name": "Rico Lewis",
+"club": "MCI",
+"rating": 146,
+"rating_base": 145,
+"pa": 155,
+"face_id": 2000098727,
+"fm_uid": 2000098720
+},
+{
+"id": 405,
+"name": "Senne Lammens",
+"club": "MUN",
+"rating": 138,
+"rating_base": 138,
+"pa": 155,
+"face_id": 18107436,
+"fm_uid": 18107370
+},
+{
+"id": 406,
+"name": "Diogo Dalot",
+"club": "MUN",
+"rating": 144,
+"rating_base": 144,
+"pa": 155,
+"face_id": 83105845,
+"fm_uid": 83105839
+},
+{
+"id": 407,
+"name": "Noussair Mazraoui",
+"club": "MUN",
+"rating": 149,
+"rating_base": 149,
+"pa": 155,
+"face_id": 37052470,
+"fm_uid": 37052467
+},
+{
+"id": 408,
+"name": "Matthijs de Ligt",
+"club": "MUN",
+"rating": 155,
+"rating_base": 155,
+"pa": 173,
+"face_id": 37055843,
+"fm_uid": 37055842
+},
+{
+"id": 409,
+"name": "Harry Maguire",
+"club": "MUN",
+"rating": 148,
+"rating_base": 148,
+"pa": 158,
+"face_id": 28049740,
+"fm_uid": 28049725
+},
+{
+"id": 410,
+"name": "Lisandro Martinez",
+"club": "MUN",
+"rating": 152,
+"rating_base": 152,
+"pa": 160,
+"face_id": 14167329,
+"fm_uid": 14167063
+},
+{
+"id": 411,
+"name": "Mason Mount",
+"club": "MUN",
+"rating": 150,
+"rating_base": 150,
+"pa": 165,
+"face_id": 28103590,
+"fm_uid": 28103589
+},
+{
+"id": 412,
+"name": "Bruno Fernandes",
+"club": "MUN",
+"rating": 175,
+"rating_base": 175,
+"pa": 176,
+"face_id": 43124203,
+"fm_uid": 43124199
+},
+{
+"id": 413,
+"name": "Marcus Rashford",
+"club": "MUN",
+"rating": 156,
+"rating_base": 156,
+"pa": 173,
+"face_id": 28100266,
+"fm_uid": 28100242
+},
+{
+"id": 414,
+"name": "Matheus Cunha",
+"club": "MUN",
+"rating": 152,
+"rating_base": 152,
+"pa": 162,
+"face_id": 19334410,
+"fm_uid": 19334136
+},
+{
+"id": 415,
+"name": "Joshua Zirkzee",
+"club": "MUN",
+"rating": 142,
+"rating_base": 142,
+"pa": 160,
+"face_id": 37060922,
+"fm_uid": 37060899
+},
+{
+"id": 416,
+"name": "Karl Darlow",
+"club": "MUN",
+"rating": 125,
+"rating_base": 125,
+"pa": 134,
+"face_id": 29021698,
+"fm_uid": 29021417
+},
+{
+"id": 417,
+"name": "Patrick Dorgu",
+"club": "MUN",
+"rating": 140,
+"rating_base": 139,
+"pa": 158,
+"face_id": 27164470,
+"fm_uid": 27164405
+},
+{
+"id": 418,
+"name": "Leny Yoro",
+"club": "MUN",
+"rating": 145,
+"rating_base": 142,
+"pa": 157,
+"face_id": 2000182819,
+"fm_uid": 2000182811
+},
+{
+"id": 419,
+"name": "Amad Diallo",
+"club": "MUN",
+"rating": 150,
+"rating_base": 150,
+"pa": 166,
+"face_id": 43425040,
+"fm_uid": 43425030
+},
+{
+"id": 420,
+"name": "Andrey Santos",
+"club": "MUN",
+"rating": 137,
+"rating_base": 135,
+"pa": 167,
+"face_id": 2000007415,
+"fm_uid": 2000007402
+},
+{
+"id": 421,
+"name": "Youri Tielemans",
+"club": "MUN",
+"rating": 159,
+"rating_base": 159,
+"pa": 165,
+"face_id": 18077264,
+"fm_uid": 18077262
+},
+{
+"id": 422,
+"name": "Bryan Mbeumo",
+"club": "MUN",
+"rating": 155,
+"rating_base": 155,
+"pa": 160,
+"face_id": 48042658,
+"fm_uid": 48042657
+},
+{
+"id": 423,
+"name": "Carlos Baleba",
+"club": "MUN",
+"rating": 146,
+"rating_base": 144,
+"pa": 170,
+"face_id": 2000166563,
+"fm_uid": 2000166559
+},
+{
+"id": 424,
+"name": "Tom Heaton",
+"club": "MUN",
+"rating": 120,
+"rating_base": 120,
+"pa": 150,
+"face_id": 5112064,
+"fm_uid": 5112059
+},
+{
+"id": 425,
+"name": "Luke Shaw",
+"club": "MUN",
+"rating": 152,
+"rating_base": 152,
+"pa": 162,
+"face_id": 29076105,
+"fm_uid": 29076104
+},
+{
+"id": 426,
+"name": "Manuel Ugarte",
+"club": "MUN",
+"rating": 140,
+"rating_base": 140,
+"pa": 152,
+"face_id": 78084541,
+"fm_uid": 78084523
+},
+{
+"id": 427,
+"name": "Ayden Heaven",
+"club": "MUN",
+"rating": 141,
+"rating_base": 137,
+"pa": 169,
+"face_id": 2000301027,
+"fm_uid": 2000301026
+},
+{
+"id": 428,
+"name": "Benjamin Sesko",
+"club": "MUN",
+"rating": 148,
+"rating_base": 148,
+"pa": 170,
+"face_id": 62246208,
+"fm_uid": 62239713
+},
+{
+"id": 429,
+"name": "Shea Lacey",
+"club": "MUN",
+"rating": 118,
+"rating_base": 115,
+"pa": 146,
+"face_id": 2000256110,
+"fm_uid": 2000256109
+},
+{
+"id": 430,
+"name": "Kobbie Mainoo",
+"club": "MUN",
+"rating": 149,
+"rating_base": 147,
+"pa": 168,
+"face_id": 2000123586,
+"fm_uid": 2000123580
+},
+{
+"id": 431,
+"name": "Jack Fletcher",
+"club": "MUN",
+"rating": 102,
+"rating_base": 102,
+"pa": 126,
+"face_id": 2000280809,
+"fm_uid": 2000280807
+},
+{
+"id": 432,
+"name": "Tyler Fletcher",
+"club": "MUN",
+"rating": 108,
+"rating_base": 105,
+"pa": 134,
+"face_id": 2000280811,
+"fm_uid": 2000280809
+},
+{
+"id": 433,
+"name": "Harry Amass",
+"club": "MUN",
+"rating": 127,
+"rating_base": 125,
+"pa": 155,
+"face_id": 2000280807,
+"fm_uid": 2000280805
+},
+{
+"id": 544,
+"name": "Cristian Orozco",
+"club": "MUN",
+"rating": 91,
+"rating_base": 88,
+"pa": 126,
+"face_id": 2000254841,
+"fm_uid": 2000254793
+},
+{
+"id": 434,
+"name": "Nick Pope",
+"club": "NEW",
+"rating": 141,
+"rating_base": 141,
+"pa": 155,
+"face_id": 29083750,
+"fm_uid": 29083749
+},
+{
+"id": 435,
+"name": "Tino Livramento",
+"club": "NEW",
+"rating": 151,
+"rating_base": 151,
+"pa": 170,
+"face_id": 28124569,
+"fm_uid": 28124568
+},
+{
+"id": 436,
+"name": "Lewis Hall",
+"club": "NEW",
+"rating": 148,
+"rating_base": 147,
+"pa": 165,
+"face_id": 2000108691,
+"fm_uid": 2000108690
+},
+{
+"id": 437,
+"name": "Sven Botman",
+"club": "NEW",
+"rating": 156,
+"rating_base": 156,
+"pa": 167,
+"face_id": 37063649,
+"fm_uid": 37063647
+},
+{
+"id": 438,
+"name": "Fabian Schar",
+"club": "NEW",
+"rating": 147,
+"rating_base": 147,
+"pa": 149,
+"face_id": 98007212,
+"fm_uid": 98007123
+},
+{
+"id": 439,
+"name": "Nico Gonzalez",
+"club": "NEW",
+"rating": 155,
+"rating_base": 155,
+"pa": 166,
+"face_id": 67276127,
+"fm_uid": 67276126
+},
+{
+"id": 440,
+"name": "Joelinton",
+"club": "NEW",
+"rating": 156,
+"rating_base": 156,
+"pa": 158,
+"face_id": 19184436,
+"fm_uid": 19184434
+},
+{
+"id": 441,
+"name": "Aladji Bamba",
+"club": "NEW",
+"rating": 112,
+"rating_base": 110,
+"pa": 150,
+"face_id": null,
+"fm_uid": 2000188752
+},
+{
+"id": 442,
+"name": "Yoane Wissa",
+"club": "NEW",
+"rating": 144,
+"rating_base": 144,
+"pa": 145,
+"face_id": 85140175,
+"fm_uid": 85140143
+},
+{
+"id": 443,
+"name": "William Osula",
+"club": "NEW",
+"rating": 126,
+"rating_base": 126,
+"pa": 145,
+"face_id": 28128173,
+"fm_uid": 28128172
+},
+{
+"id": 444,
+"name": "Harvey Barnes",
+"club": "NEW",
+"rating": 141,
+"rating_base": 141,
+"pa": 165,
+"face_id": 28100207,
+"fm_uid": 28100205
+},
+{
+"id": 445,
+"name": "Malick Thiaw",
+"club": "NEW",
+"rating": 148,
+"rating_base": 148,
+"pa": 157,
+"face_id": 91206164,
+"fm_uid": 91206162
+},
+{
+"id": 446,
+"name": "Sean Steur",
+"club": "NEW",
+"rating": 118,
+"rating_base": 113,
+"pa": 170,
+"face_id": 2000350903,
+"fm_uid": 2000350902
+},
+{
+"id": 447,
+"name": "Bazoumana Toure",
+"club": "NEW",
+"rating": 135,
+"rating_base": 132,
+"pa": 156,
+"face_id": 12095040,
+"fm_uid": 12095038
+},
+{
+"id": 448,
+"name": "Anthony Elanga",
+"club": "NEW",
+"rating": 138,
+"rating_base": 138,
+"pa": 145,
+"face_id": 28121568,
+"fm_uid": 28121567
+},
+{
+"id": 449,
+"name": "Matias Fernandez-Pardo",
+"club": "NEW",
+"rating": 139,
+"rating_base": 136,
+"pa": 159,
+"face_id": 2000107089,
+"fm_uid": 2000107079
+},
+{
+"id": 450,
+"name": "Lukas Hornicek",
+"club": "NEW",
+"rating": 136,
+"rating_base": 136,
+"pa": 151,
+"face_id": 83297510,
+"fm_uid": 83297509
+},
+{
+"id": 451,
+"name": "Jacob Murphy",
+"club": "NEW",
+"rating": 140,
+"rating_base": 140,
+"pa": 140,
+"face_id": 29079830,
+"fm_uid": 29079829
+},
+{
+"id": 452,
+"name": "Ewen Jaouen",
+"club": "NEW",
+"rating": 113,
+"rating_base": 110,
+"pa": 145,
+"face_id": 2000183134,
+"fm_uid": 2000183132
+},
+{
+"id": 453,
+"name": "Joe Willock",
+"club": "NEW",
+"rating": 136,
+"rating_base": 136,
+"pa": 155,
+"face_id": 28106684,
+"fm_uid": 28106683
+},
+{
+"id": 454,
+"name": "Dan Burn",
+"club": "NEW",
+"rating": 144,
+"rating_base": 144,
+"pa": 144,
+"face_id": 29061164,
+"fm_uid": 29060631
+},
+{
+"id": 455,
+"name": "Amar Dedic",
+"club": "NEW",
+"rating": 140,
+"rating_base": 140,
+"pa": 152,
+"face_id": 16283629,
+"fm_uid": 16283628
+},
+{
+"id": 456,
+"name": "Jacob Ramsey",
+"club": "NEW",
+"rating": 145,
+"rating_base": 145,
+"pa": 165,
+"face_id": 29193659,
+"fm_uid": 29193653
+},
+{
+"id": 457,
+"name": "Lewis Miley",
+"club": "NEW",
+"rating": 141,
+"rating_base": 140,
+"pa": 157,
+"face_id": 2000189871,
+"fm_uid": 2000189867
+},
+{
+"id": 458,
+"name": "Ousmane Diomande",
+"club": "NFO",
+"rating": 148,
+"rating_base": 148,
+"pa": 164,
+"face_id": 2000160511,
+"fm_uid": 2000160504
+},
+{
+"id": 459,
+"name": "Neco Williams",
+"club": "NFO",
+"rating": 139,
+"rating_base": 139,
+"pa": 150,
+"face_id": 28115792,
+"fm_uid": 28115790
+},
+{
+"id": 460,
+"name": "Murillo",
+"club": "NFO",
+"rating": 149,
+"rating_base": 149,
+"pa": 162,
+"face_id": 2000123482,
+"fm_uid": 2000123458
+},
+{
+"id": 461,
+"name": "Ibrahim Sangare",
+"club": "NFO",
+"rating": 147,
+"rating_base": 147,
+"pa": 149,
+"face_id": 48042717,
+"fm_uid": 48042695
+},
+{
+"id": 462,
+"name": "Callum Hudson-Odoi",
+"club": "NFO",
+"rating": 146,
+"rating_base": 146,
+"pa": 160,
+"face_id": 28112986,
+"fm_uid": 28112546
+},
+{
+"id": 463,
+"name": "Nicolas Dominguez",
+"club": "NFO",
+"rating": 142,
+"rating_base": 142,
+"pa": 152,
+"face_id": 14077011,
+"fm_uid": 14076836
+},
+{
+"id": 464,
+"name": "Chris Wood",
+"club": "NFO",
+"rating": 136,
+"rating_base": 136,
+"pa": 138,
+"face_id": 5108293,
+"fm_uid": 5108220
+},
+{
+"id": 465,
+"name": "Morgan Gibbs-White",
+"club": "NFO",
+"rating": 150,
+"rating_base": 150,
+"pa": 155,
+"face_id": 29175220,
+"fm_uid": 29175208
+},
+{
+"id": 466,
+"name": "Igor Jesus",
+"club": "NFO",
+"rating": 138,
+"rating_base": 138,
+"pa": 144,
+"face_id": 19377081,
+"fm_uid": 19376890
+},
+{
+"id": 467,
+"name": "John Victor",
+"club": "NFO",
+"rating": 132,
+"rating_base": 132,
+"pa": 135,
+"face_id": 19202603,
+"fm_uid": 19202502
+},
+{
+"id": 468,
+"name": "Dan Ndoye",
+"club": "NFO",
+"rating": 144,
+"rating_base": 144,
+"pa": 154,
+"face_id": 84153276,
+"fm_uid": 84153244
+},
+{
+"id": 469,
+"name": "Arnaud Kalimuendo",
+"club": "NFO",
+"rating": 138,
+"rating_base": 138,
+"pa": 151,
+"face_id": 49048445,
+"fm_uid": 49048442
+},
+{
+"id": 470,
+"name": "Liam Delap",
+"club": "NFO",
+"rating": 142,
+"rating_base": 141,
+"pa": 175,
+"face_id": 28126247,
+"fm_uid": 28126246
+},
+{
+"id": 471,
+"name": "Xaver Schlager",
+"club": "NFO",
+"rating": 150,
+"rating_base": 150,
+"pa": 152,
+"face_id": 16147660,
+"fm_uid": 16147659
+},
+{
+"id": 472,
+"name": "Ryan Yates",
+"club": "NFO",
+"rating": 135,
+"rating_base": 135,
+"pa": 138,
+"face_id": 29136230,
+"fm_uid": 29136228
+},
+{
+"id": 473,
+"name": "Jair Cunha",
+"club": "NFO",
+"rating": 125,
+"rating_base": 124,
+"pa": 152,
+"face_id": 2000158356,
+"fm_uid": 2000158355
+},
+{
+"id": 474,
+"name": "James McAtee",
+"club": "NFO",
+"rating": 138,
+"rating_base": 138,
+"pa": 156,
+"face_id": 28126249,
+"fm_uid": 28126248
+},
+{
+"id": 475,
+"name": "Luca Netz",
+"club": "NFO",
+"rating": 123,
+"rating_base": 123,
+"pa": 140,
+"face_id": 91195878,
+"fm_uid": 91195877
+},
+{
+"id": 476,
+"name": "Matz Sels",
+"club": "NFO",
+"rating": 138,
+"rating_base": 138,
+"pa": 138,
+"face_id": 18018791,
+"fm_uid": 18018644
+},
+{
+"id": 477,
+"name": "Daniel Munoz",
+"club": "NFO",
+"rating": 147,
+"rating_base": 147,
+"pa": 148,
+"face_id": 76050675,
+"fm_uid": 76050664
+},
+{
+"id": 478,
+"name": "Nikola Milenkovic",
+"club": "NFO",
+"rating": 146,
+"rating_base": 146,
+"pa": 148,
+"face_id": 62191195,
+"fm_uid": 62191098
+},
+{
+"id": 479,
+"name": "Steven Benda",
+"club": "NFO",
+"rating": 116,
+"rating_base": 116,
+"pa": 130,
+"face_id": 28118051,
+"fm_uid": 28118049
+},
+{
+"id": 480,
+"name": "Ola Aina",
+"club": "NFO",
+"rating": 143,
+"rating_base": 143,
+"pa": 143,
+"face_id": 28090452,
+"fm_uid": 28090340
+},
+{
+"id": 481,
+"name": "Nicolo Savona",
+"club": "NFO",
+"rating": 138,
+"rating_base": 138,
+"pa": 155,
+"face_id": 43617691,
+"fm_uid": 43617684
+},
+{
+"id": 482,
+"name": "Kevin Danso",
+"club": "SUN",
+"rating": 145,
+"rating_base": 145,
+"pa": 150,
+"face_id": 91144914,
+"fm_uid": 91144903
+},
+{
+"id": 483,
+"name": "Dan Ballard",
+"club": "SUN",
+"rating": 138,
+"rating_base": 138,
+"pa": 145,
+"face_id": 28110835,
+"fm_uid": 28110793
+},
+{
+"id": 484,
+"name": "Dayann Methalie",
+"club": "SUN",
+"rating": 123,
+"rating_base": 123,
+"pa": 153,
+"face_id": 2000188079,
+"fm_uid": 2000188077
+},
+{
+"id": 485,
+"name": "Chemsdine Talbi",
+"club": "SUN",
+"rating": 137,
+"rating_base": 136,
+"pa": 141,
+"face_id": 2000103798,
+"fm_uid": 2000103792
+},
+{
+"id": 486,
+"name": "Alan Browne",
+"club": "SUN",
+"rating": 123,
+"rating_base": 123,
+"pa": 125,
+"face_id": 52064763,
+"fm_uid": 52064664
+},
+{
+"id": 487,
+"name": "Brian Brobbey",
+"club": "SUN",
+"rating": 137,
+"rating_base": 137,
+"pa": 145,
+"face_id": 37065620,
+"fm_uid": 37065597
+},
+{
+"id": 488,
+"name": "Nilson Angulo",
+"club": "SUN",
+"rating": 122,
+"rating_base": 122,
+"pa": 138,
+"face_id": 2000035859,
+"fm_uid": 2000035852
+},
+{
+"id": 489,
+"name": "Chris Rigg",
+"club": "SUN",
+"rating": 131,
+"rating_base": 127,
+"pa": 152,
+"face_id": 2000254692,
+"fm_uid": 2000254690
+},
+{
+"id": 490,
+"name": "Thomas Meunier",
+"club": "SUN",
+"rating": 130,
+"rating_base": 130,
+"pa": 145,
+"face_id": 18043393,
+"fm_uid": 18043376
+},
+{
+"id": 491,
+"name": "Luke O'Nien",
+"club": "SUN",
+"rating": 125,
+"rating_base": 125,
+"pa": 125,
+"face_id": 29084738,
+"fm_uid": 29084700
+},
+{
+"id": 492,
+"name": "Romaine Mundle",
+"club": "SUN",
+"rating": 126,
+"rating_base": 126,
+"pa": 144,
+"face_id": 28127318,
+"fm_uid": 28127317
+},
+{
+"id": 493,
+"name": "Omar Alderete",
+"club": "SUN",
+"rating": 150,
+"rating_base": 150,
+"pa": 150,
+"face_id": 79027217,
+"fm_uid": 79027057
+},
+{
+"id": 494,
+"name": "Reinildo Mandava",
+"club": "SUN",
+"rating": 146,
+"rating_base": 146,
+"pa": 152,
+"face_id": 13160655,
+"fm_uid": 13160654
+},
+{
+"id": 495,
+"name": "Wilson Isidor",
+"club": "SUN",
+"rating": 132,
+"rating_base": 132,
+"pa": 137,
+"face_id": 49039033,
+"fm_uid": 49039032
+},
+{
+"id": 496,
+"name": "Habib Diarra",
+"club": "SUN",
+"rating": 137,
+"rating_base": 136,
+"pa": 157,
+"face_id": 2000025485,
+"fm_uid": 2000025483
+},
+{
+"id": 497,
+"name": "Nordi Mukiele",
+"club": "SUN",
+"rating": 143,
+"rating_base": 143,
+"pa": 150,
+"face_id": 48034615,
+"fm_uid": 48034532
+},
+{
+"id": 498,
+"name": "Simon Moore",
+"club": "SUN",
+"rating": 110,
+"rating_base": 110,
+"pa": 125,
+"face_id": 29059657,
+"fm_uid": 29059537
+},
+{
+"id": 499,
+"name": "Robin Roefs",
+"club": "SUN",
+"rating": 137,
+"rating_base": 137,
+"pa": 145,
+"face_id": 37084637,
+"fm_uid": 37084612
+},
+{
+"id": 500,
+"name": "Noah Sadiki",
+"club": "SUN",
+"rating": 140,
+"rating_base": 139,
+"pa": 152,
+"face_id": 2000045005,
+"fm_uid": 2000045003
+},
+{
+"id": 501,
+"name": "Enzo Le Fee",
+"club": "SUN",
+"rating": 138,
+"rating_base": 138,
+"pa": 142,
+"face_id": 49040114,
+"fm_uid": 49040112
+},
+{
+"id": 502,
+"name": "Jules Ahoka",
+"club": "SUN",
+"rating": 102,
+"rating_base": 102,
+"pa": 142,
+"face_id": null,
+"fm_uid": 2000469799
+},
+{
+"id": 503,
+"name": "Melker Ellborg",
+"club": "SUN",
+"rating": 114,
+"rating_base": 114,
+"pa": 135,
+"face_id": 93140653,
+"fm_uid": 93140606
+},
+{
+"id": 504,
+"name": "Trai Hume",
+"club": "SUN",
+"rating": 132,
+"rating_base": 132,
+"pa": 143,
+"face_id": 52094225,
+"fm_uid": 52094223
+},
+{
+"id": 505,
+"name": "Granit Xhaka",
+"club": "SUN",
+"rating": 160,
+"rating_base": 160,
+"pa": 160,
+"face_id": 98003821,
+"fm_uid": 98003635
+},
+{
+"id": 506,
+"name": "Jocelin Ta Bi",
+"club": "SUN",
+"rating": 110,
+"rating_base": 110,
+"pa": 125,
+"face_id": 2000406116,
+"fm_uid": 2000406110
+},
+{
+"id": 507,
+"name": "Malick Fofana",
+"club": "SUN",
+"rating": 139,
+"rating_base": 138,
+"pa": 168,
+"face_id": 2000107079,
+"fm_uid": 2000107074
+},
+{
+"id": 508,
+"name": "Andy Robertson",
+"club": "TOT",
+"rating": 152,
+"rating_base": 152,
+"pa": 165,
+"face_id": 61043456,
+"fm_uid": 61043120
+},
+{
+"id": 509,
+"name": "Tosin Adarabioyo",
+"club": "TOT",
+"rating": 138,
+"rating_base": 138,
+"pa": 140,
+"face_id": 28100239,
+"fm_uid": 28100212
+},
+{
+"id": 510,
+"name": "Marcos Senesi",
+"club": "TOT",
+"rating": 145,
+"rating_base": 145,
+"pa": 147,
+"face_id": 14080605,
+"fm_uid": 14080603
+},
+{
+"id": 511,
+"name": "Jan Paul van Hecke",
+"club": "TOT",
+"rating": 156,
+"rating_base": 156,
+"pa": 163,
+"face_id": 37076335,
+"fm_uid": 37076315
+},
+{
+"id": 512,
+"name": "Xavi Simons",
+"club": "TOT",
+"rating": 150,
+"rating_base": 150,
+"pa": 170,
+"face_id": 67288555,
+"fm_uid": 67288501
+},
+{
+"id": 513,
+"name": "Conor Gallagher",
+"club": "TOT",
+"rating": 148,
+"rating_base": 148,
+"pa": 164,
+"face_id": 28108036,
+"fm_uid": 28108035
+},
+{
+"id": 514,
+"name": "James Maddison",
+"club": "TOT",
+"rating": 151,
+"rating_base": 151,
+"pa": 163,
+"face_id": 28093567,
+"fm_uid": 28093563
+},
+{
+"id": 515,
+"name": "Mathys Tel",
+"club": "TOT",
+"rating": 139,
+"rating_base": 137,
+"pa": 164,
+"face_id": 2000104850,
+"fm_uid": 2000104849
+},
+{
+"id": 516,
+"name": "Destiny Udogie",
+"club": "TOT",
+"rating": 147,
+"rating_base": 146,
+"pa": 173,
+"face_id": 43426047,
+"fm_uid": 43426042
+},
+{
+"id": 517,
+"name": "Archie Gray",
+"club": "TOT",
+"rating": 140,
+"rating_base": 137,
+"pa": 170,
+"face_id": 2000182795,
+"fm_uid": 2000182758
+},
+{
+"id": 518,
+"name": "Lucas Bergvall",
+"club": "TOT",
+"rating": 143,
+"rating_base": 140,
+"pa": 181,
+"face_id": 2000169739,
+"fm_uid": 2000169229
+},
+{
+"id": 519,
+"name": "Sandro Tonali",
+"club": "TOT",
+"rating": 167,
+"rating_base": 167,
+"pa": 171,
+"face_id": 43298481,
+"fm_uid": 43298473
+},
+{
+"id": 520,
+"name": "Savio",
+"club": "TOT",
+"rating": 151,
+"rating_base": 151,
+"pa": 165,
+"face_id": 2000011972,
+"fm_uid": 2000011970
+},
+{
+"id": 521,
+"name": "Mateus Fernandes",
+"club": "TOT",
+"rating": 141,
+"rating_base": 139,
+"pa": 172,
+"face_id": 83320124,
+"fm_uid": 83320123
+},
+{
+"id": 522,
+"name": "Dominic Solanke",
+"club": "TOT",
+"rating": 145,
+"rating_base": 145,
+"pa": 160,
+"face_id": 29125191,
+"fm_uid": 29125190
+},
+{
+"id": 523,
+"name": "Mohammed Kudus",
+"club": "TOT",
+"rating": 153,
+"rating_base": 153,
+"pa": 162,
+"face_id": 13200568,
+"fm_uid": 13200324
+},
+{
+"id": 524,
+"name": "Dejan Kulusevski",
+"club": "TOT",
+"rating": 164,
+"rating_base": 164,
+"pa": 175,
+"face_id": 43295814,
+"fm_uid": 43295811
+},
+{
+"id": 525,
+"name": "Omar Marmoush",
+"club": "TOT",
+"rating": 163,
+"rating_base": 163,
+"pa": 168,
+"face_id": 91205962,
+"fm_uid": 91205956
+},
+{
+"id": 526,
+"name": "Pedro Porro",
+"club": "TOT",
+"rating": 144,
+"rating_base": 144,
+"pa": 164,
+"face_id": 67268221,
+"fm_uid": 67268144
+},
+{
+"id": 527,
+"name": "Mykhailo Mudryk",
+"club": "TOT",
+"rating": 138,
+"rating_base": 138,
+"pa": 170,
+"face_id": 71101331,
+"fm_uid": 71101330
+},
+{
+"id": 528,
+"name": "Wilson Odobert",
+"club": "TOT",
+"rating": 137,
+"rating_base": 136,
+"pa": 154,
+"face_id": 2000102722,
+"fm_uid": 2000102719
+},
+{
+"id": 529,
+"name": "Rodrigo Bentancur",
+"club": "TOT",
+"rating": 143,
+"rating_base": 143,
+"pa": 164,
+"face_id": 14094572,
+"fm_uid": 14092775
+},
+{
+"id": 530,
+"name": "Antonin Kinsky",
+"club": "TOT",
+"rating": 135,
+"rating_base": 134,
+"pa": 162,
+"face_id": 2000039995,
+"fm_uid": 2000039992
+},
+{
+"id": 531,
+"name": "Ben Davies",
+"club": "TOT",
+"rating": 140,
+"rating_base": 140,
+"pa": 145,
+"face_id": 28049754,
+"fm_uid": 28049744
+},
+{
+"id": 532,
+"name": "Micky van de Ven",
+"club": "TOT",
+"rating": 155,
+"rating_base": 155,
+"pa": 175,
+"face_id": 37084591,
+"fm_uid": 37084590
+},
+{
+"id": 533,
+"name": "Martin Dubravka",
+"club": "TOT",
+"rating": 135,
+"rating_base": 135,
+"pa": 150,
+"face_id": 63002306,
+"fm_uid": 63001877
+},
+{
+"id": 534,
+"name": "Brandon Austin",
+"club": "TOT",
+"rating": 130,
+"rating_base": 130,
+"pa": 132,
+"face_id": 28106884,
+"fm_uid": 28106883
+},
+{
+"id": 535,
+"name": "Luca Williams-Barnett",
+"club": "TOT",
+"rating": 110,
+"rating_base": 105,
+"pa": 177,
+"face_id": 2000485992,
+"fm_uid": 2000485991
+}
+]

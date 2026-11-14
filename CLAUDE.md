@@ -15,13 +15,13 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 - `vendor/supabase-2.45.4.min.js`: supabase-js, kopieret fra npm-pakken (integritet tjekket mod npm-registret). Opdateres ved at lægge en ny fil og rette navnet i både `index.html` og `sw.js`.
 - `index.html`: hele klienten i én fil. Hostes på GitHub Pages (`munksgaard91/draftspin-fc`, branch `main`). `sw.js` er service worker; hæv `CACHE` (`dsfc-shell-vNN`) ved hver klientændring, ellers ser telefonerne den gamle version.
 - Supabase-projekt `apagcfedizgjnnuefzfo` (Postgres, anonym login, RPC'er, edge function `engine`). Kampmotoren kører på serveren: `supabase/functions/engine/engine.js` (ren simulation) og `index.ts` (handlinger, fx afspilning af runder og interaktive straffe).
-- `supabase/migrations/`: databasens historik, nummereret 001-073 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
+- `supabase/migrations/`: databasens historik, nummereret 001-074 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
 - `supabase/schema/public.sql`: øjebliksbillede af den levende database (tabeller, funktioner, policies, rettigheder, realtime, cron). Det er sandheden om databasen. Genereres med `./scripts/schema_snapshot.sh` (kun læsning); kør det efter hver migration og commit det sammen med migrationen.
 - `data/` og `scripts/`: spillerdata og lokale hjælpescripts.
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.7.2.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.7.3.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 - Changelog: tilføj en post øverst i `CHANGELOG` i `index.html` ved HVER versionsændring, på engelsk og kun med det, spillerne kan mærke. Del op i `new` (New features), `fix` (Bug fixes), `ui` (Design) og `small` (Small changes), og skriv alt i et sprog, alle forstår (intet teknisk). Den vises under "What's new" i hjørnet og som popup én gang efter en opdatering.
 
 ## Motoren
@@ -81,3 +81,10 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - Brugere med Google skal have profil for at oprette/deltage (`_need_profile`). Gæstenavne må ikke være en brugers managernavn eller "Deleted user" (`_check_guest_name`). Navneskift opdaterer også `owner` i Hall of Fame.
 - Bots er gæster, så `scripts/bots.py` forventer 0 Hall of Fame-rækker.
 - Managers-fanen og profilstatistik venter: Rasmus har en anden idé. Spørg, før det bygges.
+
+## FM27-data og billeder (v0.7.3, 2026-11-14)
+- Kilde: Rasmus' FM27-karriere `~/Library/Application Support/Sports Interactive/Football Manager 27/games/` (frisk, in-game 2026-07-13). Læses med `fmsave` 0.12.5 i et venv (`fmsave export <save> players --all -o players.csv`); kopiér savet først. Match på `unique_id` = `face_id` og på den klub spilleren spiller i (`club_uid`), ikke kontraktklubben (lejespillere). Klub-ID'er: ARS 602, AVL 603, BOU 600, BHA 618, BRE 617, CHE 630, COV 639, CRY 642, EVE 649, FUL 654, HUL 665, IPS 667, LEE 671, LIV 676, MCI 679, MUN 680, NEW 688, NFO 692, SUN 722, TOT 728.
+- Migration 074: CA/PA fra FM27 for alle (boost uændret), Monga fjernet (udlejet; regel fra Rasmus: kun spillere, der er i klubben lige nu), 8 silhuetter fik FM27-ID, Richarlison tilføjet (TOT #9). Tal før: `data/players_rating_backup_20261114.json`.
+- Billeder: sortitoutsi-pakken ligger installeret i FM27 (`graphics/sortitoutsi/faces`, face_<unique_id>.png). Billedarket bygges med `python3 scripts/build_atlas.py <faces-mappe> <ids.json> <ud.webp>` (96 px-celler, 24 pr. række; giver også FACE_ORDER og CSS-størrelsen, der står 5 steder i index.html). Læg op som nyt navn (`atlas-N.webp`) i bucket `faces` med `supabase storage cp ... --experimental`, ret `ATLAS_URL` og ryd det gamle navn i `preloadFaces`. Nu: `atlas-3.webp`, alle 542 spillere har billede.
+- Spillere uden for FM: eget billede i `data/faces_extra/face_<id>.png` (250×250, gennemsigtig, beskåret som pakken) og et face_id fra 900000001 og op. Max Dowman = 900000001.
+- CLI-eksport giver numeric-kolonner (yellow_w, red_w) som tekst; konvertér til tal før `scripts/demo_fixtures.ts`.
