@@ -55,7 +55,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 - Profilstatistik: besluttet 2026-11-15, se afsnittet "Næste skridt" nederst. Managers-fanen (andre brugeres statistik) er ikke besluttet.
 - Mere realistiske klubemblemer; pokaler/cup; ⚽/❌ i Match facts; nyt logo/navn; manager i draften; karakterer pr. spiller pr. kamp; redesign af målanimationen; færre emojis.
-- To-spiller-straffeflowet (modstander venter via `penWatch`) er ikke testet med to rigtige enheder.
+- To-spiller-straffeflowet (`penWatch`) er ikke testet med to rigtige enheder; Rasmus 2026-11-15: det er droppet som krav før 1.0.
 
 ## Adgang
 
@@ -122,4 +122,3 @@ Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er
 2. **Varighed pr. spil**: skriv ca. hvor lang tid et spil tager ved hver spiltype (fx på knapperne eller i lobbyen). Ikke designet endnu; mål den faktiske tid for Classic og Quick først.
 3. **Endnu hurtigere spiltype** under Quick game (ny mode). Ikke designet endnu: afklar med Rasmus, hvad der skal skæres væk (fx springe kampvisning helt over og gå direkte til tabel/sæsonslut), og om den skal i Hall of Fame-filtret (`pace`).
 4. **Cups/pokaler**: ikke designet.
-5. **Før 1.0**: test straffeflowet med to rigtige telefoner (`penWatch`).
