@@ -53,7 +53,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Åbne punkter (ikke påbegyndt, start ikke uden besked)
 
-- Statistik pr. bruger (inkl. "Flest nedrykninger"); login findes (v0.7), men Managers-fanen/profilstatistik venter på Rasmus' idé.
+- Profilstatistik: besluttet 2026-11-15, se afsnittet "Næste skridt" nederst. Managers-fanen (andre brugeres statistik) er ikke besluttet.
 - Mere realistiske klubemblemer; pokaler/cup; ⚽/❌ i Match facts; nyt logo/navn; manager i draften; karakterer pr. spiller pr. kamp; redesign af målanimationen; færre emojis.
 - To-spiller-straffeflowet (modstander venter via `penWatch`) er ikke testet med to rigtige enheder.
 
@@ -105,3 +105,21 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - Deploy-kontrol: `supabase functions download engine --use-api` i en tom mappe i scratchpad (ALDRIG i repoet: den overskriver `supabase/functions/engine`) og `diff` mod repoet. `action: "hash"` kræver en anonym testbruger; auto mode afviste at oprette den 2026-11-14, så byte-diff blev brugt.
 - Nyttige CLI-kommandoer: `supabase db query -f <fil> --remote=... --yes` (migration), `supabase storage cp <fil> ss:///faces/<navn> --experimental --content-type image/webp --remote=...`, `supabase functions deploy engine --use-api --remote=... --yes`. Auto mode har bløde stop på skrivende SQL og deploy: spørg Rasmus først.
 - Browser-preview: `.claude/launch.json` findes lokalt (ikke i git); virker preview_start ikke, så start `python3 -m http.server 8123` i baggrunden og åbn `http://localhost:8123/index.html?demo=...`. Appens variabler er ikke globale i browseren (kan ikke sættes via JS-konsollen); test via demotilstanden.
+
+## Næste skridt (stoppet 2026-11-15)
+Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er færdige i v0.7):
+
+1. **Profilstatistik** (besluttet af Rasmus 2026-11-15, ikke bygget; næste opgave):
+   - Farvevalget på profilen: én linje, små og dæmpede prikker (ca. 14 px, nedtonet), kun den valgte står fuldt frem med ring. Label "Colour".
+   - Ny sektion "Your stats" med filter All / Classic / Quick (som Hall of Fame, `pace`) og KUN to faner: **Overview** og **Players**.
+   - Overview: mesterskaber (med pokalbilledet), sæsoner, gns. placering; felter for top 4, nedrykninger, point pr. kamp, sejrsprocent, mål, clean sheets; V/U/T-bjælke; "Season by season"-brikker (guld = mester, grøn = top 4, rød = nedrykning); rekorder (bedste sæson, længste sejrsstime, største sejr, flest mål i en sæson).
+   - Players: rangliste med ansigter, under-filtre Goals / Assists / Clean sheets / Most picked; nr. 1 stort kort.
+   - Log ud, Privacy og Delete account flyttes ned under statistikken.
+   - FRAVALGT: en "Teams"-sektion. Holdnavne er bevidst unikke for hvert spil (Rasmus: "sjovt med unikke teams hver gang"), så ingen faste hold, ingen hold-tabel, ingen emblemer gemt. Al statistik er fælles for brugeren.
+   - Åbent: "Dream XI" (brugerens 11 bedste spillersæsoner på en bane) er foreslået til senere. Placeringsbrikkerne er foreslået med fra start; spørg kort, før der bygges.
+   - Data: kun afsluttede sæsoner med Google-bruger (`hof_teams`/`hof_players` med `user_id`; gæster og hold med `missed_rounds` 99 gemmes ikke). Kræver sandsynligvis en RPC (fx `my_stats(p_pace)`), da hof-RPC'erne kun kan kaldes som `authenticated`. Tilføj en demo-skærm (`DEMO_SCREENS`) med opdigtede tal.
+   - Mockup: `~/Desktop/PL Draft/mockups/profil.html` (`?p=1/2/3` viser én skærm) og `mockup-profil.png`. Skærm 2 (Teams) er fravalgt; resten er udgangspunktet.
+2. **Varighed pr. spil**: skriv ca. hvor lang tid et spil tager ved hver spiltype (fx på knapperne eller i lobbyen). Ikke designet endnu; mål den faktiske tid for Classic og Quick først.
+3. **Endnu hurtigere spiltype** under Quick game (ny mode). Ikke designet endnu: afklar med Rasmus, hvad der skal skæres væk (fx springe kampvisning helt over og gå direkte til tabel/sæsonslut), og om den skal i Hall of Fame-filtret (`pace`).
+4. **Cups/pokaler**: ikke designet.
+5. **Før 1.0**: test straffeflowet med to rigtige telefoner (`penWatch`).
