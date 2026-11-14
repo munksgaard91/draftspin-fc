@@ -11,7 +11,7 @@ Baseret på udkast 0.1, Argons review (2026-10-18) og en Python-referencemotor (
 - Ratingforskel Δ mellem to hold og hjemmesejr: 0 giver 44 %, 10 giver 59 %, 20 giver 74 %, 30 giver 85 %.
 
 ## Balance
-Uden justering vinder det bedste spillerhold ligaen i 1 til 8 % af tilfældene, fordi de bedste AI-klubber (Arsenal 168,9, Manchester City 168,5, Liverpool 165,0) er stærkere end næsten alle draftede hold. Løsning: draftede spillere fjernes fra AI-klubberne, og admin vælger en AI-sværhedsgrad (AI-spillernes rating forskydes). Se `engine/reference/run_bal2.py`.
+Uden justering vinder det bedste spillerhold ligaen i 1 til 8 % af tilfældene, fordi de bedste AI-klubber (Arsenal 168,9, Manchester City 168,5, Liverpool 165,0) er stærkere end næsten alle draftede hold. (Historisk forslag, aldrig indført: draftede spillere fjernes fra AI-klubberne. Rasmus 2026-11-14: det er bevidst, at en draftet spiller også spiller for sin AI-klub; derfor vises AI-holdenes målscorere ikke, og statistik tæller kun for det hold, der ejer spilleren.) Oprindeligt forslag: draftede spillere fjernes fra AI-klubberne, og admin vælger en AI-sværhedsgrad (AI-spillernes rating forskydes). Se `engine/reference/run_bal2.py`.
 
 | Sværhedsgrad | AI-skift | 1 spiller, god draft vinder | 4 spillere, bedste hold vinder |
 |---|---|---|---|
@@ -100,3 +100,6 @@ Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprind
 3. **Alternative positioner**: kun en position med fit 19 eller 20 giver en ekstra plads (`alts.<pos>.nat = true`), og kun én; hvis det er en naboposition vælges den mest logiske. Svagere alternativer lægges ikke ind (motoren bruger alligevel kun `nat` og straf-tabellen).
 4. **Trøjenumre**: fra Premier Leagues officielle liste, ellers ESPN-truppen; findes intet, bruges et ledigt nummer (30+). Unikt pr. klub.
 5. **Dubletter**: tjek `face_id` og navn+klub før indsættelse (Florentino Luis blev ved en fejl indsat to gange).
+
+## Straffe: hjørner pr. skytte (server, 2026-11-14, v0.8.0)
+En ventende straf (`pen_pending`) gemmer i `detail` antal hjørner pr. mulig skytte som JSON `{spiller-id: n}`, regnet af de fastfrosne data (`penCorners` i `index.ts`, samme beregning som `applyPen`). Klienten viser det antal og stjernemarkerer standardskytten (`player_id`); ældre straffe uden `detail` regnes lokalt. Motoren (`engine.js`) er uændret, fingeraftrykket også.

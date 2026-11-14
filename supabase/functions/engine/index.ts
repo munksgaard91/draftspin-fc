@@ -124,7 +124,9 @@ async function playRound(gameId, ctx, round) {
     upd.push({ id: m.id, game_id: gameId, round, home_key: m.home_key, away_key: m.away_key, home_goals: res.hg, away_goals: res.ag, played: true, added_time: res.added });
     if (th.kind === "human" || ta.kind === "human") {
       for (const e of res.events) {
-        evs.push({ game_id: gameId, match_id: m.id, minute: e.m, type: e.type, team: e.s, player_id: e.pid ?? null, assist_id: e.aid ?? null, pen: !!e.pen, detail: e.detail ?? null, pending: !!e.pend });
+        // v0.8: en ventende straf får antal hjørner pr. mulig skytte med (fra de fastfrosne data), så klienten viser det samme som serveren afgør med
+        const detail = e.type === "pen_pending" ? penCorners(ctx, e.s === "h" ? m.home_key : m.away_key, e.s === "h" ? m.away_key : m.home_key) : e.detail ?? null;
+        evs.push({ game_id: gameId, match_id: m.id, minute: e.m, type: e.type, team: e.s, player_id: e.pid ?? null, assist_id: e.aid ?? null, pen: !!e.pen, detail, pending: !!e.pend });
       }
     }
   }
@@ -176,6 +178,12 @@ async function finishSeason(game, ctx) {
 
 // ---------- v1.14/1.15: straffespark ----------
 const gkOf = (ctx, key) => { const g = ctx.teams[key].xi.find((x) => x.pos === "GK"); return g ? g.p : null; };
+// antal hjørner for hver udespiller på holdet mod modstanderens målmand, som JSON {spiller-id: n} (samme beregning som applyPen)
+function penCorners(ctx, key, other) {
+  const gk = gkOf(ctx, other), n = {};
+  for (const x of ctx.teams[key].xi) if (x.pos !== "GK") n[x.p.id] = E.penInfo(x.p, gk).n;
+  return JSON.stringify(n);
+}
 
 // afgør én ventende straf. spot = null: et seedet tilfældigt hjørne (straffen blev sprunget over). Kun én kørsel kan afgøre den (betinget på pending).
 async function applyPen(game, ctx, ev, m, takerId, spot) {
