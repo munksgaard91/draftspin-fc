@@ -267,15 +267,14 @@ async function finalizeSeason(gameId) {
   // hold, der var væk i for mange runder, udgår af Highscore (sæsonen er stadig spillet færdig)
   const MAX_MISSED = 8;
   const humans = st.filter((x) => x.kind === "human" && ((gps.find((g) => g.user_id === x.user_id) || {}).missed_rounds || 0) < MAX_MISSED);
-  const owner = (uid) => (gps.find((g) => g.user_id === uid) || {}).display_name || null;
-  // gæster (anonyme brugere) gemmes aldrig i Hall of Fame; "players" tæller stadig alle menneskehold (også gæster), og placeringen er den rigtige i tabellen
+  // kun brugere med profil gemmes i Hall of Fame (gæster og brugere uden profil springes over); navnet er managernavnet fra profilen.
+  // Fejler opslaget, stopper afslutningen (og prøves igen), så ingen rekorder gemmes forkert. "players" tæller stadig alle menneskehold.
   const allHumans = st.filter((x) => x.kind === "human").length;
-  const guest = new Set();
-  for (const h of humans) {
-    const r = await admin.auth.admin.getUserById(h.user_id);
-    if (!r.data || !r.data.user || r.data.user.is_anonymous) guest.add(h.user_id);
-  }
-  const savers = humans.filter((h) => !guest.has(h.user_id));
+  const ids = humans.map((h) => h.user_id);
+  const profs = ids.length ? chk(await admin.from("profiles").select("user_id,manager_name").in("user_id", ids)) : [];
+  const mname = new Map(profs.map((p) => [p.user_id, p.manager_name]));
+  const owner = (uid) => mname.get(uid) || (gps.find((g) => g.user_id === uid) || {}).display_name || null;
+  const savers = humans.filter((h) => mname.has(h.user_id));
   const season = String(game.season).replace(/^(\d{4})\/\d{2}(\d{2})$/, "$1/$2");
   // mesterholdets opstilling gemmes med rekorden, så Hall of Fame kan vise holdet
   const champ = savers.find((h) => pos[h.team_key] === 1);
@@ -350,24 +349,17 @@ Deno.serve(async (req) => {
       // sletter kontoen straks og permanent: Hall of Fame-rækker, profilbillede, profil og selve brugeren. Spil, man er med i, kører videre uden en.
       const uid = u.user.id;
       if (u.user.is_anonymous) throw new Fejl("Guests don't have an account");
-      chk(await admin.from("hof_players").delete().eq("user_id", uid));
-      chk(await admin.from("hof_teams").delete().eq("user_id", uid));
-      await admin.storage.from("avatars").remove([uid + ".jpg"]);
-      chk(await admin.from("profiles").delete().eq("user_id", uid));
-      // spil: solospil (kun én selv) slettes helt; i spil med andre fjernes navnet, så holdet kan spille færdigt for de andre
-      const mine = chk(await admin.from("game_players").select("game_id").eq("user_id", uid)).map((x) => x.game_id);
-      for (const gid of mine) {
-        const n = chk(await admin.from("game_players").select("user_id").eq("game_id", gid)).length;
-        if (n <= 1) chk(await admin.from("games").delete().eq("id", gid));
-        else chk(await admin.from("game_players").update({ display_name: "Deleted user" }).eq("game_id", gid).eq("user_id", uid));
-      }
+      // alt i databasen i én transaktion (Hall of Fame, profil, spil), derefter billedet og til sidst selve brugeren
+      chk(await admin.rpc("delete_account_data", { p_uid: uid }));
+      const rm = await admin.storage.from("avatars").remove([uid + ".jpg"]);
+      if (rm.error) throw new Error(rm.error.message);
       const d = await admin.auth.admin.deleteUser(uid);
       if (d.error) throw new Error(d.error.message);
       return json({ ok: true });
     }
     let game = await getGame(game_id);
     const me = chk(await admin.from("game_players").select("*").eq("game_id", game_id).eq("user_id", u.user.id))[0];
-    if (!me) return json({ error: "You're not in the game" }, 403);
+    if (!me || me.left_at) return json({ error: "You're not in the game" }, 403);
     const isAdmin = game.admin_id === u.user.id;
 
     if (action === "pen") return json({ ok: true, ...(await resolvePen(game, u.user.id, event_id, taker_id, spot)) });
