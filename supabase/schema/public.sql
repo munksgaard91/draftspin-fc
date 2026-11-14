@@ -55,7 +55,8 @@ create table public.game_players (
   crest_tag text,
   respins_used integer default 0 not null,
   done_round integer default 0 not null,
-  start_ready boolean default false not null
+  start_ready boolean default false not null,
+  left_at timestamp with time zone
 );
 
 create table public.games (
@@ -323,6 +324,39 @@ create or replace view public.profiles_public as
 
 -- ===== Funktioner =====
 
+CREATE OR REPLACE FUNCTION public._autopick_left(p_game uuid)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare g games; u uuid; bp record; i int := 0;
+begin
+  if current_setting('dsfc.autopick', true) = '1' then return; end if;
+  perform set_config('dsfc.autopick', '1', true);
+  -- fejler et automatisk valg, må det aldrig rulle det rigtige valg tilbage, som kaldte os (cron tager det så senere)
+  begin
+  loop
+    i := i + 1;
+    exit when i > 120;
+    select * into g from games where id = p_game for update;
+    exit when not found or g.status <> 'draft';
+    u := turn_user(g);
+    exit when not exists (select 1 from game_players where game_id = p_game and user_id = u and left_at is not null);
+    if g.current_club is null then
+      perform _spin(g);
+      select * into g from games where id = p_game;
+    end if;
+    select * into bp from _best_pick(p_game, u, g.current_club);
+    exit when bp.player_id is null;
+    perform _do_pick(g, u, bp.player_id, bp.slot);
+  end loop;
+  exception when others then null;
+  end;
+  perform set_config('dsfc.autopick', '0', true);
+end $function$
+;
+
 CREATE OR REPLACE FUNCTION public._begin_draft(p_game uuid)
  RETURNS void
  LANGUAGE plpgsql
@@ -365,6 +399,23 @@ AS $function$
 $function$
 ;
 
+CREATE OR REPLACE FUNCTION public._check_guest_name(p text)
+ RETURNS text
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare n text := _clean_name(p);
+begin
+  if length(n) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
+  if n ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
+  if lower(n) = 'deleted user' or exists (select 1 from profiles where lower(manager_name) = lower(n)) then
+    raise exception 'That name belongs to a signed-in manager. Please pick another';
+  end if;
+  return n;
+end $function$
+;
+
 CREATE OR REPLACE FUNCTION public._check_manager_name(p text)
  RETURNS text
  LANGUAGE plpgsql
@@ -375,6 +426,7 @@ declare n text := _clean_name(p);
 begin
   if length(n) not between 2 and 16 then raise exception 'Your manager name must be 2 to 16 characters'; end if;
   if n ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
+  if lower(n) = 'deleted user' then raise exception 'That manager name is taken'; end if;
   if exists (select 1 from profiles where lower(manager_name) = lower(n) and user_id <> auth.uid()) then raise exception 'That manager name is taken'; end if;
   return n;
 end $function$
@@ -385,7 +437,7 @@ CREATE OR REPLACE FUNCTION public._clean_name(p text)
  LANGUAGE sql
  IMMUTABLE
 AS $function$
-  select regexp_replace(trim(coalesce(p, '')), '\s+', ' ', 'g')
+  select regexp_replace(trim(regexp_replace(coalesce(p, ''), '[\u200B-\u200F\u2060\uFEFF\u00AD]', '', 'g')), '\s+', ' ', 'g')
 $function$
 ;
 
@@ -441,8 +493,8 @@ AS $function$
 declare g games; u uuid; bp record;
 begin
   update games set status = 'closed'
-  where (status = 'lobby'  and not exists (select 1 from game_players gp where gp.game_id = games.id and gp.last_seen_at > now() - interval '10 minutes'))
-     or (status = 'draft'  and not exists (select 1 from game_players gp where gp.game_id = games.id and gp.last_seen_at > now() - interval '60 minutes'))
+  where (status = 'lobby'  and not exists (select 1 from game_players gp where gp.game_id = games.id and gp.last_seen_at > now() - interval '6 hours'))
+     or (status = 'draft'  and not exists (select 1 from game_players gp where gp.game_id = games.id and gp.last_seen_at > now() - interval '14 days'))
      or (status = 'season' and not exists (select 1 from game_players gp where gp.game_id = games.id and gp.last_seen_at > now() - interval '14 days'));
 
   delete from games gm
@@ -466,6 +518,47 @@ begin
     select * into bp from _best_pick(g.id, u, g.current_club);
     if bp.player_id is not null then perform _do_pick(g, u, bp.player_id, bp.slot); end if;
   end loop;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public._discard_game(p_game uuid, p_uid uuid)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare g games; others int; nxt uuid; n int;
+begin
+  select * into g from games where id = p_game for update;
+  if not found or g.status not in ('lobby', 'draft', 'season') then return; end if;
+  select count(*) into others from game_players where game_id = p_game and user_id <> p_uid and left_at is null;
+  if others = 0 then
+    delete from games where id = p_game;
+    return;
+  end if;
+  if g.status = 'lobby' then
+    delete from game_players where game_id = p_game and user_id = p_uid;
+    if g.setup then
+      select count(*) into n from game_players where game_id = p_game;
+      if g.max_players > 1 and n < 2 then
+        update games set setup = false, max_players = 10 where id = p_game;
+        update game_players set ready = false where game_id = p_game;
+      else
+        update games set max_players = greatest(1, n) where id = p_game;
+      end if;
+    end if;
+  else
+    -- holdet bliver i sæsonen (AI vælger/klarmelder for det), men tæller ikke i Hall of Fame
+    update game_players set left_at = now(), last_seen_at = now() - interval '1 day', missed_rounds = greatest(missed_rounds, 99),
+      start_ready = true, ready_round = greatest(ready_round, g.current_round)
+    where game_id = p_game and user_id = p_uid;
+  end if;
+  if g.admin_id = p_uid then
+    select user_id into nxt from game_players where game_id = p_game and user_id <> p_uid and left_at is null order by last_seen_at desc, joined_at limit 1;
+    update games set admin_id = nxt, admin_last_seen = now() where id = p_game;
+  end if;
+  if g.status = 'lobby' and g.setup then perform _maybe_begin(p_game); end if;
+  if g.status = 'draft' then perform _autopick_left(p_game); end if;
 end $function$
 ;
 
@@ -493,6 +586,7 @@ begin
     update games set current_pick = current_pick + 1, current_club = null,
       turn_deadline = case when timer_seconds > 0 then now() + make_interval(secs => least(timer_seconds, 20)) end
     where id = g.id;
+    perform _autopick_left(g.id);
   end if;
 end $function$
 ;
@@ -518,6 +612,22 @@ AS $function$
 $function$
 ;
 
+CREATE OR REPLACE FUNCTION public._left_stays_left()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+begin
+  if old.left_at is not null then
+    new.left_at := old.left_at;
+    new.last_seen_at := old.last_seen_at;
+    new.ready_round := greatest(new.ready_round, old.ready_round);
+    new.missed_rounds := greatest(new.missed_rounds, old.missed_rounds);
+  end if;
+  return new;
+end $function$
+;
+
 CREATE OR REPLACE FUNCTION public._maybe_begin(p_game uuid)
  RETURNS void
  LANGUAGE plpgsql
@@ -532,6 +642,20 @@ begin
   if n < 1 or n < g.max_players then return; end if;
   if exists (select 1 from game_players where game_id = p_game and (not ready or formation is null)) then return; end if;
   perform _begin_draft(p_game);
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public._need_profile()
+ RETURNS void
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+begin
+  if auth.uid() is null then raise exception 'Not signed in'; end if;
+  if not _is_guest() and not exists (select 1 from profiles where user_id = auth.uid()) then
+    raise exception 'Create your manager profile first';
+  end if;
 end $function$
 ;
 
@@ -622,7 +746,7 @@ declare
   chars text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   c text; gid uuid; i int;
 begin
-  if uid is null then raise exception 'Not signed in'; end if;
+  perform _need_profile();
   if p_league <> 'PL' or p_season <> '2026/2027' then raise exception 'Only the Premier League 2026/2027 is open'; end if;
   if p_pace not in ('full', 'quick') then raise exception 'Unknown pace'; end if;
   if (select count(*) from games where admin_id = uid
@@ -656,7 +780,49 @@ begin
   n := _check_manager_name(p_manager);
   if length(f) not between 2 and 60 then raise exception 'Please enter your full name'; end if;
   if f ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
-  insert into profiles (user_id, manager_name, full_name, color) values (auth.uid(), n, f, pal[1 + floor(random() * array_length(pal, 1))::int]);
+  begin
+    insert into profiles (user_id, manager_name, full_name, color) values (auth.uid(), n, f, pal[1 + floor(random() * array_length(pal, 1))::int]);
+  exception when unique_violation then raise exception 'That manager name is taken';
+  end;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public.delete_account_data(p_uid uuid)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+declare r record;
+begin
+  if (select is_anonymous from auth.users where id = p_uid) is distinct from false then raise exception 'Guests don''t have an account'; end if;
+  delete from hof_players where user_id = p_uid;
+  delete from hof_teams where user_id = p_uid;
+  delete from profiles where user_id = p_uid;
+  -- igangværende spil: samme regel som "start nyt spil" (solospil slettes, ellers forlader man spillet, og admin går videre)
+  for r in select game_id from game_players where user_id = p_uid order by game_id loop
+    perform _discard_game(r.game_id, p_uid);
+  end loop;
+  -- afsluttede/lukkede spil: solospil slettes, i spil med andre fjernes navnet
+  delete from games g where exists (select 1 from game_players gp where gp.game_id = g.id and gp.user_id = p_uid)
+    and not exists (select 1 from game_players gp where gp.game_id = g.id and gp.user_id <> p_uid);
+  update game_players set display_name = 'Deleted user' where user_id = p_uid;
+  -- afsluttede spil med andre: admin går videre, så de andre kan starte en ny sæson
+  update games g set admin_id = (select gp.user_id from game_players gp where gp.game_id = g.id and gp.user_id <> p_uid and gp.left_at is null order by gp.last_seen_at desc limit 1)
+  where g.admin_id = p_uid and exists (select 1 from game_players gp where gp.game_id = g.id and gp.user_id <> p_uid and gp.left_at is null);
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public.discard_game(p_game uuid)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+begin
+  if auth.uid() is null then raise exception 'Not signed in'; end if;
+  if not exists (select 1 from game_players where game_id = p_game and user_id = auth.uid() and left_at is null) then return; end if;
+  perform _discard_game(p_game, auth.uid());
 end $function$
 ;
 
@@ -769,7 +935,7 @@ CREATE OR REPLACE FUNCTION public.is_member(g uuid)
  STABLE SECURITY DEFINER
  SET search_path TO 'public', 'pg_temp'
 AS $function$
-  select exists (select 1 from public.game_players where game_id = g and user_id = auth.uid())
+  select exists (select 1 from public.game_players where game_id = g and user_id = auth.uid() and left_at is null)
 $function$
 ;
 
@@ -779,12 +945,14 @@ CREATE OR REPLACE FUNCTION public.join_game(p_code text)
  SECURITY DEFINER
  SET search_path TO 'public', 'pg_temp'
 AS $function$
-declare uid uuid := auth.uid(); g games;
+declare uid uuid := auth.uid(); g games; me game_players;
 begin
-  if uid is null then raise exception 'Not signed in'; end if;
+  perform _need_profile();
   select * into g from games where code = upper(trim(p_code)) for update;
   if not found then raise exception 'The code doesn''t exist'; end if;
-  if exists (select 1 from game_players where game_id = g.id and user_id = uid) then
+  select * into me from game_players where game_id = g.id and user_id = uid;
+  if found then
+    if me.left_at is not null then raise exception 'You left this game'; end if;
     update game_players set last_seen_at = now() where game_id = g.id and user_id = uid;
     if g.admin_id = uid then update games set admin_last_seen = now() where id = g.id; end if;
     return g.id;
@@ -864,6 +1032,21 @@ begin
 end $function$
 ;
 
+CREATE OR REPLACE FUNCTION public.my_game()
+ RETURNS json
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+  select json_build_object('id', g.id, 'code', g.code, 'status', g.status, 'setup', g.setup, 'pace', g.pace, 'round', g.current_round,
+           'pick', g.current_pick, 'picks_total', coalesce(array_length(g.draft_order, 1), 0) * 11, 'max', g.max_players,
+           'team', gp.team_name, 'humans', (select count(*) from game_players x where x.game_id = g.id and x.left_at is null))
+  from games g join game_players gp on gp.game_id = g.id and gp.user_id = auth.uid() and gp.left_at is null
+  where g.status in ('lobby', 'draft', 'season')
+  order by g.created_at desc limit 1
+$function$
+;
+
 CREATE OR REPLACE FUNCTION public.new_season(p_game uuid)
  RETURNS uuid
  LANGUAGE plpgsql
@@ -887,7 +1070,7 @@ begin
   values (c, g.admin_id, g.league, g.season, g.mode, g.max_players, g.timer_seconds, g.show_ratings, g.pace, g.season_no + 1, g.respins, g.speed_ai, g.speed_hh)
   returning id into ng;
   insert into game_players (game_id, user_id, team_name, color1, color2, crest, crest_tag, formation, display_name, ready)
-  select ng, user_id, team_name, color1, color2, crest, crest_tag, formation, display_name, true from game_players where game_id = p_game;
+  select ng, user_id, team_name, color1, color2, crest, crest_tag, formation, display_name, true from game_players where game_id = p_game and left_at is null;
   select array_agg(user_id order by random()) into ord from game_players where game_id = ng;
   update game_players gp set draft_pos = x.n from unnest(ord) with ordinality as x(u, n) where gp.game_id = ng and gp.user_id = x.u;
   update games set status = 'draft', draft_order = ord, current_pick = 0, current_club = null,
@@ -1100,8 +1283,13 @@ begin
   if last is not null and last > now() - interval '30 days' then
     raise exception 'You can change your name again on %', to_char(last + interval '30 days', 'FMDD Mon YYYY');
   end if;
-  update profiles set manager_name = n, name_changed_at = now() where user_id = auth.uid();
+  begin
+    update profiles set manager_name = n, name_changed_at = now() where user_id = auth.uid();
+  exception when unique_violation then raise exception 'That manager name is taken';
+  end;
   update game_players gp set display_name = n from games g where g.id = gp.game_id and gp.user_id = auth.uid() and g.status <> 'closed';
+  update hof_teams set owner = n where user_id = auth.uid();
+  update hof_players set owner = n where user_id = auth.uid();
   return now();
 end $function$
 ;
@@ -1126,16 +1314,13 @@ CREATE OR REPLACE FUNCTION public.set_name(p_game uuid, p_name text)
  SECURITY DEFINER
  SET search_path TO 'public', 'pg_temp'
 AS $function$
-declare mn text;
+declare mn text; gn text;
 begin
   perform 1 from games where id = p_game and status = 'lobby' for update;
   if not found then raise exception 'The game isn''t in the lobby'; end if;
   select manager_name into mn from profiles where user_id = auth.uid();
-  if mn is null then
-    if length(trim(p_name)) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
-    if p_name ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
-  end if;
-  update game_players set display_name = coalesce(mn, trim(p_name)) where game_id = p_game and user_id = auth.uid();
+  if mn is null then gn := _check_guest_name(p_name); end if;
+  update game_players set display_name = coalesce(mn, gn) where game_id = p_game and user_id = auth.uid();
   if not found then raise exception 'You''re not in the game'; end if;
 end $function$
 ;
@@ -1238,7 +1423,7 @@ CREATE OR REPLACE FUNCTION public.touch_game(p_game uuid)
  SET search_path TO 'public', 'pg_temp'
 AS $function$
 begin
-  update game_players set last_seen_at = now() where game_id = p_game and user_id = auth.uid();
+  update game_players set last_seen_at = now() where game_id = p_game and user_id = auth.uid() and left_at is null;
   update games set admin_last_seen = now() where id = p_game and admin_id = auth.uid();
 end $function$
 ;
@@ -1281,7 +1466,7 @@ CREATE OR REPLACE FUNCTION public.update_team(p_game uuid, p_name text, p_c1 tex
  SECURITY DEFINER
  SET search_path TO 'public', 'pg_temp'
 AS $function$
-declare tg text := nullif(upper(trim(coalesce(p_tag, ''))), ''); mn text;
+declare tg text := nullif(upper(trim(coalesce(p_tag, ''))), ''); mn text; gn text;
 begin
   perform 1 from games where id = p_game and status = 'lobby' for update;
   if not found then raise exception 'The game isn''t in the lobby'; end if;
@@ -1291,11 +1476,11 @@ begin
   if lower(p_c1) = lower(p_c2) then raise exception 'Choose two different colours'; end if;
   if length(trim(p_name)) not between 2 and 22 then raise exception 'Team name must be 2 to 22 characters'; end if;
   if tg is not null and tg !~ '^[A-ZÆØÅ0-9]{2,3}$' then raise exception 'The abbreviation must be 2 to 3 letters or numbers'; end if;
+  if p_name ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
   select manager_name into mn from profiles where user_id = auth.uid();
-  if mn is null and p_display is not null and length(trim(p_display)) not between 2 and 16 then raise exception 'Your name must be 2 to 16 characters'; end if;
-  if p_name ~ '[<>]' or (mn is null and coalesce(p_display, '') ~ '[<>]') then raise exception 'Names can''t contain < or >'; end if;
+  if mn is null and p_display is not null then gn := _check_guest_name(p_display); end if;
   update game_players set team_name = trim(p_name), color1 = lower(p_c1), color2 = lower(p_c2), crest = p_crest, formation = p_formation, crest_tag = tg, ready = false,
-    display_name = coalesce(mn, case when p_display is null then display_name else trim(p_display) end)
+    display_name = coalesce(mn, gn, display_name)
   where game_id = p_game and user_id = auth.uid();
   if not found then raise exception 'You''re not in the game'; end if;
 end $function$
@@ -1304,6 +1489,7 @@ end $function$
 
 -- ===== Triggere =====
 
+CREATE TRIGGER game_players_left_stays BEFORE UPDATE ON public.game_players FOR EACH ROW EXECUTE FUNCTION _left_stays_left();
 CREATE TRIGGER games_done_at BEFORE UPDATE ON public.games FOR EACH ROW EXECUTE FUNCTION _games_done_at();
 CREATE TRIGGER players_fit_refresh AFTER INSERT OR DELETE OR UPDATE ON public.players FOR EACH STATEMENT EXECUTE FUNCTION _players_changed();
 
@@ -1372,7 +1558,7 @@ grant maintain, references, select, trigger, truncate on public.players to anon;
 grant maintain, references, select, trigger, truncate on public.players to authenticated;
 grant maintain, references, select, trigger, truncate on public.players to service_role;
 grant select on public.profiles to authenticated;
-grant maintain, references, trigger, truncate on public.profiles to service_role;
+grant maintain, references, select, trigger, truncate on public.profiles to service_role;
 grant maintain, references, trigger, truncate on public.season_lineups to anon;
 grant maintain, references, select, trigger, truncate on public.season_lineups to authenticated;
 grant delete, insert, maintain, references, select, trigger, truncate, update on public.season_lineups to service_role;
@@ -1383,17 +1569,22 @@ grant delete, insert, maintain, references, select, trigger, truncate, update on
 
 -- ===== Funktionsrettigheder =====
 
+revoke all on function public._autopick_left(p_game uuid) from public, anon, authenticated;
 revoke all on function public._begin_draft(p_game uuid) from public, anon, authenticated;
 revoke all on function public._best_pick(p_game uuid, p_user uuid, p_club text) from public, anon, authenticated;
+revoke all on function public._check_guest_name(p text) from public, anon, authenticated;
 revoke all on function public._check_manager_name(p text) from public, anon, authenticated;
 revoke all on function public._clean_name(p text) from public, anon, authenticated; grant execute on function public._clean_name(p text) to public;
 revoke all on function public._cleanup_anon_users() from public, anon, authenticated;
 revoke all on function public._clubs_for(p_game uuid, p_user uuid) from public, anon, authenticated;
 revoke all on function public._cron_tick() from public, anon, authenticated;
+revoke all on function public._discard_game(p_game uuid, p_uid uuid) from public, anon, authenticated;
 revoke all on function public._do_pick(g games, p_user uuid, p_player integer, p_slot integer) from public, anon, authenticated;
 revoke all on function public._games_done_at() from public, anon, authenticated; grant execute on function public._games_done_at() to public;
 revoke all on function public._is_guest() from public, anon, authenticated;
+revoke all on function public._left_stays_left() from public, anon, authenticated; grant execute on function public._left_stays_left() to public;
 revoke all on function public._maybe_begin(p_game uuid) from public, anon, authenticated;
+revoke all on function public._need_profile() from public, anon, authenticated;
 revoke all on function public._players_changed() from public, anon, authenticated;
 revoke all on function public._spin(g games) from public, anon, authenticated;
 revoke all on function public.bump_missed(p_game uuid, p_round integer, p_users uuid[]) from public, anon, authenticated; grant execute on function public.bump_missed(p_game uuid, p_round integer, p_users uuid[]) to service_role;
@@ -1401,6 +1592,8 @@ revoke all on function public.claim_timeout(p_game uuid, p_force boolean) from p
 revoke all on function public.close_game(p_game uuid) from public, anon, authenticated; grant execute on function public.close_game(p_game uuid) to authenticated;
 revoke all on function public.create_game(p_league text, p_season text, p_max integer, p_timer integer, p_show boolean, p_pace text) from public, anon, authenticated; grant execute on function public.create_game(p_league text, p_season text, p_max integer, p_timer integer, p_show boolean, p_pace text) to authenticated;
 revoke all on function public.create_profile(p_manager text, p_full text) from public, anon, authenticated; grant execute on function public.create_profile(p_manager text, p_full text) to authenticated;
+revoke all on function public.delete_account_data(p_uid uuid) from public, anon, authenticated; grant execute on function public.delete_account_data(p_uid uuid) to service_role;
+revoke all on function public.discard_game(p_game uuid) from public, anon, authenticated; grant execute on function public.discard_game(p_game uuid) to authenticated;
 revoke all on function public.formation_slots(f text) from public, anon, authenticated;
 revoke all on function public.game_state(p_game uuid) from public, anon, authenticated; grant execute on function public.game_state(p_game uuid) to authenticated;
 revoke all on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) from public, anon, authenticated; grant execute on function public.hof_players_top(p_resp integer, p_pmin integer, p_pmax integer, p_pace text) to authenticated;
@@ -1410,6 +1603,7 @@ revoke all on function public.join_game(p_code text) from public, anon, authenti
 revoke all on function public.kick_player(p_game uuid, p_user uuid) from public, anon, authenticated; grant execute on function public.kick_player(p_game uuid, p_user uuid) to authenticated;
 revoke all on function public.leave_game(p_game uuid) from public, anon, authenticated; grant execute on function public.leave_game(p_game uuid) to authenticated;
 revoke all on function public.match_done(p_game uuid, p_round integer) from public, anon, authenticated; grant execute on function public.match_done(p_game uuid, p_round integer) to authenticated;
+revoke all on function public.my_game() from public, anon, authenticated; grant execute on function public.my_game() to authenticated;
 revoke all on function public.new_season(p_game uuid) from public, anon, authenticated; grant execute on function public.new_season(p_game uuid) to authenticated;
 revoke all on function public.open_setup(p_game uuid) from public, anon, authenticated; grant execute on function public.open_setup(p_game uuid) to authenticated;
 revoke all on function public.pfit(p_pos text, p_alts jsonb, p_slot text) from public, anon, authenticated; grant execute on function public.pfit(p_pos text, p_alts jsonb, p_slot text) to authenticated; grant execute on function public.pfit(p_pos text, p_alts jsonb, p_slot text) to service_role;
