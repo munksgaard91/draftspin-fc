@@ -696,6 +696,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 @keyframes stbspin{to{transform:rotate(360deg)}}
 .stb{padding:9px 22px;position:relative;flex-direction:column;gap:2px;line-height:1.25}
 .stb small{display:block;font-size:13px;font-weight:400;opacity:.78}
+#leaveBox .row2 .btn{white-space:nowrap}
 .stb.contb{background:#ffffff12;border:1.5px solid #00ff85;color:#fff;box-shadow:0 10px 26px -14px #00ff85aa}
 .stb.contb b::before{content:"▶";font-size:.78em;margin-right:8px;color:#00ff85}
 .stb.contb .stag{background:#00ff8522;color:#9dffcb}
@@ -1668,7 +1669,7 @@ function loginHtml(){
     '<div class="lgbtns">'+(DEMO?'<div class="gbtn"><button class="btn wide" style="background:#131314;color:#e3e3e3;border-radius:99px">Continue with Google</button></div>':'<div class="gbtn" id="gbtn"></div>')+
     '<p class="err" id="lgErr" hidden></p>'+
     (hasGuestGame()?'<p class="note" style="margin:0">You have a guest game in progress. If you sign in with Google, you will leave it.</p>':'')+
-    (AUTH.guest&&CONT?contHtml():'')+(AUTH.guest&&CONT&&!/[?&]code=/.test(location.search)?'':'<button class="btn wide" data-act="guest">Play as guest</button>')+
+    '<button class="btn wide" data-act="guest">Play as guest</button>'+
     '<p class="lgfine">As a guest you can play everything, but your records,<br>stats and Hall of Fame entries aren\'t saved.</p>'+
     '<p class="lglinks"><a href="privacy.html" target="_blank" rel="noopener">Privacy</a></p></div></div>';
 }
@@ -1700,7 +1701,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
-  ["0.7.2.0","2026-11-14",{new:["Continue game: if you leave a game or close the app, you can pick it up again from the home screen, also after signing in on another phone.","Only your newest game is kept. Starting a new one asks you first, and the old one is cleared away."],fix:["Deleting your account now works all the way, and a game you admin is handed over to another player.","Changing your manager name now also updates it in the Hall of Fame.","Guests can no longer use a signed-in manager's name.","Signing in again on the same account keeps your game."],small:["Better handling when the connection drops while signing in or out."]}],
+  ["0.7.2.0","2026-11-14",{new:["Continue game for players signed in with Google: if you leave a game or close the app, you can pick it up again from the home screen, also on another phone.","Only your newest game is kept. Starting a new one asks you first, and the old one is cleared away."],fix:["Deleting your account now works all the way, and a game you admin is handed over to another player.","Changing your manager name now also updates it in the Hall of Fame.","Guests can no longer use a signed-in manager's name.","Signing in again on the same account keeps your game."],small:["Better handling when the connection drops while signing in or out."]}],
   ["0.7.1.0","2026-11-08",{new:["Pick the background colour behind your initials on your profile, if you don't use a picture."]}],
   ["0.7.0.0","2026-11-08",{
     new:["Sign in with Google, or play as a guest. Guests can play everything, but their records and stats aren't saved.","Your own profile: choose a manager name, add a profile picture and see it in the top left corner.","Change your manager name once a month.","Delete your account at any time. Everything about you is removed instantly."],
@@ -1785,6 +1786,11 @@ function askLeave(ns){
   var g=NET.game;
   if(g&&g.status!=="done"&&!ns){
     var solo=g.max_players===1;
+    if(AUTH.guest){
+      $("leaveH").textContent=solo?"Abandon the game?":"Leave the game?";
+      $("leaveP").textContent=solo?"You're leaving the season and it can't be resumed. Sign in with Google to be able to continue games later.":"You're leaving the game. The others can keep playing without you, and you can come back with the game code "+g.code+".";
+      $("leaveYes").textContent="Leave";$("leaveBox").hidden=false;return;
+    }
     $("leaveH").textContent="Go to the home screen?";
     $("leaveP").textContent=solo?"Your game is saved. You can continue it from the home screen.":"Your game is saved, and you can continue it from the home screen. While you're away, the others keep playing and your picks are made for you.";
     $("leaveYes").textContent="Home";$("leaveBox").hidden=false;return;
@@ -1954,16 +1960,17 @@ async function authGuest(){
   }catch(e){netErr(e)}finally{AUTH.busy=false}
   renderFlow();contRefresh();
 }
-function hasGuestGame(){try{return AUTH.guest&&(!!CONT||!!localStorage.getItem("dsfc-gid"))}catch(e){return false}}
-/* "Continue game": det nyeste ufærdige spil (fra serveren, så det også virker efter nyt login eller på en ny telefon) */
+function hasGuestGame(){try{return AUTH.guest&&!!localStorage.getItem("dsfc-gid")}catch(e){return false}}
+/* "Continue game" (kun brugere med Google, kun på forsiden): det nyeste ufærdige spil, hentet fra serveren, så det også virker efter nyt login eller på en ny telefon */
 var CONT=null;
 async function contRefresh(){
+  if(AUTH.guest||!AUTH.profile){CONT=null;return}
   if(DEMO)CONT=(DEMO_SCREENS[DEMO.screen]||{}).cont||null;
   else{
     if(!NET.uid||NET.gid){CONT=null;return}
     try{var r0=await tmo(NET.sb.rpc("my_game"));if(r0.error)throw r0.error;CONT=r0.data||null}catch(e){return}
   }
-  if(!G.started&&!NET.gid&&(!role||AUTH.stage==="login"))renderFlow();
+  if(!G.started&&!NET.gid&&!role&&AUTH.stage==="ok")renderFlow();
 }
 function contProg(c){
   if(c.status==="season")return c.pace==="quick"&&c.round<1?"Season starting":"Round "+Math.max(1,c.round)+" of 38";
@@ -1977,14 +1984,13 @@ async function contDiscard(){
   try{await tmo(NET.sb.rpc("discard_game",{p_game:id}))}catch(e){}
 }
 function contHtml(){
-  if(!CONT)return "";
+  if(!CONT||AUTH.guest)return "";
   return '<button class="btn wide stb contb" data-act="cont"><span class="stag">'+(CONT.humans>1?CONT.humans+" players":"Solo")+'</span><b>Continue game</b><small>'+esc(CONT.team||"Your team")+' · '+contProg(CONT)+'</small></button>';
 }
 async function contGo(b){
   var c=CONT;if(!c||NET.creating)return;NET.creating=true;
   if(b){b.disabled=true;b.classList.add("busy")}
   try{
-    if(AUTH.guest&&AUTH.stage==="login"){setMode("guest");AUTH.stage="ok"}
     NET.gid=c.id;try{localStorage.setItem("dsfc-gid",c.id)}catch(x){}
     await tmo(liveLoad());
     if(!NET.game||NET.game.status==="closed"||!NET.players.some(function(p){return p.user_id===NET.uid&&!p.left_at}))throw new Error("That game is no longer available.");
@@ -3392,7 +3398,6 @@ var DEMO_SCREENS={
   profile:{t:"Profile",auth:"profile"},
   guest:{t:"Start screen as guest",guest:1},
   cont:{t:"Start screen with a game to continue",cont:{id:"x",code:"ABC123",status:"season",setup:true,pace:"full",round:12,pick:0,picks_total:0,max:1,team:"Dream Team",humans:1}},
-  "login-cont":{t:"Login with a guest game to continue",auth:"login",guest:1,cont:{id:"x",code:"ABC123",status:"draft",setup:true,pace:"full",round:0,pick:23,picks_total:44,max:4,team:"Night Owls",humans:4}},
   "end-guest":{t:"Season over as guest",st:"done",end:1,guest:1}
 };
 function demoClone(x){return x==null?x:JSON.parse(JSON.stringify(x))}
