@@ -53,8 +53,8 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Åbne punkter (ikke påbegyndt, start ikke uden besked)
 
-- Brugere/login og statistik pr. bruger (inkl. "Flest nedrykninger"); i dag er alle anonyme.
-- Mere realistiske klubemblemer; spillerbilleder (facepacks); pokaler/cup; ⚽/❌ i Match facts; nyt logo/navn; manager i draften; karakterer pr. spiller pr. kamp; redesign af målanimationen; færre emojis.
+- Statistik pr. bruger (inkl. "Flest nedrykninger"); login findes (v0.7), men Managers-fanen/profilstatistik venter på Rasmus' idé.
+- Mere realistiske klubemblemer; pokaler/cup; ⚽/❌ i Match facts; nyt logo/navn; manager i draften; karakterer pr. spiller pr. kamp; redesign af målanimationen; færre emojis.
 - To-spiller-straffeflowet (modstander venter via `penWatch`) er ikke testet med to rigtige enheder.
 
 ## Adgang
@@ -91,3 +91,17 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - Svage ekstrapositioner pr. spiller findes ikke: kun `alts.<pos>.nat` tæller (pfit/fac); svage pladser er faste pr. hovedposition (PENALTY_SLOTS).
 - `fm_uid` er upålidelig (blandet FM26/FM27 save-uid); match altid på `face_id` = FM unique_id.
 - CLI-eksport giver numeric-kolonner (yellow_w, red_w) som tekst; konvertér til tal før `scripts/demo_fixtures.ts`.
+
+## Afklaret med Rasmus og lært (2026-11-14)
+- Arbejdsgang: efter store ændringer i tal skal Fable (Agent med `model: fable`, kun læse) auditere, og Claude skal selv auditere før push. Rapportér fund kort med nummererede ja/nej-beslutninger.
+- Versioner: "version 8.0" betyder 0.8.0.0 (formatet 0.MINOR.PATCH.MICRO; 1.0 stadig reserveret). En upushet version kan omdøbes/samles; skriv én samlet changelog-post.
+- Trupper: kun spillere, der er i klubben lige nu, er med. Udlejede spillere fjernes; lejespillere IND tæller for klubben, de spiller i.
+- Positioner: "FM bestemmer" (FM's naturlige position, MR/ML → RW/LW). Rasmus kan overstyre: Marmoush ST (svag LW/RW følger af ST), Hincapié LB + CB fuld. Svage ekstrapositioner pr. spiller findes ikke; skal noget være "svagt", må det følge af hovedpositionens faste straf-pladser, ellers vælg mellem fuld ekstra eller ingen.
+- Boost: reglen gælder for alle ved hver dataopdatering, og alder opdateres samtidig. De gamle boosts (loft 8,0) var ikke regnet efter reglen. Boost afrundes til 1 decimal før rating.
+- Dobbelte spillere er bevidst: en draftet spiller spiller også for sin AI-klub. Derfor vises AI-holdenes målscorere ikke, og statistik tæller kun for ejeren. Ret ikke det.
+- Spillere, der ikke er i FM (fx Max Dowman): Rasmus sender et billede; beskær det som pakken (håret til overkanten, hovedet ca. 75 % af bredden, 250×250, gennemsigtig).
+- Forventet efter FM27: Liverpool vinder ligaen sjældnere (ca. 14 % mod 26 %), fordi deres stjerner faldt i FM27. Det er data, ikke en fejl. Tallene i SPEC (Arsenal 168,9 osv.) og i headeren på `engine/reference/season_titles.ts` er forældede.
+- Straffe: klienten må ikke regne serverafgjorte tal af de levende data, når sæsonen bruger fastfrosne. Hjørner pr. skytte sendes nu med den ventende straf (`detail`).
+- Deploy-kontrol: `supabase functions download engine --use-api` i en tom mappe i scratchpad (ALDRIG i repoet: den overskriver `supabase/functions/engine`) og `diff` mod repoet. `action: "hash"` kræver en anonym testbruger; auto mode afviste at oprette den 2026-11-14, så byte-diff blev brugt.
+- Nyttige CLI-kommandoer: `supabase db query -f <fil> --remote=... --yes` (migration), `supabase storage cp <fil> ss:///faces/<navn> --experimental --content-type image/webp --remote=...`, `supabase functions deploy engine --use-api --remote=... --yes`. Auto mode har bløde stop på skrivende SQL og deploy: spørg Rasmus først.
+- Browser-preview: `.claude/launch.json` findes lokalt (ikke i git); virker preview_start ikke, så start `python3 -m http.server 8123` i baggrunden og åbn `http://localhost:8123/index.html?demo=...`. Appens variabler er ikke globale i browseren (kan ikke sættes via JS-konsollen); test via demotilstanden.
