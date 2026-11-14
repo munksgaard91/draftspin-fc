@@ -359,7 +359,7 @@ Deno.serve(async (req) => {
       for (const gid of mine) {
         const n = chk(await admin.from("game_players").select("user_id").eq("game_id", gid)).length;
         if (n <= 1) chk(await admin.from("games").delete().eq("id", gid));
-        else chk(await admin.from("game_players").update({ display_name: "Former player" }).eq("game_id", gid).eq("user_id", uid));
+        else chk(await admin.from("game_players").update({ display_name: "Deleted user" }).eq("game_id", gid).eq("user_id", uid));
       }
       const d = await admin.auth.admin.deleteUser(uid);
       if (d.error) throw new Error(d.error.message);
