@@ -354,6 +354,13 @@ Deno.serve(async (req) => {
       chk(await admin.from("hof_teams").delete().eq("user_id", uid));
       await admin.storage.from("avatars").remove([uid + ".jpg"]);
       chk(await admin.from("profiles").delete().eq("user_id", uid));
+      // spil: solospil (kun én selv) slettes helt; i spil med andre fjernes navnet, så holdet kan spille færdigt for de andre
+      const mine = chk(await admin.from("game_players").select("game_id").eq("user_id", uid)).map((x) => x.game_id);
+      for (const gid of mine) {
+        const n = chk(await admin.from("game_players").select("user_id").eq("game_id", gid)).length;
+        if (n <= 1) chk(await admin.from("games").delete().eq("id", gid));
+        else chk(await admin.from("game_players").update({ display_name: "Former player" }).eq("game_id", gid).eq("user_id", uid));
+      }
       const d = await admin.auth.admin.deleteUser(uid);
       if (d.error) throw new Error(d.error.message);
       return json({ ok: true });
