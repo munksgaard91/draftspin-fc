@@ -3428,7 +3428,12 @@ function demoState(fx,cfg){
       var mm=ms.filter(function(m){return m.round===round&&(m.home_key===me.uid||m.away_key===me.uid)})[0],sd=mm.home_key===me.uid?"h":"a";
       var pe=evs.filter(function(e){return e.match_id===mm.id&&e.pen&&e.team===sd})[0];
       if(pe.type==="goal"){if(sd==="h")mm.home_goals--;else mm.away_goals--}
-      pe.type="pen_pending";pe.pending=true;pe.detail=null;pe.assist_id=null;
+      pe.type="pen_pending";pe.pending=true;pe.assist_id=null;
+      /* som serveren (v0.8): antal hjørner pr. udespiller mod modstanderens målmand (målmanden står på plads 11) */
+      var pby={};fx.players.forEach(function(p){pby[p.id]=p});
+      var ok=sd==="h"?mm.away_key:mm.home_key,gkr=fx.season_lineups.filter(function(l){return l.team_key===ok&&l.slot===11})[0],gkp=gkr&&pby[gkr.player_id],pmap={};
+      fx.season_lineups.forEach(function(l){if(l.team_key===me.uid&&l.slot!==11&&pby[l.player_id])pmap[l.player_id]=penInfoC(pby[l.player_id].pen_taking,gkp?gkp.rating:null).n});
+      pe.detail=JSON.stringify(pmap);
     }
   }
   var S0={me:me.uid,game:game,players:players,picks:picks,hofT:cfg.hof===0?[]:fx.hof_teams,hofP:cfg.hof===0?[]:fx.hof_players,
