@@ -1,9 +1,9 @@
 // Service worker: gør appen klar til at åbne uden forbindelse.
-var CACHE = "dsfc-shell-v118";
+var CACHE = "dsfc-shell-v119";
 var FACES = "dsfc-faces-v1"; // spillerbilleder, hentes af siden ved første start (se preloadFaces i index.html)
 var SCOPE = self.registration.scope;
 var BADGES = "ARS AVL BOU BRE BHA CHE COV CRY EVE FUL HUL IPS LEE LIV MCI MUN NEW NFO SUN TOT".split(" ");
-var SHELL = [SCOPE + "vendor/supabase-2.45.4.min.js", SCOPE + "manifest.webmanifest", SCOPE + "icons/icon-192.png", SCOPE + "icons/icon-180.png", SCOPE + "favicon.png", SCOPE + "badges/pl-logo.svg"].concat(BADGES.map(function (c) { return SCOPE + "badges/" + c + ".png"; }));
+var SHELL = [SCOPE + "vendor/supabase-2.45.4.min.js", SCOPE + "manifest.webmanifest", SCOPE + "icons/icon-192.png", SCOPE + "icons/icon-180.png", SCOPE + "favicon.png", SCOPE + "badges/pl-logo.svg", SCOPE + "badges/pl-trophy.png"].concat(BADGES.map(function (c) { return SCOPE + "badges/" + c + ".png"; }));
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {

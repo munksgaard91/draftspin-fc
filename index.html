@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.8.6.2 (beta)">
+<meta name="app-version" content="0.8.6.3 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -696,7 +696,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .joinbox{width:100%;max-width:340px;margin:0 auto}
 .codeline{display:flex;flex-direction:column;align-items:center;gap:8px;margin:10px 0 14px;font-size:16px;text-align:center}
 .codeline button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:10px 22px;font:500 26px var(--mono);letter-spacing:.14em;color:var(--text);cursor:pointer}
-.startwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:calc(100vh - 220px);min-height:calc(100svh - 220px);padding-top:6vh}
+.startwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:calc(100vh - 220px);min-height:calc(100svh - 220px);padding-top:6vh;padding-bottom:110px} /* plads til den faste Hall of Fame-knap på korte skærme */
 .startlogo{width:132px;height:132px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:6px}
 .wm3{font-size:32px;font-weight:600;letter-spacing:-.015em;line-height:1}
 .wm3 span{font-weight:300;color:var(--acc)}
@@ -733,8 +733,17 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .ver{font:500 11.5px var(--mono);color:color-mix(in srgb,var(--mut) 70%,var(--text));letter-spacing:.3px}
 .updbtn{appearance:none;border:1px solid #6fe39a99;background:linear-gradient(#6fe39a33,#6fe39a14);color:#8dffb5;font-size:13px;font-weight:600;border-radius:99px;padding:7px 13px;cursor:pointer;box-shadow:0 0 18px -2px #6fe39a88;animation:updglow 2.2s infinite ease-in-out}
 @keyframes updglow{0%,100%{box-shadow:0 0 12px -3px #6fe39a66}50%{box-shadow:0 0 22px 0 #6fe39acc}}
-.hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(46px + env(safe-area-inset-bottom,0px));z-index:5;padding:9px 20px;border-radius:99px;border:1px solid #e0b85a80;background:linear-gradient(#e0b85a22,#e0b85a0d);color:var(--gold-ink);font-size:14.5px;font-weight:600;letter-spacing:.2px;cursor:pointer;box-shadow:0 0 18px -6px #e0b85a99}
+.hsfix{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(46px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;align-items:center;gap:10px;padding:8px 18px 8px 12px;border-radius:99px;border:1px solid #fff3c8aa;background:linear-gradient(160deg,#fbe9b0 0%,#ecc96f 40%,#c99b3d 75%,#e6c877 100%);color:#2a1700;font:inherit;font-size:15px;font-weight:700;letter-spacing:.3px;cursor:pointer;overflow:hidden;white-space:nowrap;box-shadow:0 1px 0 #ffffffaa inset,0 -2px 0 #00000026 inset,0 8px 20px -10px #e0b85a99,0 0 0 3px #e0b85a14}
+.hsfix img{width:24px;height:auto;margin:-4px 0;filter:drop-shadow(0 1px 2px #0008)}
+.hsfix i{font-style:normal;font-weight:600;font-size:15px;opacity:.8;margin-left:2px}
+.hsfix:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.hsfix::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,#ffffff66,transparent);transform:skewX(-20deg);animation:hsshine 8s ease-in-out 1.2s infinite;pointer-events:none}
+.hsfix:active{filter:brightness(.95)}
+@keyframes hsshine{0%,80%{left:-60%}100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.hsfix::after{animation:none;display:none}}
 .hsnote{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:5;margin:0;width:max-content;max-width:calc(100% - 32px);padding:4px 10px;border-radius:99px;background:#170a28d9;text-align:center;font-size:11.5px;color:var(--mut);pointer-events:none}
+/* korte skærme (fx iPhone SE): knap og note står under knapperne i stedet for fast i bunden, så de aldrig dækker Join game */
+@media (max-height:700px){.startwrap{padding-bottom:18px;min-height:0}.hsfix{position:relative;left:auto;bottom:auto;transform:none;width:max-content;margin:4px auto 10px}.hsnote{position:static;transform:none;margin:0 auto 18px}}
 .startbtns{display:grid;gap:12px;width:100%;max-width:340px;margin-top:24px}
 .stb.p{background:linear-gradient(135deg,#7dffbc 0%,#00ff85 38%,#00b86c 100%);border-color:#b6ffd966;color:#12001f;box-shadow:0 1px 0 #ffffff66 inset,0 12px 28px -10px #00ff85aa}
 .stb.p:hover{background:linear-gradient(135deg,#a0ffd0 0%,#33ff9e 38%,#12cc7c 100%)}
@@ -1899,7 +1908,7 @@ function pstPlayers(D){
   return h;
 }
 function startHtml(){
-  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns">'+contHtml()+'<button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button><p class="hsnote">All records and Hall of Fame stats will be reset after 1.0 release</p>')+(homeBanner());
+  return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns">'+contHtml()+'<button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen"><img src="badges/pl-trophy.png" alt="">Hall of Fame<i aria-hidden="true">›</i></button><p class="hsnote">All records and Hall of Fame stats will be reset after 1.0 release</p>')+(homeBanner());
 }
 
 /* valgfrit login: lille knap på forsiden */
@@ -1907,6 +1916,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.8.6.3","2026-11-15",{ui:["A new golden Hall of Fame button on the home screen."]}],
   ["0.8.6.2","2026-11-15",{small:["The colour dots on your profile are easier to tap."]}],
   ["0.8.6.1","2026-11-15",{ui:["The season-over screen no longer uses emojis next to top scorer and top assists."],small:["Your profile stats keep counting correctly after very many seasons."]}],
   ["0.8.6.0","2026-11-15",{new:["Instant playback for Quick game: the season shows only the results, one round after another. The admin picks it in the lobby."],small:["The estimated game time now also counts respins and match speed more accurately."]}],
