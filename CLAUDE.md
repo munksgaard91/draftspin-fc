@@ -151,3 +151,4 @@ Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er
 3. **Endnu hurtigere spiltype**: BYGGET i v0.8.6.0 som "Instant" under Quick game (se "Instant").
 4. **Cups/pokaler**: ikke designet.
 5. **Hall of Fame-redesign** (Rasmus 2026-11-15: skal med før 1.0): ikke designet endnu; afklar med Rasmus, hvad der skal ændres.
+6. **Nulstilling ved 1.0** (Rasmus 2026-11-15): ryd alle rekorder (`hof_teams`/`hof_players`) og nulstil alle brugere, så alle starter forfra på 1.0. Gøres som det SIDSTE lige før 1.0 udgives, og først efter Rasmus har bekræftet præcis hvad (fx om profiler/managernavne, spil og `game_times` også ryddes). Dette er den eneste undtagelse fra "rør aldrig Rasmus' egne Hall of Fame-rækker". Tag backup af tabellerne først.
