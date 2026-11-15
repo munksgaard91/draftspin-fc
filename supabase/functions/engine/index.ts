@@ -301,7 +301,7 @@ async function finalizeSeason(gameId) {
       else streak = 0;
     }
     const s = t[h.team_key];
-    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: allHumans, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, respins: game.respins ?? 0, pace: game.pace ?? "full", formation: champ && champ.team_key === h.team_key ? h.formation : null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
+    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: allHumans, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, respins: game.respins ?? 0, pace: game.pace ?? "full", formation: h.formation ?? null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
   });
   const own = {};
   lu.forEach((l) => { const tm = savers.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });

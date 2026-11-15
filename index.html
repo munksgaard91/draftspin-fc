@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.8.0.0 (beta)">
+<meta name="app-version" content="0.8.5.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -633,12 +633,60 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .profnm{font-size:23px;font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .profnm button{background:none;border:0;color:var(--mut);font-size:17px;cursor:pointer;padding:2px 4px}
 .profsub{color:var(--mut);font-size:13px;margin-top:2px}
+.totop{display:block;margin:26px auto 0;background:none;border:1px solid var(--line);border-radius:999px;color:var(--mut);font:inherit;font-size:13px;padding:9px 18px;cursor:pointer}
+.totop[hidden]{display:none}
 .profact{display:flex;flex-direction:column;gap:10px;margin-top:22px}
 .lnkred{background:none;border:0;color:var(--red-text,#ff8fa8);text-decoration:underline;text-underline-offset:3px;font-size:13.5px;padding:10px;cursor:pointer}
 .avcols{margin:4px 0 4px}.avcols span{display:block;font-size:13px;color:var(--mut);margin-bottom:8px}
 .avcols div{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:300px}
 .avc{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:inset 0 0 0 2px #00000033}
 .avc.on{border-color:#fff}
+/* profilstatistik (v0.8.5) */
+.avrow{display:flex;align-items:center;gap:6px;margin:0 0 4px;flex-wrap:wrap}.avrow span{font-size:12px;color:var(--mut);margin-right:4px}
+.avd{width:14px;height:14px;border-radius:50%;border:0;padding:0;cursor:pointer;opacity:.5}.avd.on{opacity:1;box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--text)}
+.pst{margin-top:18px}
+.pshd{display:flex;justify-content:space-between;align-items:center;gap:8px}.pshd h2{font-size:17px;font-weight:600;margin:0}
+.pschips{display:flex;gap:4px;flex-wrap:wrap}.pschips button{font-size:12px;color:var(--mut);padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:none;cursor:pointer}
+.pschips button.on{color:var(--text);background:var(--surf2);border-color:var(--surf2)}.pschips.sub{margin-bottom:12px}
+.pstabs{display:flex;border-bottom:1px solid var(--line);margin:12px 0 14px}.pstabs button{flex:1;background:none;border:0;font-size:14px;font-weight:500;color:var(--mut);padding:8px 0;cursor:pointer}
+.pstabs button.on{color:var(--text);box-shadow:inset 0 -2px 0 var(--acc)}
+.pscard{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:14px}.pscard.psl{padding:2px 14px}
+.psempty{font-size:13px;color:var(--mut);text-align:center}
+.psgh{font-size:13px;font-weight:600;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;margin:20px 0 8px}
+.pshero{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;padding:16px 6px}.pshero>div{display:flex;flex-direction:column;align-items:center}.pshero>div+div{border-left:1px solid var(--line)}
+.psnum{height:34px;display:flex;align-items:center;justify-content:center;gap:6px}.psnum img{height:30px}
+.psbig{font:500 25px var(--mono);line-height:1}.psbig small{font:500 12px var(--sans);margin-left:1px;vertical-align:9px}
+.pslbl{font-size:12.5px;margin-top:6px}.pshint{font-size:11px;color:var(--mut)}
+.psform{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}.psform b{height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font:500 12.5px var(--mono);background:var(--surf2);color:var(--text)}
+.psform b small{font:500 9px var(--sans);margin-left:1px;align-self:flex-start;margin-top:7px;color:var(--mut)}.psform b.c{background:var(--gold);color:#2a1d05}.psform b.c small{color:#5a4310}
+.pszones{display:grid;gap:9px;font-size:13.5px}.pszones>span{display:flex;align-items:center}.pszones b{margin-left:auto;font:500 13px var(--mono)}.pszones b.z{color:var(--mut)}
+.psic{width:18px;height:16px;margin-right:8px;flex:none;display:flex;align-items:center;justify-content:center}.psic img,.psic svg{height:16px;width:auto}
+.psst{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #43286d77}.psst:last-child{border:0}.psst.blk{display:block;padding:12px 0 14px}
+.psk{font-size:14px}.psk small{display:block;font-size:11.5px;color:var(--mut);margin-top:1px}
+.psv{font:500 17px var(--mono);text-align:right;flex:none}.psv small{display:block;font:400 11px var(--sans);color:var(--mut)}
+.psmh{display:flex;justify-content:space-between;align-items:baseline}
+.pswdl{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;text-align:center}.pswdl>div+div{border-left:1px solid #43286d77}.pswdl b{display:block;font:500 20px var(--mono)}.pswdl b.w{color:var(--ok)}.pswdl b.d{color:#b9a8d9}.pswdl b.l{color:var(--red-text)}.pswdl span{font-size:12px;color:var(--mut)}
+.psbar{display:flex;height:8px;border-radius:99px;overflow:hidden;gap:2px;margin-top:12px}.psbar i{display:block}
+.pscd{display:inline-block;width:9px;height:12px;border-radius:2px;margin-right:7px;vertical-align:-1px}.pscd.y{background:var(--yel)}.pscd.r{background:var(--red)}
+.pshof{border-radius:18px;padding:14px;background:linear-gradient(160deg,#3a2a12 0%,#24142e 55%,var(--surf) 100%);border:1px solid #e4c47a66;box-shadow:0 0 0 1px #e4c47a1a inset,0 8px 24px #e4c47a14}
+.pshofhd{display:flex;gap:12px;align-items:center;padding-bottom:12px;border-bottom:1px solid #e4c47a33;margin-bottom:4px}.pshofhd.nb{border:0;padding-bottom:4px}.pshofhd img{height:40px}.pshofhd img.dim{opacity:.45;filter:grayscale(.6)}
+.pshofhd b{display:block;font-size:15px;color:var(--gold)}.pshofhd span{font-size:12px;color:#c9b88f}.pshofnote{font-size:11.5px;color:#c9b88f;margin:8px 0 0;line-height:1.5}
+.pshr{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #e4c47a22}.pshr:last-child{border:0;padding-bottom:2px}
+.psn1{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:600 13px var(--mono);color:#2a1d05;background:radial-gradient(circle at 35% 30%,#fff1c4,#e4c47a 55%,#b8913e);flex:none}
+.pshk{font-size:14px;flex:1;min-width:0;overflow-wrap:anywhere}.pshk small{display:block;font-size:11.5px;color:#c9b88f}
+.pshv{margin-left:auto;text-align:right;font:500 18px var(--mono);color:var(--gold);flex:none}.pshv small{display:block;font:400 11px var(--sans);color:#c9b88f}
+.psf{width:36px;height:36px;border-radius:50%;overflow:hidden;flex:none;background:var(--surf2);display:block;position:relative}
+.psf .rf{position:absolute;left:0;top:0;width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px}.psf .rf.nf{background:var(--silh) center/contain no-repeat}
+.psf.lg{width:56px;height:56px}.psf.lg .rf{transform:scale(1.5556);transform-origin:0 0}
+.psf.sm{width:28px;height:28px;box-shadow:0 0 0 2px var(--gold)}.psf.sm .rf{transform:scale(.7778);transform-origin:0 0}
+.pstop1{display:flex;align-items:center;gap:14px;padding:16px}.pstop1 .psn{font-weight:600;font-size:16px}.pstop1 .pssub{font-size:12px}
+.pstv{margin-left:auto;text-align:right;flex:none}.pstv b{font:500 26px var(--mono);display:block;line-height:1}.pstv small{color:var(--mut);font-size:12px}
+.pslist{margin-top:8px}.pspr{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #43286d77}.pspr:last-child{border:0}
+.psrk{width:18px;font:500 13px var(--mono);color:var(--mut);text-align:center;flex:none}.psn{font-weight:500}.pssub{font-size:11px;color:var(--mut)}
+.pspr .psv{margin-left:auto;font-size:18px}
+.pscb{height:13px;width:13px;object-fit:contain;vertical-align:-2px;margin-right:5px}
+.psfm{padding:9px 0;border-bottom:1px solid #43286d77}.psfm:last-child{border:0}.psfmh{display:flex;justify-content:space-between;align-items:baseline}.psfmh b{font:500 15px var(--mono)}.psfmh span{font-size:12px;color:var(--mut)}
+.psfmb{height:6px;border-radius:99px;background:var(--surf2);margin-top:7px;overflow:hidden}.psfmb i{display:block;height:100%;border-radius:99px;background:var(--acc)}
 .warnbox{margin-top:12px;font-size:13px;line-height:1.4;color:#ffd98a;background:#f5c5421a;border:1px solid #f5c54244;border-radius:12px;padding:10px 12px}
 .guestnote{margin-top:8px;padding:11px 14px;background:var(--surf);border:1px solid var(--line);border-radius:16px;font-size:13px;color:var(--mut);text-align:center}
 .modal .row2{display:flex;gap:10px;margin-top:20px}
@@ -877,6 +925,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
   </section>
   <section id="s-sim" class="screen"><div id="simbody"></div></section>
   <section id="s-end" class="screen"><div id="endbody"></div><div id="restartBox" hidden></div></section>
+  <button class="totop" id="toTop" data-totop hidden>Back to top &uarr;</button>
 </div>
 
 <div class="toast" id="toast" hidden></div>
@@ -1036,7 +1085,7 @@ function renderFlow(){
   $("sbg").hidden=authScr||!(!role||stepsFor()[F.step]==="join")||$("s-hof").classList.contains("on"); /* ikke bag Hall of Fame, hvis startskærmen tegnes om (fx efter versionstjek) */
   document.body.classList.toggle("clean",authScr);
   if(authScr){
-    $("flow").innerHTML=AUTH.view==="profile"&&AUTH.stage==="ok"?profileHtml():(AUTH.stage==="setup"?setupHtml():loginHtml());
+    $("flow").innerHTML=AUTH.view==="profile"&&AUTH.stage==="ok"?profileHtml():(AUTH.stage==="setup"?setupHtml():loginHtml());setTimeout(totopCheck,0);
     if(AUTH.stage==="login")gisRender();
     return}
   if(!role){$("flow").innerHTML=startHtml();return}
@@ -1073,6 +1122,7 @@ function rosterRow(k,team,who,ready,icon,extra){
 }
 $("flow").addEventListener("click",function(e){
   var t=e.target;
+  var psb=t.closest("[data-pspace],[data-pstab],[data-psptab]");if(psb){if(psb.dataset.pspace)PST.pace=psb.dataset.pspace;if(psb.dataset.pstab)PST.tab=psb.dataset.pstab;if(psb.dataset.psptab)PST.ptab=psb.dataset.psptab;pstPaint();return}
   var avc=t.closest("[data-avc]");if(avc){avColor(avc.dataset.avc);return}
   var ctb=t.closest("[data-ctab]");if(ctb){F.ctab=ctb.dataset.ctab;renderFlow();return}
   var cb=t.closest("[data-crest]");if(cb){S.crest=+cb.dataset.crest;renderFlow();return}
@@ -1138,13 +1188,25 @@ function goStart(){
   go("flow");renderFlow();$("orderWrap").innerHTML="";$("draftMain").hidden=true;buildReel();renderDraft();renderSheet();
 }
 
+/* ---------- back to top: kun på lange skærme (over ca. 1,7 skærmhøjde) ---------- */
+function totopCheck(){
+  var g=$("toTop");if(!g)return;
+  var long=document.documentElement.scrollHeight>window.innerHeight*1.7;
+  var act=document.querySelector(".screen.on"),inl=act?act.querySelector(".totop"):null;
+  if(inl){inl.hidden=!long;g.hidden=true;return}
+  g.hidden=!long||!act||act.id==="s-draft"||act.id==="s-match";
+}
+if(window.ResizeObserver)new ResizeObserver(function(){totopCheck()}).observe($("app"));
+window.addEventListener("resize",totopCheck);
+document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("[data-totop]"))window.scrollTo({top:0,behavior:window.matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})});
+
 /* ---------- nav ---------- */
 var HOFBACK=null;
 function go(s){
   if(s==="draft")renderSheet();else $("sheet").hidden=true;
   document.querySelectorAll(".screen").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
   document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});
-  window.scrollTo(0,0);
+  window.scrollTo(0,0);setTimeout(totopCheck,0);
   if(s==="match"&&!S.matchSeen){S.matchSeen=true;startMatch()}
   if(s==="table")renderTable();
   if(s==="stats")renderStats();
@@ -1684,13 +1746,153 @@ function setupHtml(){
 }
 function profileHtml(){
   var p=AUTH.profile||{},d=p.created_at?new Date(p.created_at):null;
+  setTimeout(function(){pstLoad()},0);
   return topBack("profback")+'<div class="prof"><div class="profhd"><span class="profav">'+avatarHtml(p,72)+'<label class="profcam" title="Change picture">📷<input type="file" id="avFile" accept="image/*" hidden></label></span>'+
     '<div><div class="profnm"><span>'+esc(p.manager_name||"")+'</span><button data-act="namechg" aria-label="Change manager name">✎</button></div>'+
     '<div class="profsub">'+(d?'Playing since '+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]+' '+d.getFullYear():'')+'</div></div></div>'+
     (p.avatar_ver?'<button class="linkbtn" data-act="avdel" style="margin:-8px 0 0;padding:4px 0;text-align:left">Remove picture</button>':
-      '<div class="avcols"><span>Background colour</span><div>'+AV_COLORS.map(function(c){return '<button class="avc'+(String(p.color).toLowerCase()===c?" on":"")+'" data-avc="'+c+'" style="background:'+c+'" aria-label="Colour '+c+'"></button>'}).join("")+'</div></div>')+
+      '<div class="avrow"><span>Colour</span>'+AV_COLORS.map(function(c){return '<button class="avd'+(String(p.color).toLowerCase()===c?" on":"")+'" data-avc="'+c+'" style="background:'+c+'" aria-label="Colour '+c+'"></button>'}).join("")+'</div>')+
+    '<div id="pstats" class="pst">'+pstHtml()+'</div>'+
+    '<button class="totop" data-totop hidden>Back to top &uarr;</button>'+
     '<div class="profact"><button class="btn wide" data-act="logout">Log out</button></div>'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px"><a class="lglinks" style="color:var(--mut);font-size:13px" href="privacy.html" target="_blank" rel="noopener">Privacy</a><button class="lnkred" data-act="delacct">Delete account</button></div></div>';
+}
+/* ---------- profilstatistik (v0.8.5): kun afsluttede sæsoner for brugere med Google (hof_teams/hof_players med user_id) ---------- */
+var PST={pace:"all",tab:"ov",ptab:"goals",raw:null,at:0,busy:false,err:false};
+var PST_MEDAL='<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 0h3l1 5H5zM9 0h3l-1 5H8z" fill="#7d8597"/><circle cx="8" cy="10" r="5.5" fill="#d7dbe4" stroke="#9aa1b0"/><text x="8" y="12.6" text-anchor="middle" font-size="7" font-family="DM Mono,monospace" fill="#3a3f4b" font-weight="500">2</text></svg>';
+var PST_ZONES=[["Champions",1,1,'<img src="badges/pl-trophy.png" alt="">'],["Runner-up",2,2,PST_MEDAL],["Champions League",3,4,'<img src="badges/eu-cl.png" alt="">'],["Europa League",5,6,'<img src="badges/eu-el.png" alt="">'],["Conference League",7,7,'<img src="badges/eu-ecl.png" alt="">'],["Relegated",18,20,'<img src="badges/efl-champ.png" alt="">']];
+function pstOrd(n){var s=ordinal(n).replace(/^\d+/,"");return n+'<small>'+s+'</small>'}
+function pstOpp(t){if(!t)return "";return String(t).replace(/,?\s*runde\s*\d+\s*$/i,"").trim()}
+function pstFace(pid,cls){var x=NET.byId[pid];return '<span class="psf'+(cls?" "+cls:"")+'">'+(x?faceImg(x.p):'<span class="rf nf"></span>')+'</span>'}
+function pstBadge(c){return "badges/"+c+".png"}
+function pstName(pid){var x=NET.byId[pid];return x?x.p[0]:"Former player"}
+/* fordeler afrundede procenter, så de altid giver 100 */
+function pstPct(a){var t=a.reduce(function(s,x){return s+x},0);if(!t)return a.map(function(){return 0});var r=a.map(function(x){return x*100/t}),f=r.map(Math.floor),rest=100-f.reduce(function(s,x){return s+x},0);r.map(function(x,i){return [x-f[i],i]}).sort(function(p,q){return q[0]-p[0]}).slice(0,rest).forEach(function(p){f[p[1]]++});return f}
+/* nr. 1 i hver Hall of Fame-kategori, med samme sortering som Hall of Fame-skærmen (renderHofLive), filtre på All */
+function hofLeaders(P,T){
+  var top=function(arr,key,asc){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]})[0]||null};
+  var topU=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return top(Object.keys(b).map(function(k){return b[k]}),key)};
+  var pos=function(k,min){return P.filter(function(x){return x[k]>(min||0)})};
+  var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
+  var L=[];
+  var add=function(t,x,k,v,u,sub){if(x)L.push({t:t,x:x,k:k,v:v,u:u,sub:sub})};
+  var se=function(x){return esc(x.team_name)+(x.season?" · "+esc(x.season):"")};
+  var pse=function(x){return esc(pstName(x.player_id))+" · "+se(x)};
+  var g=topU(pos("goals"),"goals");if(g)add("Most goals in a season",g,"p",g.goals,"goals",pse(g));
+  g=topU(pos("assists"),"assists");if(g)add("Most assists in a season",g,"p",g.assists,"assists",pse(g));
+  g=topU(pos("clean_sheets"),"clean_sheets");if(g)add("Most clean sheets in a season",g,"p",g.clean_sheets,"clean sheets",pse(g));
+  g=top(T,"points");if(g)add("Most points in a season",g,"t",g.points,"points",se(g));
+  g=topU(pos("best_match_goals",1),"best_match_goals");if(g)add("Most goals in a match",g,"p",g.best_match_goals,"goals",esc(pstName(g.player_id))+(pstOpp(g.best_match_text)?" · "+esc(pstOpp(g.best_match_text)):""));
+  g=top(T,"gf");if(g)add("Most team goals in a season",g,"t",g.gf,"goals",se(g));
+  g=top(gd,"gd");if(g)add("Best goal difference",g,"t",(g.gd>0?"+":"")+g.gd,"goal difference",se(g));
+  g=top(T,"ga",true);if(g)add("Fewest goals conceded",g,"t",g.ga,"conceded",se(g));
+  g=top(T.filter(function(x){return x.win_streak>0}),"win_streak");if(g)add("Longest winning streak",g,"t",g.win_streak,"wins",se(g));
+  g=top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin");if(g)add("Biggest win",g,"t",g.big_win_score||"","",esc(g.team_name)+(pstOpp(g.big_win_text)?" "+esc(pstOpp(g.big_win_text)):""));
+  g=topU(pos("reds"),"reds");if(g)add("Most red cards in a season",g,"p",g.reds,"red cards",pse(g));
+  g=topU(pos("yellows"),"yellows");if(g)add("Most yellow cards in a season",g,"p",g.yellows,"yellow cards",pse(g));
+  return L;
+}
+var PST_ONE={goals:"goal",assists:"assist","clean sheets":"clean sheet",picks:"pick",points:"point",wins:"win","red cards":"red card","yellow cards":"yellow card"};
+function pstU(v,u){return Number(v)===1&&PST_ONE[u]?PST_ONE[u]:u}
+async function pstLoad(force){
+  var uid=NET.uid;
+  if(PST.busy===uid)return;
+  if(PST.raw&&PST.uid===uid&&!force&&Date.now()-PST.at<60000){pstPaint();return}
+  PST.busy=uid;PST.err=false;
+  try{
+    if(!NET.pl)livePlayers();
+    try{await NET.pl}catch(_){}
+    var ar={p_resp:null,p_pmin:null,p_pmax:null};
+    var r=await Promise.all([NET.sb.from("hof_teams").select("*").eq("user_id",uid),NET.sb.from("hof_players").select("*").eq("user_id",uid),NET.sb.rpc("hof_teams_top",ar),NET.sb.rpc("hof_players_top",ar)]);
+    if(NET.uid!==uid)return;
+    var bad=r.filter(function(x){return x.error})[0];if(bad)throw bad.error;
+    PST.uid=uid;PST.raw={T:r[0].data||[],P:r[1].data||[],HT:r[2].data||[],HP:r[3].data||[]};PST.at=Date.now();
+  }catch(e){if(NET.uid===uid)PST.err=true}
+  finally{if(PST.busy===uid)PST.busy=false}
+  if(NET.uid===uid)pstPaint();
+}
+function pstPaint(){var el=document.getElementById("pstats");if(el)el.innerHTML=pstHtml()}
+function pstCalc(){
+  var R=PST.raw,pc=PST.pace;
+  var T=R.T.filter(function(x){return pc==="all"||x.pace===pc}).sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)});
+  var gids={};T.forEach(function(x){gids[x.game_id]=1});
+  var P=R.P.filter(function(x){return gids[x.game_id]});
+  var D={T:T,n:T.length,sum:function(k){return T.reduce(function(s,x){return s+(x[k]||0)},0)}};
+  D.titles=T.filter(function(x){return x.pos===1}).length;
+  D.avg=D.n?Math.round(T.reduce(function(s,x){return s+x.pos},0)/D.n):0;
+  D.form=T.slice(0,16).map(function(x){return x.pos});
+  D.zones=PST_ZONES.map(function(z){return [z,T.filter(function(x){return x.pos>=z[1]&&x.pos<=z[2]}).length]});
+  D.w=D.sum("w");D.d=D.sum("d");D.l=D.sum("l");D.mp=D.w+D.d+D.l;D.pts=D.sum("points");D.gf=D.sum("gf");D.ga=D.sum("ga");
+  /* holdets clean sheets: målmanden har flest (han spiller alle kampe), så det højeste tal pr. sæson */
+  var cs={};P.forEach(function(x){cs[x.game_id]=Math.max(cs[x.game_id]||0,x.clean_sheets||0)});
+  D.cs=Object.keys(cs).reduce(function(s,k){return s+cs[k]},0);
+  D.yel=P.reduce(function(s,x){return s+(x.yellows||0)},0);D.red=P.reduce(function(s,x){return s+(x.reds||0)},0);
+  var best=function(k){return T.slice().sort(function(a,b){return b[k]-a[k]})[0]};
+  D.rec=D.n?{pts:best("points"),ws:best("win_streak"),bw:best("big_win_margin"),gf:best("gf")}:null;
+  var A={};
+  P.forEach(function(x){var a=A[x.player_id]=A[x.player_id]||{pid:x.player_id,goals:0,assists:0,clean_sheets:0,picks:0,b:{goals:0,assists:0,clean_sheets:0}};
+    a.picks++;["goals","assists","clean_sheets"].forEach(function(k){a[k]+=x[k]||0;a.b[k]=Math.max(a.b[k],x[k]||0)})});
+  D.pl=Object.keys(A).map(function(k){return A[k]});
+  var F={};T.forEach(function(x){if(!x.formation)return;var fl=flabel(x.formation),f=F[fl]=F[fl]||{f:fl,n:0,p:0};f.n++;f.p+=x.pos});
+  D.forms=Object.keys(F).map(function(k){return F[k]}).sort(function(a,b){return b.n-a.n||a.p/a.n-b.p/b.n});
+  D.hof=hofLeaders(R.HP,R.HT).filter(function(e){return e.x.user_id===NET.uid});
+  return D;
+}
+function pstHtml(){
+  var on=function(c){return c?" on":""};
+  var h='<div class="pshd"><h2>Your stats</h2><div class="pschips">'+[["all","All"],["full","Classic"],["quick","Quick"]].map(function(c){return '<button class="'+on(PST.pace===c[0])+'" data-pspace="'+c[0]+'">'+c[1]+'</button>'}).join("")+'</div></div>';
+  h+='<div class="pstabs"><button class="'+on(PST.tab==="ov")+'" data-pstab="ov">Overview</button><button class="'+on(PST.tab==="pl")+'" data-pstab="pl">Players</button></div>';
+  if(!PST.raw||PST.uid!==NET.uid)return h+'<p class="note">'+(PST.err?'Couldn\'t load your stats.':'Loading your stats…')+'</p>';
+  var D=pstCalc();
+  return h+(PST.tab==="pl"?pstPlayers(D):pstOverview(D));
+}
+function pstEmpty(){return '<div class="pscard psempty">No finished seasons yet. Play a season to the end while signed in, and your stats show up here.</div>'}
+function pstRow(k,sub,v,u){return '<div class="psst"><div class="psk">'+k+(sub?'<small>'+sub+'</small>':'')+'</div><div class="psv">'+v+(u?'<small>'+u+'</small>':'')+'</div></div>'}
+function pstHofBlock(D){
+  var E=D.hof,h='<div class="psgh">Hall of Fame entries</div><div class="pshof">';
+  if(!E.length)return h+'<div class="pshofhd nb"><img class="dim" src="badges/pl-trophy.png" alt=""><div><b>No records yet</b><span>Finish a season at the top of any Hall of Fame list and it will show up here.</span></div></div><p class="pshofnote">For example the most points in a season, the longest winning streak, the biggest win or the most goals in a match. Only seasons you play to the end count.</p></div>';
+  h+='<div class="pshofhd"><img src="badges/pl-trophy.png" alt=""><div><b>You hold '+E.length+(E.length===1?' record':' records')+'</b><span>Lists where you\'re number 1 of all players</span></div></div>';
+  return h+E.map(function(e){return '<div class="pshr">'+(e.k==="p"?pstFace(e.x.player_id,"sm"):'<span class="psn1">1</span>')+'<div class="pshk">'+esc(e.t)+'<small>'+e.sub+'</small></div><div class="pshv">'+esc(String(e.v))+(e.u?'<small>'+pstU(e.v,e.u)+'</small>':'')+'</div></div>'}).join("")+'</div>';
+}
+function pstOverview(D){
+  if(!D.n)return pstEmpty()+pstHofBlock(D);
+  var h='<div class="pscard pshero"><div><div class="psnum"><img src="badges/pl-trophy.png" alt=""><span class="psbig">'+D.titles+'</span></div><div class="pslbl">Titles</div><div class="pshint">Leagues won</div></div>'+
+    '<div><div class="psnum"><span class="psbig">'+D.n+'</span></div><div class="pslbl">Seasons</div><div class="pshint">Played to the end</div></div>'+
+    '<div><div class="psnum"><span class="psbig">'+pstOrd(D.avg)+'</span></div><div class="pslbl">Avg. finish</div><div class="pshint">Your usual place</div></div></div>';
+  h+='<div class="psgh">Recent form</div><div class="pscard"><div class="psform">'+D.form.map(function(p){return '<b class="'+(p===1?"c":"")+'">'+pstOrd(p)+'</b>'}).join("")+'</div><div class="pshint" style="margin-top:8px">Your last '+(D.form.length===1?'season':D.form.length+' seasons')+', newest first.</div></div>';
+  h+='<div class="psgh">Career finishes</div><div class="pscard"><div class="pszones">'+D.zones.map(function(z){return '<span><span class="psic">'+z[0][3]+'</span>'+z[0][0]+'<b'+(z[1]?'':' class="z"')+'>'+z[1]+'</b></span>'}).join("")+'</div></div>';
+  var pc=pstPct([D.w,D.d,D.l]);
+  h+='<div class="psgh">Results</div><div class="pscard psl">'+pstRow("Points per match","",(D.mp?(D.pts/D.mp).toFixed(2):"0.00"),"points")+
+    '<div class="psst blk"><div class="psmh"><div class="psk">Matches</div><span class="pshint">'+D.mp+' played</span></div><div class="pswdl"><div><b class="w">'+pc[0]+'%</b><span>Won · '+D.w+'</span></div><div><b class="d">'+pc[1]+'%</b><span>Drawn · '+D.d+'</span></div><div><b class="l">'+pc[2]+'%</b><span>Lost · '+D.l+'</span></div></div>'+
+    '<div class="psbar"><i style="flex:'+D.w+';background:var(--ok)"></i><i style="flex:'+D.d+';background:#6c5a8c"></i><i style="flex:'+D.l+';background:var(--red)"></i></div></div></div>';
+  var pm=function(x,dp){return D.mp?(x/D.mp).toFixed(dp):(0).toFixed(dp)};
+  h+='<div class="psgh">Stats</div><div class="pscard psl">'+pstRow("Goals scored",pm(D.gf,1)+" per match",D.gf)+pstRow("Goals conceded",pm(D.ga,1)+" per match",D.ga)+pstRow("Clean sheets","Matches without conceding",D.cs)+
+    pstRow('<span class="pscd y"></span>Yellow cards',pm(D.yel,1)+" per match",D.yel)+pstRow('<span class="pscd r"></span>Red cards',pm(D.red,2)+" per match",D.red)+'</div>';
+  var R=D.rec,tm=function(x){return esc(x.team_name)+(x.season?" · "+esc(x.season):"")};
+  h+='<div class="psgh">Your records</div><div class="pscard psl">'+pstRow("Most points in a season",tm(R.pts)+(R.pts.pos===1?" · champions":""),R.pts.points,"points")+
+    pstRow("Longest winning streak","Wins in a row",R.ws.win_streak||0)+
+    (R.bw.big_win_margin>0?pstRow("Biggest win",esc(R.bw.team_name)+(pstOpp(R.bw.big_win_text)?" "+esc(pstOpp(R.bw.big_win_text)):""),esc(R.bw.big_win_score||"")):"")+
+    pstRow("Most team goals in a season",tm(R.gf),R.gf.gf)+'</div>';
+  return h+pstHofBlock(D);
+}
+function pstPlayers(D){
+  var k=PST.ptab,h='<div class="pschips sub">'+[["goals","Goals"],["assists","Assists"],["clean_sheets","Clean sheets"],["picked","Most picked"]].map(function(c){return '<button class="'+(k===c[0]?"on":"")+'" data-psptab="'+c[0]+'">'+c[1]+'</button>'}).join("")+'</div>';
+  if(!D.n)return h+pstEmpty();
+  var unit={goals:"goals",assists:"assists",clean_sheets:"clean sheets",picked:"picks"}[k];
+  var L=D.pl.filter(function(a){return k==="picked"||a[k]>0}).sort(function(a,b){return k==="picked"?(b.picks-a.picks||(b.goals+b.assists+b.clean_sheets)-(a.goals+a.assists+a.clean_sheets)):(b[k]-a[k]||b.b[k]-a.b[k])}).slice(0,10);
+  if(!L.length)return h+'<div class="pscard psempty">None of your players have any yet.</div>';
+  var val=function(a){return k==="picked"?a.picks:a[k]};
+  var sub=function(a){if(k==="picked"){var x=NET.byId[a.pid];return x?'<img class="pscb" src="'+pstBadge(x.club)+'" alt="">'+esc((CLUBS[x.club]||{}).n||x.club):""}return "Best season: "+a.b[k]+" "+pstU(a.b[k],unit)};
+  var a0=L[0];
+  h+='<div class="pscard pstop1">'+pstFace(a0.pid,"lg")+'<div><div class="psn">'+esc(pstName(a0.pid))+'</div><div class="pssub">'+sub(a0)+'</div></div><div class="pstv"><b>'+val(a0)+'</b><small>'+pstU(val(a0),unit)+'</small></div></div>';
+  if(L.length>1)h+='<div class="pscard psl pslist">'+L.slice(1).map(function(a,i){return '<div class="pspr"><span class="psrk">'+(i+2)+'</span>'+pstFace(a.pid)+'<div><div class="psn">'+esc(pstName(a.pid))+'</div><div class="pssub">'+sub(a)+'</div></div><div class="psv">'+val(a)+'<small>'+pstU(val(a),unit)+'</small></div></div>'}).join("")+'</div>';
+  if(k==="picked"){
+    if(D.forms.length){var mx=D.forms[0].n;h+='<div class="psgh">Formations</div><div class="pscard psl">'+D.forms.map(function(f){return '<div class="psfm"><div class="psfmh"><b>'+esc(f.f)+'</b><span>'+f.n+(f.n===1?' season':' seasons')+' · avg. '+ordinal(Math.round(f.p/f.n))+'</span></div><div class="psfmb"><i style="width:'+Math.round(f.n/mx*100)+'%"></i></div></div>'}).join("")+'</div>'}
+  }else{
+    var cat={goals:"Most goals in a season",assists:"Most assists in a season",clean_sheets:"Most clean sheets in a season"}[k],e=D.hof.filter(function(x){return x.t===cat})[0];
+    if(e)h+='<div class="psgh">Hall of Fame</div><div class="pshof"><div class="pshr">'+pstFace(e.x.player_id,"sm")+'<div class="pshk">'+esc(cat)+'<small>'+e.sub+'</small></div><div class="pshv">'+e.v+'<small>'+pstU(e.v,e.u)+'</small></div></div></div>';
+  }
+  return h;
 }
 function startHtml(){
   return cornerLogin()+'<div class="startwrap">'+'<img class="startlogo" src="'+PLLOGO+'" alt="Premier League">'+'<div class="wm3">Premier League <span>Draft</span></div><div class="startbtns">'+contHtml()+'<button class="btn p wide stb" data-act="create"><b>New Season</b><small>Play solo against the league</small></button><button class="btn p wide stb" data-act="multi"><span class="stag">2–10 players</span><b>Multiplayer</b><small>Draft with friends</small></button><button class="btn wide" data-act="joinpick">Join game</button></div></div>'+('<button class="hsfix" data-act="hofopen">Hall of Fame</button><p class="hsnote">All records and Hall of Fame stats will be reset after 1.0 release</p>')+(homeBanner());
@@ -1701,6 +1903,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.8.5.0","2026-11-15",{new:["Your stats on your profile: titles, seasons, average finish, recent form and how your seasons have ended over your whole career.","Results, goals, clean sheets and cards from all your finished seasons, plus your own records and the Hall of Fame records you hold right now.","Players: see who has scored, assisted and kept clean sheets the most for you, who you pick the most, and your favourite formations.","Filter your stats by Classic or Quick games."],ui:["The colour picker on your profile is smaller and fits on one line.","Long pages now have a \"Back to top\" button at the bottom."]}],
   ["0.8.0.0","2026-11-14",{new:["Updated for the 2026/27 season: every player has new ratings, ages and stats based on the latest data. Some players are stronger than before, others weaker.","Young players' extra rating for their potential is now worked out the same way for everyone.","Richarlison joins Tottenham."],fix:["A penalty could sometimes show a corner you weren't allowed to shoot at, which gave an error. The goal now always shows the right corners."],ui:["New and updated player photos. Every player now has a photo."],small:["Some players have new positions, so they fit where they really play (for example Lewis-Skelly, Hincapié and Gannon-Doak).","Jeremy Monga is out on loan and has left Manchester City's squad."]}],
   ["0.7.2.0","2026-11-14",{new:["Continue game for players signed in with Google: if you leave a game or close the app, you can pick it up again from the home screen, also on another phone.","Only your newest game is kept. Starting a new one asks you first, and the old one is cleared away."],fix:["Deleting your account now works all the way, and a game you admin is handed over to another player.","Changing your manager name now also updates it in the Hall of Fame.","Guests can no longer use a signed-in manager's name.","Signing in again on the same account keeps your game."],small:["Better handling when the connection drops while signing in or out."]}],
   ["0.7.1.0","2026-11-08",{new:["Pick the background colour behind your initials on your profile, if you don't use a picture."]}],
@@ -2017,7 +2220,7 @@ async function authLogout(){
   /* lykkes udlogningen ikke på serveren (fx uden forbindelse), slettes sessionen i det mindste på telefonen */
   try{var so=await NET.sb.auth.signOut();if(so&&so.error)throw so.error}catch(e){try{await NET.sb.auth.signOut({scope:"local"})}catch(x){}}
   CONT=null;
-  AUTH.profile=null;AUTH.guest=false;AUTH.view=null;AUTH.stage="login";setMode(null);
+  AUTH.profile=null;AUTH.guest=false;AUTH.view=null;AUTH.stage="login";PST.raw=null;setMode(null);
   NET.uid=null;NET.gid=null;try{localStorage.removeItem("dsfc-gid");localStorage.removeItem("dsfc-c-prof")}catch(x){}
   goStart();
 }
@@ -2033,7 +2236,7 @@ function liveInit(){
     try{
       var s0=await NET.sb.auth.getSession(),sess=s0.data&&s0.data.session;
       if(s0.error&&!DEMO&&netDown(s0.error))throw s0.error; /* uden forbindelse er ikke det samme som "ikke logget ind"; en ugyldig session giver login-skærmen */
-      if(DEMO){var dc=DEMO_SCREENS[DEMO.screen]||{};NET.uid=sess.user.id;AUTH.guest=!!dc.guest;
+      if(DEMO){var dc=DEMO_SCREENS[DEMO.screen]||{};NET.uid=sess.user.id;if(dc.pst){PST.tab=dc.pst[0];PST.ptab=dc.pst[1]||"goals"}AUTH.guest=!!dc.guest;
         AUTH.profile=AUTH.guest?null:{user_id:NET.uid,manager_name:DEMO.mem["dsfc-name"]||"Alex",full_name:"Alex Demo",color:"#2f6bd9",avatar_ver:null,name_changed_at:null,created_at:"2026-11-01T12:00:00Z"};
         if(AUTH.profile)S.pname=AUTH.profile.manager_name;AUTH.stage=dc.auth||"ok";AUTH.gname="Alex";AUTH.gfull="Alex Demo";if(dc.auth==="profile"){AUTH.stage="ok";AUTH.view="profile"}return}
       if(!sess){NET.uid=null;AUTH.stage="login";return}
@@ -3400,12 +3603,40 @@ var DEMO_SCREENS={
   "hof-empty":{t:"Hall of Fame (empty)",hof:0},
   login:{t:"Login (first screen)",auth:"login"},
   setup:{t:"First login: create your manager",auth:"setup"},
-  profile:{t:"Profile",auth:"profile"},
+  profile:{t:"Profile (no finished seasons yet)",auth:"profile",hof:0},
+  "profile-stats":{t:"Profile: stats overview",auth:"profile",hist:1,pst:["ov"]},
+  "profile-goals":{t:"Profile: players, goals",auth:"profile",hist:1,pst:["pl","goals"]},
+  "profile-assists":{t:"Profile: players, assists",auth:"profile",hist:1,pst:["pl","assists"]},
+  "profile-cs":{t:"Profile: players, clean sheets",auth:"profile",hist:1,pst:["pl","clean_sheets"]},
+  "profile-picked":{t:"Profile: players, most picked + formations",auth:"profile",hist:1,pst:["pl","picked"]},
   guest:{t:"Start screen as guest",guest:1},
   cont:{t:"Start screen with a game to continue",cont:{id:"x",code:"ABC123",status:"season",setup:true,pace:"full",round:12,pick:0,picks_total:0,max:1,team:"Dream Team",humans:1}},
   "end-guest":{t:"Season over as guest",st:"done",end:1,guest:1}
 };
 function demoClone(x){return x==null?x:JSON.parse(JSON.stringify(x))}
+/* demo: en opdigtet karriere (23 afsluttede sæsoner) til profilstatistikken; deterministisk, så billederne er ens hver gang */
+function demoHist(fx,me){
+  var sd=20261115,rnd=function(){sd=(sd*1103515245+12345)%2147483648;return sd/2147483648},ri=function(a,b){return a+Math.floor(rnd()*(b-a+1))};
+  var pos=[3,1,6,12,2,4,9,1,15,5,18,4,1,11,3,8,2,7,1,19,10,5,6],names=["Munk FC","Northside Rovers","Alex Athletic","Dream Team","Pixel United","Sunday Legends"];
+  var forms=["4-3-3","4-3-3","4-2-3-1","4-3-3","3-4-3","4-2-3-1","4-4-2","4-3-3","5-3-2"],opp=["Leeds United","Burnley","Hull City","Sunderland","Coventry City"];
+  var grp=function(f){return fx.players.filter(f)},GK=grp(function(x){return x.pos==="GK"}),DF=grp(function(x){return /B$/.test(x.pos)}),MF=grp(function(x){return /M$/.test(x.pos)}),AT=grp(function(x){return x.pos==="ST"||x.pos==="LW"||x.pos==="RW"});
+  var top=function(a,n){return a.slice().sort(function(x,y){return y.rating-x.rating}).slice(0,n)},core=[top(GK,2),top(DF,6),top(MF,5),top(AT,5)];
+  var pick=function(arr,pool,n){var out=[];while(out.length<n){var c=rnd()<.7?arr[ri(0,arr.length-1)]:pool[ri(0,pool.length-1)];if(out.indexOf(c)<0)out.push(c)}return out};
+  var T=[],P=[],now=Date.now();
+  pos.forEach(function(ps,i){
+    var gid="d0000000-0000-4000-9000-"+String(100000000000+i),pace=i%4===3?"quick":"full",tn=names[i%names.length],d=ri(5,10),cr=new Date(now-(i+1)*86400000*6).toISOString();
+    var pts=Math.max(18,Math.round(96-(ps-1)*3.6+ri(-3,3))),w=Math.max(3,Math.round((pts-d)/3)),l=38-w-d,gf=Math.round(42+(21-ps)*2.7+ri(-6,6)),ga=Math.round(22+ps*2.3+ri(-4,4)),bm=ri(2,6);
+    T.push({id:9000+i,game_id:gid,team_key:me,league:"PL",season:"2026/27",season_no:1,user_id:me,team_name:tn,owner:"Alex",players:i%3?1:3,pos:ps,points:w*3+d,w:w,d:d,l:l,gf:gf,ga:ga,win_streak:Math.max(1,ri(2,4)+Math.round((21-ps)/2.2)),big_win_margin:bm,big_win_score:bm+"–0",big_win_text:"vs "+opp[i%opp.length],champion:ps===1,created_at:cr,formation:forms[i%forms.length],lineup:null,respins:0,pace:pace});
+    var xi=[].concat(pick(core[0],GK,1),pick(core[1],DF,4),pick(core[2],MF,3),pick(core[3],AT,3)),str=(21-ps)/20;
+    xi.forEach(function(x,j){var role=j===0?"g":(j<5?"d":(j<8?"m":"a"));
+      P.push({id:90000+i*11+j,game_id:gid,player_id:x.id,league:"PL",season:"2026/27",season_no:1,user_id:me,team_name:tn,owner:"Alex",
+        goals:role==="a"?ri(6,14)+Math.round(str*16):(role==="m"?ri(1,6)+Math.round(str*5):(role==="d"?ri(0,3):0)),
+        assists:role==="a"?ri(2,7)+Math.round(str*5):(role==="m"?ri(3,8)+Math.round(str*6):(role==="d"?ri(0,5):0)),
+        clean_sheets:role==="g"?ri(6,10)+Math.round(str*12):0,
+        reds:rnd()<.12?1:0,yellows:ri(0,role==="d"||role==="m"?8:4),best_match_goals:role==="a"?ri(1,3):1,best_match_text:"vs "+opp[(i+j)%opp.length],created_at:cr,respins:0,pace:pace})});
+  });
+  return {T:T,P:P};
+}
 function demoState(fx,cfg){
   var H=fx.humans,me=H[0],gid=fx.gid,st=cfg.st||"lobby";
   if(cfg.end!=null)me=H.slice().sort(function(a,b){return a.pos-b.pos})[cfg.end];
@@ -3436,8 +3667,9 @@ function demoState(fx,cfg){
       pe.detail=JSON.stringify(pmap);
     }
   }
-  var S0={me:me.uid,game:game,players:players,picks:picks,hofT:cfg.hof===0?[]:fx.hof_teams,hofP:cfg.hof===0?[]:fx.hof_players,
-    tables:{players:fx.players,season_teams:st==="season"||st==="done"?fx.season_teams:[],season_lineups:st==="season"||st==="done"?fx.season_lineups:[],matches:st==="season"||st==="done"?ms:[],match_events:st==="season"||st==="done"?evs:[]}};
+  var DH=cfg.hist?demoHist(fx,me.uid):{T:[],P:[]};
+  var S0={me:me.uid,game:game,players:players,picks:picks,hofT:cfg.hof===0?[]:fx.hof_teams.concat(DH.T),hofP:cfg.hof===0?[]:fx.hof_players.concat(DH.P),
+    tables:{players:fx.players,hof_teams:DH.T,hof_players:DH.P,season_teams:st==="season"||st==="done"?fx.season_teams:[],season_lineups:st==="season"||st==="done"?fx.season_lineups:[],matches:st==="season"||st==="done"?ms:[],match_events:st==="season"||st==="done"?evs:[]}};
   if(cfg.pauseAt==="goal"){
     var gm=ms.filter(function(m){return m.round===round&&(m.home_key===me.uid||m.away_key===me.uid)})[0],gs=gm.home_key===me.uid?"h":"a";
     var ge=evs.filter(function(e){return e.match_id===gm.id&&e.type==="goal"&&e.team===gs&&!e.pen&&e.detail!=="og"}).sort(function(a,b){return a.minute-b.minute})[0];
