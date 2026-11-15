@@ -80,7 +80,8 @@ create table public.game_times (
   seen_first timestamp with time zone,
   seen_last timestamp with time zone,
   seen_n integer default 0 not null,
-  logged_at timestamp with time zone default now() not null
+  logged_at timestamp with time zone default now() not null,
+  playback text
 );
 
 create table public.games (
@@ -108,7 +109,8 @@ create table public.games (
   respins integer default 0 not null,
   done_at timestamp with time zone,
   speed_ai numeric default 1 not null,
-  speed_hh numeric default 1 not null
+  speed_hh numeric default 1 not null,
+  playback text default 'normal'::text not null
 );
 
 create table public.hof_players (
@@ -282,6 +284,7 @@ alter table public.games add constraint games_code_key UNIQUE (code);
 alter table public.games add constraint games_max_players_check CHECK (((max_players >= 1) AND (max_players <= 10)));
 alter table public.games add constraint games_pace_check CHECK ((pace = ANY (ARRAY['full'::text, 'quick'::text])));
 alter table public.games add constraint games_pkey PRIMARY KEY (id);
+alter table public.games add constraint games_playback_check CHECK ((playback = ANY (ARRAY['normal'::text, 'instant'::text])));
 alter table public.games add constraint games_respins_chk CHECK (((respins >= 0) AND (respins <= 3)));
 alter table public.games add constraint games_speed_ai_check CHECK ((speed_ai = ANY (ARRAY[0.5, (1)::numeric, (2)::numeric, (3)::numeric])));
 alter table public.games add constraint games_speed_hh_check CHECK ((speed_hh = ANY (ARRAY[0.5, (1)::numeric, (2)::numeric, (3)::numeric])));
@@ -641,9 +644,9 @@ begin
     fin := coalesce(new.done_at, now());
     select min(picked_at), max(picked_at) into d0, d1 from draft_picks where game_id = new.id;
     select count(*), count(left_at) into nh, nl from game_players where game_id = new.id;
-    insert into game_times (game_id, pace, humans, humans_left, max_players, timer_seconds, respins, speed_ai, speed_hh,
+    insert into game_times (game_id, pace, humans, humans_left, max_players, timer_seconds, respins, speed_ai, speed_hh, playback,
       created_at, draft_start, draft_end, done_at, lobby_s, draft_s, season_s, total_s)
-    values (new.id, new.pace, nh, nl, new.max_players, new.timer_seconds, new.respins, new.speed_ai, new.speed_hh,
+    values (new.id, new.pace, nh, nl, new.max_players, new.timer_seconds, new.respins, new.speed_ai, new.speed_hh, new.playback,
       new.created_at, d0, d1, fin,
       extract(epoch from d0 - new.created_at)::int, extract(epoch from d1 - d0)::int, extract(epoch from fin - d1)::int,
       extract(epoch from fin - new.created_at)::int)
@@ -1134,8 +1137,8 @@ begin
     for i in 1..6 loop c := c || substr(chars, 1 + floor(random() * length(chars))::int, 1); end loop;
     exit when not exists (select 1 from games where code = c);
   end loop;
-  insert into games (code, admin_id, league, season, mode, max_players, timer_seconds, show_ratings, pace, season_no, respins, speed_ai, speed_hh)
-  values (c, g.admin_id, g.league, g.season, g.mode, g.max_players, g.timer_seconds, g.show_ratings, g.pace, g.season_no + 1, g.respins, g.speed_ai, g.speed_hh)
+  insert into games (code, admin_id, league, season, mode, max_players, timer_seconds, show_ratings, pace, season_no, respins, speed_ai, speed_hh, playback)
+  values (c, g.admin_id, g.league, g.season, g.mode, g.max_players, g.timer_seconds, g.show_ratings, g.pace, g.season_no + 1, g.respins, g.speed_ai, g.speed_hh, g.playback)
   returning id into ng;
   insert into game_players (game_id, user_id, team_name, color1, color2, crest, crest_tag, formation, display_name, ready)
   select ng, user_id, team_name, color1, color2, crest, crest_tag, formation, display_name, true from game_players where game_id = p_game and left_at is null;
@@ -1390,6 +1393,20 @@ begin
   if mn is null then gn := _check_guest_name(p_name); end if;
   update game_players set display_name = coalesce(mn, gn) where game_id = p_game and user_id = auth.uid();
   if not found then raise exception 'You''re not in the game'; end if;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public.set_playback(p_game uuid, p_playback text)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+begin
+  perform 1 from games where id = p_game and admin_id = auth.uid() and status = 'lobby' and not setup for update;
+  if not found then raise exception 'Only the admin can change settings in the lobby'; end if;
+  if p_playback not in ('normal', 'instant') then raise exception 'Invalid playback'; end if;
+  update games set playback = p_playback where id = p_game;
 end $function$
 ;
 
@@ -1691,6 +1708,7 @@ revoke all on function public.set_avatar(p_has boolean) from public, anon, authe
 revoke all on function public.set_manager_name(p_name text) from public, anon, authenticated; grant execute on function public.set_manager_name(p_name text) to authenticated;
 revoke all on function public.set_match_speed(p_game uuid, p_ai numeric, p_hh numeric) from public, anon, authenticated; grant execute on function public.set_match_speed(p_game uuid, p_ai numeric, p_hh numeric) to authenticated;
 revoke all on function public.set_name(p_game uuid, p_name text) from public, anon, authenticated; grant execute on function public.set_name(p_game uuid, p_name text) to authenticated;
+revoke all on function public.set_playback(p_game uuid, p_playback text) from public, anon, authenticated; grant execute on function public.set_playback(p_game uuid, p_playback text) to authenticated;
 revoke all on function public.set_profile_color(p_color text) from public, anon, authenticated; grant execute on function public.set_profile_color(p_color text) to authenticated;
 revoke all on function public.set_ready(p_game uuid, p_ready boolean) from public, anon, authenticated; grant execute on function public.set_ready(p_game uuid, p_ready boolean) to authenticated;
 revoke all on function public.slot_fit(p_pos text, p_slot text) from public, anon, authenticated; grant execute on function public.slot_fit(p_pos text, p_slot text) to authenticated;
