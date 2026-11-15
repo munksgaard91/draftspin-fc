@@ -54,7 +54,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 ## Åbne punkter (ikke påbegyndt, start ikke uden besked)
 
 - Profilstatistik er bygget (v0.8.5.0, se "Profilstatistik" nedenfor). Managers-fanen (andre brugeres statistik) er ikke besluttet.
-- Nyt logo/navn. (Rasmus 2026-11-15 flyttede emblemer, ⚽/❌, manager i draften, karakterer og målanimation til listen før 1.0, se "Næste skridt" punkt 7.)
+- Nyt logo/navn. (Rasmus 2026-11-15 flyttede emblemer, ⚽/❌, karakterer og målanimation til listen før 1.0, se "Næste skridt" punkt 7; manager i draften er droppet.)
 - To-spiller-straffeflowet (`penWatch`) er ikke testet med to rigtige enheder; Rasmus 2026-11-15: det er droppet som krav før 1.0.
 
 ## Adgang
@@ -128,7 +128,18 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - Hall of Fame: tæller som Quick (`pace` = quick), intet eget filter (Rasmus).
 - Testspil: skjult testboks har "Quick game (Instant)"; Instant-testspil afspilles (springes ikke over som normale testspil).
 
-## Næste skridt (stoppet 2026-11-15)
+## Lært 2026-11-15 (v0.8.5-0.8.7)
+- Arbejdsgang: Rasmus vil have Fable-feedback og audit på BÅDE design og rettelser før hvert push (også små). Han godkender selv store ting før push; migrationer og deploy kræver hans "ja" (auto mode stopper ofte skrivende SQL; spørg så Rasmus).
+- Versioner: Rasmus vælger selv numre (fx 0.8.5.0 i stedet for 0.9). Hæv MICRO for små rettelser (0.8.6.1 osv.).
+- Spilletid: Quick afspilles på telefonen efter serveren er færdig; testspil springer afspilningen over (undtagen Instant-testspil). Mål aldrig Quick med et normalt testspil.
+- Rækkefølge ved nye kolonner som engine skriver: migration FØRST, så deploy, ellers fejler sæsonslut. Triggere på `games` skal fange alle fejl (`exception when others`), så de aldrig blokerer sæsonslut.
+- Inline `style="background:..."` nulstiller `background-clip`; brug `!important` i CSS'en. `font: ... inherit` er ugyldig shorthand.
+- Fjern gammel CSS linje for linje og tjek fælles selektorer (en linje delte `.pausebtn` med gamle Hall of Fame-klasser).
+- Lige værdier i rekorder: den ældste beholder pladsen (klient og `hof_players_top` er enige).
+- Mockups: Rasmus kigger helst live i browser-panelet (`localhost:8123/.claude/<fil>.html`), og vil rette én ting ad gangen.
+- `Arbejdsfiler/db_players.json` er forældet; eksportér players-tabellen, før reference-scripts køres.
+
+## Næste skridt (stoppet 2026-11-15, sidst opdateret efter v0.8.7.0)
 Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er færdige i v0.7):
 
 1. **Profilstatistik** (BYGGET i v0.8.5.0, 2026-11-15; specifikationen nedenfor er det godkendte design). Mockup: `~/Desktop/PL Draft/mockups/profil2.html` (`?p=1` Overview, `3` tom Hall of Fame-blok, `2` Goals, `4` Assists, `5` Clean sheets, `6` Most picked) og `mockup-profil2.png`. `profil.html` (v1 med Teams) er forældet.
@@ -160,4 +171,5 @@ Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er
    - Neutral: ingen fremhævning af egne rekorder. Mestre sorteres i dag ældst først (`W.sort`); den nye kode skal finde flest point pr. solo/multi.
    - Slutskærmen (`sumRecords`): skriver i dag "You made it to the Hall of Fame" for top 3. Skal skelne (Rasmus 2026-11-15): nr. 1 = "New Hall of Fame record!" i guld; plads 2–5 = "So close!" med "2nd in Most Goals: spiller, 27 goals"; ellers ingen blok. Altid målt mod den samlede liste (alle filtre på All). Mangler også Most team goals. Bygges sammen med redesignet.
 6. **Nulstilling ved 1.0** (Rasmus 2026-11-15): ryd alle rekorder (`hof_teams`/`hof_players`) og nulstil alle brugere, så alle starter forfra på 1.0. Gøres som det SIDSTE lige før 1.0 udgives, og først efter Rasmus har bekræftet præcis hvad (fx om profiler/managernavne, spil og `game_times` også ryddes). Dette er den eneste undtagelse fra "rør aldrig Rasmus' egne Hall of Fame-rækker". Tag backup af tabellerne først. Samtidig (Rasmus): fjern notitsen på forsiden om, at rekorder nulstilles ved 1.0, og skriv i 1.0-posten under What's new, at alle starter forfra.
-7. **Fra idélisten, skal med før 1.0** (Rasmus 2026-11-15; ikke designet, rækkefølge ikke aftalt): karakterer pr. spiller pr. kamp; ⚽/❌ i Match facts (straffe scoret/brændt); manager i draften; mere realistiske klubemblemer; redesign af målanimationen.
+7. **Fra idélisten, skal med før 1.0** (Rasmus 2026-11-15; ikke designet, rækkefølge ikke aftalt): karakterer pr. spiller pr. kamp; ⚽/❌ i Match facts (straffe scoret/brændt); mere realistiske klubemblemer; redesign af målanimationen. ("Manager i draften" er DROPPET af Rasmus 2026-11-15.) Claudes forslag til rækkefølge: ⚽/❌, karakterer, målanimation, emblemer; cups kræver designsnak først.
+8. **Se hinandens hold under sæsonen** (Rasmus 2026-11-15, før 1.0, ikke designet): i multiplayer skal man kunne se de andre menneskers line-up (formation, spillere) og basale stats (fx point, mål, form, topscorer) i løbet af sæsonen, hvis man ønsker. Afklar: hvor (tabellen? et tryk på et hold?), hvilke stats, og om det skal kunne slås fra.
