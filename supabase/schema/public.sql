@@ -1559,7 +1559,7 @@ begin
   if p_crest not between 1 and 12 then raise exception 'Unknown crest'; end if;
   if p_c1 !~ '^#[0-9a-fA-F]{6}$' or p_c2 !~ '^#[0-9a-fA-F]{6}$' then raise exception 'Invalid colour code'; end if;
   if lower(p_c1) = lower(p_c2) then raise exception 'Choose two different colours'; end if;
-  if length(trim(p_name)) not between 2 and 22 then raise exception 'Team name must be 2 to 22 characters'; end if;
+  if length(trim(p_name)) not between 2 and 20 then raise exception 'Team name must be 2 to 20 characters'; end if;
   if tg is not null and tg !~ '^[A-ZÆØÅ0-9]{2,3}$' then raise exception 'The abbreviation must be 2 to 3 letters or numbers'; end if;
   if p_name ~ '[<>]' then raise exception 'Names can''t contain < or >'; end if;
   select manager_name into mn from profiles where user_id = auth.uid();
