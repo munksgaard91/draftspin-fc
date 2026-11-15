@@ -147,6 +147,7 @@ Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er
      - Goals/Assists/Clean sheets: totaler over alle sæsoner; under navnet "Best season: x goals" (11 px i listen, 12 px på topkortet). Ingen guld i listen. I bunden en guld "Hall of Fame"-blok med selve rekorden (fx Most goals in a season, spiller · hold · sæson) KUN hvis en af brugerens spillere har rekorden for den kategori; ellers ingenting (ingen forklarende tekst).
      - Most picked: tal = "picks" (antal sæsoner draftet); under navnet spillerens NUVÆRENDE klub med lille emblem (`badges/<KODE>.png`). Ingen Hall of Fame-blok. I bunden **Formations**: brugerens formationer, mest brugte først, "9 seasons · avg. 4th" + grøn bjælke relativ til favoritten.
    - Data: kun afsluttede sæsoner med Google-bruger (`hof_teams`/`hof_players` med `user_id`). Kræver sandsynligvis en RPC (fx `my_stats(p_pace)`), da hof-RPC'erne kun kan kaldes som `authenticated`. Hall of Fame nr. 1 skal matche Hall of Fame-skærmens logik (`hof_teams_top`/`hof_players_top` med All). Tilføj demo-skærme (`DEMO_SCREENS`) med opdigtede tal.
-2. **Varighed pr. spil**: skriv ca. hvor lang tid et spil tager ved hver spiltype (fx på knapperne eller i lobbyen). Ikke designet endnu; mål den faktiske tid for Classic og Quick først.
-3. **Endnu hurtigere spiltype** under Quick game (ny mode). Ikke designet endnu: afklar med Rasmus, hvad der skal skæres væk (fx springe kampvisning helt over og gå direkte til tabel/sæsonslut), og om den skal i Hall of Fame-filtret (`pace`).
+2. **Varighed pr. spil**: BYGGET i v0.8.5.1/0.8.6.0 (se "Spilletid"). Opdatér `estMin`, når `game_times` har rigtige data.
+3. **Endnu hurtigere spiltype**: BYGGET i v0.8.6.0 som "Instant" under Quick game (se "Instant").
 4. **Cups/pokaler**: ikke designet.
+5. **Hall of Fame-redesign** (Rasmus 2026-11-15: skal med før 1.0): ikke designet endnu; afklar med Rasmus, hvad der skal ændres.
