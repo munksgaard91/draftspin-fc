@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.8.5.1 (beta)">
+<meta name="app-version" content="0.8.6.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -931,7 +931,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 
 <div class="toast" id="toast" hidden></div>
 <div class="conn" id="conn" hidden></div>
-<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="draft">Draft only</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
+<div class="modal" id="testBox" hidden><div class="card"><h3>Start test game?</h3><p class="note" style="margin:0">Skips everything and starts a solo game with a random team and random players.</p><div class="row2" style="flex-direction:column;align-items:stretch"><button class="btn p go" data-tm="full">Classic</button><button class="btn" data-tm="quick">Quick game</button><button class="btn" data-tm="instant">Quick game (Instant)</button><button class="btn" data-tm="draft">Draft only</button><button class="linkbtn" data-tm="no">Cancel</button></div></div></div>
 <div class="modal" id="clBox" hidden><div class="card clcard"><h3 id="clT">What's new</h3><div class="cllist" id="clList"></div><button class="btn p wide" id="clOk" style="margin-top:14px">Got it</button></div></div>
 <div class="modal" id="nameBox" hidden><div class="card"><h3>Change manager name</h3><input class="inp" id="nmInp" maxlength="16" autocomplete="off" style="margin-top:10px"><p class="err" id="nmErr" hidden></p><div class="warnbox" id="nmWarn"></div><div class="row2"><button class="btn" id="nmNo">Cancel</button><button class="btn p" id="nmYes">Save name</button></div></div></div>
 <div class="modal" id="delBox" hidden><div class="card"><h3 id="delH">Delete account?</h3><p class="note" style="margin:0" id="delP"></p><div class="row2"><button class="btn" id="delNo">Cancel</button><button class="btn" id="delYes" style="color:var(--red-text,#ff8fa8)">Delete</button></div></div></div>
@@ -1904,6 +1904,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.8.6.0","2026-11-15",{new:["Instant playback for Quick game: the season shows only the results, one round after another. The admin picks it in the lobby."],small:["The estimated game time now also counts respins and match speed more accurately."]}],
   ["0.8.5.1","2026-11-15",{new:["The lobby shows roughly how long each game mode takes, so everyone joining can see it."]}],
   ["0.8.5.0","2026-11-15",{new:["Your stats on your profile: titles, seasons, average finish, recent form and how your seasons have ended over your whole career.","Results, goals, clean sheets and cards from all your finished seasons, plus your own records and the Hall of Fame records you hold right now.","Players: see who has scored, assisted and kept clean sheets the most for you, who you pick the most, and your favourite formations.","Filter your stats by Classic or Quick games."],ui:["The colour picker on your profile is smaller and fits on one line.","Long pages now have a \"Back to top\" button at the bottom."]}],
   ["0.8.0.0","2026-11-14",{new:["Updated for the 2026/27 season: every player has new ratings, ages and stats based on the latest data. Some players are stronger than before, others weaker.","Young players' extra rating for their potential is now worked out the same way for everyone.","Richarlison joins Tottenham."],fix:["A penalty could sometimes show a corner you weren't allowed to shoot at, which gave an error. The goal now always shows the right corners."],ui:["New and updated player photos. Every player now has a photo."],small:["Some players have new positions, so they fit where they really play (for example Lewis-Skelly, Hincapié and Gannon-Doak).","Jeremy Monga is out on loan and has left Manchester City's squad."]}],
@@ -2411,7 +2412,7 @@ function liveSyncStep(){
   var ae=document.activeElement,typing=ae&&ae.closest&&ae.closest("#flow")&&/^(INPUT|TEXTAREA)$/.test(ae.tagName);
   if(cur!==want){F.step=steps.indexOf(want);NET.lsig=null;renderFlow();return}
   if((cur==="lobby"||cur==="wait")&&!typing){
-    var sig=JSON.stringify([g.max_players,g.timer_seconds,g.show_ratings,g.pace,g.respins,g.speed_ai,g.speed_hh,g.setup,NET.players.map(function(p){return [p.user_id,p.display_name,p.team_name,p.ready,p.formation,p.color1,p.crest,p.crest_tag]})]);
+    var sig=JSON.stringify([g.max_players,g.timer_seconds,g.show_ratings,g.pace,g.respins,g.speed_ai,g.speed_hh,g.playback,g.setup,NET.players.map(function(p){return [p.user_id,p.display_name,p.team_name,p.ready,p.formation,p.color1,p.crest,p.crest_tag]})]);
     if(sig!==NET.lsig){NET.lsig=sig;renderFlow()}
   }
 }
@@ -2419,6 +2420,15 @@ async function liveCall(fn,args){
   try{var r0=await NET.sb.rpc(fn,args);if(r0.error)throw r0.error;await liveLoad();liveApply()}catch(e){netErr(e)}
 }
 /* spilregler: knappen virker med det samme (optimistisk); serveren bekræfter i baggrunden */
+async function livePlayback(v){
+  var g=NET.game;if(!g||NET.pending||(g.playback||"normal")===v)return;
+  var keep=g.playback;g.playback=v;
+  NET.pending=true;NET.pendAt=Date.now();liveApply();
+  var r0;try{r0=await tmo(NET.sb.rpc("set_playback",{p_game:NET.gid,p_playback:v}))}catch(e){r0={error:e}}
+  NET.pending=false;
+  if(r0.error){g.playback=keep;toast("Oops, something went wrong, please try again!",4200)}
+  liveChanged();
+}
 async function liveSpeed(key,v){
   var g=NET.game;if(!g||NET.pending)return;
   var keep={speed_ai:g.speed_ai,speed_hh:g.speed_hh};
@@ -2455,19 +2465,27 @@ function liveAct(a,b,st){
   if(a==="kick"){liveCall("kick_player",{p_game:NET.gid,p_user:b.dataset.k});return true}
   if(a==="rulestoggle"){NET.rulesOpen=!NET.rulesOpen;renderFlow();return true}
   if(a==="lspeed"){liveSpeed(b.dataset.k,+b.dataset.v);return true}
+  if(a==="lplay"){livePlayback(b.dataset.v);return true}
   if(a==="lset"){
     var g2=NET.game,v=b.dataset.v;
     liveSetting({p_game:NET.gid,p_max:g2.max_players,p_timer:b.dataset.k==="timer"?+v:g2.timer_seconds,p_show:b.dataset.k==="show"?v==="true":g2.show_ratings,p_pace:b.dataset.k==="pace"?v:g2.pace,p_respins:b.dataset.k==="respins"?+v:g2.respins});return true;
   }
   return false;
 }
-/* ca. spilletid i minutter, rundet op til nærmeste 5 (Rasmus 2026-11-15). Målt/regnet: draft ca. 17 s pr. valg (på skift),
-   Classic ca. 37 s pr. runde ved 1x (26 s kamp + ca. 11 s), +5 s pr. runde med flere mennesker; Quick afspiller 38 runder à 4,4 s.
+/* ca. spilletid i minutter, rundet op til nærmeste 5 (Rasmus 2026-11-15). Målt/regnet: draft regnet som 18 s pr. valg (målt 16-18, på skift),
+   Classic ca. 37 s pr. runde ved 1x målt med 2 s reaktion; regnet forsigtigt som 26 s kamp + 14 s, +5 s pr. runde med flere mennesker; draft regnet som 18 s pr. valg (målt 16-18); Quick afspiller 38 runder à 4,4 s.
    Opdatér, når game_times (migration 077) har nok rigtige spil. */
+var INSTANT_MS=1300; /* Instant (Quick game): et resultat pr. runde, så næste efter 1,3 s */
 function estMin(pace,g,n){
-  n=Math.max(1,n);var pick=g.timer_seconds?Math.min(17,g.timer_seconds):17,m=1+n*11*pick/60;
-  if(pace==="quick")m+=38*4.4/60;
-  else{var hf=g.max_players===1?0:(n-1)/19,mt=26*((1-hf)/(+g.speed_ai||1)+hf/(+g.speed_hh||1));m+=38*(mt+11+(n>1?5:0))/60}
+  n=Math.max(1,n);var inst=pace==="quick"&&g.playback==="instant",pk0=inst?16:18; /* Rasmus: Instant 5/10/15/20 min ved 1/2/4/6 spillere */
+  var pick=g.timer_seconds?Math.min(pk0,g.timer_seconds):pk0,m=1+n*11*pick/60;
+  m+=n*(+g.respins||0)*12/60; /* hvert respin: ny spin-animation (ca. 6,5 s) + nyt valg, regnet som brugt af alle */
+  if(pace==="quick")m+=38*(g.playback==="instant"?INSTANT_MS/1000:4.4)/60;
+  else{
+    /* alle venter på den langsomste kamp i runden: runder med en menneske-mod-menneske-kamp (n(n-1) kampe, højst 38 runder)
+       går i den langsomste af de to hastigheder, resten i Human v AI-hastigheden */
+    var sa=+g.speed_ai||1,sh=+g.speed_hh||1,rh=g.max_players===1?0:Math.min(38,n*(n-1))/38;
+    var mt=26*((1-rh)/sa+rh*Math.max(1/sa,1/sh));m+=38*(mt+14+(n>1?5:0))/60}
   return Math.ceil(m/5)*5;
 }
 function logSeen(){
@@ -2488,10 +2506,12 @@ function lobbyLive(){
     var segb=function(act,key,cur,opts,dis,cls){return '<div class="seg3" style="--n:'+opts.length+'">'+opts.map(function(o){return '<button class="'+(cur===o[0]?"sel":"")+'" data-act="'+act+'"'+(key?' data-k="'+key+'"':'')+' data-v="'+o[0]+'"'+(dis&&dis(o[0])?" disabled":"")+'>'+o[1]+'</button>'}).join("")+'</div>'};
     var row=function(label,inner){return '<div class="rule"><span class="rl">'+label+'</span>'+inner+'</div>'};
     var est=function(pc){return "about "+estMin(pc,g,n)+" min"};
-    var sum=(g.pace==="quick"?"Quick game":"Classic")+' · '+est(g.pace)+' · '+(g.timer_seconds?g.timer_seconds+" s per pick":"No timer")+' · '+g.respins+(g.respins===1?" respin":" respins")+(!solo&&g.pace!=="quick"?' · Speed '+(+g.speed_ai)+'x / '+(+g.speed_hh)+'x':'');
+    var inst=g.pace==="quick"&&g.playback==="instant";
+    var sum=(g.pace==="quick"?"Quick game"+(inst?" (Instant)":""):"Classic")+' · '+est(g.pace)+' · '+(g.timer_seconds?g.timer_seconds+" s per pick":"No timer")+' · '+g.respins+(g.respins===1?" respin":" respins")+(!solo&&g.pace!=="quick"?' · Speed '+(+g.speed_ai)+'x / '+(+g.speed_hh)+'x':'');
     var rules='';
     if(adm){
       var inner=row("Game mode",segb("lset","pace",g.pace,[["full",'Classic<small>'+est("full")+'</small>'],["quick",'Quick game<small>'+est("quick")+'</small>']]))+
+        (g.pace==="quick"&&g.playback!==undefined?row("Playback",segb("lplay",null,g.playback||"normal",[["normal","Normal"],["instant","Instant"]])):"")+
         row("Time per pick",segb("lset","timer",g.timer_seconds,[[0,"Off"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]))+
         row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
       if(!solo&&g.pace==="full"){
@@ -2672,10 +2692,13 @@ function isTestGame(){try{return !!NET.gid&&localStorage.getItem("dsfc-testgid")
 function liveSimStep(){
   var s=NET.sim;if(!s||s.end)return;if(testSkipSim())return;
   /* testspil (skjult, 5 tryk på logoet): spring afspilningen over og vis sæsonafslutningen, så snart hele sæsonen er simuleret */
-  if(isTestGame()&&!localStorage.getItem("dsfc-testnoskip")){if(simAvail()>=38){s.r=38;liveSimDone()}else NET.simT=setTimeout(liveSimStep,500);return}
+  var instant=!!NET.game&&NET.game.playback==="instant";
+  if(isTestGame()&&!instant&&!localStorage.getItem("dsfc-testnoskip")){if(simAvail()>=38){s.r=38;liveSimDone()}else NET.simT=setTimeout(liveSimStep,500);return}
   if(s.r>=38){liveSimDone();return}
   if(s.r+1>simAvail()){NET.simT=setTimeout(liveSimStep,600);return} // resten af sæsonen er ikke klar endnu
   (NET.simG||[]).forEach(clearTimeout);NET.simG=[];
+  /* Instant: kun resultatet, runde for runde */
+  if(instant){s.r++;s.ph="B";NET.shownRound=s.r;liveSimRender("B");NET.simT=setTimeout(liveSimStep,INSTANT_MS);return}
   s.r++;s.ph="A";NET.shownRound=s.r;liveSimRender("A");
   var m=liveMyMatch(s.r),END=m?mEnd(m):94;
   if(m){
@@ -3561,14 +3584,15 @@ function liveWake(){if(NET.gid&&!document.hidden){
       await NET.ready;
       /* et tidligere spil i samme sidesession (fx forladt via Home-fanen) må ikke blande sig i testspillet */
       if(NET.gid){liveUnsub();clearInterval(NET.tt);NET.gid=null;liveResetGame()}
-      var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode==="draft"?"full":mode});
+      var r0=await NET.sb.rpc("create_game",{p_league:"PL",p_season:"2026/2027",p_max:1,p_timer:0,p_show:false,p_pace:mode==="draft"?"full":(mode==="instant"?"quick":mode)});
       if(r0.error)throw r0.error;
-      NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode;
+      NET.gid=r0.data.id;F.code=r0.data.code;role="admin";F.max=1;F.timer=0;F.pace=mode==="instant"?"quick":mode;
       try{localStorage.setItem("dsfc-gid",NET.gid);localStorage.setItem("dsfc-testgid",NET.gid)}catch(x){}
       var nm=S.pname.trim().length>=2?S.pname.trim():"Tester";
       S.pname=nm;S.team="Test team "+(10+Math.floor(Math.random()*90));S.tag="";S.form=rnd(FORM_ORDER);
       S.color=rnd(SWATCH);S.color2=rnd(SWATCH.filter(function(c){return c!==S.color}));S.crest=Math.floor(Math.random()*12);
       var g=NET.gid,call=async function(fn,a){var r=await NET.sb.rpc(fn,a);if(r.error)throw r.error;return r.data};
+      if(mode==="instant")await call("set_playback",{p_game:g,p_playback:"instant"});
       await call("open_setup",{p_game:g});
       await call("update_team",{p_game:g,p_name:S.team,p_c1:S.color,p_c2:S.color2,p_crest:S.crest+1,p_formation:S.form,p_display:nm,p_tag:null});
       await call("set_ready",{p_game:g,p_ready:true});
@@ -3606,6 +3630,7 @@ var DEMO_SCREENS={
   start:{t:"Start screen"},
   lobby:{t:"Lobby (4 players)",st:"lobby"},
   "lobby-rules":{t:"Lobby: game rules with time per mode",st:"lobby",rules:1},
+  "lobby-instant":{t:"Lobby: Quick game with Instant playback",st:"lobby",rules:1,quick:1},
   draft:{t:"Draft, your pick",st:"draft"},
   kickoff:{t:"Match: before kick-off",st:"season",round:1},
   live:{t:"Match: in play",st:"season",round:12,pauseAt:63},
@@ -3667,7 +3692,7 @@ function demoState(fx,cfg){
   if(st==="done")round=38;
   var order=[me].concat(H.filter(function(h){return h!==me})),now=new Date().toISOString();
   var players=order.map(function(h,i){return {game_id:gid,user_id:h.uid,team_name:h.team,color1:h.c1,color2:h.c2,crest:h.crest,formation:h.form,ready:st!=="lobby"||i<2,auto_ready:false,draft_pos:i,joined_at:"2026-11-01T12:0"+i+":00Z",last_seen_at:now,ready_round:Math.max(0,round-1),display_name:h.display,missed_rounds:0,last_missed_round:0,crest_tag:h.tag,respins_used:0,done_round:Math.max(0,round-1),start_ready:round>1}});
-  var game={id:gid,code:fx.code,admin_id:me.uid,league:"PL",season:"2026/2027",mode:"league",max_players:4,timer_seconds:0,show_ratings:false,status:st,draft_order:fx.order,current_pick:0,current_club:null,turn_deadline:null,current_round:round,admin_last_seen:now,created_at:"2026-11-01T12:00:00Z",pace:st==="done"?"quick":"full",season_no:1,next_game_id:null,setup:st==="lobby"&&!cfg.rules,respins:0,done_at:null,speed_ai:1,speed_hh:1};
+  var game={id:gid,code:fx.code,admin_id:me.uid,league:"PL",season:"2026/2027",mode:"league",max_players:4,timer_seconds:0,show_ratings:false,status:st,draft_order:fx.order,current_pick:0,current_club:null,turn_deadline:null,current_round:round,admin_last_seen:now,created_at:"2026-11-01T12:00:00Z",pace:st==="done"||cfg.quick?"quick":"full",playback:cfg.quick?"instant":"normal",season_no:1,next_game_id:null,setup:st==="lobby"&&!cfg.rules,respins:0,done_at:null,speed_ai:1,speed_hh:1};
   var picks=st==="lobby"?[]:fx.picks;
   if(st==="draft"){
     var k=fx.picks.findIndex(function(p,i){return i>=12&&p.user_id===me.uid});
