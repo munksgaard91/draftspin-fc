@@ -59,6 +59,30 @@ create table public.game_players (
   left_at timestamp with time zone
 );
 
+create table public.game_times (
+  game_id uuid not null,
+  pace text not null,
+  humans integer not null,
+  humans_left integer not null,
+  max_players integer not null,
+  timer_seconds integer not null,
+  respins integer not null,
+  speed_ai numeric not null,
+  speed_hh numeric not null,
+  created_at timestamp with time zone not null,
+  draft_start timestamp with time zone,
+  draft_end timestamp with time zone,
+  done_at timestamp with time zone not null,
+  lobby_s integer,
+  draft_s integer,
+  season_s integer,
+  total_s integer not null,
+  seen_first timestamp with time zone,
+  seen_last timestamp with time zone,
+  seen_n integer default 0 not null,
+  logged_at timestamp with time zone default now() not null
+);
+
 create table public.games (
   id uuid default gen_random_uuid() not null,
   code text not null,
@@ -253,6 +277,7 @@ alter table public.draft_picks add constraint draft_picks_slot_chk CHECK (((slot
 alter table public.game_bans add constraint game_bans_pkey PRIMARY KEY (game_id, user_id);
 alter table public.game_players add constraint game_players_crest_tag_chk CHECK (((crest_tag IS NULL) OR (crest_tag ~ '^[A-ZÆØÅ0-9]{2,3}$'::text)));
 alter table public.game_players add constraint game_players_pkey PRIMARY KEY (game_id, user_id);
+alter table public.game_times add constraint game_times_pkey PRIMARY KEY (game_id);
 alter table public.games add constraint games_code_key UNIQUE (code);
 alter table public.games add constraint games_max_players_check CHECK (((max_players >= 1) AND (max_players <= 10)));
 alter table public.games add constraint games_pace_check CHECK ((pace = ANY (ARRAY['full'::text, 'quick'::text])));
@@ -598,6 +623,35 @@ CREATE OR REPLACE FUNCTION public._games_done_at()
 AS $function$
 begin
   if new.status = 'done' and old.status is distinct from 'done' then new.done_at := now(); end if;
+  return new;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public._games_log_time()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+declare d0 timestamptz; d1 timestamptz; nh int; nl int; fin timestamptz;
+begin
+  if new.status = 'done' and old.status is distinct from 'done' then
+   -- må ALDRIG stoppe sæsonslut: enhver fejl her ignoreres (spillet bliver 'done' uanset)
+   begin
+    fin := coalesce(new.done_at, now());
+    select min(picked_at), max(picked_at) into d0, d1 from draft_picks where game_id = new.id;
+    select count(*), count(left_at) into nh, nl from game_players where game_id = new.id;
+    insert into game_times (game_id, pace, humans, humans_left, max_players, timer_seconds, respins, speed_ai, speed_hh,
+      created_at, draft_start, draft_end, done_at, lobby_s, draft_s, season_s, total_s)
+    values (new.id, new.pace, nh, nl, new.max_players, new.timer_seconds, new.respins, new.speed_ai, new.speed_hh,
+      new.created_at, d0, d1, fin,
+      extract(epoch from d0 - new.created_at)::int, extract(epoch from d1 - d0)::int, extract(epoch from fin - d1)::int,
+      extract(epoch from fin - new.created_at)::int)
+    on conflict (game_id) do nothing;
+   exception when others then
+    raise warning '_games_log_time: %', sqlerrm;
+   end;
+  end if;
   return new;
 end $function$
 ;
@@ -1013,6 +1067,20 @@ begin
       perform _maybe_begin(p_game);
     end if;
   end if;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public.log_game_seen(p_game uuid)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+begin
+  if not exists (select 1 from game_players where game_id = p_game and user_id = auth.uid()) then return; end if;
+  update game_times set seen_first = least(coalesce(seen_first, now()), now()),
+    seen_last = greatest(coalesce(seen_last, now()), now()), seen_n = seen_n + 1
+  where game_id = p_game and seen_n < 50;
 end $function$
 ;
 
@@ -1491,6 +1559,7 @@ end $function$
 
 CREATE TRIGGER game_players_left_stays BEFORE UPDATE ON public.game_players FOR EACH ROW EXECUTE FUNCTION _left_stays_left();
 CREATE TRIGGER games_done_at BEFORE UPDATE ON public.games FOR EACH ROW EXECUTE FUNCTION _games_done_at();
+CREATE TRIGGER games_log_time AFTER UPDATE ON public.games FOR EACH ROW EXECUTE FUNCTION _games_log_time();
 CREATE TRIGGER players_fit_refresh AFTER INSERT OR DELETE OR UPDATE ON public.players FOR EACH STATEMENT EXECUTE FUNCTION _players_changed();
 
 -- ===== Row level security =====
@@ -1499,6 +1568,7 @@ alter table public.clubs enable row level security;
 alter table public.draft_picks enable row level security;
 alter table public.game_bans enable row level security;
 alter table public.game_players enable row level security;
+alter table public.game_times enable row level security;
 alter table public.games enable row level security;
 alter table public.hof_players enable row level security;
 alter table public.hof_teams enable row level security;
@@ -1538,6 +1608,7 @@ grant maintain, references, trigger, truncate on public.game_bans to service_rol
 grant maintain, references, trigger, truncate on public.game_players to anon;
 grant maintain, references, select, trigger, truncate on public.game_players to authenticated;
 grant maintain, references, select, trigger, truncate, update on public.game_players to service_role;
+grant maintain, references, trigger, truncate on public.game_times to service_role;
 grant maintain, references, trigger, truncate on public.games to anon;
 grant maintain, references, select, trigger, truncate on public.games to authenticated;
 grant maintain, references, select, trigger, truncate, update on public.games to service_role;
@@ -1581,6 +1652,7 @@ revoke all on function public._cron_tick() from public, anon, authenticated;
 revoke all on function public._discard_game(p_game uuid, p_uid uuid) from public, anon, authenticated;
 revoke all on function public._do_pick(g games, p_user uuid, p_player integer, p_slot integer) from public, anon, authenticated;
 revoke all on function public._games_done_at() from public, anon, authenticated; grant execute on function public._games_done_at() to public;
+revoke all on function public._games_log_time() from public, anon, authenticated;
 revoke all on function public._is_guest() from public, anon, authenticated;
 revoke all on function public._left_stays_left() from public, anon, authenticated; grant execute on function public._left_stays_left() to public;
 revoke all on function public._maybe_begin(p_game uuid) from public, anon, authenticated;
@@ -1602,6 +1674,7 @@ revoke all on function public.is_member(g uuid) from public, anon, authenticated
 revoke all on function public.join_game(p_code text) from public, anon, authenticated; grant execute on function public.join_game(p_code text) to authenticated;
 revoke all on function public.kick_player(p_game uuid, p_user uuid) from public, anon, authenticated; grant execute on function public.kick_player(p_game uuid, p_user uuid) to authenticated;
 revoke all on function public.leave_game(p_game uuid) from public, anon, authenticated; grant execute on function public.leave_game(p_game uuid) to authenticated;
+revoke all on function public.log_game_seen(p_game uuid) from public, anon, authenticated; grant execute on function public.log_game_seen(p_game uuid) to authenticated;
 revoke all on function public.match_done(p_game uuid, p_round integer) from public, anon, authenticated; grant execute on function public.match_done(p_game uuid, p_round integer) to authenticated;
 revoke all on function public.my_game() from public, anon, authenticated; grant execute on function public.my_game() to authenticated;
 revoke all on function public.new_season(p_game uuid) from public, anon, authenticated; grant execute on function public.new_season(p_game uuid) to authenticated;

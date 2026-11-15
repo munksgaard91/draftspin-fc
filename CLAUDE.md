@@ -15,13 +15,13 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 - `vendor/supabase-2.45.4.min.js`: supabase-js, kopieret fra npm-pakken (integritet tjekket mod npm-registret). Opdateres ved at lægge en ny fil og rette navnet i både `index.html` og `sw.js`.
 - `index.html`: hele klienten i én fil. Hostes på GitHub Pages (`munksgaard91/draftspin-fc`, branch `main`). `sw.js` er service worker; hæv `CACHE` (`dsfc-shell-vNN`) ved hver klientændring, ellers ser telefonerne den gamle version.
 - Supabase-projekt `apagcfedizgjnnuefzfo` (Postgres, anonym login, RPC'er, edge function `engine`). Kampmotoren kører på serveren: `supabase/functions/engine/engine.js` (ren simulation) og `index.ts` (handlinger, fx afspilning af runder og interaktive straffe).
-- `supabase/migrations/`: databasens historik, nummereret 001-076 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
+- `supabase/migrations/`: databasens historik, nummereret 001-077 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
 - `supabase/schema/public.sql`: øjebliksbillede af den levende database (tabeller, funktioner, policies, rettigheder, realtime, cron). Det er sandheden om databasen. Genereres med `./scripts/schema_snapshot.sh` (kun læsning); kør det efter hver migration og commit det sammen med migrationen.
 - `data/` og `scripts/`: spillerdata og lokale hjælpescripts.
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.8.5.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.8.5.1 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 - Changelog: tilføj en post øverst i `CHANGELOG` i `index.html` ved HVER versionsændring, på engelsk og kun med det, spillerne kan mærke. Del op i `new` (New features), `fix` (Bug fixes), `ui` (Design) og `small` (Small changes), og skriv alt i et sprog, alle forstår (intet teknisk). Den vises under "What's new" i hjørnet og som popup én gang efter en opdatering.
 
 ## Motoren
@@ -37,7 +37,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 ## Demotilstand og skærmgalleri (design)
 
 - `index.html?demo=<skærm>` viser en skærm med faste, opdigtede data (4 demo-hold, en hel sæson simuleret med motoren). `?demo=list` viser alle skærme. Supabase erstattes af en falsk klient (`demoClient`), og browserens lager kører kun i hukommelsen, så intet skrives til databasen, og et rigtigt spil på telefonen røres ikke. Mærket "DEMO" vises nederst til venstre.
-- Skærme: `DEMO_SCREENS` i `index.html` (start, lobby, draft, kickoff, live, others, squad, goal, penalty, penalty-corner, penalty-ai, fulltime, table, stats, end-champion, end-top, end-mid, end-down, hof, hof-empty, profile, profile-stats, profile-goals, profile-assists, profile-cs, profile-picked). Nye skærme tilføjes dér, når de kommer (Rasmus 2026-11-05).
+- Skærme: `DEMO_SCREENS` i `index.html` (start, lobby, lobby-rules, draft, kickoff, live, others, squad, goal, penalty, penalty-corner, penalty-ai, fulltime, table, stats, end-champion, end-top, end-mid, end-down, hof, hof-empty, profile, profile-stats, profile-goals, profile-assists, profile-cs, profile-picked). Nye skærme tilføjes dér, når de kommer (Rasmus 2026-11-05).
 - Data: `demo/fixtures.json`, genereres med `deno run --allow-read --allow-write scripts/demo_fixtures.ts <players.json> <clubs.json>` (eksportér spillere/klubber med `supabase db query ... --read-only`, se kommentaren i scriptet). Generér igen, når spillerdata eller motoren ændres.
 - Skærmgalleri: Claude tager selv billeder i browser-panelet (390×844) af hver `?demo=`-skærm og samler dem med `python3 scripts/gallery_sheet.py <ud.png> "nøgle|titel|billede" ...` til ét billede i `~/Desktop/PL Draft/galleri/`. Send det til Rasmus efter UI-ændringer.
 - Animationer står stille, når browser-panelet er skjult; demoen slår derfor indtoning fra og fryser målanimationen midtvejs.
@@ -115,6 +115,12 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - "Most picked" tæller `hof_players`-rækker; motoren skriver kun rækker for spillere med mindst én hændelse (i praksis altid 11 pr. sæson).
 - "Back to top" (`totopCheck`): vises automatisk på skærme over ca. 1,7 skærmhøjde (ikke draft/live); på profilen står den over Log out.
 - Versioner: Rasmus valgte selv 0.8.5.0 frem for 0.9 for denne batch.
+
+## Spilletid (v0.8.5.1, 2026-11-15)
+- Lobbyen viser "about N min" under Classic/Quick game og i regel-linjen (`estMin` i index.html), rundet OP til nærmeste 5 (Rasmus). Regnes ud fra antal deltagere nu, timer og kamphastighed.
+- Grundlag (Claude målte 2026-11-15): Classic ca. 37 s pr. runde ved 1x (26 s kamp + mål-pauser + server), +5 s pr. runde med flere mennesker; draft ca. 17 s pr. valg på skift; Quick afspiller 38 runder à 4,4 s PÅ TELEFONEN efter at serveren er færdig. Testspil (5 tryk på logoet) springer Quick-afspilningen over, så de kan ikke bruges til at måle Quick.
+- Migration 077: `game_times` (kun service-rollen kan læse; vises ingen steder) skrives af en trigger, når et spil bliver `done`, og overlever, at spillet slettes efter 7 dage. Telefonen kalder `log_game_seen` ved slutskærmen (`logSeen`), så `seen_last - created_at` er den tid, spillerne faktisk brugte. Serverens `done_at` er misvisende for Quick.
+- Rasmus: kør med estimatet, indtil der er rigtige data; opdatér så `estMin` ud fra `game_times` (medianer pr. spiltype og antal spillere).
 
 ## Næste skridt (stoppet 2026-11-15)
 Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er færdige i v0.7):

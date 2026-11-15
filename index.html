@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.8.5.0 (beta)">
+<meta name="app-version" content="0.8.5.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -725,6 +725,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .seg3{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:4px;padding:4px;background:var(--surf2);border-radius:12px}
 .seg3 button{appearance:none;border:0;background:none;color:var(--mut);font:inherit;font-size:14.5px;font-weight:500;padding:7px 4px;border-radius:9px;cursor:pointer;white-space:nowrap}
 .seg3 button.sel{background:var(--surf);color:var(--text);font-weight:600;box-shadow:0 0 0 1.5px var(--acc) inset}
+.seg3 button small{display:block;font-size:11.5px;font-weight:400;color:var(--mut);margin-top:1px}
 .seg3 button:disabled{opacity:.45;cursor:default}
 .verbtn{appearance:none;background:none;border:0;padding:0;font-family:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:#ffffff33;text-underline-offset:3px}
 .verok{font-size:11.5px;color:color-mix(in srgb,var(--mut) 70%,var(--text))}
@@ -1903,6 +1904,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.8.5.1","2026-11-15",{new:["The lobby shows roughly how long each game mode takes, so everyone joining can see it."]}],
   ["0.8.5.0","2026-11-15",{new:["Your stats on your profile: titles, seasons, average finish, recent form and how your seasons have ended over your whole career.","Results, goals, clean sheets and cards from all your finished seasons, plus your own records and the Hall of Fame records you hold right now.","Players: see who has scored, assisted and kept clean sheets the most for you, who you pick the most, and your favourite formations.","Filter your stats by Classic or Quick games."],ui:["The colour picker on your profile is smaller and fits on one line.","Long pages now have a \"Back to top\" button at the bottom."]}],
   ["0.8.0.0","2026-11-14",{new:["Updated for the 2026/27 season: every player has new ratings, ages and stats based on the latest data. Some players are stronger than before, others weaker.","Young players' extra rating for their potential is now worked out the same way for everyone.","Richarlison joins Tottenham."],fix:["A penalty could sometimes show a corner you weren't allowed to shoot at, which gave an error. The goal now always shows the right corners."],ui:["New and updated player photos. Every player now has a photo."],small:["Some players have new positions, so they fit where they really play (for example Lewis-Skelly, Hincapié and Gannon-Doak).","Jeremy Monga is out on loan and has left Manchester City's squad."]}],
   ["0.7.2.0","2026-11-14",{new:["Continue game for players signed in with Google: if you leave a game or close the app, you can pick it up again from the home screen, also on another phone.","Only your newest game is kept. Starting a new one asks you first, and the old one is cleared away."],fix:["Deleting your account now works all the way, and a game you admin is handed over to another player.","Changing your manager name now also updates it in the Hall of Fame.","Guests can no longer use a signed-in manager's name.","Signing in again on the same account keeps your game."],small:["Better handling when the connection drops while signing in or out."]}],
@@ -2236,7 +2238,7 @@ function liveInit(){
     try{
       var s0=await NET.sb.auth.getSession(),sess=s0.data&&s0.data.session;
       if(s0.error&&!DEMO&&netDown(s0.error))throw s0.error; /* uden forbindelse er ikke det samme som "ikke logget ind"; en ugyldig session giver login-skærmen */
-      if(DEMO){var dc=DEMO_SCREENS[DEMO.screen]||{};NET.uid=sess.user.id;if(dc.pst){PST.tab=dc.pst[0];PST.ptab=dc.pst[1]||"goals"}AUTH.guest=!!dc.guest;
+      if(DEMO){var dc=DEMO_SCREENS[DEMO.screen]||{};NET.uid=sess.user.id;if(dc.pst){PST.tab=dc.pst[0];PST.ptab=dc.pst[1]||"goals"}if(dc.rules)NET.rulesOpen=true;AUTH.guest=!!dc.guest;
         AUTH.profile=AUTH.guest?null:{user_id:NET.uid,manager_name:DEMO.mem["dsfc-name"]||"Alex",full_name:"Alex Demo",color:"#2f6bd9",avatar_ver:null,name_changed_at:null,created_at:"2026-11-01T12:00:00Z"};
         if(AUTH.profile)S.pname=AUTH.profile.manager_name;AUTH.stage=dc.auth||"ok";AUTH.gname="Alex";AUTH.gfull="Alex Demo";if(dc.auth==="profile"){AUTH.stage="ok";AUTH.view="profile"}return}
       if(!sess){NET.uid=null;AUTH.stage="login";return}
@@ -2459,6 +2461,23 @@ function liveAct(a,b,st){
   }
   return false;
 }
+/* ca. spilletid i minutter, rundet op til nærmeste 5 (Rasmus 2026-11-15). Målt/regnet: draft ca. 17 s pr. valg (på skift),
+   Classic ca. 37 s pr. runde ved 1x (26 s kamp + ca. 11 s), +5 s pr. runde med flere mennesker; Quick afspiller 38 runder à 4,4 s.
+   Opdatér, når game_times (migration 077) har nok rigtige spil. */
+function estMin(pace,g,n){
+  n=Math.max(1,n);var pick=g.timer_seconds?Math.min(17,g.timer_seconds):17,m=1+n*11*pick/60;
+  if(pace==="quick")m+=38*4.4/60;
+  else{var hf=g.max_players===1?0:(n-1)/19,mt=26*((1-hf)/(+g.speed_ai||1)+hf/(+g.speed_hh||1));m+=38*(mt+11+(n>1?5:0))/60}
+  return Math.ceil(m/5)*5;
+}
+function logSeen(){
+  /* kun måling: må aldrig kaste eller vente på noget, slutskærmen vises uanset */
+  try{
+    if(DEMO||!NET.gid||!NET.sb)return;var k="dsfc-seen-"+NET.gid;
+    try{if(localStorage.getItem(k))return;localStorage.setItem(k,"1")}catch(e){}
+    Promise.resolve(NET.sb.rpc("log_game_seen",{p_game:NET.gid})).then(function(){},function(){});
+  }catch(e){}
+}
 function lobbyLive(){
   var g=NET.game,pl=NET.players,n=pl.length,adm=NET.uid===g.admin_id,me=pl.filter(function(p){return p.user_id===NET.uid})[0]||{};
   var solo=g.max_players===1,setup=!!g.setup,canStart=solo?n>=1:n>=2;
@@ -2468,10 +2487,11 @@ function lobbyLive(){
     if(!solo)h+='<div class="codeline"><span class="muted">Game code</span><button data-act="copycode">'+esc(g.code)+'</button></div>';
     var segb=function(act,key,cur,opts,dis,cls){return '<div class="seg3" style="--n:'+opts.length+'">'+opts.map(function(o){return '<button class="'+(cur===o[0]?"sel":"")+'" data-act="'+act+'"'+(key?' data-k="'+key+'"':'')+' data-v="'+o[0]+'"'+(dis&&dis(o[0])?" disabled":"")+'>'+o[1]+'</button>'}).join("")+'</div>'};
     var row=function(label,inner){return '<div class="rule"><span class="rl">'+label+'</span>'+inner+'</div>'};
-    var sum=(g.pace==="quick"?"Quick game":"Classic")+' · '+(g.timer_seconds?g.timer_seconds+" s per pick":"No timer")+' · '+g.respins+(g.respins===1?" respin":" respins")+(!solo&&g.pace!=="quick"?' · Speed '+(+g.speed_ai)+'x / '+(+g.speed_hh)+'x':'');
+    var est=function(pc){return "about "+estMin(pc,g,n)+" min"};
+    var sum=(g.pace==="quick"?"Quick game":"Classic")+' · '+est(g.pace)+' · '+(g.timer_seconds?g.timer_seconds+" s per pick":"No timer")+' · '+g.respins+(g.respins===1?" respin":" respins")+(!solo&&g.pace!=="quick"?' · Speed '+(+g.speed_ai)+'x / '+(+g.speed_hh)+'x':'');
     var rules='';
     if(adm){
-      var inner=row("Game mode",segb("lset","pace",g.pace,[["full","Classic"],["quick","Quick game"]]))+
+      var inner=row("Game mode",segb("lset","pace",g.pace,[["full",'Classic<small>'+est("full")+'</small>'],["quick",'Quick game<small>'+est("quick")+'</small>']]))+
         row("Time per pick",segb("lset","timer",g.timer_seconds,[[0,"Off"],[30,"30 s"],[60,"60 s"],[90,"90 s"]]))+
         row("Respins",segb("lset","respins",g.respins,[0,1,2,3].map(function(x){return [x,x]}),null,"num"));
       if(!solo&&g.pace==="full"){
@@ -2703,6 +2723,7 @@ function liveSimRender(ph){
 /* testgenvej: flytter dit hold til den placering, der står i dsfc-testpos (kun sliden og slutskærmen, ikke Hall of Fame på serveren) */
 function testPos(rows,mi){try{var tp=+localStorage.getItem("dsfc-testpos");if(tp>=1&&tp<=rows.length&&mi>-1){var mr=rows.splice(mi,1)[0];rows.splice(tp-1,0,mr);return tp-1}}catch(e){}return mi}
 function liveSimDone(lbl){
+  logSeen();
   var s=NET.sim;if(s)s.end=true;simClear();NET.shownRound=38;
   var rows=standingsLive(38),mi=rows.map(function(x){return x.k}).indexOf(NET.uid);
   if(isTestGame())mi=testPos(rows,mi);
@@ -3132,6 +3153,7 @@ function renderStatsLive(){
 function renderEndLive(){
   HOFC=null;
   if(!NET.season){$("endbody").innerHTML='<h1>The season isn\'t over</h1>';return}
+  logSeen();
   var rows=standingsLive(38);if(isTestGame())testPos(rows,rows.map(function(x){return x.k}).indexOf(NET.uid));var champ=rows[0],st=liveStatMaps();NET.shownRound=Math.max(NET.shownRound,38);
   var tab=S.endTab||"stil";if(tab==="pris"&&0)tab="stil";
   var gd=champ.gf-champ.ga;
@@ -3583,6 +3605,7 @@ buildReel();renderFlow();renderDraft();
 var DEMO_SCREENS={
   start:{t:"Start screen"},
   lobby:{t:"Lobby (4 players)",st:"lobby"},
+  "lobby-rules":{t:"Lobby: game rules with time per mode",st:"lobby",rules:1},
   draft:{t:"Draft, your pick",st:"draft"},
   kickoff:{t:"Match: before kick-off",st:"season",round:1},
   live:{t:"Match: in play",st:"season",round:12,pauseAt:63},
@@ -3644,7 +3667,7 @@ function demoState(fx,cfg){
   if(st==="done")round=38;
   var order=[me].concat(H.filter(function(h){return h!==me})),now=new Date().toISOString();
   var players=order.map(function(h,i){return {game_id:gid,user_id:h.uid,team_name:h.team,color1:h.c1,color2:h.c2,crest:h.crest,formation:h.form,ready:st!=="lobby"||i<2,auto_ready:false,draft_pos:i,joined_at:"2026-11-01T12:0"+i+":00Z",last_seen_at:now,ready_round:Math.max(0,round-1),display_name:h.display,missed_rounds:0,last_missed_round:0,crest_tag:h.tag,respins_used:0,done_round:Math.max(0,round-1),start_ready:round>1}});
-  var game={id:gid,code:fx.code,admin_id:me.uid,league:"PL",season:"2026/2027",mode:"league",max_players:4,timer_seconds:0,show_ratings:false,status:st,draft_order:fx.order,current_pick:0,current_club:null,turn_deadline:null,current_round:round,admin_last_seen:now,created_at:"2026-11-01T12:00:00Z",pace:st==="done"?"quick":"full",season_no:1,next_game_id:null,setup:st==="lobby",respins:0,done_at:null,speed_ai:1,speed_hh:1};
+  var game={id:gid,code:fx.code,admin_id:me.uid,league:"PL",season:"2026/2027",mode:"league",max_players:4,timer_seconds:0,show_ratings:false,status:st,draft_order:fx.order,current_pick:0,current_club:null,turn_deadline:null,current_round:round,admin_last_seen:now,created_at:"2026-11-01T12:00:00Z",pace:st==="done"?"quick":"full",season_no:1,next_game_id:null,setup:st==="lobby"&&!cfg.rules,respins:0,done_at:null,speed_ai:1,speed_hh:1};
   var picks=st==="lobby"?[]:fx.picks;
   if(st==="draft"){
     var k=fx.picks.findIndex(function(p,i){return i>=12&&p.user_id===me.uid});
