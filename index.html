@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.8.6.3 (beta)">
+<meta name="app-version" content="0.8.6.4 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1916,6 +1916,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.8.6.4","2026-11-15",{fix:["Picking a colour on your profile no longer makes the page flicker."]}],
   ["0.8.6.3","2026-11-15",{ui:["A new golden Hall of Fame button on the home screen."]}],
   ["0.8.6.2","2026-11-15",{small:["The colour dots on your profile are easier to tap."]}],
   ["0.8.6.1","2026-11-15",{ui:["The season-over screen no longer uses emojis next to top scorer and top assists."],small:["Your profile stats keep counting correctly after very many seasons."]}],
@@ -2083,10 +2084,16 @@ document.addEventListener("change",async function(e){
   }catch(x){netErr(x)}
 });
 async function avColor(c){
-  if(!AUTH.profile||AUTH.profile.color===c)return;var old=AUTH.profile.color;AUTH.profile.color=c;renderFlow(); /* vises med det samme */
+  if(!AUTH.profile||AUTH.profile.color===c)return;var old=AUTH.profile.color;AUTH.profile.color=c;avPaint(c); /* vises med det samme */
   if(DEMO)return;
   try{var r0=await tmo(NET.sb.rpc("set_profile_color",{p_color:c}));if(r0.error)throw r0.error;cset("prof",AUTH.profile)}
-  catch(x){AUTH.profile.color=old;renderFlow();netErr(x)}
+  catch(x){if(AUTH.profile&&AUTH.profile.color===c){AUTH.profile.color=old;avPaint(old)}netErr(x)} /* kun hvis der ikke er valgt en ny farve imens */
+}
+/* farveskift opdaterer kun prikkerne og avataren på stedet (hele profilen tegnes ikke om, så intet blinker) */
+function avPaint(c){
+  var col=hexOk(c)?c:"#3b4a6b";
+  document.querySelectorAll("#flow .av2").forEach(function(e){if(!e.style.backgroundImage)e.style.backgroundColor=col});
+  document.querySelectorAll("#flow .avd").forEach(function(b){b.classList.toggle("on",String(c).toLowerCase()===b.dataset.avc)});
 }
 async function avRemove(){
   try{var rm=await NET.sb.storage.from("avatars").remove([NET.uid+".jpg"]);if(rm.error)throw rm.error;var r0=await NET.sb.rpc("set_avatar",{p_has:false});if(r0.error)throw r0.error;await authLoadProfile();renderFlow()}catch(x){netErr(x)}
