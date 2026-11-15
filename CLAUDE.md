@@ -150,5 +150,13 @@ Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er
 2. **Varighed pr. spil**: BYGGET i v0.8.5.1/0.8.6.0 (se "Spilletid"). Opdatér `estMin`, når `game_times` har rigtige data.
 3. **Endnu hurtigere spiltype**: BYGGET i v0.8.6.0 som "Instant" under Quick game (se "Instant").
 4. **Cups/pokaler**: ikke designet.
-5. **Hall of Fame-redesign** (Rasmus 2026-11-15: skal med før 1.0): ikke designet endnu; afklar med Rasmus, hvad der skal ændres.
+5. **Hall of Fame-redesign** (Rasmus 2026-11-15: skal med før 1.0). Design GODKENDT "for nu", ikke bygget. Mockup: `~/Desktop/PL Draft/mockups/hof2.html` (vises via kopi i `.claude/hof2.html`; `?p=1` fuld, `2` Most goals foldet ud, `3` tom efter 1.0, `4` filterark). Lavet sammen med Fable.
+   - Ingen tæller ("X of 12 records set"), intet "NEW"-mærke, ingen sæson i teksterne (overflow; kun én sæson).
+   - Filtre: én knap med de aktive filtre ("All games" / "Quick · 0 respins") der åbner et ark med Game mode, Respins, Players + Reset.
+   - **All time champions**: to guldkort, SOLO og MULTIPLAYER, hver = mesterholdet med FLEST point (ikke det nyeste). Stor pokal til venstre, holdets emblem foran SOLO/MULTIPLAYER, holdnavn, "manager · spiltype" (multiplayer: "· N players"), point i guld + "points". Tryk = opstillingsark. Ingen formation, ingen række med tidligere mestre. Følger Players-filtret (1 = kun Solo).
+   - **Most titles**: top 3 managere efter antal titler; 1. plads guld (tekst + svag guldglød), 2.–3. mørkere baggrund men tydelig tekst. Ikke klikbar.
+   - **Player Honors** og **Teams**: hver rekord sit eget award-kort: titel i guld med lille pokal ("Most Goals"), ansigt/emblem, navn, "hold · manager", tal + enhed under ("29 goals"). Modstander ("vs Leeds United") på egen linje i Most Goals in a Match og Biggest Win. Tryk folder plads 2–5 ud i kortet (én åben ad gangen). Pil-plads altid reserveret, så tallene flugter. Unclaimed = eget nedtonet kort med stiplet cirkel.
+   - Rækkefølge Player Honors: Goals, Assists, Clean Sheets, Goals in a Match, Yellow Cards, Red Cards. Teams: Points, Team Goals, Goal Difference, Fewest Conceded, Winning Streak, Biggest Win.
+   - Neutral: ingen fremhævning af egne rekorder. Mestre sorteres i dag ældst først (`W.sort`); den nye kode skal finde flest point pr. solo/multi.
+   - Slutskærmen (`sumRecords`): skriver i dag "You made it to the Hall of Fame" for top 3. Skal skelne: kun nr. 1 = i Hall of Fame; plads 2–5 = tæt på (runner-up). Mangler også Most team goals. Tilpas sammen med redesignet.
 6. **Nulstilling ved 1.0** (Rasmus 2026-11-15): ryd alle rekorder (`hof_teams`/`hof_players`) og nulstil alle brugere, så alle starter forfra på 1.0. Gøres som det SIDSTE lige før 1.0 udgives, og først efter Rasmus har bekræftet præcis hvad (fx om profiler/managernavne, spil og `game_times` også ryddes). Dette er den eneste undtagelse fra "rør aldrig Rasmus' egne Hall of Fame-rækker". Tag backup af tabellerne først.
