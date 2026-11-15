@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.8.6.0 (beta)">
+<meta name="app-version" content="0.8.6.1 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1804,7 +1804,9 @@ async function pstLoad(force){
     if(!NET.pl)livePlayers();
     try{await NET.pl}catch(_){}
     var ar={p_resp:null,p_pmin:null,p_pmax:null};
-    var r=await Promise.all([NET.sb.from("hof_teams").select("*").eq("user_id",uid),NET.sb.from("hof_players").select("*").eq("user_id",uid),NET.sb.rpc("hof_teams_top",ar),NET.sb.rpc("hof_players_top",ar)]);
+    /* databasen sender højst 1000 rækker ad gangen: hent i sider, til alt er med */
+    var all=async function(t){var out=[];for(var f=0;;f+=1000){var q=await NET.sb.from(t).select("*").eq("user_id",uid).order("id").range(f,f+999);if(q.error)return q;out=out.concat(q.data||[]);if(!q.data||q.data.length<1000)return {data:out}}};
+    var r=await Promise.all([all("hof_teams"),all("hof_players"),NET.sb.rpc("hof_teams_top",ar),NET.sb.rpc("hof_players_top",ar)]);
     if(NET.uid!==uid)return;
     var bad=r.filter(function(x){return x.error})[0];if(bad)throw bad.error;
     PST.uid=uid;PST.raw={T:r[0].data||[],P:r[1].data||[],HT:r[2].data||[],HP:r[3].data||[]};PST.at=Date.now();
@@ -1904,6 +1906,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.8.6.1","2026-11-15",{ui:["The season-over screen no longer uses emojis next to top scorer and top assists."],small:["Your profile stats keep counting correctly after very many seasons."]}],
   ["0.8.6.0","2026-11-15",{new:["Instant playback for Quick game: the season shows only the results, one round after another. The admin picks it in the lobby."],small:["The estimated game time now also counts respins and match speed more accurately."]}],
   ["0.8.5.1","2026-11-15",{new:["The lobby shows roughly how long each game mode takes, so everyone joining can see it."]}],
   ["0.8.5.0","2026-11-15",{new:["Your stats on your profile: titles, seasons, average finish, recent form and how your seasons have ended over your whole career.","Results, goals, clean sheets and cards from all your finished seasons, plus your own records and the Hall of Fame records you hold right now.","Players: see who has scored, assisted and kept clean sheets the most for you, who you pick the most, and your favourite formations.","Filter your stats by Classic or Quick games."],ui:["The colour picker on your profile is smaller and fits on one line.","Long pages now have a \"Back to top\" button at the bottom."]}],
@@ -2767,7 +2770,7 @@ function liveSimDone(lbl){
   var h='<div class="ehero">'+(mi===0?'<img class="etro" src="badges/pl-trophy.png" alt="">':lcrest(NET.uid,64))+'<div class="epos">'+pos+'<sup>'+suf+'</sup></div><p class="eteam">'+esc(lname(NET.uid))+'</p>'+badge+'</div>'+
     '<div class="card ekpi"><div><b>'+me.p+'</b><span>Points</span></div><div><b>'+me.w+'-'+me.d+'-'+me.l+'</b><span>W-D-L</span></div><div><b>'+(gd>0?"+":"")+gd+'</b><span>Goal diff.</span></div></div>'+
     '<div class="card etbl">'+tb+'</div>'+
-    '<div class="card etops">'+trow("⚽ Top scorer",tg,st.g,"goal")+trow("👟 Top assists",ta,st.a,"assist")+'</div>'+
+    '<div class="card etops">'+trow("Top scorer",tg,st.g,"goal")+trow("Top assists",ta,st.a,"assist")+'</div>'+
     '<div id="sumlist"></div>'+
     '<button class="btn p wide go" data-act="simend" style="margin-top:16px">'+"See the final table"+'</button>';
   $("simbody").innerHTML='<div class="simdone'+(mi===0?" egold":"")+'">'+h+'</div>';
@@ -2779,7 +2782,7 @@ async function sumRecords(){
   try{
     var pr=await NET.sb.rpc("hof_players_top"),tr=await NET.sb.rpc("hof_teams_top");
     var box=document.getElementById("sumlist");if(!box||NET.gid!==gid||pr.error||tr.error)return;
-    var P=pr.data||[],T=tr.data||[],out=[],medal=["🏆","🥈","🥉"];
+    var P=pr.data||[],T=tr.data||[],out=[];
     var mineP=function(x){return x.game_id===gid&&x.user_id===NET.uid};
     var best=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return Object.keys(b).map(function(k){return b[k]})};
     var catP=function(title,key,min){
@@ -3196,7 +3199,7 @@ function renderEndLive(){
     h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+list+'<button class="linkbtn" data-endfull="1" style="margin:6px auto 4px">'+(full?"Hide table":"Show full table")+'</button></div>';
   }else if(tab==="pris"){
     var best=function(map){var b=null;Object.keys(map).forEach(function(p){if(!b||map[p]>map[b])b=p});return b};
-    var aw=[["Top scorer",best(st.g),st.g,"goal","⚽"],["Most assists",best(st.a),st.a,"assist","🎯"],["Best goalkeeper",best(st.cs),st.cs,"clean sheet","🧤"]].filter(function(a){return a[1]});
+    var aw=[["Top scorer",best(st.g),st.g,"goal"],["Most assists",best(st.a),st.a,"assist"],["Best goalkeeper",best(st.cs),st.cs,"clean sheet"]].filter(function(a){return a[1]});
     h+='<div class="card" style="margin-top:10px;padding:4px 14px">'+(aw.length?aw.map(function(a){var k=st.owner[a[1]];return '<div class="endrow" style="grid-template-columns:36px 1fr auto"><span style="display:flex;justify-content:center">'+faceImg(NET.byId[a[1]].p)+'</span><span class="en"><span>'+esc(pname(a[1]))+'<small>'+a[0]+', '+esc(lname(k))+'</small></span></span><span class="ev2" style="font-size:14.5px">'+pl(a[2][a[1]],a[3])+'</span></div>'}).join(""):'<p class="note">No awards this season.</p>')+'</div>';
   }else if(tab==="stats"){
     var sp=statsParts("data-stt");

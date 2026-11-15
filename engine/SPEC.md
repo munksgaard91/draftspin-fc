@@ -11,7 +11,7 @@ Baseret på udkast 0.1, Argons review (2026-10-18) og en Python-referencemotor (
 - Ratingforskel Δ mellem to hold og hjemmesejr: 0 giver 44 %, 10 giver 59 %, 20 giver 74 %, 30 giver 85 %.
 
 ## Balance
-Uden justering vinder det bedste spillerhold ligaen i 1 til 8 % af tilfældene, fordi de bedste AI-klubber (Arsenal 168,9, Manchester City 168,5, Liverpool 165,0) er stærkere end næsten alle draftede hold. (Historisk forslag, aldrig indført: draftede spillere fjernes fra AI-klubberne. Rasmus 2026-11-14: det er bevidst, at en draftet spiller også spiller for sin AI-klub; derfor vises AI-holdenes målscorere ikke, og statistik tæller kun for det hold, der ejer spilleren.) Oprindeligt forslag: draftede spillere fjernes fra AI-klubberne, og admin vælger en AI-sværhedsgrad (AI-spillernes rating forskydes). Se `engine/reference/run_bal2.py`.
+Uden justering vinder det bedste spillerhold ligaen i 1 til 8 % af tilfældene, fordi de bedste AI-klubber (FM27-data, 2026-11-15: Arsenal 167,6, Manchester City 166,8, Liverpool 161,6, Chelsea 157,6) er stærkere end næsten alle draftede hold. (Historisk forslag, aldrig indført: draftede spillere fjernes fra AI-klubberne. Rasmus 2026-11-14: det er bevidst, at en draftet spiller også spiller for sin AI-klub; derfor vises AI-holdenes målscorere ikke, og statistik tæller kun for det hold, der ejer spilleren.) Oprindeligt forslag: draftede spillere fjernes fra AI-klubberne, og admin vælger en AI-sværhedsgrad (AI-spillernes rating forskydes). Se `engine/reference/run_bal2.py`.
 
 | Sværhedsgrad | AI-skift | 1 spiller, god draft vinder | 4 spillere, bedste hold vinder |
 |---|---|---|---|
@@ -103,3 +103,11 @@ Bruges når en spiller kommer til (transfer, nyt save), og vi ikke har de oprind
 
 ## Straffe: hjørner pr. skytte (server, 2026-11-14, v0.8.0)
 En ventende straf (`pen_pending`) gemmer i `detail` antal hjørner pr. mulig skytte som JSON `{spiller-id: n}`, regnet af de fastfrosne data (`penCorners` i `index.ts`, samme beregning som `applyPen`). Klienten viser det antal og stjernemarkerer standardskytten (`player_id`); ældre straffe uden `detail` regnes lokalt. Motoren (`engine.js`) er uændret, fingeraftrykket også.
+
+## Titelchancer med FM27-data (2026-11-15)
+`engine/reference/season_titles.ts`, 3000 sæsoner kun med AI-klubber, motor 1.15, spillerdata fra databasen 2026-11-15:
+- Titler (City vinder oftere end Arsenal, selv om Arsenal har lidt højere styrke; styrken er kun gennemsnittet af startelleveren, og resultatet afhænger også af holdets sammensætning og held): Manchester City 35,8 %, Arsenal 29,6 %, Liverpool 14,6 %, Chelsea 10,2 %, Manchester United 4,0 %, Tottenham 2,7 %, resten under 1 % hver.
+- Top 4: City 84 %, Arsenal 82 %, Liverpool 64 %, Chelsea 54 %, United 35 %, Tottenham 26 %.
+- Gennemsnit: mesteren 87,7 point, nr. 20 16,3 point.
+- Før FM27 (2026-10-22): City 40 %, Arsenal 27 %, Liverpool 22 %, Chelsea 5 %. Liverpool faldt, fordi deres stjerner fik lavere tal i FM27 (data, ikke en fejl).
+

@@ -21,7 +21,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.8.6.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.8.6.1 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 - Changelog: tilføj en post øverst i `CHANGELOG` i `index.html` ved HVER versionsændring, på engelsk og kun med det, spillerne kan mærke. Del op i `new` (New features), `fix` (Bug fixes), `ui` (Design) og `small` (Small changes), og skriv alt i et sprog, alle forstår (intet teknisk). Den vises under "What's new" i hjørnet og som popup én gang efter en opdatering.
 
 ## Motoren
@@ -54,7 +54,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 ## Åbne punkter (ikke påbegyndt, start ikke uden besked)
 
 - Profilstatistik er bygget (v0.8.5.0, se "Profilstatistik" nedenfor). Managers-fanen (andre brugeres statistik) er ikke besluttet.
-- Mere realistiske klubemblemer; pokaler/cup; ⚽/❌ i Match facts; nyt logo/navn; manager i draften; karakterer pr. spiller pr. kamp; redesign af målanimationen; færre emojis.
+- Nyt logo/navn. (Rasmus 2026-11-15 flyttede emblemer, ⚽/❌, manager i draften, karakterer og målanimation til listen før 1.0, se "Næste skridt" punkt 7.)
 - To-spiller-straffeflowet (`penWatch`) er ikke testet med to rigtige enheder; Rasmus 2026-11-15: det er droppet som krav før 1.0.
 
 ## Adgang
@@ -100,7 +100,7 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - Boost: reglen gælder for alle ved hver dataopdatering, og alder opdateres samtidig. De gamle boosts (loft 8,0) var ikke regnet efter reglen. Boost afrundes til 1 decimal før rating.
 - Dobbelte spillere er bevidst: en draftet spiller spiller også for sin AI-klub. Derfor vises AI-holdenes målscorere ikke, og statistik tæller kun for ejeren. Ret ikke det.
 - Spillere, der ikke er i FM (fx Max Dowman): Rasmus sender et billede; beskær det som pakken (håret til overkanten, hovedet ca. 75 % af bredden, 250×250, gennemsigtig).
-- Forventet efter FM27: Liverpool vinder ligaen sjældnere (ca. 14 % mod 26 %), fordi deres stjerner faldt i FM27. Det er data, ikke en fejl. Tallene i SPEC (Arsenal 168,9 osv.) og i headeren på `engine/reference/season_titles.ts` er forældede.
+- Forventet efter FM27: Liverpool vinder ligaen sjældnere (ca. 15 % mod 22 %), fordi deres stjerner faldt i FM27. Det er data, ikke en fejl. Opdateret 2026-11-15 i SPEC ("Titelchancer med FM27-data") og i headeren på `engine/reference/season_titles.ts` (City 36 %, Arsenal 30 %, Liverpool 15 %, Chelsea 10 %). `Arbejdsfiler/db_players.json` er forældet: eksportér players-tabellen først.
 - Straffe: klienten må ikke regne serverafgjorte tal af de levende data, når sæsonen bruger fastfrosne. Hjørner pr. skytte sendes nu med den ventende straf (`detail`).
 - Deploy-kontrol: `supabase functions download engine --use-api` i en tom mappe i scratchpad (ALDRIG i repoet: den overskriver `supabase/functions/engine`) og `diff` mod repoet. `action: "hash"` kræver en anonym testbruger; auto mode afviste at oprette den 2026-11-14, så byte-diff blev brugt.
 - Nyttige CLI-kommandoer: `supabase db query -f <fil> --remote=... --yes` (migration), `supabase storage cp <fil> ss:///faces/<navn> --experimental --content-type image/webp --remote=...`, `supabase functions deploy engine --use-api --remote=... --yes`. Auto mode har bløde stop på skrivende SQL og deploy: spørg Rasmus først.
@@ -159,4 +159,5 @@ Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er
    - Rækkefølge Player Honors: Goals, Assists, Clean Sheets, Goals in a Match, Yellow Cards, Red Cards. Teams: Points, Team Goals, Goal Difference, Fewest Conceded, Winning Streak, Biggest Win.
    - Neutral: ingen fremhævning af egne rekorder. Mestre sorteres i dag ældst først (`W.sort`); den nye kode skal finde flest point pr. solo/multi.
    - Slutskærmen (`sumRecords`): skriver i dag "You made it to the Hall of Fame" for top 3. Skal skelne (Rasmus 2026-11-15): nr. 1 = "New Hall of Fame record!" i guld; plads 2–5 = "So close!" med "2nd in Most Goals: spiller, 27 goals"; ellers ingen blok. Altid målt mod den samlede liste (alle filtre på All). Mangler også Most team goals. Bygges sammen med redesignet.
-6. **Nulstilling ved 1.0** (Rasmus 2026-11-15): ryd alle rekorder (`hof_teams`/`hof_players`) og nulstil alle brugere, så alle starter forfra på 1.0. Gøres som det SIDSTE lige før 1.0 udgives, og først efter Rasmus har bekræftet præcis hvad (fx om profiler/managernavne, spil og `game_times` også ryddes). Dette er den eneste undtagelse fra "rør aldrig Rasmus' egne Hall of Fame-rækker". Tag backup af tabellerne først.
+6. **Nulstilling ved 1.0** (Rasmus 2026-11-15): ryd alle rekorder (`hof_teams`/`hof_players`) og nulstil alle brugere, så alle starter forfra på 1.0. Gøres som det SIDSTE lige før 1.0 udgives, og først efter Rasmus har bekræftet præcis hvad (fx om profiler/managernavne, spil og `game_times` også ryddes). Dette er den eneste undtagelse fra "rør aldrig Rasmus' egne Hall of Fame-rækker". Tag backup af tabellerne først. Samtidig (Rasmus): fjern notitsen på forsiden om, at rekorder nulstilles ved 1.0, og skriv i 1.0-posten under What's new, at alle starter forfra.
+7. **Fra idélisten, skal med før 1.0** (Rasmus 2026-11-15; ikke designet, rækkefølge ikke aftalt): karakterer pr. spiller pr. kamp; ⚽/❌ i Match facts (straffe scoret/brændt); manager i draften; mere realistiske klubemblemer; redesign af målanimationen.

@@ -1,5 +1,6 @@
 // usage: deno run -A season_titles.ts <antal sæsoner>  (kun AI-klubber; bruger motoren i supabase/functions/engine og spillerdata fra ../../../Arbejdsfiler/db_players.json)
-// Skriver titel-% pr. klub, top 4-% og gennemsnitlige point. 2026-10-22, 3000 sæsoner: City 40 %, Arsenal 27 %, Liverpool 22 %, Chelsea 5 %.
+// Skriver titel-% pr. klub, top 4-% og gennemsnitlige point. 2026-11-15 (FM27), 3000 sæsoner: City 36 %, Arsenal 30 %, Liverpool 15 %, Chelsea 10 % (før FM27, 2026-10-22: City 40 %, Arsenal 27 %, Liverpool 22 %, Chelsea 5 %).
+// db_players.json kan være forældet: eksportér players-tabellen fra databasen først (numeric-kolonner kommer som tekst og skal laves om til tal).
 const E = await import("file:///Users/munksgaard/Desktop/PL%20Draft/draftspin-fc/supabase/functions/engine/engine.js");
 const P = JSON.parse(await Deno.readTextFile("/Users/munksgaard/Desktop/PL Draft/Arbejdsfiler/db_players.json"));
 const N = +Deno.args[0] || 100;
