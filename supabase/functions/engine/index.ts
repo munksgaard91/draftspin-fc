@@ -255,7 +255,7 @@ async function allRows(table, gameId) {
 async function finalizeSeason(gameId) {
   const game = await getGame(gameId);
   const st = chk(await admin.from("season_teams").select("*").eq("game_id", gameId));
-  const gps = chk(await admin.from("game_players").select("user_id,display_name,missed_rounds").eq("game_id", gameId));
+  const gps = chk(await admin.from("game_players").select("user_id,display_name,missed_rounds,crest_tag").eq("game_id", gameId));
   const lu = chk(await admin.from("season_lineups").select("*").eq("game_id", gameId));
   const matches = await allRows("matches", gameId), events = await allRows("match_events", gameId);
   const nameOf = (k) => (st.find((x) => x.team_key === k) || {}).name || k;
@@ -301,7 +301,7 @@ async function finalizeSeason(gameId) {
       else streak = 0;
     }
     const s = t[h.team_key];
-    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: allHumans, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, respins: game.respins ?? 0, pace: game.pace ?? "full", formation: h.formation ?? null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
+    return { game_id: gameId, team_key: h.team_key, league: "PL", season, season_no: game.season_no, user_id: h.user_id, team_name: h.name, owner: owner(h.user_id), players: allHumans, pos: pos[h.team_key], points: s.w * 3 + s.d, w: s.w, d: s.d, l: s.l, gf: s.gf, ga: s.ga, win_streak: best, big_win_margin: bigM, big_win_score: bigScore, big_win_text: bigText, champion: pos[h.team_key] === 1, respins: game.respins ?? 0, pace: game.pace ?? "full", formation: h.formation ?? null, color1: h.color1 ?? null, color2: h.color2 ?? null, crest: h.crest ?? null, crest_tag: (gps.find((g) => g.user_id === h.user_id) || {}).crest_tag ?? null, lineup: champ && champ.team_key === h.team_key ? champLineup : null };
   });
   const own = {};
   lu.forEach((l) => { const tm = savers.find((x) => x.team_key === l.team_key); if (tm) own[l.player_id] = tm; });

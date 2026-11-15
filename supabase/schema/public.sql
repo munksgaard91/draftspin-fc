@@ -162,7 +162,11 @@ create table public.hof_teams (
   formation text,
   lineup jsonb,
   respins integer,
-  pace text
+  pace text,
+  color1 text,
+  color2 text,
+  crest integer,
+  crest_tag text
 );
 
 create table public.match_events (

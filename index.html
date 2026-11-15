@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>PL Draft</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="app-version" content="0.8.6.4 (beta)">
+<meta name="app-version" content="0.8.7.0 (beta)">
 <meta name="theme-color" content="#170a28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -89,8 +89,6 @@
 .pausebtn{position:absolute;top:7px;left:50%;transform:translateX(-50%);appearance:none;border:0;background:none;color:var(--mut);font:inherit;font-size:11.5px;padding:2px 6px;border-radius:999px;cursor:pointer}.pausebtn.on{color:var(--acc)}
 .sumwin,.summid,.sumdown{align-items:center;padding-bottom:27px}.sumwin .si,.summid .si{line-height:0;width:auto}.summid b{font-size:19px}.summid .silion{opacity:.55}.sumeu small{display:block;margin-top:4px}.sumrow.sumeu .si .sileague{height:40px;max-width:48px}
 .sumrow .si .silion{display:block;width:32px;height:32px;object-fit:contain;filter:brightness(0) invert(1);margin:0 auto}
-.rechof{flex:1;min-width:0}.rechof summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:center;gap:8px}.rechof summary::-webkit-details-marker{display:none}.rechof .recl{font-size:11.5px;margin-top:5px}.rechof .recl.mrow{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}.rechof .recl.mrow svg,.rechof .recl.mrow img{flex:none}.rechof small{margin-top:6px}
-.recl{display:block;margin-top:6px}.recl:first-child{margin-top:2px}.sumrow .recl b{display:inline;font-weight:600;color:var(--text)}
 .sumrow small{display:block;color:var(--mut);font-size:13px;line-height:1.45;margin-top:1px}
 .etabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
 .etabs button{appearance:none;padding:10px 8px;border-radius:10px;background:var(--surf);border:1px solid var(--line);color:var(--mut);font:inherit;font-size:14.5px;font-weight:500;cursor:pointer}
@@ -236,7 +234,7 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .hbanner summary{cursor:pointer;color:var(--text);font-weight:500;list-style:none}
 .hbanner .note{margin:8px 0 0}
 .hbx{position:absolute;top:4px;right:6px;height:34px;padding:0 8px;background:none;border:0;color:var(--mut);font-size:13px;cursor:pointer}
-.rechof summary b,.hexp,.pausebtn,.hbanner summary,.hbx{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent)}
+.pausebtn,.hbanner summary,.hbx{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent)}
 .topback{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px -2px;padding:6px 10px 6px 6px;background:none;border:0;color:var(--mut);font-family:inherit;font-size:14px;font-weight:500;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}.topback:before{content:"";width:8px;height:8px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-left:4px}.topback[hidden]{display:none}.topback:active{color:var(--ink,#fff)}
 .linkbtn{display:block;margin:6px auto 0;background:none;border:0;color:var(--mut);text-decoration:underline;text-underline-offset:3px;font-size:13px;padding:10px 12px;cursor:pointer}
 .nav2 .btn.p{flex:1}
@@ -542,10 +540,6 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .row.wf .rp:nth-of-type(1){text-align:right}
 .row .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px}
 .row .rf.nf{background:var(--silh) center/contain no-repeat}
-.hrow .rf{width:36px;height:36px;display:block;background:var(--atlas) no-repeat;background-size:864px 828px;border-radius:50%}
-.hrow .rf.nf{background:var(--silh) center/contain no-repeat}
-.hrow.hf{grid-template-columns:36px 1fr auto}
-.hrow .hk.pf{position:relative;width:36px;height:36px}
 .row.dis{cursor:default}
 .row.sel{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:6px}
 .tools{display:flex;gap:10px;align-items:center;margin:8px 0 2px}
@@ -562,41 +556,70 @@ h2{font-size:16px;font-weight:600;margin:22px 0 10px}
 .stepper b{font:500 16px var(--mono)}
 .seg button.lock{opacity:.45}
 .hcat{margin-top:12px}
-.hexp{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:6px;padding:9px 0 2px;background:none;border:0;border-top:1px solid var(--line);color:var(--mut);font:500 13px var(--sans,inherit);cursor:pointer}
-.hcat>.hrow{border-bottom:0}
-.hcat>.hmore:not([hidden]){border-top:1px solid var(--line)}
-.hmore[hidden],.cblk[hidden]{display:none}
-.hfilt{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px;row-gap:8px;margin:6px 0 4px}
-.hfilt .hfl{font-size:13px;color:var(--mut)}
-.hfilt .seg.hseg2{margin:0;gap:0;display:grid;grid-template-columns:repeat(var(--n),1fr)}
-.hfilt .seg.hseg2 button{min-width:0;padding-left:0;padding-right:0}
+#sumlist .srec,#sumlist .sclose{display:block;text-align:left}
+.srec{border-color:#e4c47a88!important;background:linear-gradient(160deg,#4a3418 0%,#2a1838 60%,var(--surf) 100%)!important}
+.srh{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;margin-bottom:4px}.srh.g{color:var(--gold-ink)}.srh img{width:16px;height:auto}
+.srr{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid #ffffff12}.srr:first-of-type{border-top:0}
+.srk{min-width:30px;text-align:center;font:500 12px var(--mono);color:var(--mut)}.srk.g{color:var(--gold-ink);font-size:14px}
+.srt{flex:1;min-width:0;font-size:12.5px;color:var(--mut)}.srt b{display:block;font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- Hall of Fame (redesign 2026-11-15) ---------- */
+.hvfl{display:inline-flex;align-items:center;gap:8px;margin:10px 0 2px;padding:7px 14px 7px 11px;border-radius:99px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:inherit;font-size:13px;cursor:pointer}
+.hvfl svg{width:15px;height:15px;flex:none}.hvfl b{font-weight:500;color:var(--acc)}
+.hvlbl{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin:22px 0 8px}
+.hvhero{position:relative;display:flex;align-items:center;gap:16px;margin-bottom:12px;padding:18px 18px 18px 16px;border-radius:18px;border:1px solid #e4c47a88;background:linear-gradient(160deg,#4a3418 0%,#2a1838 55%,var(--surf) 100%)}
+.hvhero.tap{cursor:pointer}
+.hvhero.empty{border-style:dashed;background:var(--surf)}.hvhero.empty .hvtro{opacity:.35;filter:grayscale(1)}.hvhero.empty .hvt{font-size:16px;color:var(--text)}
+.hvtro{width:38px;height:auto;flex:none;filter:drop-shadow(0 2px 6px #0008)}
+.hvtx{flex:1;min-width:0}
+.hvk{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--gold-ink)}
+.hvk svg{width:20px;height:20px;flex:none}
+.hvt{font-size:18px;font-weight:600;line-height:1.2;margin:0 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hvs{font-size:12px;color:#d8c9a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hvhero.empty .hvs{color:var(--mut)}
+.hvv{text-align:right;padding-left:6px}.hvv b{display:block;font:500 24px var(--mono);color:var(--gold-ink);line-height:1}.hvv small{display:block;margin-top:4px;font-size:11px;color:#d8c9a6}
+.hvch{width:14px;height:14px;flex:none;color:var(--mut);transition:transform .2s}
+.hvch.r{transform:rotate(-90deg);color:#d8c9a6}.hvch.off{visibility:hidden}
+.hvaw.open .hvch{transform:rotate(180deg)}
+.hvtt{background:var(--surf);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.hvtr{display:flex;align-items:center;gap:12px;height:46px;padding:0 16px;border-top:1px solid var(--line);background:#1a0d2e}
+.hvtr:first-child{border-top:0}
+.hvtr.g1{background:linear-gradient(90deg,#4a341855,transparent 80%),var(--surf)}
+.hvtr .rk{width:14px;font:500 13px var(--mono);color:var(--mut)}
+.hvtr img{width:16px;height:auto}
+.hvtr .n{flex:1;min-width:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hvtr .c{font:500 19px var(--mono)}.hvtr .c small{margin-left:4px;font:400 11px var(--sans,inherit);color:var(--mut)}
+.hvtr.g1 .rk,.hvtr.g1 .n,.hvtr.g1 .c{color:var(--gold-ink)}.hvtr.g1 .n{font-weight:600}.hvtr.g1 .c small{color:#d8c9a6}
+.hvlist{display:flex;flex-direction:column;gap:10px}
+.hvaw{background:var(--surf);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.hvah{display:flex;align-items:center;gap:7px;padding:12px 16px 0;font-size:14px;font-weight:600;color:var(--gold-ink)}
+.hvi{width:15px;height:15px;flex:none;color:var(--gold-ink)}
+.hvaw.un .hvah,.hvaw.un .hvi{color:var(--mut)}
+.hvrec{display:flex;align-items:center;gap:12px;padding:6px 14px 12px 16px}
+.hvrec.tap{cursor:pointer}
+.hvfc{width:36px;height:36px;flex:none;border-radius:50%;overflow:hidden;background:var(--surf2)}.hvfc .rf{display:block;width:36px;height:36px;background:var(--atlas) no-repeat;background-size:864px 828px}.hvfc .rf.nf{background:var(--silh) center/contain no-repeat}
+.hvfc.sm{width:24px;height:24px;overflow:hidden;border-radius:50%}.hvfc.sm .rf{transform:scale(.6667);transform-origin:0 0}
+.hvcr{display:flex;flex:none}.hvcr svg{display:block}
+.hvm{flex:1;min-width:0;padding:4px 0}
+.hvn{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hvd{font-size:12px;color:var(--mut);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hvv2{text-align:right}.hvv2 b{display:block;font:500 22px var(--mono);line-height:1.05}.hvv2 small{display:block;margin-top:2px;font-size:11px;color:var(--mut)}
+.hvmore{background:var(--surf2);padding:2px 14px 6px;border-top:1px solid #43286d88}
+.hvmore[hidden]{display:none}
+.hvmr{display:flex;align-items:center;gap:10px;height:44px;border-top:1px solid #43286d88}
+.hvmr:first-child{border-top:0}
+.hvmr .rk{width:14px;font:500 13px var(--mono);color:var(--mut)}
+.hvmr .hvm{padding:0}.hvmr b{display:block;font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hvmr small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hvmr .vv{font:500 16px var(--mono)}.hvmr .vv small{display:inline;font-family:var(--sans);font-size:11px;font-weight:400;color:var(--mut)}
+.hvun{display:flex;align-items:center;gap:12px;padding:8px 16px 13px}
+.hvun i{width:34px;height:34px;flex:none;border-radius:50%;border:1.5px dashed var(--line)}
+.hvun span{font-size:13px;color:#7a6b96}
+.hvsl{font-size:13px;color:var(--mut);margin:14px 0 6px}
+.hvsheet .seg.hseg2{margin:0;gap:0;display:grid;grid-template-columns:repeat(var(--n),1fr)}
+.hvsheet .seg.hseg2 button{min-width:0;padding-left:0;padding-right:0}
+.hvrec.tap:focus-visible,.hvhero.tap:focus-visible,.hvfl:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+
 .hfil{display:flex;align-items:center;gap:12px;margin:6px 0 2px}
-.hfil .hfl{font-size:13px;color:var(--mut)}
-.hfil .seg{margin:0;flex:1}
-.crow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
-.crow:last-of-type{border:0}
-.crow .cn{flex:1;min-width:0;font-weight:500}
-.crow small{color:var(--mut);font-size:13px}
-.crow.ph{opacity:.45}
-.crow.tap{cursor:pointer}
-.crow .chev{width:7px;height:7px;border-right:2px solid var(--mut);border-top:2px solid var(--mut);transform:rotate(45deg);margin-left:2px;flex:none}
-.crow.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
-.hcat h3{font-size:16px;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:9px}
-.hcat h3 .ci{display:inline-flex;align-items:center;justify-content:center;min-width:24px;font-size:19px;line-height:1;color:var(--gold)}
-.hcat h3 .ci img{display:block;height:40px;width:auto}
-.hrow{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
-.hrow:last-child{border:0}
-.hrow .hk{font:500 14.5px var(--mono);color:var(--mut);text-align:center}
-.hrow.r1 .hk{color:var(--gold)}.hrow.r2 .hk{color:#c3ccd9}.hrow.r3 .hk{color:#cf9a68}
-.hrow .hk .md{font-size:19px;line-height:1}
-.hrow .hk .md.cup{display:block;line-height:0}
-.hrow .hk .md.cup svg{display:block;margin:0 auto}
-.hrow .hm{min-width:0}
-.hrow .hmn{font-weight:500;display:flex;align-items:center;gap:8px}
-.hrow small{display:flex;align-items:center;gap:7px;color:var(--mut);font-size:13px;flex-wrap:wrap;margin-top:2px}
-.hrow .hv{font:500 19px var(--mono)}
-.hrow.ph{opacity:.45}
-.hrow.mine{background:var(--surf2);margin:0 -10px;padding-inline:10px;border-radius:8px}
 .corner{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:12px;font-size:13px;min-height:28px}
 .corner{justify-content:center}
 .corner button{appearance:none;background:var(--surf);border:1px solid var(--line);border-radius:99px;color:var(--mut);font-size:13px;padding:10px 16px;min-height:44px;cursor:pointer}
@@ -1916,6 +1939,7 @@ function startHtml(){
 var APP_VERSION=document.querySelector('meta[name="app-version"]').content;
 /* changelog: nyeste først. Tilføj en post ved HVER versionsændring (kun det spillerne kan mærke, på engelsk). Vises i "What's new" i hjørnet og som popup én gang efter en opdatering. */
 var CHANGELOG=[
+  ["0.8.7.0","2026-11-15",{new:["A brand new Hall of Fame: all time champions for solo and multiplayer, the managers with the most titles, and every record shown as its own award. Tap a record to see places 2 to 5.","The season-over screen tells you when you set a new Hall of Fame record, and when you came close (2nd to 5th)."],ui:["Hall of Fame filters are tucked into one button."]}],
   ["0.8.6.4","2026-11-15",{fix:["Picking a colour on your profile no longer makes the page flicker."]}],
   ["0.8.6.3","2026-11-15",{ui:["A new golden Hall of Fame button on the home screen."]}],
   ["0.8.6.2","2026-11-15",{small:["The colour dots on your profile are easier to tap."]}],
@@ -2799,30 +2823,24 @@ function liveSimDone(lbl){
 async function sumRecords(){
   var gid=NET.gid;
   try{
+    /* målt mod den samlede Hall of Fame (ingen filtre). Nr. 1 = rekord; plads 2-5 = "So close!" (Rasmus 2026-11-15) */
     var pr=await NET.sb.rpc("hof_players_top"),tr=await NET.sb.rpc("hof_teams_top");
     var box=document.getElementById("sumlist");if(!box||NET.gid!==gid||pr.error||tr.error)return;
-    var P=pr.data||[],T=tr.data||[],out=[];
-    var mineP=function(x){return x.game_id===gid&&x.user_id===NET.uid};
-    var best=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return Object.keys(b).map(function(k){return b[k]})};
-    var catP=function(title,key,min){
-      var l=best(P.filter(function(x){return x[key]>min}),key).sort(function(a,b){return b[key]-a[key]});
-      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+":",pname(x.player_id)+" ("+x[key]+")"])})};
-    var catT=function(title,fn,asc,ok){
-      var l=T.filter(function(x){return ok(x)}).sort(function(a,b){return asc?fn(a)-fn(b):fn(b)-fn(a)});
-      l.slice(0,3).forEach(function(x,i){if(mineP(x))out.push([i,title+":",lname(NET.uid)+" ("+fn(x)+")"])})};
-    catP("Most goals in a season","goals",0);catP("Most assists in a season","assists",0);catP("Most clean sheets in a season","clean_sheets",0);
-    catP("Most goals in a match","best_match_goals",1);catP("Most red cards in a season","reds",0);catP("Most yellow cards in a season","yellows",0);
-    catT("Most points in a season",function(x){return x.points},false,function(){return true});
-    catT("Best goal difference",function(x){return x.gf-x.ga},false,function(){return true});
-    catT("Fewest goals conceded",function(x){return x.ga},true,function(){return true});
-    catT("Longest winning streak",function(x){return x.win_streak},false,function(x){return x.win_streak>0});
-    catT("Biggest win",function(x){return x.big_win_margin},false,function(x){return x.big_win_margin>0});
-    if(!out.length)return;
-    out.sort(function(a,b){return a[0]-b[0]});
-    var ent=function(o){return '<span class="recl">'+esc(o[1])+"<br><b>"+esc(o[2])+"</b></span>"};
-    var el=document.createElement("div");el.className="sumrow";
-    el.innerHTML='<details class="rechof"><summary><b>'+(out.length===1?'New Hall of Fame entry!':'You made it to the Hall of Fame ('+out.length+')')+'</b></summary><small>'+out.map(ent).join("")+'</small></details>';
-    box.appendChild(el);
+    var LS=hofLists(pr.data||[],tr.data||[]),rec=[],close=[];
+    var mine=function(x){return x.game_id===gid&&x.user_id===NET.uid};
+    LS.players.concat(LS.teams).forEach(function(c){
+      var i=c.rows.slice(0,5).findIndex(mine);if(i<0)return;
+      var x=c.rows[i],v=c.val(x),who=c.k==="p"?pname(x.player_id):lname(NET.uid);
+      var line={i:i,t:c.t,who:who,v:String(v)+(c.u?" "+pstU(v,c.u):"")};
+      (i===0?rec:close).push(line);
+    });
+    if(!rec.length&&!close.length)return;
+    var row=function(o,g){return '<div class="srr"><span class="srk'+(g?' g':'')+'">'+(g?'1':ordinal(o.i+1))+'</span><span class="srt">'+esc(o.t)+'<b>'+esc(o.who)+' · '+esc(o.v)+'</b></span></div>'};
+    var h='';
+    if(rec.length)h+='<div class="sumrow srec"><div class="srh g"><img src="badges/pl-trophy.png" alt="">'+(rec.length===1?'New Hall of Fame record!':rec.length+' new Hall of Fame records!')+'</div>'+rec.map(function(o){return row(o,1)}).join("")+'</div>';
+    if(close.length)h+='<div class="sumrow sclose"><div class="srh">So close!</div>'+close.map(function(o){return row(o,0)}).join("")+'</div>';
+    var el=document.createElement("div");el.innerHTML=h;
+    while(el.firstChild)box.appendChild(el.firstChild);
   }catch(e){}
 }
 $("simbody").addEventListener("click",function(e){
@@ -3246,85 +3264,136 @@ async function liveGoNext(id){
   try{await liveLoad();liveSub();liveEnter()}catch(e){netErr(e)}
 }
 var HOFC=null;
-var CATI_E={};
-var CUP='<svg viewBox="0 0 60 80" width="26" height="34" aria-hidden="true" fill="currentColor"><circle cx="9" cy="8" r="2.4"/><circle cx="23" cy="4" r="2.4"/><circle cx="37" cy="4" r="2.4"/><circle cx="51" cy="8" r="2.4"/><path d="M9 10L17 29L24 11L30 29L36 11L43 29L51 10L46 32H14Z"/><rect x="14" y="32" width="32" height="4" rx="1"/><path d="M23 36H37L38 46C46 51 47 59 42 66L40 70H20L18 66C13 59 14 51 22 46Z"/><path d="M2 38H16V47H2ZM44 38H58V47H44Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 47L19 68M57 47L41 68" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="16" y="70" width="28" height="3"/><rect x="11" y="74" width="38" height="4" rx="1"/></svg>';
-var CATI=Object.assign({"Champions":'<img src="badges/pl-trophy.png" alt="" width="21" height="40">'},CATI_E);
-function medal(i,em){if(em==="cup"&&i<3)return '<span class="md cup">'+CUP+'</span>';return i<3?'<span class="md">'+(i===0&&em?em:['🏆','🥈','🥉'][i])+'</span>':i+1}
+/* ---------- Hall of Fame (redesign 2026-11-15, se CLAUDE.md "Hall of Fame-redesign") ---------- */
+var HOFOPEN=null,HOFW={},HOFRESP="all",HOFPL="all",HOFMODE="all",HOFD=null;
+var HOFPLR={all:[null,null],"1":[1,1],"2":[2,2],"3":[3,3],"4":[4,4],"5":[5,null]};
+var HV_CUP='<svg class="hvi" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2h6v3.5a3 3 0 0 1-6 0z" fill="currentColor"/><path d="M5 3H3v1.2A2.3 2.3 0 0 0 5 6.5M11 3h2v1.2a2.3 2.3 0 0 1-2 2.3" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 8.5v3M5.5 14h5l-.6-2.5H6.1z" fill="currentColor"/></svg>';
+var HV_CHEV='<svg class="hvch" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
+/* holdets emblem som i lobbyen (gemt på rækken fra migration 080); ældre rækker får det navnebaserede emblem */
+function hofCrest(x,px){return x&&x.crest?ucrest(x.crest-1,x.color1,x.color2,x.crest_tag||initials(x.team_name),px):tcrest(x.team_name,px)}
+function hofOpp(t){if(!t)return "";return String(t).replace(/,?\s*runde\s*\d+\s*$/i,"").trim()}
+/* listerne i samme rækkefølge og med samme sortering som før; bruges også af slutskærmen (sumRecords) */
+function hofLists(P,T){
+  /* lige værdier: den ældste beholder pladsen (samme regel som hof_players_top), så rækkefølgen er fast */
+  var age=function(a,b){return new Date(a.created_at)-new Date(b.created_at)};
+  var top=function(arr,key,asc){return arr.slice().sort(function(a,b){return (asc?a[key]-b[key]:b[key]-a[key])||age(a,b)})};
+  var topU=function(arr,key){var b={};arr.forEach(function(x){var c=b[x.player_id];if(!c||x[key]>c[key]||(x[key]===c[key]&&age(x,c)<0))b[x.player_id]=x});return top(Object.keys(b).map(function(k){return b[k]}),key)};
+  var pos=function(k,min){return P.filter(function(x){return x[k]>(min||0)})};
+  var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
+  var L=function(id,t,k,unit,rows,val,opp){return {id:id,t:t,k:k,u:unit,rows:rows,val:val,opp:opp}};
+  return {
+    players:[
+      L("g","Most Goals","p","goals",topU(pos("goals"),"goals"),function(x){return x.goals}),
+      L("a","Most Assists","p","assists",topU(pos("assists"),"assists"),function(x){return x.assists}),
+      L("cs","Most Clean Sheets","p","clean sheets",topU(pos("clean_sheets"),"clean_sheets"),function(x){return x.clean_sheets}),
+      L("gm","Most Goals in a Match","p","goals",topU(pos("best_match_goals",1),"best_match_goals"),function(x){return x.best_match_goals},function(x){return hofOpp(x.best_match_text)}),
+      L("y","Most Yellow Cards","p","yellow cards",topU(pos("yellows"),"yellows"),function(x){return x.yellows}),
+      L("r","Most Red Cards","p","red cards",topU(pos("reds"),"reds"),function(x){return x.reds})
+    ],
+    teams:[
+      L("pts","Most Points","t","points",top(T,"points"),function(x){return x.points}),
+      L("gf","Most Team Goals","t","goals",top(T,"gf"),function(x){return x.gf}),
+      L("gd","Best Goal Difference","t","goal difference",top(gd,"gd"),function(x){return (x.gd>0?"+":"")+x.gd}),
+      L("ga","Fewest Goals Conceded","t","conceded",top(T,"ga",true),function(x){return x.ga}),
+      L("ws","Longest Winning Streak","t","wins",top(T.filter(function(x){return x.win_streak>0}),"win_streak"),function(x){return x.win_streak}),
+      L("bw","Biggest Win","t","",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin"),function(x){return x.big_win_score||""},function(x){return hofOpp(x.big_win_text)})
+    ]
+  };
+}
+function hofFilterTxt(){
+  var p=[];
+  if(HOFMODE!=="all")p.push(HOFMODE==="quick"?"Quick":"Classic");
+  if(HOFRESP!=="all")p.push(HOFRESP+(HOFRESP===1?" respin":" respins"));
+  if(HOFPL!=="all")p.push(HOFPL==="1"?"Solo":(HOFPL==="5"?"5+ players":HOFPL+" players"));
+  return p.join(" · ");
+}
 async function renderHofLive(){
   HOFTAB="pl";$("hseg").hidden=true;
-  if(!(HOFC&&HOFC.k===String(HOFRESP)+"|"+HOFPL+"|"+HOFMODE&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
-  var pr,tr,hk=String(HOFRESP)+"|"+HOFPL+"|"+HOFMODE;
+  var hk=String(HOFRESP)+"|"+HOFPL+"|"+HOFMODE,pr,tr;
+  if(!(HOFC&&HOFC.k===hk&&Date.now()-HOFC.at<60000))$("hbody").innerHTML='<p class="note" style="margin-top:14px">Loading records...</p>';
   if(HOFC&&HOFC.k===hk&&Date.now()-HOFC.at<60000){pr=HOFC.pr;tr=HOFC.tr}
-  else{var rp=HOFRESP==="all"?null:HOFRESP;var pq=HOFPLR[HOFPL]||[null,null],ar={p_resp:rp,p_pmin:pq[0],p_pmax:pq[1]};if(HOFMODE!=="all")ar.p_pace=HOFMODE;pr=await NET.sb.rpc("hof_players_top",ar);tr=await NET.sb.rpc("hof_teams_top",ar);if(!pr.error&&!tr.error)HOFC={at:Date.now(),k:hk,pr:pr,tr:tr}}
+  else{var rp=HOFRESP==="all"?null:HOFRESP;var pq=HOFPLR[HOFPL]||[null,null],ar={p_resp:rp,p_pmin:pq[0],p_pmax:pq[1]};if(HOFMODE!=="all")ar.p_pace=HOFMODE;pr=await NET.sb.rpc("hof_players_top",ar);tr=await NET.sb.rpc("hof_teams_top",ar);if(!pr.error&&!tr.error)HOFC={k:hk,pr:pr,tr:tr,at:Date.now()}}
+  if(String(HOFRESP)+"|"+HOFPL+"|"+HOFMODE!==hk)return; /* filteret er skiftet imens */
   if(pr.error||tr.error){$("hbody").innerHTML='<p class="note">Couldn\'t load the records.</p>';return}
-  var P=pr.data||[],T=tr.data||[];
-  var se=function(x){return [x.season_no>1?"season "+x.season_no:"",x.players?x.players+(x.players===1?" player":" players"):""].filter(Boolean).join(", ")};
-  var isMine=function(x){return ""}; /* Hall of Fame er 100 % neutral: ingen markering af egne rekorder */
-  var who=function(x){return esc(x.team_name)};
-  var opp=function(t){if(!t)return false;var m=String(t).replace(/,?\s*runde\s*\d+\s*$/i,'').trim();return m||false};
-  var pRow=function(i,x,val,note,em){var pi=NET.byId[x.player_id];return '<div class="hrow hf r'+(i+1)+isMine(x)+'"><span class="hk pf">'+(pi?faceImg(pi.p):'<span class="rf nf"></span>')+'</span><div class="hm"><div class="hmn">'+esc(pname(x.player_id))+'</div><small>'+tcrest(x.team_name,18)+who(x)+((note===false||!(note||se(x)))?'':', ')+(note===false?'':(note?esc(note):se(x)))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
-  var tRow=function(i,x,val,note,em){return '<div class="hrow r'+(i+1)+isMine(x)+'"><span class="hk">'+medal(i,em)+'</span><div class="hm"><div class="hmn">'+tcrest(x.team_name,22)+'<span>'+esc(x.team_name)+'</span></div><small>'+(note===false?'':(note?esc(note):se(x)))+'</small></div><span class="hv">'+esc(String(val))+'</span></div>'};
-  var top=function(arr,key,asc,n){return arr.slice().sort(function(a,b){return asc?a[key]-b[key]:b[key]-a[key]}).slice(0,n||5)};
-  var topU=function(arr,key){var b={};arr.forEach(function(x){if(!b[x.player_id]||x[key]>b[x.player_id][key])b[x.player_id]=x});return top(Object.keys(b).map(function(k){return b[k]}),key)};
-  var C=[];
-  var ph=function(i){return '<div class="hrow r'+(i+1)+' ph"><span class="hk">'+medal(i)+'</span><div class="hm"><div class="hmn">Waiting for results...</div><small>Play a season to claim this spot</small></div><span class="hv">-</span></div>'};
-  var cat=function(title,rows){
-    if(!rows.length)rows=[0,1,2,3,4].map(ph);
-    var open=HOFOPEN[title]?1:0;
-    C.push([title,'<div class="card hcat"><h3>'+(CATI[title]?'<span class="ci">'+CATI[title]+'</span>':'')+title+'</h3>'+rows[0]+(rows.length>1?'<div class="hmore"'+(open?'':' hidden')+'>'+rows.slice(1).join("")+'</div><button class="hexp'+(open?' on':'')+'" data-hx="'+esc(title)+'" data-n="'+rows.length+'">'+(open?'Hide':'Show top '+rows.length)+'</button>':'')+'</div>']);return ""};
-  var h='';
-  h+=cat("Most goals",topU(P.filter(function(x){return x.goals>0}),"goals").map(function(x,i){return pRow(i,x,x.goals)}));
-  h+=cat("Most assists",topU(P.filter(function(x){return x.assists>0}),"assists").map(function(x,i){return pRow(i,x,x.assists)}));
-  h+=cat("Most clean sheets",topU(P.filter(function(x){return x.clean_sheets>0}),"clean_sheets").map(function(x,i){return pRow(i,x,x.clean_sheets)}));
-  h+=cat("Most points in a season",top(T,"points").map(function(x,i){return tRow(i,x,x.points,false)}));
-  h+=cat("Most goals in a match",topU(P.filter(function(x){return x.best_match_goals>1}),"best_match_goals").map(function(x,i){return pRow(i,x,x.best_match_goals,opp(x.best_match_text))}));
-  var gd=T.map(function(x){return Object.assign({},x,{gd:x.gf-x.ga})});
-  h+=cat("Most team goals in a season",top(T,"gf").map(function(x,i){return tRow(i,x,x.gf,false)}));
-  h+=cat("Best goal difference",top(gd,"gd").map(function(x,i){return tRow(i,x,(x.gd>0?"+":"")+x.gd,false)}));
-  h+=cat("Fewest goals conceded",top(T,"ga",true).map(function(x,i){return tRow(i,x,x.ga,false)}));
-  h+=cat("Longest winning streak",top(T.filter(function(x){return x.win_streak>0}),"win_streak").map(function(x,i){return tRow(i,x,x.win_streak,false)}));
-  h+=cat("Biggest win",top(T.filter(function(x){return x.big_win_margin>0}),"big_win_margin").map(function(x,i){return tRow(i,x,x.big_win_score,opp(x.big_win_text))}));
-  h+=cat("Most red cards",topU(P.filter(function(x){return x.reds>0}),"reds").map(function(x,i){return pRow(i,x,x.reds)}));
-  h+=cat("Most yellow cards",topU(P.filter(function(x){return x.yellows>0}),"yellows").map(function(x,i){return pRow(i,x,x.yellows)}));
-  var W=T.filter(function(x){return x.champion}).sort(function(x,y){return new Date(x.created_at)-new Date(y.created_at)});
-  HOFW={};W.forEach(function(x){HOFW[x.id]=x});
-  var cr=function(x){var d=x.season?x.season.replace(/^(\d{4})\/\d{2}(\d{2})$/,"$1/$2"):"";var lu=x.lineup&&x.formation&&FORMS[x.formation];return '<div class="crow'+isMine(x)+(lu?' tap':'')+'"'+(lu?' data-ch="'+x.id+'" role="button" tabindex="0"':'')+'>'+tcrest(x.team_name,22)+'<span class="cn">'+esc(x.team_name)+'</span><small>'+esc(d)+'</small>'+(lu?'<i class="chev"></i>':'')+'</div>'};
-  var cb='';
-  if(!W.length)cb='<div class="crow ph"><span class="cn">Waiting for the first champion</span></div>';
-  else{
-    cb=cr(W[0]);
-    var rest=W.slice(1),blocks=Math.ceil(rest.length/5);
-    for(var q=0;q<blocks;q++)cb+='<div class="cblk"'+(q<HOFCH?'':' hidden')+'>'+rest.slice(q*5,q*5+5).map(cr).join("")+'</div>';
-    if(blocks>HOFCH)cb+='<button class="hexp more" data-cm="1">Show more champions</button>';
-  }
-  C.push(["Champions",'<div class="card hcat"><h3><span class="ci">'+CATI["Champions"]+'</span>Champions</h3>'+cb+'</div>']);
-  var ORD=["Champions","Most goals","Most assists","Most clean sheets","Most yellow cards","Most red cards","Most goals in a match","Longest winning streak","Most points in a season","Most team goals in a season","Fewest goals conceded","Best goal difference","Biggest win"];
-  C.sort(function(x,y){return ORD.indexOf(x[0])-ORD.indexOf(y[0])});
-  var frow=function(lbl,attr,cur,opts){return '<span class="hfl">'+lbl+'</span><div class="seg hseg2" style="--n:'+opts.length+'">'+opts.map(function(o){return '<button '+attr+'="'+o[0]+'" class="'+(String(o[0])===String(cur)?"on":"")+'">'+o[1]+'</button>'}).join("")+'</div>'};
-  var fl='<div class="hfilt">'+frow("Game mode","data-hm",HOFMODE,[["all","All"],["full","Classic"],["quick","Quick"]])+frow("Respins","data-rs",HOFRESP,[["all","All"],[0,0],[1,1],[2,2],[3,3]])+frow("Players","data-pl",HOFPL,[["all","All"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5+"]])+'</div>';
-  $("hbody").innerHTML=fl+C.map(function(c){return c[1]}).join("");
+  HOFD={P:pr.data||[],T:tr.data||[]};
+  hofPaint();
 }
-var HOFOPEN={},HOFCH=0,HOFW={},HOFRESP="all",HOFPL="all",HOFMODE="all";
-var HOFPLR={all:[null,null],"1":[1,1],"2":[2,2],"3":[3,3],"4":[4,4],"5":[5,null]};
+function hofPaint(){
+  if(!HOFD)return;
+  var P=HOFD.P,T=HOFD.T,ft=hofFilterTxt();
+  var mode=function(x){return x.pace==="quick"?"Quick":(x.pace==="full"?"Classic":"")};
+  var h='<button class="hvfl'+(ft?' on':'')+'" data-hfil="1"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 4h12M4.5 8h7M7 12h2"/></svg>'+(ft?'<b>'+esc(ft)+'</b>':'All games')+'</button>';
+  /* All time champions: mesterholdet med flest point, solo og multiplayer hver for sig */
+  var W=T.filter(function(x){return x.champion});
+  HOFW={};W.forEach(function(x){HOFW[x.id]=x});
+  var best=function(arr){return arr.slice().sort(function(a,b){return b.points-a.points||(b.gf-b.ga)-(a.gf-a.ga)||new Date(a.created_at)-new Date(b.created_at)})[0]||null};
+  var showS=HOFPL==="all"||HOFPL==="1",showM=HOFPL!=="1";
+  var hero=function(lbl,x,emptyTxt){
+    if(!x)return '<div class="hvhero empty"><img class="hvtro" src="badges/pl-trophy.png" alt=""><div class="hvtx"><div class="hvk">'+lbl+'</div><div class="hvt">'+emptyTxt+'</div><div class="hvs">Win a season to claim it.</div></div></div>';
+    var lu=!!(x.lineup&&x.formation&&FORMS[x.formation]);
+    var sub=[x.owner?esc(x.owner):"",mode(x),x.players>1?x.players+" players":""].filter(Boolean).join(" · ");
+    return '<div class="hvhero'+(lu?' tap':'')+'"'+(lu?' data-ch="'+x.id+'" role="button" tabindex="0"':'')+'><img class="hvtro" src="badges/pl-trophy.png" alt=""><div class="hvtx"><div class="hvk">'+hofCrest(x,20)+lbl+'</div><div class="hvt">'+esc(x.team_name)+'</div><div class="hvs">'+sub+'</div></div><div class="hvv"><b>'+x.points+'</b><small>points</small></div>'+(lu?HV_CHEV.replace('class="hvch"','class="hvch r"'):'')+'</div>';
+  };
+  h+='<div class="hvlbl">All time champions</div>';
+  if(showS)h+=hero("SOLO",best(W.filter(function(x){return x.players===1})),"No solo champion yet");
+  if(showM)h+=hero("MULTIPLAYER",best(W.filter(function(x){return x.players>1})),"No multiplayer champion yet");
+  /* Most titles: managerne med flest mesterskaber (inden for filteret) */
+  var cnt={};W.forEach(function(x){var o=x.owner||"";if(!o)return;var c=cnt[o]=cnt[o]||{n:0,at:x.created_at};c.n++;if(new Date(x.created_at)<new Date(c.at))c.at=x.created_at});
+  var tt=Object.keys(cnt).map(function(k){return {o:k,n:cnt[k].n,at:cnt[k].at}}).sort(function(a,b){return b.n-a.n||new Date(a.at)-new Date(b.at)}).slice(0,3);
+  if(tt.length)h+='<div class="hvlbl">Most titles</div><div class="hvtt">'+tt.map(function(x,i){return '<div class="hvtr'+(i===0?' g1':'')+'"><span class="rk">'+(i+1)+'</span><img src="badges/pl-trophy.png" alt=""><span class="n">'+esc(x.o)+'</span><span class="c">'+x.n+'<small>'+(x.n===1?'title':'titles')+'</small></span></div>'}).join("")+'</div>';
+  /* Player Honors og Teams: ét kort pr. rekord, tryk folder plads 2-5 ud */
+  var LS=hofLists(P,T);
+  var award=function(c){
+    var x=c.rows[0];
+    if(!x)return '<div class="hvaw un"><div class="hvah">'+HV_CUP+c.t+'</div><div class="hvun"><i></i><span>'+(ft?'No records with these filters':'Unclaimed')+'</span></div></div>';
+    var more=c.rows.slice(1,5),open=HOFOPEN===c.id&&more.length;
+    var who=function(r){return c.k==="p"?esc(pname(r.player_id)):esc(r.team_name)};
+    var sub=function(r){return c.k==="p"?[esc(r.team_name),r.owner?esc(r.owner):""].filter(Boolean).join(" · "):(r.owner?esc(r.owner):"")};
+    var face=function(r,sm){if(c.k==="t")return '<span class="hvcr'+(sm?' sm':'')+'">'+hofCrest(r,sm?24:34)+'</span>';var pi=NET.byId[r.player_id];return '<span class="hvfc'+(sm?' sm':'')+'">'+(pi?faceImg(pi.p):'<span class="rf nf"></span>')+'</span>'};
+    var v=c.val(x),opp=c.opp?c.opp(x):"";
+    var hh='<div class="hvaw'+(open?' open':'')+'"><div class="hvah">'+HV_CUP+c.t+'</div><div class="hvrec'+(more.length?' tap':'')+'"'+(more.length?' data-hx="'+c.id+'" role="button" tabindex="0" aria-expanded="'+(open?'true':'false')+'"':'')+'>'+face(x)+'<div class="hvm"><div class="hvn">'+who(x)+'</div><div class="hvd">'+sub(x)+'</div>'+(opp?'<div class="hvd">'+esc(opp)+'</div>':'')+'</div><div class="hvv2"><b>'+esc(String(v))+'</b>'+(c.u?'<small>'+pstU(v,c.u)+'</small>':'')+'</div>'+HV_CHEV.replace('class="hvch"','class="hvch'+(more.length?'':' off')+'"')+'</div>';
+    if(more.length)hh+='<div class="hvmore"'+(open?'':' hidden')+'>'+more.map(function(r,j){var vv=c.val(r);return '<div class="hvmr"><span class="rk">'+(j+2)+'</span>'+face(r,1)+'<div class="hvm"><b>'+who(r)+'</b><small>'+sub(r)+'</small></div><span class="vv">'+esc(String(vv))+(c.u?'<small> '+pstU(vv,c.u)+'</small>':'')+'</span></div>'}).join("")+'</div>';
+    return hh+'</div>';
+  };
+  h+='<div class="hvlbl">Player Honors</div><div class="hvlist">'+LS.players.map(award).join("")+'</div>';
+  h+='<div class="hvlbl">Teams</div><div class="hvlist">'+LS.teams.map(award).join("")+'</div>';
+  $("hbody").innerHTML=h;
+}
+/* filterark (bruger samme ark som opstillingen) */
+function hofFilterSheet(){
+  var el=$("hsheet");
+  var seg=function(lbl,attr,cur,opts){return '<div class="hvsl">'+lbl+'</div><div class="seg hseg2" style="--n:'+opts.length+'">'+opts.map(function(o){return '<button '+attr+'="'+o[0]+'" class="'+(String(o[0])===String(cur)?"on":"")+'">'+o[1]+'</button>'}).join("")+'</div>'};
+  el.innerHTML='<div class="sheetin hvsheet"><div class="hd"><b>Filters</b><button class="x" data-hreset="1">Reset</button></div>'+
+    seg("Game mode","data-hm",HOFMODE,[["all","All"],["full","Classic"],["quick","Quick"]])+
+    seg("Respins","data-rs",HOFRESP,[["all","All"],[0,0],[1,1],[2,2],[3,3]])+
+    seg("Players","data-pl",HOFPL,[["all","All"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5+"]])+
+    '<button class="btn p wide" data-cancel="1" style="margin-top:18px">Show records</button></div>';
+  el.hidden=false;
+}
 function hofTeam(id){
   var x=HOFW[id];if(!x||!x.lineup)return;
   var el=$("hsheet");
-  el.innerHTML='<div class="sheetin"><div class="hd"><b>'+esc(x.team_name)+'</b><span class="muted">'+esc(x.formation)+(x.season?', '+esc(x.season):'')+(x.owner?', '+esc(x.owner):'')+'</span><button class="x" data-cancel="1">Close</button></div><div class="pitch" id="hpitch"></div></div>';
+  el.innerHTML='<div class="sheetin"><div class="hd"><b>'+esc(x.team_name)+'</b><span class="muted">'+esc(flabel(x.formation))+(x.owner?', '+esc(x.owner):'')+'</span><button class="x" data-cancel="1">Close</button></div><div class="pitch" id="hpitch"></div></div>';
   el.hidden=false;
   renderPitch($("hpitch"),x.formation,x.lineup.map(function(p){var a=p&&NET.byName[p.n];return p?{name:p.n,sn:p.s,fa:a||null}:null}));
 }
-$("hsheet").addEventListener("click",function(e){if(e.target.closest("[data-cancel]")||e.target===$("hsheet"))$("hsheet").hidden=true});
+$("hsheet").addEventListener("click",function(e){
+  var t=e.target,ch=false;
+  var hm=t.closest("[data-hm]");if(hm){HOFMODE=hm.dataset.hm;ch=true}
+  var q=t.closest("[data-pl]");if(q){HOFPL=q.dataset.pl;ch=true}
+  var b=t.closest("[data-rs]");if(b){HOFRESP=b.dataset.rs==="all"?"all":+b.dataset.rs;ch=true}
+  if(t.closest("[data-hreset]")){HOFMODE="all";HOFPL="all";HOFRESP="all";ch=true}
+  if(ch){HOFOPEN=null;hofFilterSheet();renderHofLive();return}
+  if(t.closest("[data-cancel]")||t===$("hsheet"))$("hsheet").hidden=true;
+});
 /* Hall of Fame: én klik-lytter for hele listen */
 $("hbody").addEventListener("click",function(e){
-  var hm=e.target.closest("[data-hm]");if(hm){HOFMODE=hm.dataset.hm;HOFCH=0;renderHofLive();return}
-  var q=e.target.closest("[data-pl]");if(q){HOFPL=q.dataset.pl;HOFCH=0;renderHofLive();return}
-  var b=e.target.closest("[data-rs]");if(b){HOFRESP=b.dataset.rs==="all"?"all":+b.dataset.rs;HOFCH=0;renderHofLive();return}
-  b=e.target.closest("[data-ch]");if(b){hofTeam(b.dataset.ch);return}
-  b=e.target.closest("[data-cm]");if(b){var k=b.parentNode.querySelector(".cblk[hidden]");if(k){k.hidden=false;HOFCH++}if(!b.parentNode.querySelector(".cblk[hidden]"))b.remove();return}
-  b=e.target.closest("[data-hx]");if(b){var m=b.previousElementSibling,o=m.hidden;m.hidden=!o;HOFOPEN[b.dataset.hx]=o;b.classList.toggle("on",o);b.textContent=o?"Hide":"Show top "+b.dataset.n;return}
+  if(e.target.closest("[data-hfil]")){hofFilterSheet();return}
+  var b=e.target.closest("[data-ch]");if(b){hofTeam(b.dataset.ch);return}
+  b=e.target.closest("[data-hx]");if(b){HOFOPEN=HOFOPEN===b.dataset.hx?null:b.dataset.hx;hofPaint();return}
   if(e.target.closest("[data-hofback]"))goStart();
 });
-$("hbody").addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var b=e.target.closest("[data-ch]");if(b){e.preventDefault();hofTeam(b.dataset.ch)}});
+$("hbody").addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var b=e.target.closest("[data-ch],[data-hx]");if(!b)return;e.preventDefault();if(b.dataset.ch)hofTeam(b.dataset.ch);else{HOFOPEN=HOFOPEN===b.dataset.hx?null:b.dataset.hx;hofPaint()}});
 
 /* ---------- live: draft ---------- */
 NET.pl=null;NET.plReady=false;NET.byId={};NET.byName={};NET.picks=[];NET.draftOn=false;NET.viewSpin=false;NET.pending=false;NET.lastClub=undefined;NET.claimAt=0;NET.tt=null;NET.lastPick=-1;
@@ -3670,6 +3739,8 @@ var DEMO_SCREENS={
   "end-mid":{t:"Season over: top half",st:"done",end:2},
   "end-down":{t:"Season over: relegated",st:"done",end:3},
   hof:{t:"Hall of Fame",hof:1},
+  "hof-open":{t:"Hall of Fame: Most Goals opened (top 5)",hof:1,hofOpen:"g"},
+  "hof-filter":{t:"Hall of Fame: filters",hof:1,hofSheet:1},
   "hof-empty":{t:"Hall of Fame (empty)",hof:0},
   login:{t:"Login (first screen)",auth:"login"},
   setup:{t:"First login: create your manager",auth:"setup"},
@@ -3707,6 +3778,15 @@ function demoHist(fx,me){
   });
   return {T:T,P:P};
 }
+/* Hall of Fame-demo: fixturens 4 hold med deres emblemer + nogle opdigtede mestre (solo og multiplayer, flere managere) */
+function demoHofTeams(fx){
+  var stByName={};fx.season_teams.forEach(function(t){if(t.kind==="human")stByName[t.name]=t});
+  var base=fx.hof_teams.map(function(x){var t=stByName[x.team_name]||{};return Object.assign({},x,{color1:t.color1||null,color2:t.color2||null,crest:t.crest||null})});
+  var champ=base.filter(function(x){return x.champion})[0]||base[0];
+  var ex=[["Munk FC","Munkinho",1,91,"full",3,"#c8102e","#f5f5f5"],["Northside Rovers","Alex",1,88,"quick",5,"#1d4ed8","#ffd23f"],["Alex Athletic","Alex",1,84,"full",7,"#0f766e","#f0f0f0"],["Dream Team","Kim",3,79,"full",9,"#d97706","#1c1c1c"],["Munk FC","Munkinho",2,77,"quick",3,"#c8102e","#f5f5f5"]];
+  ex.forEach(function(e,i){base.push(Object.assign({},champ,{id:71000+i,game_id:"d0000000-0000-4000-8000-0000000001"+(10+i),team_key:"x"+i,user_id:"x"+i,team_name:e[0],owner:e[1],players:e[2],points:e[3],w:Math.round((e[3]-6)/3),d:6,gf:70+i*3,ga:24+i*2,pace:e[4],crest:e[5],color1:e[6],color2:e[7],crest_tag:null,champion:true,lineup:i===0?champ.lineup:null,formation:i===0?champ.formation:null,created_at:new Date(Date.parse(champ.created_at)+(i+1)*86400000).toISOString()}))});
+  return base;
+}
 function demoState(fx,cfg){
   var H=fx.humans,me=H[0],gid=fx.gid,st=cfg.st||"lobby";
   if(cfg.end!=null)me=H.slice().sort(function(a,b){return a.pos-b.pos})[cfg.end];
@@ -3738,7 +3818,7 @@ function demoState(fx,cfg){
     }
   }
   var DH=cfg.hist?demoHist(fx,me.uid):{T:[],P:[]};
-  var S0={me:me.uid,game:game,players:players,picks:picks,hofT:cfg.hof===0?[]:fx.hof_teams.concat(DH.T),hofP:cfg.hof===0?[]:fx.hof_players.concat(DH.P),
+  var S0={me:me.uid,game:game,players:players,picks:picks,hofT:cfg.hof===0?[]:demoHofTeams(fx).concat(DH.T),hofP:cfg.hof===0?[]:fx.hof_players.concat(DH.P),
     tables:{players:fx.players,hof_teams:DH.T,hof_players:DH.P,season_teams:st==="season"||st==="done"?fx.season_teams:[],season_lineups:st==="season"||st==="done"?fx.season_lineups:[],matches:st==="season"||st==="done"?ms:[],match_events:st==="season"||st==="done"?evs:[]}};
   if(cfg.pauseAt==="goal"){
     var gm=ms.filter(function(m){return m.round===round&&(m.home_key===me.uid||m.away_key===me.uid)})[0],gs=gm.home_key===me.uid?"h":"a";
@@ -3810,7 +3890,7 @@ async function demoBoot(){
   DEMO.mem["dsfc-homehide"]=String(Date.now()+864e6); /* ingen "læg på hjemmeskærmen"-boks på demobilleder */
   NET.sb=demoClient(S0);
   await liveBoot();
-  if(cfg.hof!=null)setTimeout(function(){var b=document.querySelector('[data-act="hofopen"]');if(b)b.click()},1200); /* efter startskærmen er færdig */
+  if(cfg.hof!=null)setTimeout(function(){if(cfg.hofOpen)HOFOPEN=cfg.hofOpen;var b=document.querySelector('[data-act="hofopen"]');if(b)b.click();if(cfg.hofSheet){HOFMODE="quick";HOFRESP=0;setTimeout(function(){renderHofLive();hofFilterSheet()},300)}},1200); /* efter startskærmen er færdig */
   /* målskærm: målanimationen fryses midtvejs, så billedet viser den */
   if(cfg.pauseAt==="goal"){var iv3=setInterval(function(){if(DEMO.paused){clearInterval(iv3);clearTimeout(window.__flT);var st=document.createElement("style");st.textContent=".gfill.on .gw{animation-delay:-.9s!important;animation-play-state:paused!important}.gfill.on .gw::before,.gfill.on .gw::after,.sb *{animation-play-state:paused!important}";document.head.appendChild(st)}},50)}
   if(cfg.corner){var iv4=setInterval(function(){var b=document.querySelector("#penov .pstar");b=b&&b.closest(".ptk");if(b){clearInterval(iv4);b.click()}},150)}

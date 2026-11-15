@@ -15,13 +15,13 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 - `vendor/supabase-2.45.4.min.js`: supabase-js, kopieret fra npm-pakken (integritet tjekket mod npm-registret). Opdateres ved at lægge en ny fil og rette navnet i både `index.html` og `sw.js`.
 - `index.html`: hele klienten i én fil. Hostes på GitHub Pages (`munksgaard91/draftspin-fc`, branch `main`). `sw.js` er service worker; hæv `CACHE` (`dsfc-shell-vNN`) ved hver klientændring, ellers ser telefonerne den gamle version.
 - Supabase-projekt `apagcfedizgjnnuefzfo` (Postgres, anonym login, RPC'er, edge function `engine`). Kampmotoren kører på serveren: `supabase/functions/engine/engine.js` (ren simulation) og `index.ts` (handlinger, fx afspilning af runder og interaktive straffe).
-- `supabase/migrations/`: databasens historik, nummereret 001-079 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
+- `supabase/migrations/`: databasens historik, nummereret 001-080 (027 mangler med vilje). Nye migrationer får næste nummer; en test kræver stigende, unikke numre. Nogle ældre ændringer blev kørt direkte i databasen (fx 051, 054, 055, 057), og databasens egen migrationsliste (`supabase_migrations.schema_migrations`) passer ikke med repoet, så stol ikke på den.
 - `supabase/schema/public.sql`: øjebliksbillede af den levende database (tabeller, funktioner, policies, rettigheder, realtime, cron). Det er sandheden om databasen. Genereres med `./scripts/schema_snapshot.sh` (kun læsning); kør det efter hver migration og commit det sammen med migrationen.
 - `data/` og `scripts/`: spillerdata og lokale hjælpescripts.
 
 ## Versionsnummer
 
-`<meta name="app-version" content="0.8.6.4 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
+`<meta name="app-version" content="0.8.7.0 (beta)">` i `index.html` (vises øverst til højre på startskærmen). Format 0.MINOR.PATCH.MICRO (beta). Fra 1.0 kun tre tal: 1.0.0, 1.0.1, 1.1.0 osv. (Rasmus 2026-11-15). Hæv ved meningsfulde batches, i samme commit som ændringen. Sæt aldrig 1.0 uden at spørge Rasmus: den er reserveret til, når cups, brugere og statistik er på plads.
 - Changelog: tilføj en post øverst i `CHANGELOG` i `index.html` ved HVER versionsændring, på engelsk og kun med det, spillerne kan mærke. Del op i `new` (New features), `fix` (Bug fixes), `ui` (Design) og `small` (Small changes), og skriv alt i et sprog, alle forstår (intet teknisk). Den vises under "What's new" i hjørnet og som popup én gang efter en opdatering.
 
 ## Motoren
@@ -37,7 +37,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 ## Demotilstand og skærmgalleri (design)
 
 - `index.html?demo=<skærm>` viser en skærm med faste, opdigtede data (4 demo-hold, en hel sæson simuleret med motoren). `?demo=list` viser alle skærme. Supabase erstattes af en falsk klient (`demoClient`), og browserens lager kører kun i hukommelsen, så intet skrives til databasen, og et rigtigt spil på telefonen røres ikke. Mærket "DEMO" vises nederst til venstre.
-- Skærme: `DEMO_SCREENS` i `index.html` (start, lobby, lobby-rules, lobby-instant, draft, kickoff, live, others, squad, goal, penalty, penalty-corner, penalty-ai, fulltime, table, stats, end-champion, end-top, end-mid, end-down, hof, hof-empty, profile, profile-stats, profile-goals, profile-assists, profile-cs, profile-picked). Nye skærme tilføjes dér, når de kommer (Rasmus 2026-11-05).
+- Skærme: `DEMO_SCREENS` i `index.html` (start, lobby, lobby-rules, lobby-instant, draft, kickoff, live, others, squad, goal, penalty, penalty-corner, penalty-ai, fulltime, table, stats, end-champion, end-top, end-mid, end-down, hof, hof-open, hof-filter, hof-empty, profile, profile-stats, profile-goals, profile-assists, profile-cs, profile-picked). Nye skærme tilføjes dér, når de kommer (Rasmus 2026-11-05).
 - Data: `demo/fixtures.json`, genereres med `deno run --allow-read --allow-write scripts/demo_fixtures.ts <players.json> <clubs.json>` (eksportér spillere/klubber med `supabase db query ... --read-only`, se kommentaren i scriptet). Generér igen, når spillerdata eller motoren ændres.
 - Skærmgalleri: Claude tager selv billeder i browser-panelet (390×844) af hver `?demo=`-skærm og samler dem med `python3 scripts/gallery_sheet.py <ud.png> "nøgle|titel|billede" ...` til ét billede i `~/Desktop/PL Draft/galleri/`. Send det til Rasmus efter UI-ændringer.
 - Animationer står stille, når browser-panelet er skjult; demoen slår derfor indtoning fra og fryser målanimationen midtvejs.
@@ -150,7 +150,7 @@ Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er
 2. **Varighed pr. spil**: BYGGET i v0.8.5.1/0.8.6.0 (se "Spilletid"). Opdatér `estMin`, når `game_times` har rigtige data.
 3. **Endnu hurtigere spiltype**: BYGGET i v0.8.6.0 som "Instant" under Quick game (se "Instant").
 4. **Cups/pokaler**: ikke designet.
-5. **Hall of Fame-redesign** (Rasmus 2026-11-15: skal med før 1.0). Design GODKENDT "for nu", ikke bygget. Mockup: `~/Desktop/PL Draft/mockups/hof2.html` (vises via kopi i `.claude/hof2.html`; `?p=1` fuld, `2` Most goals foldet ud, `3` tom efter 1.0, `4` filterark). Lavet sammen med Fable.
+5. **Hall of Fame-redesign**: BYGGET i v0.8.7.0 (2026-11-15, Fable-auditeret). Kode: `hofLists`, `hofPaint`, `hofFilterSheet`, `hofCrest`, `sumRecords`; CSS `.hv*`/`.sr*`. Lige værdier: den ældste beholder pladsen. Migration 080 (emblem på `hof_teams`) SKAL køres før engine-deploy, ellers fejler sæsonslut. Spec herunder: Mockup: `~/Desktop/PL Draft/mockups/hof2.html` (vises via kopi i `.claude/hof2.html`; `?p=1` fuld, `2` Most goals foldet ud, `3` tom efter 1.0, `4` filterark). Lavet sammen med Fable.
    - Ingen tæller ("X of 12 records set"), intet "NEW"-mærke, ingen sæson i teksterne (overflow; kun én sæson).
    - Filtre: én knap med de aktive filtre ("All games" / "Quick · 0 respins") der åbner et ark med Game mode, Respins, Players + Reset.
    - **All time champions**: to guldkort, SOLO og MULTIPLAYER, hver = mesterholdet med FLEST point (ikke det nyeste). Stor pokal til venstre, holdets emblem foran SOLO/MULTIPLAYER, holdnavn, "manager · spiltype" (multiplayer: "· N players"), point i guld + "points". Tryk = opstillingsark. Ingen formation, ingen række med tidligere mestre. Følger Players-filtret (1 = kun Solo).
