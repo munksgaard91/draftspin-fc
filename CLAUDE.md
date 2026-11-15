@@ -80,7 +80,7 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - Continue game (v0.7.2, migration 073): `my_game()` giver det nyeste ufærdige spil (lobby/draft/season, `left_at` null); knappen står KUN på forsiden og KUN for brugere med Google, aldrig for gæster eller på login-skærmen (`CONT`, `contHtml`, `contGo`). Kun ét spil gemmes: New Season/Multiplayer/Join med et igangværende spil viser en bekræftelse (`contGuard`) og kasserer det gamle spil med `discard_game` EFTER det nye er oprettet. `_discard_game`: ingen andre mennesker tilbage → spillet slettes; lobby → rækken slettes; draft/sæson → `left_at` sættes (AI overtager, `missed_rounds` 99 så holdet ikke kommer i Hall of Fame), og admin går videre. `is_member` er falsk for spillere med `left_at`. Home midt i et spil gemmer spillet (kan fortsættes).
 - Brugere med Google skal have profil for at oprette/deltage (`_need_profile`). Gæstenavne må ikke være en brugers managernavn eller "Deleted user" (`_check_guest_name`). Navneskift opdaterer også `owner` i Hall of Fame.
 - Bots er gæster, så `scripts/bots.py` forventer 0 Hall of Fame-rækker.
-- Managers-fanen og profilstatistik venter: Rasmus har en anden idé. Spørg, før det bygges.
+- Managers-fanen (andre brugeres statistik) er ikke besluttet. Profilstatistik er besluttet, se "Næste skridt".
 
 ## FM27-data og billeder (v0.8.0, 2026-11-14)
 - Kilde: Rasmus' FM27-karriere `~/Library/Application Support/Sports Interactive/Football Manager 27/games/` (frisk, in-game 2026-07-13). Læses med `fmsave` 0.12.5 i et venv (`fmsave export <save> players --all -o players.csv`); kopiér savet først. Match på `unique_id` = `face_id` og på den klub spilleren spiller i (`club_uid`), ikke kontraktklubben (lejespillere). Klub-ID'er: ARS 602, AVL 603, BOU 600, BHA 618, BRE 617, CHE 630, COV 639, CRY 642, EVE 649, FUL 654, HUL 665, IPS 667, LEE 671, LIV 676, MCI 679, MUN 680, NEW 688, NFO 692, SUN 722, TOT 728.
@@ -104,21 +104,28 @@ Gem aldrig tokens, adgangskoder eller service-nøgler i repoet.
 - Straffe: klienten må ikke regne serverafgjorte tal af de levende data, når sæsonen bruger fastfrosne. Hjørner pr. skytte sendes nu med den ventende straf (`detail`).
 - Deploy-kontrol: `supabase functions download engine --use-api` i en tom mappe i scratchpad (ALDRIG i repoet: den overskriver `supabase/functions/engine`) og `diff` mod repoet. `action: "hash"` kræver en anonym testbruger; auto mode afviste at oprette den 2026-11-14, så byte-diff blev brugt.
 - Nyttige CLI-kommandoer: `supabase db query -f <fil> --remote=... --yes` (migration), `supabase storage cp <fil> ss:///faces/<navn> --experimental --content-type image/webp --remote=...`, `supabase functions deploy engine --use-api --remote=... --yes`. Auto mode har bløde stop på skrivende SQL og deploy: spørg Rasmus først.
+- Skarpe screenshots uden browser-panelet: `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --force-device-scale-factor=2 --window-size=446,1700 --virtual-time-budget=4000 --screenshot=<fil> <url>` (lokal Chrome). Mockups uden for repoet kan vises via en kopi i `.claude/` (ikke i git) på `localhost:8123/.claude/...`; en server uden for repoet blev afvist af auto mode.
 - Browser-preview: `.claude/launch.json` findes lokalt (ikke i git); virker preview_start ikke, så start `python3 -m http.server 8123` i baggrunden og åbn `http://localhost:8123/index.html?demo=...`. Appens variabler er ikke globale i browseren (kan ikke sættes via JS-konsollen); test via demotilstanden.
 
 ## Næste skridt (stoppet 2026-11-15)
 Mod 1.0 (reserveret til når brugere, statistik og cups er på plads; brugere er færdige i v0.7):
 
-1. **Profilstatistik** (besluttet af Rasmus 2026-11-15, ikke bygget; næste opgave):
-   - Farvevalget på profilen: én linje, små og dæmpede prikker (ca. 14 px, nedtonet), kun den valgte står fuldt frem med ring. Label "Colour".
-   - Ny sektion "Your stats" med filter All / Classic / Quick (som Hall of Fame, `pace`) og KUN to faner: **Overview** og **Players**.
-   - Overview: mesterskaber (med pokalbilledet), sæsoner, gns. placering; felter for top 4, nedrykninger, point pr. kamp, sejrsprocent, mål, clean sheets; V/U/T-bjælke; "Season by season"-brikker (guld = mester, grøn = top 4, rød = nedrykning); rekorder (bedste sæson, længste sejrsstime, største sejr, flest mål i en sæson).
-   - Players: rangliste med ansigter, under-filtre Goals / Assists / Clean sheets / Most picked; nr. 1 stort kort.
-   - Log ud, Privacy og Delete account flyttes ned under statistikken.
-   - FRAVALGT: en "Teams"-sektion. Holdnavne er bevidst unikke for hvert spil (Rasmus: "sjovt med unikke teams hver gang"), så ingen faste hold, ingen hold-tabel, ingen emblemer gemt. Al statistik er fælles for brugeren.
-   - Åbent: "Dream XI" (brugerens 11 bedste spillersæsoner på en bane) er foreslået til senere. Placeringsbrikkerne er foreslået med fra start; spørg kort, før der bygges.
-   - Data: kun afsluttede sæsoner med Google-bruger (`hof_teams`/`hof_players` med `user_id`; gæster og hold med `missed_rounds` 99 gemmes ikke). Kræver sandsynligvis en RPC (fx `my_stats(p_pace)`), da hof-RPC'erne kun kan kaldes som `authenticated`. Tilføj en demo-skærm (`DEMO_SCREENS`) med opdigtede tal.
-   - Mockup: `~/Desktop/PL Draft/mockups/profil.html` (`?p=1/2/3` viser én skærm) og `mockup-profil.png`. Skærm 2 (Teams) er fravalgt; resten er udgangspunktet.
+1. **Profilstatistik** (design GODKENDT af Rasmus 2026-11-15, ikke bygget; næste opgave). Mockup: `~/Desktop/PL Draft/mockups/profil2.html` (`?p=1` Overview, `3` tom Hall of Fame-blok, `2` Goals, `4` Assists, `5` Clean sheets, `6` Most picked) og `mockup-profil2.png`. `profil.html` (v1 med Teams) er forældet.
+   - Farvevalg: én linje små dæmpede prikker (14 px, 50 % opacity), valgt farve fuld med ring, label "Colour".
+   - "Your stats" med filter All / Classic / Quick (`pace`) og to faner: **Overview** og **Players**. INGEN introtekst. INGEN Teams-sektion (holdnavne er bevidst unikke pr. spil).
+   - **Overview**, i rækkefølge:
+     - Topfelt med 3 tal på linje (25 px mono, samme højde): Titles (pokal + tal, "Leagues won"), Seasons ("Played to the end"), Avg. finish som HELTAL med ordenstal ("6th", "Your usual place").
+     - **Recent form**: præcis 2 rækker × 8 = de 16 seneste sæsoner, NYESTE først, ordenstal (1st, 2nd, 13th). Alle brikker samme neutrale farve, kun 1st i guld. Tekst: "Your last 16 seasons, newest first."
+     - **Career finishes** (hele karrieren): én kolonne fra bedst til dårligst med ikon og antal, 0 (nedtonet) hvis ikke opnået: Champions (pl-trophy) 1., Runner-up (sølvmedalje-SVG) 2., Champions League (eu-cl) 3.–4., Europa League (eu-el) 5.–6., Conference League (eu-ecl) 7., Relegated (efl-champ) 18.–20. Samme zoner som `zone()` i tabellen.
+     - **Results**: Points per match (tal + "points" til højre, ingen forklaring); Matches med "456 played" til højre, 3 kolonner Won/Drawn/Lost med stor procent (afrundet så summen er 100) og "Won · 219" under, grafen under kolonnerne.
+     - **Stats**: Goals scored, Goals conceded (x.x per match), Clean sheets ("Matches without conceding"), Yellow cards (x.x per match), Red cards (0.05 per match, to decimaler). Små kort-ikoner foran kortene.
+     - **Your records** (brugerens egne bedste, samme navne som Hall of Fame): Most points in a season, Longest winning streak, Biggest win, Most team goals in a season.
+     - **Hall of Fame entries** (guld-design): kun lister hvor brugeren er nr. 1 af alle (filtre på All). Overskrift "You hold N records", rækker med guldmønt "1" eller spillerens ansigt (spillerrekorder), værdi i guld. Uden rekorder står blokken der stadig: "No records yet" + forklaring på hvordan man kommer på listen.
+     - Log out, Privacy, Delete account nederst.
+   - **Players**: under-filtre Goals / Assists / Clean sheets / Most picked. Ingen forklaringslinje. Nr. 1 stort kort (tal 26 px, plads til 4 cifre), nr. 2–10 i liste (top 10).
+     - Goals/Assists/Clean sheets: totaler over alle sæsoner; under navnet "Best season: x goals" (11 px i listen, 12 px på topkortet). Ingen guld i listen. I bunden en guld "Hall of Fame"-blok med selve rekorden (fx Most goals in a season, spiller · hold · sæson) KUN hvis en af brugerens spillere har rekorden for den kategori; ellers ingenting (ingen forklarende tekst).
+     - Most picked: tal = "picks" (antal sæsoner draftet); under navnet spillerens NUVÆRENDE klub med lille emblem (`badges/<KODE>.png`). Ingen Hall of Fame-blok. I bunden **Formations**: brugerens formationer, mest brugte først, "9 seasons · avg. 4th" + grøn bjælke relativ til favoritten.
+   - Data: kun afsluttede sæsoner med Google-bruger (`hof_teams`/`hof_players` med `user_id`). Kræver sandsynligvis en RPC (fx `my_stats(p_pace)`), da hof-RPC'erne kun kan kaldes som `authenticated`. Hall of Fame nr. 1 skal matche Hall of Fame-skærmens logik (`hof_teams_top`/`hof_players_top` med All). Tilføj demo-skærme (`DEMO_SCREENS`) med opdigtede tal.
 2. **Varighed pr. spil**: skriv ca. hvor lang tid et spil tager ved hver spiltype (fx på knapperne eller i lobbyen). Ikke designet endnu; mål den faktiske tid for Classic og Quick først.
 3. **Endnu hurtigere spiltype** under Quick game (ny mode). Ikke designet endnu: afklar med Rasmus, hvad der skal skæres væk (fx springe kampvisning helt over og gå direkte til tabel/sæsonslut), og om den skal i Hall of Fame-filtret (`pace`).
 4. **Cups/pokaler**: ikke designet.
