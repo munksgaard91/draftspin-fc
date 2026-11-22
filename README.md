@@ -26,7 +26,7 @@ Idé: draft en manager som valg nr. 12; managerens FM-rating (CA) giver et %-boo
 - Classic er hovedspillet og skal være mest detaljeret; Quick game er hurtigt med færre detaljer. "The season is over"-sliden vises i begge, og knappen hedder "See the final table".
 - Kamp (Classic): scoreboard i FotMob-stil (tid under scoren, "Kick off" / "Finished"), Match facts med hjemme/ude-side og minut yderst, HT/FT-cirkler, "Results elsewhere" med minut-piller. Solo: "Kick off" i stedet for Ready, 1x og Skip under Next match. Mål: scoren er en rulle, kortet fyldes i det scorende holds farver fra holdets side med bølgekant (AI-farver i `AIPAL`), kampen holder en skjult pause på 1,85 s. Ingen lyd.
 - Sæsonslide: farvet overskrift for 8.-17. plads ("Top half finish", "Mid-table. Safe and sound.", "Survived!") med PL-løven; ingen emojis; Position er fjernet; alt centreret.
-- Klikbare ting markeres med en tynd understregning, ikke pile eller emojis. Færre emojis er målet; ⚽ og ❌ i Match facts venter.
+- Klikbare ting markeres med en tynd understregning, ikke pile eller emojis. Færre emojis er målet, men ⚽ og ❌ i Match facts og ⚽/👟 på banen bliver (Rasmus 2026-11-22).
 - Holdrekorder i Hall of Fame beholder medaljerne; Champions-boksen er uændret, indtil brugere kommer.
 - Push-beskeder er fjernet helt (klient, service worker og server; migration 062 og 063). Små toasts er fjernet; kun fejl, "forladt spil" og faste bjælker er tilbage.
 - Skriftstørrelser er samlet i 11 størrelser. Tal står stadig i DM Mono (nullet ligner Ø, det er okay).

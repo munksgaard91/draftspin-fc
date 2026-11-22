@@ -54,7 +54,7 @@ Rasmus' private fodbold-draftspil (iPhone, venner). Dette er en overdragelse: de
 ## Åbne punkter (ikke påbegyndt, start ikke uden besked)
 
 - Profilstatistik er bygget (v0.8.5.0, se "Profilstatistik" nedenfor). Managers-fanen (andre brugeres statistik) er ikke besluttet.
-- Nyt logo/navn. (Rasmus 2026-11-15 flyttede emblemer, ⚽/❌, karakterer og målanimation til listen før 1.0, se "Næste skridt" punkt 7; manager i draften er droppet.)
+- Nyt logo/navn. (Rasmus 2026-11-15 flyttede emblemer, karakterer og målanimation til listen før 1.0, se "Næste skridt" punkt 7; manager i draften er droppet.)
 - To-spiller-straffeflowet (`penWatch`) er ikke testet med to rigtige enheder; Rasmus 2026-11-15: det er droppet som krav før 1.0.
 
 ## Adgang
@@ -171,7 +171,7 @@ Mod 1.0 (brugere er færdige i v0.7; cups er rykket til "måske" 2026-11-22):
    - Neutral: ingen fremhævning af egne rekorder. Mestre sorteres i dag ældst først (`W.sort`); den nye kode skal finde flest point pr. solo/multi.
    - Slutskærmen (`sumRecords`): skriver i dag "You made it to the Hall of Fame" for top 3. Skal skelne (Rasmus 2026-11-15): nr. 1 = "New Hall of Fame record!" i guld; plads 2–5 = "So close!" med "2nd in Most Goals: spiller, 27 goals"; ellers ingen blok. Altid målt mod den samlede liste (alle filtre på All). Mangler også Most team goals. Bygges sammen med redesignet.
 6. **Nulstilling ved 1.0** (Rasmus 2026-11-15): ryd alle rekorder (`hof_teams`/`hof_players`) og nulstil alle brugere, så alle starter forfra på 1.0. Gøres som det SIDSTE lige før 1.0 udgives, og først efter Rasmus har bekræftet præcis hvad (fx om profiler/managernavne, spil og `game_times` også ryddes). Dette er den eneste undtagelse fra "rør aldrig Rasmus' egne Hall of Fame-rækker". Tag backup af tabellerne først. Samtidig (Rasmus): fjern notitsen på forsiden om, at rekorder nulstilles ved 1.0, og skriv i 1.0-posten under What's new, at alle starter forfra.
-7. **Fra idélisten, skal med før 1.0** (Rasmus 2026-11-15; ikke designet, rækkefølge ikke aftalt): ⚽/❌ i Match facts (straffe scoret/brændt); mere realistiske klubemblemer; redesign af målanimationen. ("Manager i draften" er DROPPET af Rasmus 2026-11-15.) Claudes forslag til rækkefølge: ⚽/❌, målanimation, emblemer; cups er rykket til "måske".
+7. **Fra idélisten, skal med før 1.0** (Rasmus 2026-11-15; ikke designet, rækkefølge ikke aftalt): mere realistiske klubemblemer; redesign af målanimationen. (⚽/❌ i Match facts betød at skifte emojierne ud med egne ikoner; DROPPET af Rasmus 2026-11-22, og ⚽/👟 på banen bliver også.) ("Manager i draften" er DROPPET af Rasmus 2026-11-15.) Claudes forslag til rækkefølge: målanimation, emblemer; cups er rykket til "måske".
 8. **Se hinandens hold under sæsonen** (Rasmus 2026-11-15, før 1.0, ikke designet): i multiplayer skal man kunne se de andre menneskers line-up (formation, spillere) og basale stats (fx point, mål, form, topscorer) i løbet af sæsonen, hvis man ønsker. Afklar: hvor (tabellen? et tryk på et hold?), hvilke stats, og om det skal kunne slås fra.
 
 **Måske før 1.0** (Rasmus 2026-11-22, ikke designet): karakterer pr. spiller pr. kamp (fx 7,4 efter kampen); cups/pokaler.
